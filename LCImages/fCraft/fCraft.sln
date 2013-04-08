@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C# Express 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fCraft", "fCraft.csproj", "{7FBE7809-6F77-415C-ABEB-A3F627E817B0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug_Events|Any CPU = Debug_Events|Any CPU
+		Debug_IRC|Any CPU = Debug_IRC|Any CPU
+		Debug_Scheduler|Any CPU = Debug_Scheduler|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7FBE7809-6F77-415C-ABEB-A3F627E817B0}.Debug_Events|Any CPU.ActiveCfg = Debug_Events|Any CPU
+		{7FBE7809-6F77-415C-ABEB-A3F627E817B0}.Debug_Events|Any CPU.Build.0 = Debug_Events|Any CPU
+		{7FBE7809-6F77-415C-ABEB-A3F627E817B0}.Debug_IRC|Any CPU.ActiveCfg = Debug_IRC|Any CPU
+		{7FBE7809-6F77-415C-ABEB-A3F627E817B0}.Debug_IRC|Any CPU.Build.0 = Debug_IRC|Any CPU
+		{7FBE7809-6F77-415C-ABEB-A3F627E817B0}.Debug_Scheduler|Any CPU.ActiveCfg = Debug_Scheduler|Any CPU
+		{7FBE7809-6F77-415C-ABEB-A3F627E817B0}.Debug_Scheduler|Any CPU.Build.0 = Debug_Scheduler|Any CPU
+		{7FBE7809-6F77-415C-ABEB-A3F627E817B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FBE7809-6F77-415C-ABEB-A3F627E817B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FBE7809-6F77-415C-ABEB-A3F627E817B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FBE7809-6F77-415C-ABEB-A3F627E817B0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

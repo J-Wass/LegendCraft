@@ -1,0 +1,64 @@
+LegendCraft Changelog v1.8.0
+Add: /Economy
+Add: /Spring
+Add: /PolarRose
+Add: Player.Info.Money
+Add: Economy PlayerDB
+Add: $Welcome, $Clap, $Mad, and Color Codes using $messages (ex. $green)
+Add: Lebot Final Touches, including Players option, more jokes and more funfacts
+Add: /Vote
+Add: /WorldChat
+Change: Various typo fixes
+
+LegendCraft Changelog v1.7.0
+Add: /fortunecookie
+Add: /LeBot
+Add: /Calculator
+Add: /UndoAll
+Add: Several Command Aliases
+Add: /GPS
+Add: $ass and $money, other $commands fixed
+Add: MIT Liscence added to software and README
+Change: /fortuncookie given more options 
+Change: ServerGUI now has no 800craft text
+Change: /banx undo's 100,000 blocks now
+Change: minecraft url now is minecraft.net, not www.minecraft.net
+
+LegendCraft Changelog v1.6.0
+Add: /punch
+Add: /brofist
+Add: /banhammer
+Add: /credits
+Add: /stfu
+Add: /throw
+Add: Several Command Aliases
+Add: Server Name added to /sinfo
+Change: Colors in /give changed
+Change: AboutWindow.cs, credits changed
+Change: README Fixed up 
+Change: ConfigGUI altered to have no 800Craft logos
+Change: Fix in /high5 PrintUsage error (ty Jonty800)
+Change: Fix in /jelly and /mad PrintUsage error (ty Jonty800)
+Change: /title now updates to PlayerDB (not my derp)
+
+
+LegendCraft Changelog v1.5.0
+Add: /Moderate
+Add: Bug testers added to credits of README.txt
+Change: fixes to /sinfo
+Change: fixes to /jelly and /mad
+Remove: /speed
+Remove: /vote
+Remove: /bot
+
+
+LegendCraft Changelog v1.0.0
+Add: Commands /Jelly and /Mad
+Add: Command /Give
+Add: Command /Assassinate
+Change: Command /Moderate to Command /Muteall, plus changes inside the code 
+Change: Project name from 800Craft to LegendCraft
+Change: 800Craft logos to LegendCraft logos
+Change: Relabled configgui, servercli, servergui, and fcraftgui
+Change: Altered README
+Remove: HeartBeat Saver

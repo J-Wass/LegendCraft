@@ -1,0 +1,16 @@
+#This txt file should be filled with bad words that you want to be filtered out
+#I have included some examples, excuse my language :P
+fuck
+fucking
+fucked
+dick
+bitch
+shit
+shitting
+shithead
+cunt
+nigger
+wanker
+wank
+wanking
+piss
