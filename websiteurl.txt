@@ -1,1 +1,0 @@
-\* Remove  all this text (and \\) and replace with your website url. The url will appear in $website, $ws, and /bangrief */

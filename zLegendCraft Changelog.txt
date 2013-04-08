@@ -1,14 +1,46 @@
+LegendCraft Changelog v2.0.0
+Add: /global
+Add: /rejoin
+Change: Minor heartbeat fixes
+Remove: Wom direct support
+
+
+LegendCraft Changelog v1.9.0
+Add: Themes to configGUI
+Add: PlayerViewer added
+Add: LegendCraft HeartBeat Saver
+Add: /Doublestair
+Add: /AbortAll (aborts pretty much everything)
+Add: /ZZ
+Add: /StealthKick (/Sk, /StealthlK), kicks user without anyone but the kicker knowing that it was a kick.
+Add: Developer Eeyle joined LC Team
+Add: $website ($ws) which displays the website name and more $(colors) for non-official color names (For example, $pink and $cyan)
+Add: /BanGrief, adds a ban cmd specifically for grief that gives an appeal with your server website. (Configured via a websiteurl.txt in server folder)
+Change: sinfo now displayes software version
+Change: LeBot now has irc visiblity
+Change: /pay branched from /econ
+Change: Updated README
+Change: Users can only exit servergui with /shutdown (prevent accidents)
+
+LegendCraft Changelog v1.8.1 (emergency update)
+Change: fix to /nick
+Remove: /WorldChat (error)
+
 LegendCraft Changelog v1.8.0
 Add: /Economy
 Add: /Spring
 Add: /PolarRose
 Add: Player.Info.Money
 Add: Economy PlayerDB
-Add: $Welcome, $Clap, $Mad, and Color Codes using $messages (ex. $green)
+Add: $Welcome, $Clap, $Mad, and $(Color)
 Add: Lebot Final Touches, including Players option, more jokes and more funfacts
 Add: /Vote
 Add: /WorldChat
+Add: /WhoIs, thx jonty
 Change: Various typo fixes
+Remove: /Jelly
+Remove: /Mad
+Remove: haspaid status (thx mojang)
 
 LegendCraft Changelog v1.7.0
 Add: /fortunecookie
@@ -19,7 +51,7 @@ Add: Several Command Aliases
 Add: /GPS
 Add: $ass and $money, other $commands fixed
 Add: MIT Liscence added to software and README
-Change: /fortuncookie given more options 
+Change: /fortuncookie given more options
 Change: ServerGUI now has no 800craft text
 Change: /banx undo's 100,000 blocks now
 Change: minecraft url now is minecraft.net, not www.minecraft.net
@@ -35,7 +67,7 @@ Add: Several Command Aliases
 Add: Server Name added to /sinfo
 Change: Colors in /give changed
 Change: AboutWindow.cs, credits changed
-Change: README Fixed up 
+Change: README Fixed up
 Change: ConfigGUI altered to have no 800Craft logos
 Change: Fix in /high5 PrintUsage error (ty Jonty800)
 Change: Fix in /jelly and /mad PrintUsage error (ty Jonty800)
@@ -56,7 +88,7 @@ LegendCraft Changelog v1.0.0
 Add: Commands /Jelly and /Mad
 Add: Command /Give
 Add: Command /Assassinate
-Change: Command /Moderate to Command /Muteall, plus changes inside the code 
+Change: Command /Moderate to Command /Muteall, plus changes inside the code
 Change: Project name from 800Craft to LegendCraft
 Change: 800Craft logos to LegendCraft logos
 Change: Relabled configgui, servercli, servergui, and fcraftgui
