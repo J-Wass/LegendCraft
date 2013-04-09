@@ -22,7 +22,11 @@ namespace fCraft {
         public int gameKills = 0;
         public int gameDeaths = 0;
 
-        ///<summary> Player's amount of bits.</summary>
+        ///<summary> Number added onto number for mojang accounts. If 0, number will not be added on.</summary>
+        [NotNull]
+        public int mojang = 0;
+
+        ///<summary> Player's amount of bits for LegendCraft Economy.</summary>
         [CanBeNull]
         public int Money = 0;
 

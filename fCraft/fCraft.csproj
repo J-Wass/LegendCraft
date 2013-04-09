@@ -14,7 +14,8 @@
     <FileAlignment>512</FileAlignment>
     <StartupObject>
     </StartupObject>
-    <ApplicationIcon>ConfigGUI.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -355,9 +356,6 @@
     <Compile Include="World\ZoneCollection.cs" />
     <Compile Include="World\World.Events.cs" />
     <Compile Include="Utils\JetBrains.Annotations.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="ConfigGUI.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
