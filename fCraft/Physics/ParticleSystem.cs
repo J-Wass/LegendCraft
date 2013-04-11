@@ -1,4 +1,4 @@
-﻿//Copyright (C) <2012>  <Jon Baker, Glenn Mariën and Lao Tszy>
+//Copyright (C) <2012>  <Jon Baker, Glenn Mariën and Lao Tszy>
 
 //This program is free software: you can redistribute it and/or modify
 //it under the terms of the GNU General Public License as published by
@@ -250,37 +250,9 @@ namespace fCraft
             get { return true; }
         }
 
-        public void HitPlayer(World world, Vector3I pos, Player hitted, Player by, ref int restDistance, IList<BlockUpdate> updates)
+		public void HitPlayer(World world, Vector3I pos, Player hitted, Player by, ref int restDistance, IList<BlockUpdate> updates)
         {
-            if ((hitted.Info.isOnBlueTeam && by.Info.isOnBlueTeam) || (hitted.Info.isOnRedTeam && by.Info.isOnRedTeam))
-            {
-                by.Message("{0} is on your team!", hitted.ClassyName);
-            }
-            else
-            {
-                hitted.Kill(world, String.Format("{0}&S was shot by {1}", hitted.ClassyName, hitted.ClassyName == by.ClassyName ? "theirself" : by.ClassyName));
-                updates.Add(new BlockUpdate(null, pos, Block.Air));
-                restDistance = 0;
-                if (TeamDeathMatch.isOn)
-                {
-                    if (hitted.Info.isPlayingTD && hitted.Info.isOnBlueTeam && by.Info.isPlayingTD) //if the player is playing TD and on blue team, +1 for Red Team Score
-                    {
-                        TeamDeathMatch.redScore++;
-                        hitted.Info.gameDeaths++;
-                        hitted.Info.totalDeathsTDM++;
-                        by.Info.gameKills++;
-                        by.Info.totalKillsTDM++;
-                    }
-                    if (hitted.Info.isPlayingTD && hitted.Info.isOnRedTeam && by.Info.isPlayingTD) //if the player is playing TD and on blue team, +1 for Red Team Score
-                    {
-                        TeamDeathMatch.blueScore++;
-                        hitted.Info.gameDeaths++;       //counts the individual players deaths
-                        hitted.Info.totalDeathsTDM++;   //tallies total TDM deaths (never gets reset)
-                        by.Info.gameKills++;            //counts the individual players amount of kills
-                        by.Info.totalKillsTDM++;        //tallies total TDM kills
-                    }
-                }
-            }
+			hitted.Kill(world, String.Format("{0}&S was blown up by {1}", hitted.ClassyName, hitted.ClassyName == by.ClassyName ? "theirself" : by.ClassyName));
         }
     }
 
@@ -426,9 +398,35 @@ namespace fCraft
 
 		public void HitPlayer(World world, Vector3I pos, Player hitted, Player by, ref int restDistance, IList<BlockUpdate> updates)
 		{
-            hitted.Kill(world, String.Format("{0}&S was shot by {1}", hitted.ClassyName, hitted.ClassyName == by.ClassyName ? "theirself" : by.ClassyName));
-			updates.Add(new BlockUpdate(null, pos, Block.Air));
-			restDistance = 0;
+            if ((hitted.Info.isOnBlueTeam && by.Info.isOnBlueTeam) || (hitted.Info.isOnRedTeam && by.Info.isOnRedTeam))
+            {
+                by.Message("{0} is on your team!", hitted.ClassyName);
+            }
+            else
+            {
+                hitted.Kill(world, String.Format("{0}&S was shot by {1}", hitted.ClassyName, hitted.ClassyName == by.ClassyName ? "theirself" : by.ClassyName));
+                updates.Add(new BlockUpdate(null, pos, Block.Air));
+                restDistance = 0;
+                if (TeamDeathMatch.isOn)
+                {
+                    if (hitted.Info.isPlayingTD && hitted.Info.isOnBlueTeam && by.Info.isPlayingTD) //if the player is playing TD and on blue team, +1 for Red Team Score
+                    {
+                        TeamDeathMatch.redScore++;
+                        hitted.Info.gameDeaths++;
+                        hitted.Info.totalDeathsTDM++;
+                        by.Info.gameKills++;
+                        by.Info.totalKillsTDM++;
+                    }
+                    if (hitted.Info.isPlayingTD && hitted.Info.isOnRedTeam && by.Info.isPlayingTD) //if the player is playing TD and on blue team, +1 for Red Team Score
+                    {
+                        TeamDeathMatch.blueScore++;
+                        hitted.Info.gameDeaths++;       //counts the individual players deaths
+                        hitted.Info.totalDeathsTDM++;   //tallies total TDM deaths (never gets reset)
+                        by.Info.gameKills++;            //counts the individual players amount of kills
+                        by.Info.totalKillsTDM++;        //tallies total TDM kills
+                    }
+                }
+            }
 		}
 	}
 
