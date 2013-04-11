@@ -1,4 +1,4 @@
-﻿// Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
+// Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -44,7 +44,8 @@ namespace fCraft {
                               "PreviousRank,RankChangeReason,TimesKicked,TimesKickedOthers," +
                               "TimesBannedOthers,ID,RankChangeType,LastKickDate,LastSeen,BlocksDrawn," +
                               "LastKickBy,LastKickReason,BannedUntil,IsFrozen,FrozenBy,FrozenOn,MutedUntil,MutedBy," +
-                              "Password,IsOnline,BandwidthUseMode,IsHidden,LastModified,DisplayedName";
+                              "Password,IsOnline,BandwidthUseMode,IsHidden,LastModified,DisplayedName,TotalTDMKills," +
+                              "TotalTDMDeaths";
 
 
         // used to ensure PlayerDB consistency when adding/removing PlayerDB entries
@@ -212,9 +213,12 @@ namespace fCraft {
 
         internal static Rank GetRankByIndex( int index ) {
             Rank rank;
-            if( rankMapping.TryGetValue( index, out rank ) ) {
+            if( rankMapping.TryGetValue( index, out rank ) ) 
+            {
                 return rank;
-            } else {
+            } 
+            else 
+            {
                 Logger.Log( LogType.Error,
                             "Unknown rank index ({0}). Assigning rank {1} instead.",
                             index, RankManager.DefaultRank );
@@ -496,10 +500,12 @@ namespace fCraft {
 
 
         [CanBeNull]
-        public static PlayerInfo FindPlayerInfoExact( [NotNull] string name ) {
+        public static PlayerInfo FindPlayerInfoExact( [NotNull] string name ) 
+        {
             if( name == null ) throw new ArgumentNullException( "name" );
             CheckIfLoaded();
-            lock( AddLocker ) {
+            lock( AddLocker ) 
+            {
                 return Trie.Get( name );
             }
         }
