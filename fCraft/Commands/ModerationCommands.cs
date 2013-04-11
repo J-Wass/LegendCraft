@@ -76,6 +76,7 @@ namespace fCraft {
             CommandManager.RegisterCommand( CdPay );
             CommandManager.RegisterCommand(CdBanGrief);
             CommandManager.RegisterCommand(CdStealthKick);
+            CommandManager.RegisterCommand(CdBeatDown);
 
         }
         #region LegendCraft
@@ -99,7 +100,96 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
 
        
+        static readonly CommandDescriptor CdBeatDown = new CommandDescriptor
+        {
+            Name = "Beatdown",
+            IsConsoleSafe = true,
+            NotRepeatable = true,
+            Aliases = new[] { "ground", "bd", "pummel" },
+            Category = CommandCategory.Moderation | CommandCategory.Fun,
+            Permissions = new[] { Permission.Basscannon },
+            Help = "Pummels a player into the ground. " +
+            "Available items are: dog, hammer, sack, pistol, curb and soap.",
+            Usage = "/Beatdown <playername> [item]",
+            Handler = BeatDownHandler
+        };
 
+        static void BeatDownHandler(Player player, Command cmd) //a more brutal /slap cmd, sends the player underground to the bottom of the world
+        {
+            string name = cmd.Next();
+            string item = cmd.Next();
+            if (name == null)
+            {
+                player.Message("Please enter a name");
+                return;
+            }
+            Player target = Server.FindPlayerOrPrintMatches(player, name, false, true);
+            if (target == null) return;
+            if (target.Immortal && player.Name.ToLower() != "dingusbungus") //Rising Embers Custom
+            {
+                player.Message("&SYou failed to beatdown {0}&S, they are immortal", target.ClassyName);
+                return;
+            }
+            if (target == player)
+            {
+                player.Message("&sYou can't pummel yourself.... What's wrong with you???");
+                return;
+            }
+            double time = (DateTime.Now - player.Info.LastUsedBeatDown).TotalSeconds;
+            double timeLeft = Math.Round(20 - time);
+            if (time < 20)
+            {
+                player.Message("&WYou can use /BeatDown again in " + timeLeft + " seconds.");
+                return;
+            }
+            string aMessage;
+            if (player.Can(Permission.Basscannon, target.Info.Rank))
+            {
+                Position pummeled = new Position(target.Position.X, target.Position.Y, (target.World.Map.Bounds.ZMin) * 32);
+                target.TeleportTo(pummeled);
+
+                if (string.IsNullOrEmpty(item))
+                {
+                    Server.Players.CanSee(target).Union(target).Message("{0} &Swas pummeled into the ground by {1}", target.ClassyName, player.ClassyName);
+                    target.Message("Do &a/Spawn&s to get back above ground.");
+                    IRC.PlayerSomethingMessage(player, "beat down", target, null);
+                    player.Info.LastUsedBeatDown = DateTime.Now;
+                    return;
+                }
+                else if (item.ToLower() == "hammer")
+                    aMessage = String.Format("{1}&S Beat Down {0}&S with a Hammer", target.ClassyName, player.ClassyName);
+                else if (item.ToLower() == "sack")
+                    aMessage = String.Format("{1}&s pummeled {0}&S with a Sack of Potatoes", target.ClassyName, player.ClassyName);
+                else if (item.ToLower() == "soap")
+                    aMessage = String.Format("{1}&S pummeled {0}&s with Socks Full of Soap", target.ClassyName, player.ClassyName);
+                else if (item.ToLower() == "pistol")
+                    aMessage = String.Format("{1}&S Pistol-Whipped {0}", target.ClassyName, player.ClassyName);
+                else if (item.ToLower() == "curb")
+                    aMessage = String.Format("{1}&S Curb-Stomped {0}", target.ClassyName, player.ClassyName);
+                else if (item.ToLower() == "dog")
+                    aMessage = String.Format("{1}&S Beat Down {0}&S like a dog", target.ClassyName, player.ClassyName);
+                else
+                {
+                    Server.Players.CanSee(target).Union(target).Message("{0} &Swas pummeled into the ground by {1}", target.ClassyName, player.ClassyName);
+                    target.Message("Do &a/Spawn&s to get back above ground.");
+                    IRC.PlayerSomethingMessage(player, "beat down", target, null);
+                    player.Info.LastUsedBeatDown = DateTime.Now;
+                    return;
+                }
+                Server.Players.CanSee(target).Union(target).Message(aMessage);
+                target.Message("Do &a/Spawn&s to get back above ground.");
+                IRC.PlayerSomethingMessage(player, "beat down", target, null);
+                player.Info.LastUsedBeatDown = DateTime.Now;
+                return;
+            }
+            else
+            {
+                player.Message("&sYou can only Beat Down players ranked {0}&S or lower",
+                               player.Info.Rank.GetLimit(Permission.Basscannon).ClassyName);
+                player.Message("{0}&S is ranked {1}", target.ClassyName, target.Info.Rank.ClassyName);
+            }
+        }
+        
         static readonly CommandDescriptor CdStealthKick = new CommandDescriptor
         {
             Name = "StealthKick",
