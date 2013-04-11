@@ -433,7 +433,7 @@ namespace fCraft {
         }
         
 
-        static readonly CommandDescriptor CdList = new CommandDescriptor
+       static readonly CommandDescriptor CdList = new CommandDescriptor
         {
             Name = "List",
             Category = CommandCategory.Info,
@@ -451,14 +451,14 @@ namespace fCraft {
             if (Option == null)
             {
                 CdList.PrintUsage(player);
-                player.Message("  Sections include: Staff, DisplayedNames, Idles, Portals, Rank, Top10");
+                player.Message("  Sections include: Staff, DisplayedNames, Idles, Portals, Rank, Top10, TopBuilders, MostTime, MostKicks, MostBans, MostPromos");
                 return;
             }
             switch (Option.ToLower())
             {
                 default:
                     CdList.PrintUsage(player);
-                    player.Message("  Sections include: Staff, DisplayedNames, Idles, Portals, Rank, Top10");
+                    player.Message("  Sections include: Staff, DisplayedNames, Idles, Portals, Rank, Top10, TopBuilders, MostTime, MostKicks, MostBans, MostPromos");
                     break;
                 case "top10":
                     List<World> WorldNames = new List<World>(WorldManager.Worlds.Where(w => w.VisitCount > 0)
@@ -466,7 +466,8 @@ namespace fCraft {
                                          .ToArray()
                                          .Reverse());
                     string list = WorldNames.Take(10).JoinToString(w => String.Format("{0}&S: {1}", w.ClassyName, w.VisitCount));
-                    if (WorldNames.Count() < 1){
+                    if (WorldNames.Count() < 1)
+                    {
                         player.Message("&WNo results found");
                         return;
                     }
@@ -531,6 +532,138 @@ namespace fCraft {
                         else
                             player.Message("Showing matches {0}-{1} (out of {2}).",
                                             offset + 1, offset + StaffPart.Length, StaffNames.Length);
+                    }
+                    break;
+
+                case "topbuilders":
+                    List<PlayerInfo> TopBuilders = new List<PlayerInfo>(PlayerDB.PlayerInfoList.Where(r => r.Rank.Can(Permission.Build))
+                                        .OrderBy(p => p.BlocksBuilt).ToArray().Reverse());
+                    if (TopBuilders.Count() < 1)
+                    {
+                        player.Message("&WNo results found");
+                        return;
+                    }
+                    player.Message("&WShowing players who have built the most blocks: ");
+                    if (TopBuilders.Count() < 10)
+                    {
+                        for (int i = 0; i < TopBuilders.Count(); i++)
+                        {
+                            player.Message("{0}&s - {1} Blks", TopBuilders[i].ClassyName, TopBuilders[i].BlocksBuilt);
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < 10; i++)
+                        {
+                            player.Message("{0}&s - {1} Blks", TopBuilders[i].ClassyName, TopBuilders[i].BlocksBuilt);
+                        }
+                    }
+                    break;
+
+                case "mostkicks":
+                    List<PlayerInfo> MostKicks = new List<PlayerInfo>(PlayerDB.PlayerInfoList.Where(r => r.Rank.Can(Permission.Kick))
+                                        .OrderBy(p => p.TimesKickedOthers).ToArray().Reverse());
+                    if (MostKicks.Count() < 1)
+                    {
+                        player.Message("&WNo results found");
+                        return;
+                    }
+                    player.Message("&WShowing players who have kicked the most players: ");
+                    if (MostKicks.Count() < 10)
+                    {
+                        for (int i = 0; i < MostKicks.Count(); i++)
+                        {
+                            player.Message("{0}&s - {1} Kicks", MostKicks[i].ClassyName, MostKicks[i].TimesKickedOthers);
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < 10; i++)
+                        {
+                            player.Message("{0}&s - {1} Kicks", MostKicks[i].ClassyName, MostKicks[i].TimesKickedOthers);
+                        }
+                    }
+                    break;
+
+                case "mostbans":
+                    List<PlayerInfo> MostBans = new List<PlayerInfo>(PlayerDB.PlayerInfoList.Where(r => r.Rank.Can(Permission.Ban))
+                                        .OrderBy(p => p.TimesBannedOthers).ToArray().Reverse());
+                    if (MostBans.Count() < 1)
+                    {
+                        player.Message("&WNo results found");
+                        return;
+                    }
+                    player.Message("&WShowing players who have banned the most players: ");
+                    if (MostBans.Count() < 10)
+                    {
+                        for (int i = 0; i < MostBans.Count(); i++)
+                        {
+                            player.Message("{0}&s - {1} Bans", MostBans[i].ClassyName, MostBans[i].TimesBannedOthers);
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < 10; i++)
+                        {
+                            player.Message("{0}&s - {1} Bans", MostBans[i].ClassyName, MostBans[i].TimesBannedOthers);
+                        }
+                    }
+                    break;
+
+                case "mosttime":
+                case "toptime":
+                case "mosthours":
+                    List<PlayerInfo> MostTime = new List<PlayerInfo>(PlayerDB.PlayerInfoList
+                                        .OrderBy(p => p.TotalTime).ToArray().Reverse());
+                    if (MostTime.Count() < 1)
+                    {
+                        player.Message("&WNo results found");
+                        return;
+                    }
+                    player.Message("&WShowing players who have spent the most time on the server: ");
+                    if (MostTime.Count() < 10)
+                    {
+                        for (int i = 0; i < MostTime.Count(); i++)
+                        {
+                            int hours = Convert.ToInt16(MostTime[i].TotalTime.TotalHours);
+                            player.Message("{0}&s - {1} Hrs", MostTime[i].ClassyName, hours);
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < 10; i++)
+                        {
+                            int hours = Convert.ToInt16(MostTime[i].TotalTime.TotalHours);
+                            player.Message("{0}&s - {1} Hrs", MostTime[i].ClassyName, hours);
+                        }
+                    }
+                    break;
+
+                case "mostpromos":
+                case "mostpromotions":
+                case "mostranks":
+                case "toppromos":
+                    List<PlayerInfo> MostPromos = new List<PlayerInfo>(PlayerDB.PlayerInfoList
+                                        .OrderBy(p => p.PromoCount).ToArray().Reverse());
+                    if (MostPromos.Count() < 1)
+                    {
+                        player.Message("&WNo results found");
+                        return;
+                    }
+                    player.Message("&WShowing players who have promoted the most players: ");
+                    if (MostPromos.Count() < 10)
+                    {
+                        for (int i = 0; i < MostPromos.Count(); i++)
+                        {
+                            player.Message("{0}&s - {1} Promos", MostPromos[i].ClassyName, MostPromos[i].PromoCount);
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < 10; i++)
+                        {
+                            player.Message("{0}&s - {1} Promos", MostPromos[i].ClassyName, MostPromos[i].PromoCount);
+                        }
                     }
                     break;
 
