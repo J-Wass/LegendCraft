@@ -1,4 +1,4 @@
-﻿//Copyright (C) <2012>  <Jon Baker, Glenn Mariën and Lao Tszy>
+//Copyright (C) <2012>  <Jon Baker, Glenn Mariën and Lao Tszy>
 
 //This program is free software: you can redistribute it and/or modify
 //it under the terms of the GNU General Public License as published by
@@ -17,9 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using RandomMaze;
-using AIMLbot;
 using System.Threading;
+using AIMLbot;
+using RandomMaze;
 
 namespace fCraft
 {
@@ -35,6 +35,10 @@ namespace fCraft
             CommandManager.RegisterCommand(CdUnpossess);
             CommandManager.RegisterCommand(CdThrow);
             CommandManager.RegisterCommand(CdInsult);
+            CommandManager.RegisterCommand(CdDingusInfo); //Rising Embers Custom Only
+            CommandManager.RegisterCommand(CdSwag);       //Rising Embers Custom Only
+            CommandManager.RegisterCommand(CdStatistics);
+            CommandManager.RegisterCommand(CdTeamDeathMatch);
             Player.Moving += PlayerMoved;
         }
 
@@ -74,6 +78,406 @@ namespace fCraft
             }
         }
 
+        static readonly CommandDescriptor CdTeamDeathMatch = new CommandDescriptor
+        {
+            Name = "TeamDeathMatch",            //I think I resolved all of the bugs...
+            Aliases = new[] { "td" },
+            Category = CommandCategory.World,
+            Permissions = new Permission[] { Permission.Physics },
+            IsConsoleSafe = false,
+            Usage = "/TeamDeathMatch [Start | Stop | Time | Score | ScoreLimit | TimeLimit | TimeDelay | About | Help]",
+            Handler = TDHandler
+        };
+
+        private static void TDHandler(Player player, Command cmd)       //For TDM Game: starting/ending game, customizing game options, viewing score, etc.
+        {
+            string Option = cmd.Next();
+            World world = player.World;
+
+            if (string.IsNullOrEmpty(Option))
+            {
+                CdTeamDeathMatch.PrintUsage(player);
+                return;
+            }
+            if (Option.ToLower() == "start" || Option.ToLower() == "on")    //starts the game
+            {
+                if (world == WorldManager.MainWorld)
+                {
+                    player.Message("TDM games cannot be played on the main world");
+                    return;
+                }
+                if (TeamDeathMatch.isOn)
+                {
+                    player.Message("There is already a Team DeathMatch game going on");
+                    return;
+                }
+                else
+                {
+                    TeamDeathMatch.GetInstance(player.World);
+                    TeamDeathMatch.Start();
+                    return;
+                }
+            }
+            if (Option.ToLower() == "stop" || Option.ToLower() == "off") //stops the game
+            { 
+                if (TeamDeathMatch.isOn)
+                {
+                    TeamDeathMatch.Stop(player);
+                    return;
+                }
+                else
+                {
+                    player.Message("No games of Team DeathMatch are going on");
+                    return;
+                }
+            }
+            if (Option.ToLower() == "timelimit")    //option to change the length of the game (5m default)
+            {
+                string time = cmd.Next();
+                if (time == null)
+                {
+                    player.Message("Use the syntax: /TD timelimit (whole number of minutes)\n&HNote: The acceptable times are from 1-20 minutes");
+                    return;
+                }
+                int timeLimit = 0;
+                bool parsed = Int32.TryParse(time, out timeLimit);
+                if (!parsed)
+                {
+                    player.Message("Enter a whole number of minutes. For example: /TD timelimit 5");
+                    return;
+                }
+                if (timeLimit < 1 || timeLimit > 20)
+                {
+                    player.Message("The accepted times are between 1 and 20 minutes");
+                    return;
+                }
+                else
+                {
+                    TeamDeathMatch.timeLimit = (timeLimit * 60);
+                    player.Message("The time limit has been changed to &W{0}&S minutes", timeLimit);
+                    return;
+                }
+            }
+            if (Option.ToLower() == "timedelay")    //option to set the time delay for TDM games (20s default)
+            {
+                string time = cmd.Next();
+                if (time == null)
+                {
+                    player.Message("Use the syntax: /TD timedelay (whole number of seconds)\n&HNote: The acceptable times incriment by 10 from 10 to 60");
+                    return;
+                }
+                int timeDelay = 0;
+                bool parsed = Int32.TryParse(time, out timeDelay);
+                if (!parsed)
+                {
+                    player.Message("Enter a whole number of minutes. For example: /TD timedelay 20");
+                    return;
+                }
+                if (timeDelay != 10 && timeDelay != 20 && timeDelay != 30 && timeDelay != 40 && timeDelay != 50 && timeDelay != 60)
+                {
+                    player.Message("The accepted times are 10, 20, 30, 40, 50, and 60 seconds");
+                    return;
+                }
+                else
+                {
+                    TeamDeathMatch.timeDelay = timeDelay;
+                    player.Message("The time delay has been changed to &W{0}&s seconds", timeDelay);
+                    return;
+                }
+            }
+            if (Option.ToLower() == "scorelimit")       //changes the score limit
+            {
+                string score = cmd.Next();
+                if (score == null)
+                {
+                    player.Message("Use the syntax: /TD scorelimit (whole number)\n&HNote: The acceptable scores are from 5-300 points");
+                    return;
+                }
+                int scoreLimit = 0;
+                bool parsed = Int32.TryParse(score, out scoreLimit);
+                if (!parsed)
+                {
+                    player.Message("Enter a whole number score. For example: /TD scorelimit 50");
+                    return;
+                }
+                if (scoreLimit < 5 || scoreLimit > 300)
+                {
+                    player.Message("The accepted scores are from 5-300 points");
+                    return;
+                }
+                else
+                {
+                    TeamDeathMatch.scoreLimit = scoreLimit;
+                    player.Message("The score limit has been changed to &W{0}&s points", scoreLimit);
+                    return;
+                }
+            }
+            if (Option.ToLower() == "score")       //scoreboard for the matchs, different messages for when the game has ended. //td score
+            {
+                int red = TeamDeathMatch.redScore;
+                int blue = TeamDeathMatch.blueScore;
+
+                if (red > blue)
+                {
+                    if (player.Info.isOnRedTeam)
+                    {
+                        player.Message("&sYour team is winning {0} to {1}", red, blue);
+                        return;
+                    }
+                    if (player.Info.isOnBlueTeam)
+                    {
+                        player.Message("&sYour team is losing {0} to {1}", red, blue);
+                        return;
+                    }
+                    else
+                    {
+                        player.Message("&sThe &cRed Team&s won {0} to {1}", red, blue);
+                        return;
+                    }
+                }
+                if (red < blue)
+                {
+                    if (player.Info.isOnBlueTeam)
+                    {
+                        player.Message("&sYour team is winning {0} to {1}", blue, red);
+                        return;
+                    }
+                    if (player.Info.isOnRedTeam)
+                    {
+                        player.Message("&sYour team is losing {0} to {1}", blue, red);
+                        return;
+                    }
+                    else
+                    {
+                        player.Message("&sThe &1Blue Team&s won {0} to {1}", blue, red);
+                        return;
+                    }
+                }
+                if (red == blue)
+                {
+                    if (player.Info.isPlayingTD)
+                    {
+                        player.Message("&sThe teams are tied at {0}!", blue);
+                        return;
+                    }
+                    else
+                    {
+                        player.Message("&sThe teams tied at {0}!", blue);
+                        return;
+                    }
+                }
+            }
+            if (Option.ToLower() == "about")    //td about
+            {
+                player.Message("&cTeam Deathmatch&S is a team game where all players are assigned to a red or blue team. Players cannot shoot players on their own team. The game will start the gun physics for you. The game keeps score and notifications come up about the score and time left every 30 seconds. The Score Limit, Time Delay and Time Limit are customizable. Detailed help is on &H/TD Help");
+                player.Message("&SDeveloped for &5Legend&WCraft&S by &fDingus&0Bungus&S 2013 - Based on the template of ZombieGame.cs written by Jonty800.");
+                return;
+            }
+            if (Option.ToLower() == "settings") //shows the current settings for the game (time limit, time delay, score limit)
+            {
+                player.Message("The Current Settings For TDM: Time Delay: &c{0}&ss | Time Limit: &c{1}&sm | Score Limit: &c{2}&s points",
+                    TeamDeathMatch.timeDelay, (TeamDeathMatch.timeLimit / 60), TeamDeathMatch.scoreLimit);
+                return;
+            }
+            if (Option.ToLower() == "help") //detailed help for the cmd
+            {
+                player.Message("Showing Option Descriptions for /TD (Option):\n&HTime &f- Tells how much time left in the game"
+                + "\n&HScore &f- Tells the score of the current game(or last game played)"
+                + "\n&HScoreLimit [number(5-300)] &f- Sets the score at which the game will end (Enter Whole Numbers from 5-300)"
+                + "\n&HTimeLimit [time(m)] &f- Sets the time at which the game will end (Enter whole minutes from 1-15)"
+                + "\n&HTimeDelay [time(s)] &f- Sets the time delay at the beginning of the match (Enter 10 second incriments from 10-60)"
+                + "\n&HSettings&f - Shows the current TDM settings"
+                + "\n&HAbout &f- General Game Description and Credits"
+                + "\n&HDefaults&f: TimeDelay: 20s, TimeLimit: 5m, ScoreLimit 50");
+                return;
+            }
+            if (Option.ToLower() == "time" || Option.ToLower() == "timeleft")
+            {
+                if (player.Info.isPlayingTD)
+                {
+                    player.Message("&fThere are &W{0}&f seconds left in the game.", TeamDeathMatch.timeLeft);
+                    return;
+                }
+                else
+                {
+                    player.Message("&fThere are no games of Team DeathMatch going on.");
+                    return;
+                }
+            }
+            else
+            {
+                CdTeamDeathMatch.PrintUsage(player);
+                return;
+            }
+        }
+
+        static readonly CommandDescriptor CdStatistics = new CommandDescriptor
+        {
+            Name = "Statistics",
+            Aliases = new[] { "stats" },
+            Category = CommandCategory.Fun,
+            Permissions = new Permission[] { Permission.Chat },
+            IsConsoleSafe = false,
+            Usage = "/Stats (AllTime|Top10Kills|Top10Deaths|Help)\n&HNote: Leave Blank For Current Game Stats.",
+            Handler = StatisticsHandler
+        };
+
+        private static void StatisticsHandler(Player player, Command cmd)
+        {
+            string option = cmd.Next();
+            double TDMKills = player.Info.gameKills;    //for use in division (for precision)
+            double TDMDeaths = player.Info.gameDeaths;
+
+            if (string.IsNullOrEmpty(option)) //user does /stats
+            {
+                double gameKDR = 0;
+                if (player.Info.gameDeaths == 0 && player.Info.gameKills == 0)
+                {
+                    gameKDR = 0;
+                }
+                else if (player.Info.gameKills == 0 && player.Info.gameDeaths > 0)
+                {
+                    gameKDR = 0;
+                }
+                else if (player.Info.gameDeaths == 0 && player.Info.gameKills > 0)
+                {
+                    gameKDR = player.Info.gameKills;
+                }
+                else if (player.Info.gameDeaths > 0 && player.Info.gameKills > 0)
+                {
+                    gameKDR = TDMKills / TDMDeaths;
+                }
+                if (player.Info.isPlayingTD)
+                {
+                    player.Message("&sYou have &W{0}&s Kills and &W{1}&s Deaths. Your Kill/Death Ratio is &W{2:0.00}&s.", player.Info.gameKills, player.Info.gameDeaths, gameKDR);
+                }
+                else
+                {
+                    player.Message("&sYou had &W{0}&s Kills and &W{1}&s Deaths. Your Kill/Death Ratio was &W{2:0.00}&s.", player.Info.gameKills, player.Info.gameDeaths, gameKDR);
+                }
+                return;
+            }
+            else
+            {
+                switch (option.ToLower())
+                {
+                    default:
+                        CdStatistics.PrintUsage(player);
+                        return;
+
+                    case "alltime": //user does /stats alltime
+
+                        double allKills = player.Info.totalKillsTDM;
+                        double allDeaths = player.Info.totalDeathsTDM; //for use in the division for KDR (int / int = int, so no precision), why we convert to double here
+                        double totalKDR = 0;
+
+                        if (player.Info.totalDeathsTDM == 0 && player.Info.totalKillsTDM == 0)
+                        {
+                            totalKDR = 0;
+                        }
+                        else if (player.Info.totalDeathsTDM == 0 && player.Info.totalKillsTDM > 0)
+                        {
+                            totalKDR = player.Info.totalKillsTDM;
+                        }
+                        else if (player.Info.totalKillsTDM == 0 && player.Info.totalDeathsTDM > 0)
+                        {
+                            totalKDR = 0;
+                        }
+                        else if (player.Info.totalKillsTDM > 0 && player.Info.totalDeathsTDM > 0)
+                        {
+                            totalKDR = allKills / allDeaths;
+                        }
+                        player.Message("&sIn all &WTeam Deathmatch&S games you have played, you have gotten: &W{0}&S Kills and &W{1}&s Deaths giving you a Kill/Death ratio of &W{2:0.00}&S.",
+                                        player.Info.totalKillsTDM, player.Info.totalDeathsTDM, totalKDR);
+                        return;
+
+                    case "topkills": //user does /stats topkills
+                        List<PlayerInfo> TDPlayers = new List<PlayerInfo>(PlayerDB.PlayerInfoList.ToArray().OrderBy(r => r.totalKillsTDM).Reverse());
+                        player.Message("&HShowing the players with the most all-time TDM Kills:");
+                        for (int i = 0; i < 10; i++)
+                        {
+                            player.Message("{0}&s - {1} Kills", TDPlayers[i].ClassyName, TDPlayers[i].totalKillsTDM);
+                        }
+                        return;
+
+                    case "topdeaths": //user does /stats topdeaths
+                        List<PlayerInfo> TDPlayers2 = new List<PlayerInfo>(PlayerDB.PlayerInfoList.ToArray().OrderBy(r => r.totalDeathsTDM).Reverse());
+                        player.Message("&HShowing the players with the most all-time TDM Deaths:");
+                        for (int i = 0; i < 10; i++)
+                        {
+                            player.Message("{0}&s - {1} Deaths", TDPlayers2[i].ClassyName, TDPlayers2[i].totalDeathsTDM);
+                        }
+                        return;
+
+                    case "help": //user does /stats help
+                        player.Message("&HDetailed help for the /Stats (options):");
+                        player.Message("&HAllTime&S - Shows your all time TDM stats.");
+                        player.Message("&HTop10Kills&S - Starts a game of Team Deathmatch");
+                        player.Message("&HTop10Deaths&S - show the players with the all time most Kills and Deaths.");
+                        player.Message("&HNote: Leave Blank For Current Game Stats");
+                        return;
+                }
+            }
+        }
+
+
+        static readonly CommandDescriptor CdSwag = new CommandDescriptor //Rising Embers Custom (unless people want it in LC for real)
+        {                                                                //Contributed by Jake0720. Thanks!
+            Name = "Swag",
+            Aliases = new string[] { "SwagFag" },
+            Category = CommandCategory.Chat | CommandCategory.Fun,
+            Permissions = new Permission[] { Permission.HighFive },
+            IsConsoleSafe = true,
+            Usage = "/Swag playername",
+            Help = "Gives someone a little.... swag.",
+            NotRepeatable = false,
+            Handler = SwagHandler,
+        };
+
+        static void SwagHandler(Player player, Command cmd)
+        {
+            List<String> swags;
+            string name = cmd.Next();
+            Random randomizer = new Random();
+
+            swags = new List<String>()
+            {
+                "{0}&s shoved Swag down {1}&s's shirt.",
+                "{0}&s poured Swag on {1}&s's head.",
+                "{1}&s was completely Swagged out by {0}&s.",
+                "{0}&s killed {1}&s with Swag."
+            };
+
+            int index = randomizer.Next(0, swags.Count);// (0, 3)
+            double time = (DateTime.Now - player.Info.LastUsedSwag).TotalSeconds;
+
+            if (name == null || name.Length < 1)
+            {
+                player.Message("/Swag (Playername)");
+                return;
+            }
+            Player target = Server.FindPlayerOrPrintMatches(player, name, false, true);
+            if (target == null)
+                return;
+            if (target == player)
+            {
+                player.Message("You don't have enough Swag to Swag yourself.");
+                return;
+            }
+            double timeLeft = Math.Round(3 - time);
+            if (time < 3)
+            {
+                player.Message("You have Swagged pretty fast. Might wanna slow down a bit in " + timeLeft + " second(s).");
+                return;
+            }
+            else
+            {
+                Server.Message(swags[index], player.ClassyName, target.ClassyName);
+                player.Info.LastUsedSwag = DateTime.Now;
+                return;
+
+            }
+        }
 
         static readonly CommandDescriptor CdInsult = new CommandDescriptor
         {
@@ -114,6 +518,7 @@ namespace fCraft
                 "{0}&s gave {1}&s a wet willy.",
                 "{0}&s gave {1}&s a wedgie.",
                 "{0}&s gave {1}&s counterfeit money and then called the Secret Service on them.",
+                "{0}&s beats {1}&s with a statue of Dingus.",
                 "{0}&s shot {1}&s in the knee with an arrow.",
                 "{0}&s called {1}&s a disfigured, bearded clam.",
                 "{0}&s flipped a table onto {1}&s.",
@@ -123,7 +528,7 @@ namespace fCraft
                 "{0}&s incinerated {1}&s with a Kamehameha!"
             };
 
-            int index = randomizer.Next(0, insults.Count); // (0, 18)
+            int index = randomizer.Next(0, insults.Count); 
             double time = (DateTime.Now - player.Info.LastUsedInsult).TotalSeconds;
 
             if (name == null || name.Length < 1)
@@ -153,15 +558,73 @@ namespace fCraft
             }
             
         }
-        
 
-            static readonly CommandDescriptor CdThrow = new CommandDescriptor
+        static readonly CommandDescriptor CdDingusInfo = new CommandDescriptor          //Rising Embers Custom Only
+        {                                                                               //Just a joke command anyways. I was very bored...
+            Name = "DingusInfo",
+            Aliases = new string[] { "di", "dingusfact" },
+            Category = CommandCategory.Chat | CommandCategory.Fun,
+            Permissions = new Permission[] { Permission.HighFive },
+            IsConsoleSafe = true,
+            Usage = "/DingusHelp",
+            Help = "Tells you a different random piece of info about Dingus from a list.",
+            NotRepeatable = true,
+            Handler = DingusInfoHandler,
+        };
+
+        static void DingusInfoHandler(Player player, Command cmd)
+        {
+            List<String> facts; //create string list
+            Random randomizer = new Random(); //randomizer
+
+            facts = new List<String>()  //initializing the values of the list
+            {
+                "&cDingus&s doesn't like to be pestered by {0}",        //the values
+                "&cDingus'&s best friend is named {0}",
+                "&cDingus&s got his name from an idea that {0}&s had",
+                "&cDingus&s is in love with his pet turtle named {0}",
+                "&cDingus&s doesn't even know {0}&s's mom, but he still wants to have sex with her",
+                "&cDingus&s was inspired to make this command by {0}",
+                "&cDingus&s is so damn pissed at {0}&s right now",
+                "&cDingus&s eats carrots with {0}&s every Saturday at the beach",
+                "&cDingus&s couldn't think of things to put in this command so he called {0}",
+                "&cDingus&s is a man of wealth and taste (I hope someone gets the reference)",
+                "&cDingus&s told me that {0}&s was caught beating off in a confession booth",
+                "&cDingus&s told me he would promote me to god if I helped {0}&s with certain favors...",
+                "&cDingus&s is an asshole because I heard him talking bad about {0}",
+                "&cDingus&s likes people like {0}&s, who just shut their mouth and build",
+                "&cDingus&s goes 'AHHHHHHH' when {0}&s says swag or yolo",
+                "&cDingus&s eats pie off of {0}&s's belly",
+                "&cDingus&s once was on the streets, having to turn tricks for food money... And that's how {0}&s was born!",
+                "&cDingus&s raises animals just to have them take poops on {0}&s's lawn",
+                "&cDingus&s, for some strange reason, actually kind of likes {0}"
+            };
+            
+            int index = randomizer.Next(0, facts.Count);
+            double time = (DateTime.Now - player.Info.LastUsedDingusInfo).TotalSeconds;
+            double timeLeft = Math.Round(10 - time);
+
+            if (time < 10)
+            {
+                player.Message("You cannot use this command for another " + timeLeft + " second(s).");
+                return;
+            }
+            else
+            {
+                Server.Message(facts[index], player.ClassyName);
+                player.Info.LastUsedDingusInfo = DateTime.Now;
+                return;
+            }
+        }
+
+
+        static readonly CommandDescriptor CdThrow = new CommandDescriptor
             {
                 Name = "Throw",
                 Aliases = new string[] { "Toss" },
                 Category = CommandCategory.Chat | CommandCategory.Fun,
                 Permissions = new Permission[] { Permission.Mute },
-                IsConsoleSafe = false,
+                IsConsoleSafe = true,
                 Usage = "/Throw playername",
                 Help = "Throw's a player.",
                 NotRepeatable = true,
@@ -223,7 +686,7 @@ namespace fCraft
                             {
                                 Position slap = new Position(target.Position.X, target.Position.Z, (target.World.Map.Bounds.YMax) * 32);
                                 target.TeleportTo(slap);
-                                Server.Players.CanSee(target).Except(target).Message("&sPlayer {0}&s was &eThrown&s by {1}&s.", target.ClassyName, player.ClassyName);
+                                Server.Players.CanSee(target).Except(target).Message("Player {0} was &eThrown&s by {1}&s.", target.ClassyName, player.ClassyName);
                                 IRC.PlayerSomethingMessage(player, "thrown", target, null);
                                 target.Message("&sYou were &eThrown&s by {0}&s.", player.ClassyName);
                                 return;
@@ -240,7 +703,7 @@ namespace fCraft
                             {
                                 Position slap = new Position(target.Position.Z, target.Position.Y, (target.World.Map.Bounds.XMax) * 32);
                                 target.TeleportTo(slap);
-                                Server.Players.CanSee(target).Except(target).Message("&sPlayer {0}&s was &eThrown&s by {1}&s.", target.ClassyName, player.ClassyName);
+                                Server.Players.CanSee(target).Except(target).Message("Player {0} was &eThrown&s by {1}&s.", target.ClassyName, player.ClassyName);
                                 IRC.PlayerSomethingMessage(player, "thrown", target, null);
                                 target.Message("&sYou were &eThrown&s by {0}&s.", player.ClassyName);
                                 return;
@@ -257,7 +720,7 @@ namespace fCraft
                              {
                                  Position slap = new Position(target.Position.Y, target.Position.Z, (target.World.Map.Bounds.XMax) * 32);
                                  target.TeleportTo(slap);
-                                 Server.Players.CanSee(target).Except(target).Message("&sPlayer {0}&s was &eThrown&s by {1}&s.", target.ClassyName, player.ClassyName);
+                                 Server.Players.CanSee(target).Except(target).Message("Player {0} was &eThrown&s by {1}&s.", target.ClassyName, player.ClassyName);
                                  IRC.PlayerSomethingMessage(player, "thrown", target, null);
                                  target.Message("&sYou were &eThrown&s by {0}&s.", player.ClassyName);
                                  return;
