@@ -342,6 +342,7 @@ THE SOFTWARE.*/
         }
 
         #region Calculator
+         
         static readonly CommandDescriptor CdCalculator = new CommandDescriptor
         {
             Name = "Calculator",
@@ -349,7 +350,7 @@ THE SOFTWARE.*/
             Category = CommandCategory.Chat | CommandCategory.Math,
             Permissions = new Permission[] { Permission.Chat },
             IsConsoleSafe = true,
-            Usage = "/Calculator [number] [+ or -] [number]",
+            Usage = "/Calculator [number] [+, -, *, /] [number]",
             Help = "Lets you use a simple calculator in minecraft. Valid options are [ + , - , * , and / ].",
             NotRepeatable = false,
             Handler = CalcHandler,
@@ -360,7 +361,7 @@ THE SOFTWARE.*/
             String numberone = cmd.Next();
             String op = cmd.Next();
             String numbertwo = cmd.Next();
-            int no1, no2;
+            double no1, no2;
 
             if (numberone == null || numbertwo == null || op == null)
             {
@@ -368,17 +369,17 @@ THE SOFTWARE.*/
                 return;
             }
 
-            if (!int.TryParse(numberone, out no1))
+            if (!double.TryParse(numberone, out no1))
             {
                 player.Message("Please choose from a whole number.");
                 return;
             }
 
-            if (!int.TryParse(numbertwo, out no2))
+            if (!double.TryParse(numbertwo, out no2))
             {
                 player.Message("Please choose from a whole number.");
                 return;
-            }
+            }                                                           
 
 
             if (player.Can(Permission.Chat))
@@ -393,7 +394,7 @@ THE SOFTWARE.*/
 
                         if (op == "+")
                         {
-                            long add = no1 + no2;
+                            double add = no1 + no2;
                             if (add < 0 | no1 < 0 | no2 < 0)
                             {
                                 player.Message("Negative Number Detected, please choose from a whole number.");
@@ -401,20 +402,12 @@ THE SOFTWARE.*/
                             }
                             else
                             {
-                                if (add % 2 == 0 | no1 % 2 == 0 | no2 % 2 == 0)
-                                {
-                                    player.Message("&0Calculator&f: {0}+{1}={2}", no1, no2, add);
-                                }
-                                else
-                                {
-                                    player.Message("Answer is not a whole number. Please make sure both integers being added are whole numbers.");
-                                    return;
-                                }
+                                player.Message("&0Calculator&f: {0} + {1} = {2}", no1, no2, add);
                             }
                         }
                         if (op == "-")
                         {
-                            long subtr = no1 - no2;
+                            double subtr = no1 - no2;
                             if (subtr < 0 | no1 < 0 | no2 < 0)
                             {
                                 player.Message("Negative Number Detected, please choose from a whole number.");
@@ -422,21 +415,13 @@ THE SOFTWARE.*/
                             }
                             else
                             {
-                                if (subtr % 2 == 0 | no1 % 2 == 0 | no2 % 2 == 0)
-                                {
-                                    player.Message("&0Calculator&f: {0}-{1}={2}", no1, no2, subtr);
-                                }
-                                else
-                                {
-                                    player.Message("Answer is not a whole number. Please make sure both integers being subtracted are whole numbers.");
-                                    return;
-                                }
+                                player.Message("&0Calculator&f: {0} - {1} = {2}", no1, no2, subtr);
                             }
                         }
                         if (op == "*")
                         {
 
-                            long mult = no1 * no2;
+                            double mult = no1 * no2;
                             if (mult < 0 | no1 < 0 | no2 < 0)
                             {
                                 player.Message("Negative Number Detected, please choose from a whole number.");
@@ -444,22 +429,14 @@ THE SOFTWARE.*/
                             }
                             else
                             {
-                                if (mult % 2 == 0 | no1 % 2 == 0 | no2 % 2 == 0)
-                                {
-                                    player.Message("&0Calculator&f: {0}*{1}={2}", no1, no2, mult);
-                                }
-                                else
-                                {
-                                    player.Message("Answer is not a whole number. Please make sure both integers being multiplied are whole numbers.");
-                                    return;
-                                }
+                                    player.Message("&0Calculator&f: {0} * {1} = {2}", no1, no2, mult);
                             }
                         }
                         if (op == "/")
                         {
 
 
-                            long div = no1 / no2;
+                            double div = no1 / no2;
                             if (div < 0 | no1 < 0 | no2 < 0)
                             {
                                 player.Message("Negative Number Detected, please choose froma whole number.");
@@ -467,22 +444,7 @@ THE SOFTWARE.*/
                             }
                             else
                             {
-                                if (no1 % 2 == 0 | no2 % 2 == 0)
-                                {
-                                    if (no1 % no2 == 0)
-                                    {
-                                        player.Message("&0Calculator&f: {0}/{1}={2}", no1, no2, div);
-                                    }
-                                    else
-                                    {
-                                        player.Message("&0Calculator&f: {0}/{1}={2}, rounded", no1, no2, div);
-                                    }
-                                }
-                                else
-                                {
-                                    player.Message("Answer is not a whole number. Please make sure both integers being divided are whole numbers.");
-                                    return;
-                                }
+                                player.Message("&0Calculator&f: {0} / {1} = {2}", no1, no2, div);
                             }
                         }
                     }
@@ -499,8 +461,6 @@ THE SOFTWARE.*/
             }
 
         }
-
-
 
         #endregion
 
