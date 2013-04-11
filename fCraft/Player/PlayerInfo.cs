@@ -1,4 +1,4 @@
-﻿// Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
+// Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -13,29 +13,13 @@ namespace fCraft {
     public sealed partial class PlayerInfo : IClassy {
         public const int MinFieldCount = 24;
 
-        //TeamDeathMatch
-        public bool isPlayingTD = false;
-        public bool isOnBlueTeam = false;
-        public bool isOnRedTeam = false;
-        public int totalKillsTDM = 0;
-        public int totalDeathsTDM = 0;
-        public int gameKills = 0;
-        public int gameDeaths = 0;
-
-        ///<summary> Number added onto number for mojang accounts. If 0, number will not be added on.</summary>
-        [NotNull]
-        public int mojang = 0;
-
-        ///<summary> Player's amount of bits for LegendCraft Economy.</summary>
+        ///<summary> Player's amount of bits.</summary>
         [CanBeNull]
         public int Money = 0;
 
         /// <summary> Player's Minecraft account name. </summary>
         [NotNull]
-        public string Name 
-        {
-            get; internal set; 
-        }
+        public string Name { get; internal set; }
 
         /// <summary> If set, replaces Name when printing name in chat. </summary>
         [CanBeNull]
@@ -79,11 +63,15 @@ namespace fCraft {
         public bool ArrivedLate = false;
         public bool InGame = false;
 
-        //slap, kill, LeBot 
+        //For CoolDown Timers 
         public DateTime LastUsedSlap;
         public DateTime LastUsedKill;
         public DateTime LastUsedLeBot;
         public DateTime LastUsedInsult;
+        public DateTime LastUsedSwag;
+        public DateTime LastUsedDingusInfo;
+        public DateTime LastUsedHug;
+        public DateTime LastUsedBeatDown;
         public bool KillWait = false;
 
         //bromode
@@ -91,6 +79,16 @@ namespace fCraft {
         public bool changedName = false;
 
         public bool HasVoted = false;
+
+        //TeamDeathMatch
+        public bool isPlayingTD = false;
+        public bool isOnBlueTeam = false;
+        public bool isOnRedTeam = false;
+        public int totalKillsTDM = 0;
+        public int totalDeathsTDM = 0;
+        public int gameKills = 0;
+        public int gameDeaths = 0;
+        public bool needsReversion = false;
 
 
         #region Rank
@@ -563,6 +561,12 @@ namespace fCraft {
                 info.LastLoginDate = info.FirstLoginDate;
             }
 
+            if (fields.Length > 48)
+            {
+                if (fields[48].Length > 0) Int32.TryParse(fields[48], out info.totalKillsTDM);
+                if (fields[49].Length > 0) Int32.TryParse(fields[49], out info.totalDeathsTDM);
+            }
+
             return info;
         }
 
@@ -1012,6 +1016,7 @@ namespace fCraft {
 
             if( !LastFailedLoginIP.Equals( IPAddress.None ) ) sb.Append( LastFailedLoginIP.ToString() ); // 13
             sb.Append( ',' );
+            
             if (Money > 0) sb.Digits(Money); // 14
             sb.Append(',');
 
@@ -1106,6 +1111,12 @@ namespace fCraft {
 
             sb.Append( ',' );
             sb.AppendEscaped( DisplayedName ); // 47
+            sb.Append( ',' );
+
+            if (totalKillsTDM > 0) sb.Digits(totalKillsTDM); // 48
+            sb.Append(',');
+
+            if (totalDeathsTDM > 0) sb.Digits(totalDeathsTDM); // 49
         }
 
 
@@ -1198,6 +1209,10 @@ namespace fCraft {
             writer.Write( LastIP.GetAddressBytes() ); // 41
             writer.Write( (byte)LeaveReason ); // 6
             writer.Write( (byte)BandwidthUseMode ); // 6
+
+            //TDM Stats            
+            Write7BitEncodedInt(writer, totalKillsTDM); // 48
+            Write7BitEncodedInt(writer, totalDeathsTDM); // 49
         }
 
 
@@ -1267,6 +1282,16 @@ namespace fCraft {
             PlayerObject = null;
             LeaveReason = player.LeaveReason;
             LastModified = DateTime.UtcNow;
+            //fix names if they leav during a TDM game
+            if (player.Info.isPlayingTD)
+            {
+                player.iName = null;
+                DisplayedName = oldname;
+                isOnRedTeam = false;
+                isOnBlueTeam = false;
+                isPlayingTD = false;
+                player.entityChanged = true;
+            }
         }
 
 
