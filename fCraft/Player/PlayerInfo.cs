@@ -13,7 +13,11 @@ namespace fCraft {
     public sealed partial class PlayerInfo : IClassy {
         public const int MinFieldCount = 24;
 
-        ///<summary> Player's amount of bits.</summary>
+        ///<summary> Mojang support number (added on to end of player.Name for mojang accounts).</summary>
+        [CanBeNull]
+        public int mojang = 0;
+
+        ///<summary> Player's amount of bits in legendcraft economy.</summary>
         [CanBeNull]
         public int Money = 0;
 
@@ -490,8 +494,9 @@ namespace fCraft {
             if( fields[19].Length > 0 ) Int32.TryParse( fields[19], out info.BlocksDeleted );
             Int32.TryParse( fields[20], out info.TimesVisited );
             if( fields[20].Length > 0 ) Int32.TryParse( fields[21], out info.MessagesWritten );
-            // field 23 are no longer in use
+            
             Int32.TryParse(fields[22], out info.PromoCount);
+            if (fields[23].Length > 0) Int32.TryParse(fields[23], out info.mojang);
 
             if( fields[24].Length > 0 ) info.PreviousRank = Rank.Parse( fields[24] );
             if( fields[25].Length > 0 ) info.RankChangeReason = Unescape( fields[25] );
@@ -1043,7 +1048,9 @@ namespace fCraft {
             sb.Append( ',' );
 
             if (PromoCount > 0) sb.Digits(PromoCount); //22
-            sb.Append(',', 2); //23 no longer in use
+
+            if (mojang > 0) sb.Digits(mojang); // 23
+            sb.Append(','); 
             
 
             if( PreviousRank != null ) sb.Append( PreviousRank.FullName ); // 24
@@ -1131,7 +1138,6 @@ namespace fCraft {
             } else {
                 writer.Write( (uint)LastSeen.ToUnixTime() ); // 5
             }
-
             // Rank
             Write7BitEncodedInt( writer, Rank.Index ); // 7
             {
