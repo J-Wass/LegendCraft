@@ -5,12 +5,18 @@ Add: /TeamDeathMatch (/TD)
 Add: /Stats
 Add: Team Deathmatch Game
 Add: /BeatDown
+Add: /Irc (bc) shows server's irc channel, with optional broadcast (server message) option
+Add: /Website (bc) shows server's website, with optional broadcast (server message) option
 Change: Minor heartbeat fixes
+Change: Added more info to /Help
+Change: Added IRC and Website to /sinfo
 Change: Updated /Calc to be more accurate
 Change: Added 2 fields to PlayerDB for Team DeathMatch Stats (TotalKillsTDM and TotalDeathsTDM)
 Change: Added support for TDM in PlayerInfo.cs
 Change: /List now has leaderboard options (topbuilders, mosttime, mostpromos, mostbans, mostkicks)
+Change: ConfigGUI now includes a WebsiteURL input field for use with /bangrief and /website
 Remove: Wom direct support
+Remove: WebsiteURL.txt (in favor of an input field in ConfigGUI)
 
 
 LegendCraft Changelog v1.9.0
