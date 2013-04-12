@@ -7,6 +7,8 @@ Add: Team Deathmatch Game
 Add: /BeatDown
 Add: /Irc (bc) shows server's irc channel, with optional broadcast (server message) option
 Add: /Website (bc) shows server's website, with optional broadcast (server message) option
+Add: /MoneyMessages shows all of the rawMessage replacement codes
+Add: /About info hub for the server
 Change: Minor heartbeat fixes
 Change: Added more info to /Help
 Change: Added IRC and Website to /sinfo
