@@ -35,8 +35,6 @@ namespace fCraft
             CommandManager.RegisterCommand(CdUnpossess);
             CommandManager.RegisterCommand(CdThrow);
             CommandManager.RegisterCommand(CdInsult);
-            CommandManager.RegisterCommand(CdDingusInfo); //Rising Embers Custom Only
-            CommandManager.RegisterCommand(CdSwag);       //Rising Embers Custom Only
             CommandManager.RegisterCommand(CdStatistics);
             CommandManager.RegisterCommand(CdTeamDeathMatch);
             Player.Moving += PlayerMoved;
@@ -421,63 +419,6 @@ namespace fCraft
         }
 
 
-        static readonly CommandDescriptor CdSwag = new CommandDescriptor //Rising Embers Custom (unless people want it in LC for real)
-        {                                                                //Contributed by Jake0720. Thanks!
-            Name = "Swag",
-            Aliases = new string[] { "SwagFag" },
-            Category = CommandCategory.Chat | CommandCategory.Fun,
-            Permissions = new Permission[] { Permission.HighFive },
-            IsConsoleSafe = true,
-            Usage = "/Swag playername",
-            Help = "Gives someone a little.... swag.",
-            NotRepeatable = false,
-            Handler = SwagHandler,
-        };
-
-        static void SwagHandler(Player player, Command cmd)
-        {
-            List<String> swags;
-            string name = cmd.Next();
-            Random randomizer = new Random();
-
-            swags = new List<String>()
-            {
-                "{0}&s shoved Swag down {1}&s's shirt.",
-                "{0}&s poured Swag on {1}&s's head.",
-                "{1}&s was completely Swagged out by {0}&s.",
-                "{0}&s killed {1}&s with Swag."
-            };
-
-            int index = randomizer.Next(0, swags.Count);// (0, 3)
-            double time = (DateTime.Now - player.Info.LastUsedSwag).TotalSeconds;
-
-            if (name == null || name.Length < 1)
-            {
-                player.Message("/Swag (Playername)");
-                return;
-            }
-            Player target = Server.FindPlayerOrPrintMatches(player, name, false, true);
-            if (target == null)
-                return;
-            if (target == player)
-            {
-                player.Message("You don't have enough Swag to Swag yourself.");
-                return;
-            }
-            double timeLeft = Math.Round(3 - time);
-            if (time < 3)
-            {
-                player.Message("You have Swagged pretty fast. Might wanna slow down a bit in " + timeLeft + " second(s).");
-                return;
-            }
-            else
-            {
-                Server.Message(swags[index], player.ClassyName, target.ClassyName);
-                player.Info.LastUsedSwag = DateTime.Now;
-                return;
-
-            }
-        }
 
         static readonly CommandDescriptor CdInsult = new CommandDescriptor
         {
@@ -559,63 +500,7 @@ namespace fCraft
             
         }
 
-        static readonly CommandDescriptor CdDingusInfo = new CommandDescriptor          //Rising Embers Custom Only
-        {                                                                               //Just a joke command anyways. I was very bored...
-            Name = "DingusInfo",
-            Aliases = new string[] { "di", "dingusfact" },
-            Category = CommandCategory.Chat | CommandCategory.Fun,
-            Permissions = new Permission[] { Permission.HighFive },
-            IsConsoleSafe = true,
-            Usage = "/DingusHelp",
-            Help = "Tells you a different random piece of info about Dingus from a list.",
-            NotRepeatable = true,
-            Handler = DingusInfoHandler,
-        };
-
-        static void DingusInfoHandler(Player player, Command cmd)
-        {
-            List<String> facts; //create string list
-            Random randomizer = new Random(); //randomizer
-
-            facts = new List<String>()  //initializing the values of the list
-            {
-                "&cDingus&s doesn't like to be pestered by {0}",        //the values
-                "&cDingus'&s best friend is named {0}",
-                "&cDingus&s got his name from an idea that {0}&s had",
-                "&cDingus&s is in love with his pet turtle named {0}",
-                "&cDingus&s doesn't even know {0}&s's mom, but he still wants to have sex with her",
-                "&cDingus&s was inspired to make this command by {0}",
-                "&cDingus&s is so damn pissed at {0}&s right now",
-                "&cDingus&s eats carrots with {0}&s every Saturday at the beach",
-                "&cDingus&s couldn't think of things to put in this command so he called {0}",
-                "&cDingus&s is a man of wealth and taste (I hope someone gets the reference)",
-                "&cDingus&s told me that {0}&s was caught beating off in a confession booth",
-                "&cDingus&s told me he would promote me to god if I helped {0}&s with certain favors...",
-                "&cDingus&s is an asshole because I heard him talking bad about {0}",
-                "&cDingus&s likes people like {0}&s, who just shut their mouth and build",
-                "&cDingus&s goes 'AHHHHHHH' when {0}&s says swag or yolo",
-                "&cDingus&s eats pie off of {0}&s's belly",
-                "&cDingus&s once was on the streets, having to turn tricks for food money... And that's how {0}&s was born!",
-                "&cDingus&s raises animals just to have them take poops on {0}&s's lawn",
-                "&cDingus&s, for some strange reason, actually kind of likes {0}"
-            };
-            
-            int index = randomizer.Next(0, facts.Count);
-            double time = (DateTime.Now - player.Info.LastUsedDingusInfo).TotalSeconds;
-            double timeLeft = Math.Round(10 - time);
-
-            if (time < 10)
-            {
-                player.Message("You cannot use this command for another " + timeLeft + " second(s).");
-                return;
-            }
-            else
-            {
-                Server.Message(facts[index], player.ClassyName);
-                player.Info.LastUsedDingusInfo = DateTime.Now;
-                return;
-            }
-        }
+      
 
 
         static readonly CommandDescriptor CdThrow = new CommandDescriptor
