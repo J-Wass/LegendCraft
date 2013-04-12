@@ -107,6 +107,12 @@ namespace fCraft
 
         public static void GunHandler(Player player, Command cmd)
         {
+            //to prevent players from doing /gun during a TDM game that arent actually playing in
+       	    if (player.World.gameMode == GameMode.TeamDeathMatch && !player.Info.isPlayingTD)
+            {
+                player.Message("Players who are not playing Team DeathMatch can only spectate.");
+                return;
+            }
             if (player.GunMode)
             {
                 player.GunMode = false;
