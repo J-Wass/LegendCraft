@@ -686,7 +686,7 @@ namespace fCraft
                             {
                                 Position slap = new Position(target.Position.X, target.Position.Z, (target.World.Map.Bounds.YMax) * 32);
                                 target.TeleportTo(slap);
-                                Server.Players.CanSee(target).Except(target).Message("Player {0} was &eThrown&s by {1}&s.", target.ClassyName, player.ClassyName);
+                                Server.Players.CanSee(target).Except(target).Message("&sPlayer {0}&s was &eThrown&s by {1}&s.", target.ClassyName, player.ClassyName);
                                 IRC.PlayerSomethingMessage(player, "thrown", target, null);
                                 target.Message("&sYou were &eThrown&s by {0}&s.", player.ClassyName);
                                 return;
@@ -703,7 +703,7 @@ namespace fCraft
                             {
                                 Position slap = new Position(target.Position.Z, target.Position.Y, (target.World.Map.Bounds.XMax) * 32);
                                 target.TeleportTo(slap);
-                                Server.Players.CanSee(target).Except(target).Message("Player {0} was &eThrown&s by {1}&s.", target.ClassyName, player.ClassyName);
+                                Server.Players.CanSee(target).Except(target).Message("&sPlayer {0}&s was &eThrown&s by {1}&s.", target.ClassyName, player.ClassyName);
                                 IRC.PlayerSomethingMessage(player, "thrown", target, null);
                                 target.Message("&sYou were &eThrown&s by {0}&s.", player.ClassyName);
                                 return;
@@ -720,7 +720,7 @@ namespace fCraft
                              {
                                  Position slap = new Position(target.Position.Y, target.Position.Z, (target.World.Map.Bounds.XMax) * 32);
                                  target.TeleportTo(slap);
-                                 Server.Players.CanSee(target).Except(target).Message("Player {0} was &eThrown&s by {1}&s.", target.ClassyName, player.ClassyName);
+                                 Server.Players.CanSee(target).Except(target).Message("&sPlayer {0}&s was &eThrown&s by {1}&s.", target.ClassyName, player.ClassyName);
                                  IRC.PlayerSomethingMessage(player, "thrown", target, null);
                                  target.Message("&sYou were &eThrown&s by {0}&s.", player.ClassyName);
                                  return;
