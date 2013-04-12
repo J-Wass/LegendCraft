@@ -1596,7 +1596,6 @@ namespace fCraft {
                 player.Message("  Website: &h{0}&s - IRC: (No IRC)&s.", ConfigKey.WebsiteURL.GetString());
             }
         }
-        }
 
         #endregion
 
