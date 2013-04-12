@@ -1587,6 +1587,15 @@ namespace fCraft {
                             WorldManager.Worlds.Length,
                             WorldManager.CountLoadedWorlds( player ),
                             WorldManager.Worlds.Count( w => w.IsHidden ) );
+            if (ConfigKey.IRCBotEnabled.Enabled())
+            {
+                player.Message("  Website: &h{0}&s - IRC: &i{1}&s.", ConfigKey.WebsiteURL.GetString(), ConfigKey.IRCBotChannels.GetString());
+            }
+            else
+            {
+                player.Message("  Website: &h{0}&s - IRC: (No IRC)&s.", ConfigKey.WebsiteURL.GetString());
+            }
+        }
         }
 
         #endregion
