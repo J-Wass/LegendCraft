@@ -5,7 +5,6 @@ Add: /TeamDeathMatch (/TD)
 Add: /Stats
 Add: Team Deathmatch Game
 Add: /BeatDown
-Add: Code from Rising Embers Custom Version (Not for all versions of LegendCraft)
 Change: Minor heartbeat fixes
 Change: Updated /Calc to be more accurate
 Change: Added 2 fields to PlayerDB for Team DeathMatch Stats (TotalKillsTDM and TotalDeathsTDM)
