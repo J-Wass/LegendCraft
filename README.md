@@ -156,17 +156,18 @@ Type "/help" in-game or in server console to get started. Type "/commands" for
 a list of available commands. 
 
 To request features, report bugs, or receive support, please visit:
-    http://dingusserver.forumotion.com/f9-legendcraft
+    http://risingembers.enjin.com/forum/m/9404373/viewforum/1970851
 
 
 
 === Licensing =================================================================
+
 LegendCraft code and binaries are covered by the MIT license.
 
 LegendCraft license:
 
 -------------------------------------------------------------------------------
-Copyright (c) <2012> <LeChosenOne, DingusBingus>
+Copyright (c) <2012> < LeChosenOne, DingusBingus >
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -190,7 +191,7 @@ THE SOFTWARE.
 
 The 800Craft HeartBeatSaver is Copyright (C) <2011, 2012> Jon Baker 
 and is ONLY to be distributed with copies of 800Craft.
-All LegendCraft files do NOT contain a heartbeatsaver. If you did recieve a heartbeat saver, please contact LeChosenOne immediately.
+LegendCraft HeartBeatSaver is unassociated with the 800Craft HeartBeatSaver.
 
 800Craft's license:
 
