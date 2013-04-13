@@ -116,9 +116,9 @@ namespace fCraft
                     File.Delete(SaverFile);
                 }
                 if (Salt == null) return;
-                
+
                 if (Server.CountPlayers(false).ToString() == null) return;
-                 string[] data = new[] {
+                string[] data = new[] {
                     Salt,
                     Server.InternalIP.ToString(),
                     Server.Port.ToString(),
@@ -127,13 +127,13 @@ namespace fCraft
                     ConfigKey.ServerName.GetString(),
                     ConfigKey.IsPublic.GetString()
                     };
-                
+
                 //"port=" + Server.Port.ToString() + "&max=" + ConfigKey.MaxPlayers.GetString() + "&name=" +
                 //Uri.EscapeDataString(ConfigKey.ServerName.GetString()) +
                 //"&public=True" + "&salt=" + Salt + "&users=" + Server.CountPlayers(false).ToString();
-            const string tempFile = Paths.HeartbeatDataFileName + ".tmp";
-            File.WriteAllLines(tempFile, data, Encoding.ASCII);
-            Paths.MoveOrReplace(tempFile, Paths.HeartbeatDataFileName);
+                const string tempFile = Paths.HeartbeatDataFileName + ".tmp";
+                File.WriteAllLines(tempFile, data, Encoding.ASCII);
+                Paths.MoveOrReplace(tempFile, Paths.HeartbeatDataFileName);
             }
             catch (Exception ex) { Logger.Log(LogType.Error, "" + ex); }
         }

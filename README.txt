@@ -23,6 +23,10 @@ To run ".exe" files with Mono, use the following syntax:
 Mono 2.6.4: "mono SomeFile.exe"
 Mono 2.8+:  "mono --gc=sgen SomeFile.exe"
 
+If you're intending to run a public server that appears on minecraft.net's server list, 	
+you need to import https certificates to tell mono you trust them, this can be done by 
+running mozroots --import --ask-remove as the 800Craft user on your system.
+
 === Initial Setup =============================================================
 
 Before starting the server for the first time, run ConfigGUI.exe to choose
@@ -160,6 +164,7 @@ To request features, report bugs, or receive support, please visit:
 LegendCraft code and binaries are covered by the MIT license.
 
 LegendCraft license:
+
 -------------------------------------------------------------------------------
 Copyright (c) <2012> <LeChosenOne, DingusBingus>
 
@@ -171,7 +176,7 @@ copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+all copies or substantial portions of the software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -180,6 +185,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+
 --------------------------------------------------------------------------------
 
 The 800Craft HeartBeatSaver is Copyright (C) <2011, 2012> Jon Baker 
@@ -187,6 +193,7 @@ and is ONLY to be distributed with copies of 800Craft.
 All LegendCraft files do NOT contain a heartbeatsaver. If you did recieve a heartbeat saver, please contact LeChosenOne immediately.
 
 800Craft's license:
+
 -------------------------------------------------------------------------------
 Copyright (C) <2012> <Jon Baker, Glenn Mari�n and Lao Tszy>
 
@@ -218,7 +225,7 @@ copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+all copies or substantial portions of the software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -227,6 +234,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+
 -------------------------------------------------------------------------------
 
 If you create 800Craft plugins that do not include any substantial portions of
@@ -243,7 +251,8 @@ or any other files from Minecraft... neither does 800Craft or LegendCraft.
 === Credits ===================================================================
 
 LegendCraft was developed by LeChosenOne, and DingusBungus
-   With code contribution by xxRaWatbBallXX.
+  
+  -With code contribution by Eeyle.
 
 Thanks to 800Craft code contributers:
     Rebelliousdude, boblol0909, WaterGod469 and Maicke98 for trying. 
@@ -271,7 +280,7 @@ Thanks to Minecraft servers that helped test and improve fCraft:
 Thanks to the bug Testers and helpers for LegendCraft:
     Ascending Blackout Server Community, Pure2k12, ThunderCraft Server Community, and Dingus and Jake's Server
 
-Special Thanks to Pure2K12 for catching numerous bugs and for inspiration!
-Special Thanks to Jonty800 for doing stuff!
+Special Thanks to Pure2K12 for catching for inspiration and getting me started in this mess!
+Special Thanks to Jonty800 beinge exceptionally awesome!
 
 And thank You for using LegendCraft!

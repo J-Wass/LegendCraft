@@ -252,7 +252,7 @@ or any other files from Minecraft... neither does 800Craft or LegendCraft.
 
 LegendCraft was developed by LeChosenOne, and DingusBungus
   
-  -With code contribution by xxRaWatbBallXX.
+  -With code contribution by Eeyle.
 
 Thanks to 800Craft code contributers:
     Rebelliousdude, boblol0909, WaterGod469 and Maicke98 for trying. 
@@ -280,7 +280,7 @@ Thanks to Minecraft servers that helped test and improve fCraft:
 Thanks to the bug Testers and helpers for LegendCraft:
     Ascending Blackout Server Community, Pure2k12, ThunderCraft Server Community, and Dingus and Jake's Server
 
-Special Thanks to Pure2K12 for catching numerous bugs and for inspiration!
-Special Thanks to Jonty800 for doing stuff!
+Special Thanks to Pure2K12 for catching for inspiration and getting me started in this mess!
+Special Thanks to Jonty800 beinge exceptionally awesome!
 
 And thank You for using LegendCraft!
