@@ -81,7 +81,7 @@ namespace fCraft
             Name = "TeamDeathMatch",            //I think I resolved all of the bugs...
             Aliases = new[] { "td" },
             Category = CommandCategory.World,
-            Permissions = new Permission[] { Permission.Physics },
+            Permissions = new Permission[] { Permission.Games },
             IsConsoleSafe = false,
             Usage = "/TeamDeathMatch [Start | Stop | Time | Score | ScoreLimit | TimeLimit | TimeDelay | About | Help]",
             Handler = TDHandler
@@ -107,6 +107,11 @@ namespace fCraft
                 if (TeamDeathMatch.isOn)
                 {
                     player.Message("There is already a Team DeathMatch game going on");
+                    return;
+                }
+                if (player.World.CountPlayers(true) < 2)
+                {
+                    player.Message("There needs to be at least &W2&S players to play TDM");
                     return;
                 }
                 else
@@ -267,8 +272,8 @@ namespace fCraft
             }
             if (Option.ToLower() == "about")    //td about
             {
-                player.Message("&cTeam Deathmatch&S is a team game where all players are assigned to a red or blue team. Players cannot shoot players on their own team. The game will start the gun physics for you. The game keeps score and notifications come up about the score and time left every 30 seconds. The Score Limit, Time Delay and Time Limit are customizable. Detailed help is on &H/TD Help");
-                player.Message("&SDeveloped for &5Legend&WCraft&S by &fDingus&0Bungus&S 2013 - Based on the template of ZombieGame.cs written by Jonty800.");
+                player.Message("&cTeam Deathmatch&S is a team game where all players are assigned to a red or blue team. Players cannot shoot players on their own team. The game will start the gun physics for you. The game keeps score and notifications come up about the score and time left every 30 seconds. The Score Limit, Time Delay and Time Limit are customizable. Detailed help is on &H/TD Help"
+                + "\n&SDeveloped for &5Legend&WCraft&S by &fDingus&0Bungus&S 2013 - Based on the template of ZombieGame.cs written by Jonty800.");
                 return;
             }
             if (Option.ToLower() == "settings") //shows the current settings for the game (time limit, time delay, score limit)
