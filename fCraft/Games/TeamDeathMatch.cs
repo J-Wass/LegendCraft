@@ -53,11 +53,6 @@ namespace fCraft
 
         public static void Start()
         {
-            if (world_.Players.Count() < 2)
-            {
-                world_.Players.Message("&WTeam DeathMatch&s requires at least 2 people to play.");
-                return;
-            }
             world_.gameMode = GameMode.TeamDeathMatch; //set the game mode
             Scheduler.NewTask(t => world_.Players.Message("&WTEAM DEATHMATCH &fwill be starting in {0} seconds: &WGet ready!", timeDelay))
                 .RunRepeating(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(10), 1);
