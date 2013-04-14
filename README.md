@@ -1,3 +1,5 @@
+Download LegendCraft here: http://www.mediafire.com/download.php?a7ijd3ou5ojnc40
+
 ﻿Thank you for downloading LegendCraft, a custom Minecraft server based on fCraft and 800craft.
 
 Special thanks to fragmer, for creating fCraft! Special thanks to Jonty800, GlennMR and LaoTszy for creating 800Craft!
