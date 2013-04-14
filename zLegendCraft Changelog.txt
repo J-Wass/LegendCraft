@@ -5,6 +5,7 @@ Add: /TeamDeathMatch (/TD)
 Add: /Stats
 Add: Team Deathmatch Game
 Add: /BeatDown
+Add: Online Serverlist
 Add: /Irc (bc) shows server's irc channel, with optional broadcast (server message) option
 Add: /Website (bc) shows server's website, with optional broadcast (server message) option
 Add: /MoneyMessages shows all of the rawMessage replacement codes
