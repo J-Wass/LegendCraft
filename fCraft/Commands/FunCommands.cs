@@ -134,86 +134,94 @@ namespace fCraft
                     return;
                 }
             }
-            if (Option.ToLower() == "timelimit")    //option to change the length of the game (5m default)
+            if (!TeamDeathMatch.isOn && (Option.ToLower() == "timelimit" || Option.ToLower() == "scorelimit" || Option.ToLower() == "timedelay"))
             {
-                string time = cmd.Next();
-                if (time == null)
+                if (Option.ToLower() == "timelimit")    //option to change the length of the game (5m default)
                 {
-                    player.Message("Use the syntax: /TD timelimit (whole number of minutes)\n&HNote: The acceptable times are from 1-20 minutes");
-                    return;
+                    string time = cmd.Next();
+                    if (time == null)
+                    {
+                        player.Message("Use the syntax: /TD timelimit (whole number of minutes)\n&HNote: The acceptable times are from 1-20 minutes");
+                        return;
+                    }
+                    int timeLimit = 0;
+                    bool parsed = Int32.TryParse(time, out timeLimit);
+                    if (!parsed)
+                    {
+                        player.Message("Enter a whole number of minutes. For example: /TD timelimit 5");
+                        return;
+                    }
+                    if (timeLimit < 1 || timeLimit > 20)
+                    {
+                        player.Message("The accepted times are between 1 and 20 minutes");
+                        return;
+                    }
+                    else
+                    {
+                        TeamDeathMatch.timeLimit = (timeLimit * 60);
+                        player.Message("The time limit has been changed to &W{0}&S minutes", timeLimit);
+                        return;
+                    }
                 }
-                int timeLimit = 0;
-                bool parsed = Int32.TryParse(time, out timeLimit);
-                if (!parsed)
+                if (Option.ToLower() == "timedelay")    //option to set the time delay for TDM games (20s default)
                 {
-                    player.Message("Enter a whole number of minutes. For example: /TD timelimit 5");
-                    return;
+                    string time = cmd.Next();
+                    if (time == null)
+                    {
+                        player.Message("Use the syntax: /TD timedelay (whole number of seconds)\n&HNote: The acceptable times incriment by 10 from 10 to 60");
+                        return;
+                    }
+                    int timeDelay = 0;
+                    bool parsed = Int32.TryParse(time, out timeDelay);
+                    if (!parsed)
+                    {
+                        player.Message("Enter a whole number of minutes. For example: /TD timedelay 20");
+                        return;
+                    }
+                    if (timeDelay != 10 && timeDelay != 20 && timeDelay != 30 && timeDelay != 40 && timeDelay != 50 && timeDelay != 60)
+                    {
+                        player.Message("The accepted times are 10, 20, 30, 40, 50, and 60 seconds");
+                        return;
+                    }
+                    else
+                    {
+                        TeamDeathMatch.timeDelay = timeDelay;
+                        player.Message("The time delay has been changed to &W{0}&s seconds", timeDelay);
+                        return;
+                    }
                 }
-                if (timeLimit < 1 || timeLimit > 20)
+                if (Option.ToLower() == "scorelimit")       //changes the score limit
                 {
-                    player.Message("The accepted times are between 1 and 20 minutes");
-                    return;
-                }
-                else
-                {
-                    TeamDeathMatch.timeLimit = (timeLimit * 60);
-                    player.Message("The time limit has been changed to &W{0}&S minutes", timeLimit);
-                    return;
+                    string score = cmd.Next();
+                    if (score == null)
+                    {
+                        player.Message("Use the syntax: /TD scorelimit (whole number)\n&HNote: The acceptable scores are from 5-300 points");
+                        return;
+                    }
+                    int scoreLimit = 0;
+                    bool parsed = Int32.TryParse(score, out scoreLimit);
+                    if (!parsed)
+                    {
+                        player.Message("Enter a whole number score. For example: /TD scorelimit 50");
+                        return;
+                    }
+                    if (scoreLimit < 5 || scoreLimit > 300)
+                    {
+                        player.Message("The accepted scores are from 5-300 points");
+                        return;
+                    }
+                    else
+                    {
+                        TeamDeathMatch.scoreLimit = scoreLimit;
+                        player.Message("The score limit has been changed to &W{0}&s points", scoreLimit);
+                        return;
+                    }
                 }
             }
-            if (Option.ToLower() == "timedelay")    //option to set the time delay for TDM games (20s default)
+            if (TeamDeathMatch.isOn && (Option.ToLower() == "timelimit" || Option.ToLower() == "scorelimit" || Option.ToLower() == "timedelay"))
             {
-                string time = cmd.Next();
-                if (time == null)
-                {
-                    player.Message("Use the syntax: /TD timedelay (whole number of seconds)\n&HNote: The acceptable times incriment by 10 from 10 to 60");
-                    return;
-                }
-                int timeDelay = 0;
-                bool parsed = Int32.TryParse(time, out timeDelay);
-                if (!parsed)
-                {
-                    player.Message("Enter a whole number of minutes. For example: /TD timedelay 20");
-                    return;
-                }
-                if (timeDelay != 10 && timeDelay != 20 && timeDelay != 30 && timeDelay != 40 && timeDelay != 50 && timeDelay != 60)
-                {
-                    player.Message("The accepted times are 10, 20, 30, 40, 50, and 60 seconds");
-                    return;
-                }
-                else
-                {
-                    TeamDeathMatch.timeDelay = timeDelay;
-                    player.Message("The time delay has been changed to &W{0}&s seconds", timeDelay);
-                    return;
-                }
-            }
-            if (Option.ToLower() == "scorelimit")       //changes the score limit
-            {
-                string score = cmd.Next();
-                if (score == null)
-                {
-                    player.Message("Use the syntax: /TD scorelimit (whole number)\n&HNote: The acceptable scores are from 5-300 points");
-                    return;
-                }
-                int scoreLimit = 0;
-                bool parsed = Int32.TryParse(score, out scoreLimit);
-                if (!parsed)
-                {
-                    player.Message("Enter a whole number score. For example: /TD scorelimit 50");
-                    return;
-                }
-                if (scoreLimit < 5 || scoreLimit > 300)
-                {
-                    player.Message("The accepted scores are from 5-300 points");
-                    return;
-                }
-                else
-                {
-                    TeamDeathMatch.scoreLimit = scoreLimit;
-                    player.Message("The score limit has been changed to &W{0}&s points", scoreLimit);
-                    return;
-                }
+                player.Message("You cannot adjust gane settings while a game is going on");
+                return;
             }
             if (Option.ToLower() == "score")       //scoreboard for the matchs, different messages for when the game has ended. //td score
             {
