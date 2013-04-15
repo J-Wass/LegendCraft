@@ -220,7 +220,7 @@ namespace fCraft
             }
             if (TeamDeathMatch.isOn && (Option.ToLower() == "timelimit" || Option.ToLower() == "scorelimit" || Option.ToLower() == "timedelay"))
             {
-                player.Message("You cannot adjust gane settings while a game is going on");
+                player.Message("You cannot adjust game settings while a game is going on");
                 return;
             }
             if (Option.ToLower() == "score")       //scoreboard for the matchs, different messages for when the game has ended. //td score
