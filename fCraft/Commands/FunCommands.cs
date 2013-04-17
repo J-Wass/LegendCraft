@@ -405,18 +405,38 @@ namespace fCraft
                     case "topkills": //user does /stats topkills
                         List<PlayerInfo> TDPlayers = new List<PlayerInfo>(PlayerDB.PlayerInfoList.ToArray().OrderBy(r => r.totalKillsTDM).Reverse());
                         player.Message("&HShowing the players with the most all-time TDM Kills:");
-                        for (int i = 0; i < 10; i++)
+                        if (TDPlayers.Count() < 10)
                         {
-                            player.Message("{0}&s - {1} Kills", TDPlayers[i].ClassyName, TDPlayers[i].totalKillsTDM);
+                            for (int i = 0; i < TDPlayers.Count(); i++)
+                            {
+                                player.Message("{0}&s - {1} Kills", TDPlayers[i].ClassyName, TDPlayers[i].totalKillsTDM);
+                            }
+                        }
+                        else
+                        {
+                            for (int i = 0; i < 10; i++)
+                            {
+                                player.Message("{0}&s - {1} Kills", TDPlayers[i].ClassyName, TDPlayers[i].totalKillsTDM);
+                            }
                         }
                         return;
 
                     case "topdeaths": //user does /stats topdeaths
                         List<PlayerInfo> TDPlayers2 = new List<PlayerInfo>(PlayerDB.PlayerInfoList.ToArray().OrderBy(r => r.totalDeathsTDM).Reverse());
                         player.Message("&HShowing the players with the most all-time TDM Deaths:");
-                        for (int i = 0; i < 10; i++)
+                        if (TDPlayers2.Count() < 10)
                         {
-                            player.Message("{0}&s - {1} Deaths", TDPlayers2[i].ClassyName, TDPlayers2[i].totalDeathsTDM);
+                            for (int i = 0; i < TDPlayers2.Count(); i++)
+                            {
+                                player.Message("{0}&s - {1} Deaths", TDPlayers2[i].ClassyName, TDPlayers2[i].totalDeathsTDM);
+                            }
+                        }
+                        else
+                        {
+                            for (int i = 0; i < 10; i++)
+                            {
+                                player.Message("{0}&s - {1} Deaths", TDPlayers2[i].ClassyName, TDPlayers2[i].totalDeathsTDM);
+                            }
                         }
                         return;
 
