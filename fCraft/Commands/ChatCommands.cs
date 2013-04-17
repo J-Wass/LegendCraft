@@ -199,7 +199,7 @@ THE SOFTWARE.*/
                         return;
                     }
                     GlobalChat.GlobalThread.GCReady = true;
-                    player.Message("&eAttempting to connect to LegendCraft Global Chat Network. This may take up to two minutes.");
+                    Server.Message("&eAttempting to connect to LegendCraft Global Chat Network. This may take up to two minutes.");
                     GlobalChat.Init();
                     GlobalChat.Start();
                     return;

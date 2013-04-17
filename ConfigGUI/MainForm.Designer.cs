@@ -377,9 +377,9 @@
             // 
             // tabs
             // 
-            this.tabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tabs.Controls.Add(this.tabGeneral);
             this.tabs.Controls.Add(this.tabChat);
             this.tabs.Controls.Add(this.tabWorlds);
@@ -747,8 +747,8 @@
             // 
             // tServerName
             // 
-            this.tServerName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tServerName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tServerName.HideSelection = false;
             this.tServerName.Location = new System.Drawing.Point(123, 20);
             this.tServerName.MaxLength = 64;
@@ -803,8 +803,8 @@
             // 
             // tMOTD
             // 
-            this.tMOTD.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tMOTD.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tMOTD.Location = new System.Drawing.Point(123, 47);
             this.tMOTD.MaxLength = 64;
             this.tMOTD.Name = "tMOTD";
@@ -1187,8 +1187,8 @@
             // 
             // tMapPath
             // 
-            this.tMapPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tMapPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tMapPath.Enabled = false;
             this.tMapPath.Font = new System.Drawing.Font("Lucida Console", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tMapPath.Location = new System.Drawing.Point(203, 411);
@@ -1274,9 +1274,9 @@
             this.dgvWorlds.AllowUserToDeleteRows = false;
             this.dgvWorlds.AllowUserToOrderColumns = true;
             this.dgvWorlds.AllowUserToResizeRows = false;
-            this.dgvWorlds.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvWorlds.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvWorlds.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvWorlds.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dgvcName,
@@ -1379,9 +1379,9 @@
             // 
             // gPermissionLimits
             // 
-            this.gPermissionLimits.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.gPermissionLimits.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.gPermissionLimits.Controls.Add(this.permissionLimitBoxContainer);
             this.gPermissionLimits.Location = new System.Drawing.Point(160, 292);
             this.gPermissionLimits.Name = "gPermissionLimits";
@@ -1435,8 +1435,8 @@
             // 
             // gRankOptions
             // 
-            this.gRankOptions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.gRankOptions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.gRankOptions.Controls.Add(this.lFillLimitUnits);
             this.gRankOptions.Controls.Add(this.nFillLimit);
             this.gRankOptions.Controls.Add(this.lFillLimit);
@@ -1753,8 +1753,8 @@
             // 
             // vPermissions
             // 
-            this.vPermissions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.vPermissions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.vPermissions.CheckBoxes = true;
             this.vPermissions.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.chPermissions});
@@ -1797,8 +1797,8 @@
             // 
             // vRanks
             // 
-            this.vRanks.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.vRanks.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.vRanks.Font = new System.Drawing.Font("Lucida Console", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.vRanks.FormattingEnabled = true;
             this.vRanks.IntegralHeight = false;
@@ -2160,7 +2160,7 @@
             this.xAllowUnverifiedLAN.Size = new System.Drawing.Size(490, 19);
             this.xAllowUnverifiedLAN.TabIndex = 2;
             this.xAllowUnverifiedLAN.Text = "Allow connections from LAN without name verification (192.168.0.0/16 and 10.0.0.0" +
-                "/8)";
+    "/8)";
             this.xAllowUnverifiedLAN.UseVisualStyleBackColor = true;
             // 
             // xMaxConnectionsPerIP
@@ -2640,7 +2640,7 @@
             this.lIRCNoForwardingMessage.Size = new System.Drawing.Size(567, 15);
             this.lIRCNoForwardingMessage.TabIndex = 8;
             this.lIRCNoForwardingMessage.Text = "NOTE: If forwarding all messages is not enabled, only messages starting with a ha" +
-                "sh (#) will be relayed.";
+    "sh (#) will be relayed.";
             // 
             // xIRCBotAnnounceIRCJoins
             // 
@@ -2969,9 +2969,9 @@
             // 
             // gPerformance
             // 
-            this.gPerformance.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.gPerformance.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.gPerformance.Controls.Add(this.lAdvancedWarning);
             this.gPerformance.Controls.Add(this.xLowLatencyMode);
             this.gPerformance.Controls.Add(this.lProcessPriority);
@@ -2998,8 +2998,8 @@
             this.lAdvancedWarning.Size = new System.Drawing.Size(558, 30);
             this.lAdvancedWarning.TabIndex = 0;
             this.lAdvancedWarning.Text = "Warning: Altering these settings may decrease your server\'s stability and perform" +
-                "ance.\r\nIf you\'re not sure what these settings do, you probably shouldn\'t change " +
-                "them...";
+    "ance.\r\nIf you\'re not sure what these settings do, you probably shouldn\'t change " +
+    "them...";
             // 
             // xLowLatencyMode
             // 
@@ -3009,7 +3009,7 @@
             this.xLowLatencyMode.Size = new System.Drawing.Size(544, 19);
             this.xLowLatencyMode.TabIndex = 3;
             this.xLowLatencyMode.Text = "Low-latency mode (disables Nagle\'s algorithm, reducing latency but increasing ban" +
-                "dwidth use).";
+    "dwidth use).";
             this.xLowLatencyMode.UseVisualStyleBackColor = true;
             // 
             // lProcessPriority
@@ -3128,8 +3128,8 @@
             // 
             // gAdvancedMisc
             // 
-            this.gAdvancedMisc.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.gAdvancedMisc.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.gAdvancedMisc.Controls.Add(this.nMaxUndoStates);
             this.gAdvancedMisc.Controls.Add(this.lMaxUndoStates);
             this.gAdvancedMisc.Controls.Add(this.xHeartbeatToWoMDirect);
@@ -3196,7 +3196,7 @@
             this.lIPWarning.Size = new System.Drawing.Size(408, 13);
             this.lIPWarning.TabIndex = 20;
             this.lIPWarning.Text = "Note: You do not need to specify an IP address unless you have multiple NICs or I" +
-                "Ps.";
+    "Ps.";
             // 
             // tIP
             // 
@@ -3287,7 +3287,7 @@
             this.xRelayAllBlockUpdates.Size = new System.Drawing.Size(560, 19);
             this.xRelayAllBlockUpdates.TabIndex = 1;
             this.xRelayAllBlockUpdates.Text = "When a player changes a block, send him the redundant update packet anyway (origi" +
-                "nal behavior).";
+    "nal behavior).";
             this.xRelayAllBlockUpdates.UseVisualStyleBackColor = true;
             // 
             // xNoPartialPositionUpdates
@@ -3302,8 +3302,8 @@
             // 
             // gCrashReport
             // 
-            this.gCrashReport.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.gCrashReport.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.gCrashReport.Controls.Add(this.linkLabel1);
             this.gCrashReport.Controls.Add(this.lCrashReportDisclaimer);
             this.gCrashReport.Location = new System.Drawing.Point(8, 13);
@@ -3333,8 +3333,8 @@
             this.lCrashReportDisclaimer.Size = new System.Drawing.Size(468, 39);
             this.lCrashReportDisclaimer.TabIndex = 1;
             this.lCrashReportDisclaimer.Text = "Send all Crash Reports To:  \r\nCrash reports are when serious unexpected errors oc" +
-                "cur. Being able to receive crash reports helps\r\nidentify bugs and improve Legend" +
-                "Craft! .";
+    "cur. Being able to receive crash reports helps\r\nidentify bugs and improve Legend" +
+    "Craft! .";
             // 
             // tabPage1
             // 
@@ -3435,8 +3435,8 @@
             // 
             // SwearBox
             // 
-            this.SwearBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.SwearBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.SwearBox.HideSelection = false;
             this.SwearBox.Location = new System.Drawing.Point(442, 34);
             this.SwearBox.MaxLength = 64;
@@ -3488,7 +3488,7 @@
             this.label4.Size = new System.Drawing.Size(139, 60);
             this.label4.TabIndex = 25;
             this.label4.Text = "The name should be \r\nin this format: \r\n\'staffchat\'. No spaces or \r\nsymbols (inclu" +
-                "ding \"/\")";
+    "ding \"/\")";
             this.label4.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // CustomColor
@@ -3513,8 +3513,8 @@
             // 
             // CustomName
             // 
-            this.CustomName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.CustomName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.CustomName.HideSelection = false;
             this.CustomName.Location = new System.Drawing.Point(246, 35);
             this.CustomName.MaxLength = 64;
@@ -3533,8 +3533,8 @@
             // 
             // CustomAliases
             // 
-            this.CustomAliases.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.CustomAliases.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.CustomAliases.HideSelection = false;
             this.CustomAliases.Location = new System.Drawing.Point(246, 121);
             this.CustomAliases.MaxLength = 64;
@@ -3624,6 +3624,7 @@
             this.Name = "MainForm";
             this.Text = "LegendCraft Config Tool";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ConfigUI_FormClosing);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.tabs.ResumeLayout(false);
             this.tabGeneral.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);

@@ -33,7 +33,7 @@ namespace fCraft.ConfigGUI {
             dgvcBlockDB.IndeterminateValue = YesNoAuto.Auto;
             bold = new Font( Font, FontStyle.Bold );
             Shown += Init;
-            Text = "LegendCraft Configuration ( v1.9.0 )";
+            Text = "LegendCraft Configuration " + fCraft.Updater.LatestStable;
         }
 
 
@@ -1646,6 +1646,11 @@ Your rank is {RANK}&S. Type &H/Help&S for help." );
                 Process.Start("https://github.com/LeChosenOne/LegendCraft/blob/master/zLegendCraft%20Changelog.txt");
             }
             catch { }
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+
         }
 
 

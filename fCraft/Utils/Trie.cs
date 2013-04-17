@@ -244,6 +244,8 @@ namespace fCraft {
                 return ch - 'A';
             else if( ch >= '0' && ch <= '9' )
                 return ch - '0' + 26;
+            else if( ch == '@' )
+                return 37;
             else
                 return 36;
         }
@@ -254,13 +256,15 @@ namespace fCraft {
                 return (char)(code + 'a');
             if( code >= 26 && code < 36 )
                 return (char)(code + '0');
+            if (code == 37)
+                return (char)'@';
             else
                 return '_';
         }
 
 
         protected char CanonicizeChar( char ch ) {
-            if( ch >= 'a' && ch <= 'z' || ch >= '0' && ch <= '9' || ch == '_' )
+            if( ch >= 'a' && ch <= 'z' || ch >= '0' && ch <= '9' || ch == '_' || ch == '@')
                 return ch;
             else if( ch >= 'A' && ch <= 'Z' )
                 return (char)(ch - ('A' - 'a'));
@@ -1228,7 +1232,7 @@ namespace fCraft {
 
 
         sealed class TrieNode {
-            const int ChildCount = 37;
+            const int ChildCount = 38;
 
 
             // Tag identifies TrieNode as being either a LeafNode,

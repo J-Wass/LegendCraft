@@ -1472,7 +1472,7 @@ THE SOFTWARE.*/
             Permissions = new[] { Permission.Ban },
             Usage = "/Ban PlayerName [Reason]",
             Help = "&SBans a specified player by name. Note: Does NOT ban IP. " +
-                   "Any text after the player name will be saved as a memo. ",
+                   "Any text after the player name will be saved as a ban reason. ",
             Handler = BanHandler
         };
 

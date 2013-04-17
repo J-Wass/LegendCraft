@@ -49,7 +49,7 @@ namespace fCraft {
 #endif
         }
         
-                #region LegendCraft
+        #region LegendCraft
         
         static readonly CommandDescriptor CdIrc = new CommandDescriptor
         {

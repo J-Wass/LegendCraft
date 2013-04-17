@@ -539,18 +539,16 @@ namespace fCraft {
             }
 
             string givenName = ReadString();
-            string[] splitGivenName = givenName.Split('@');
 
             // Check name for nonstandard characters
-            if( !IsValidName( givenName ) ) {
-                if (!IsValidName(splitGivenName[0]))
-                {
+            if( !IsValidName( givenName ) ) 
+            {
                     Logger.Log(LogType.SuspiciousActivity,
                                 "Player.LoginSequence: Unacceptable player name: {0} ({1})",
                                 givenName, IP);
                     KickNow("Invalid characters in player name!", LeaveReason.ProtocolViolation);  
 
-                }
+                
             }
             
 
@@ -563,30 +561,13 @@ namespace fCraft {
             // ReSharper restore PossibleNullReferenceException
             Info = PlayerDB.FindOrCreateInfoForPlayer( givenName, IP );
             ResetAllBinds();
-
-            if (givenName.Contains('@'))
-            {
-                Info.Name = splitGivenName[0] + "@" + Info.mojang;
-                Info.DisplayedName = splitGivenName[0];
-            }
-            else
-            {
-                Info.Name = givenName;
-            }   
+ 
             if( Server.VerifyName( givenName, verificationCode, Heartbeat.Salt ) ) 
             {
                 // update capitalization of player's name
                 if( !Info.Name.Equals( givenName, StringComparison.Ordinal ) )
                 {
-                    if (givenName.Contains('@'))
-                    {
-                        Info.Name = splitGivenName[0] + "@" + Info.mojang;
-                        Info.DisplayedName = splitGivenName[0];
-                    }
-                    else
-                    {
-                        Info.Name = givenName;
-                    }                                                           
+                    Info.Name = givenName;                                               
                 }
 
             } else {
