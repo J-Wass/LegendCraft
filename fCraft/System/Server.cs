@@ -438,7 +438,10 @@ namespace fCraft {
             Scheduler.Start();
             PortalHandler.GetInstance();
             PortalDB.Load();
-            //Network.ServerList.sendData();
+
+            //enable global chat
+            GlobalChat.Init();
+            GlobalChat.Start();
 
             IsRunning = true;
             RaiseEvent( Started );

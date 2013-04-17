@@ -246,7 +246,7 @@ namespace fCraft
                 if (message == null) throw new ArgumentNullException("message");
 
                 IRCMessage msg = IRC.MessageParser(message, ActualBotNick);
-                var SendList = Server.Players.Where(p => p.GlobalChatAllowed && !p.IsDeaf);
+                var SendList = Server.Players.Where(p => !p.IsDeaf && !p.GlobalChatIgnore);
 #if DEBUG_IRC
                 Logger.Log( LogType.IRC,
                             "[{0}]: {1}",
@@ -547,7 +547,7 @@ namespace fCraft
                     channelNames[i] = '#' + channelNames[i].Trim();
                 }
             }
-            botNick = RemoveTroublesomeCharacters(ConfigKey.ServerName.GetString());
+            botNick = "[" +RemoveTroublesomeCharacters(ConfigKey.ServerName.GetString() + "]");
         }
 
         public static string RemoveTroublesomeCharacters(string inString)

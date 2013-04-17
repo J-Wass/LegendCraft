@@ -244,7 +244,6 @@ THE SOFTWARE.*/
                 else
                 {
                     player.Message("&eYou are now ignoring global chat. To return to global chat, type /global unignore.");
-                    player.GlobalChatAllowed = false;
                     player.GlobalChatIgnore = true;
                     return;
                 }
@@ -254,7 +253,6 @@ THE SOFTWARE.*/
                 if (player.GlobalChatIgnore)
                 {
                     player.Message("You are no longer ignoring global chat.");
-                    player.GlobalChatAllowed = true;
                     player.GlobalChatIgnore = false;
                     return;
                 }
