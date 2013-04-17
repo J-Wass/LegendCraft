@@ -1,3 +1,5 @@
+LegendCraft Changelog v2.0.1
+
 LegendCraft Changelog v2.0.0
 Add: /global
 Add: /rejoin

@@ -186,6 +186,7 @@ namespace fCraft.HeartbeatSaver
                         Console.WriteLine("{0}: Sending HeartBeat... Count {1}", Timestamp(), count);
                     }
                     count++;
+                    
                 }
             }
         }
@@ -195,7 +196,7 @@ namespace fCraft.HeartbeatSaver
         // Timestamp, used for logging
         static string Timestamp()
         {
-            return DateTime.Now.ToString("h:m tt");
+            return DateTime.Now.ToString("hh:mm tt");
         }
 
 
