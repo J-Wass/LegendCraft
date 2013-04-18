@@ -28,7 +28,7 @@ namespace fCraft
     class PluginManager
     {
         private static PluginManager instance;
-        public List<Plugin> Plugins = new List<Plugin>();
+        public static List<Plugin> Plugins = new List<Plugin>();
 
         private PluginManager()
         {
@@ -80,11 +80,9 @@ namespace fCraft
                         Type pluginType = null;
                         String args = plugin.Substring(plugin.LastIndexOf("\\") + 1, plugin.IndexOf(".dll") - plugin.LastIndexOf("\\") - 1);
                         Assembly assembly = Assembly.LoadFile(Path.GetFullPath(plugin));
-
                         if (assembly != null)
                         {
                             pluginType = assembly.GetType(args + ".Init");
-
                             if (pluginType != null)
                             {
                                 Plugins.Add((Plugin)Activator.CreateInstance(pluginType));
@@ -96,9 +94,9 @@ namespace fCraft
                         Logger.Log(LogType.Error, "PluginManager: Unable to load plugin at location " + plugin + ": " + ex);
                     }
                 }
-            }
 
-            LoadPlugins();
+                LoadPlugins();
+            }
         }
 
         private void LoadPlugins()

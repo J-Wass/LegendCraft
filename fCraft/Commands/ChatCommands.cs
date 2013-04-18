@@ -54,6 +54,7 @@ namespace fCraft
             CommandManager.RegisterCommand(CdVote);
             CommandManager.RegisterCommand(CdStopWatch); 
             CommandManager.RegisterCommand(CdGlobal);
+            CommandManager.RegisterCommand(CdPlugin);
 
 
             Player.Moved += new EventHandler<Events.PlayerMovedEventArgs>(Player_IsBack);
@@ -78,7 +79,23 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
       
-        
+        static readonly CommandDescriptor CdPlugin = new CommandDescriptor
+        {
+            Name = "Plugins",
+            Aliases = new[]{ "plugin" },
+            Category = CommandCategory.Chat,
+            Permissions = new Permission[] { Permission.Chat },
+            IsConsoleSafe = true,
+            Usage = "/Plugins",
+            Help = "Displays all plugins on the server.",
+            Handler = PluginsHandler,
+        };
+
+        static void PluginsHandler(Player player, Command cmd)
+        {
+            player.Message("&c_Current plugins on {0}&c_", ConfigKey.ServerName.GetString());
+            player.Message(String.Join(", ", PluginManager.Plugins));
+        }
         static readonly CommandDescriptor CdStopWatch = new CommandDescriptor
         {
             Name = "StopWatch",
