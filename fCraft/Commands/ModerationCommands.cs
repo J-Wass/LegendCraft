@@ -146,6 +146,7 @@ THE SOFTWARE.*/
             if (player.Can(Permission.Basscannon, target.Info.Rank))
             {
                 Position pummeled = new Position(target.Position.X, target.Position.Y, (target.World.Map.Bounds.ZMin) * 32);
+                player.previousLocation = player.Position;
                 target.TeleportTo(pummeled);
 
                 if (string.IsNullOrEmpty(item))
@@ -1039,6 +1040,7 @@ THE SOFTWARE.*/
             string aMessage;
             if (player.Can(Permission.Slap, target.Info.Rank)){
                 Position slap = new Position(target.Position.X, target.Position.Y, (target.World.Map.Bounds.ZMax) * 32);
+                player.previousLocation = player.Position;
                 target.TeleportTo(slap);
                 if (string.IsNullOrEmpty(item)){
                     Server.Players.CanSee(target).Union(target).Message("{0} &Swas slapped sky high by {1}", target.ClassyName, player.ClassyName);
@@ -2098,6 +2100,7 @@ THE SOFTWARE.*/
                         player.Message( "Coordinates are outside the valid range!" );
 
                     } else {
+                        player.previousLocation = player.Position;
                         player.TeleportTo( new Position {
                             X = (short)(x * 32 + 16),
                             Y = (short)(y * 32 + 16),
@@ -2126,6 +2129,7 @@ THE SOFTWARE.*/
                     if( targetWorld == null ) PlayerOpException.ThrowNoWorld( target );
 
                     if( targetWorld == player.World ) {
+                        player.previousLocation = player.Position;
                         player.TeleportTo( target.Position );
 
                     } else {
@@ -2225,6 +2229,7 @@ THE SOFTWARE.*/
 
             if( target.World == world ) {
                 // teleport within the same world
+                target.previousLocation = target.Position;
                 target.TeleportTo( toPlayer.Position );
                 target.Message("&8You were summoned by {0}", player.ClassyName);
 

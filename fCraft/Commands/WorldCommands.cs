@@ -62,6 +62,7 @@ namespace fCraft {
 
             CommandManager.RegisterCommand(CdRejoin);
             //CommandManager.RegisterCommand(CdWorldChat);
+            CommandManager.RegisterCommand(CdBack);
         }
 
         #region LegendCraft
@@ -83,6 +84,31 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
+        static readonly CommandDescriptor CdBack = new CommandDescriptor
+           {
+            Name = "Back",
+            Category = CommandCategory.World,
+            Permissions = new Permission[] { Permission.Teleport },
+            IsConsoleSafe = false,
+            Usage = "/back",
+            Help = "Sends you back to your last location after a teleport.",
+            Handler = BackHandler,
+        };
+
+        static void BackHandler(Player player, Command cmd)
+        {
+            if (player.previousLocation == null)
+            {
+                player.Message("&cYou haven't been teleported somewhere yet!");
+                return;
+            }
+            else
+            {
+                player.Message("&aTeleporting you back to your previous location...");
+                player.TeleportTo(player.previousLocation);
+                return;
+            }
+        }
            static readonly CommandDescriptor CdWorldChat = new CommandDescriptor
            {
             Name = "WorldChat",

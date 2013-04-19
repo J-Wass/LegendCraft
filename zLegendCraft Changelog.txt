@@ -1,5 +1,6 @@
 LegendCraft Changelog v2.0.1
 Add: /plugins
+AddL /back
 
 LegendCraft Changelog v2.0.0
 Add: /global

@@ -203,6 +203,8 @@ namespace fCraft
         public bool GlobalChatAllowed = false;
         public bool GlobalChatIgnore = false;
 
+        public Position previousLocation;
+
         public bool fireworkMode = false;
 
         public DateTime LastTimeKilled;
