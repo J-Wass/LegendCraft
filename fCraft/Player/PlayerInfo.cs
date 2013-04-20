@@ -92,6 +92,10 @@ namespace fCraft
         public int gameDeaths = 0;
         public bool needsReversion = false;
 
+        //Tag
+        public bool isPlayingInfection = false;
+        public bool isInfected = false;
+
 
         #region Rank
 

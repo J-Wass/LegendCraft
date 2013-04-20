@@ -16,6 +16,7 @@ namespace fCraft
         Football,
         MineChallenge,
         TeamDeathMatch,
+        Infection,
         NULL //needed? lol
     }
 }

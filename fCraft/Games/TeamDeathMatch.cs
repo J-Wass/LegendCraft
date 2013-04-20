@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using fCraft.Events;
 
-namespace fCraft
+namespace fCraft.Games
 {
     class TeamDeathMatch
     {

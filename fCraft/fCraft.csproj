@@ -163,6 +163,7 @@
     <Compile Include="Games\MineChallenge.cs" />
     <Compile Include="Games\MineField.cs" />
     <Compile Include="Games\Spell.cs" />
+    <Compile Include="Games\Infection.cs" />
     <Compile Include="Games\TeamDeathMatch.cs" />
     <Compile Include="MapConversion\MapFCMv3.cs" />
     <Compile Include="Network\GlobalChat.cs" />
