@@ -50,6 +50,21 @@ namespace fCraft.Games
             RevertGame();
             return;
         }
+        public static void PlayerMoved(Player p, fCraft.Events.PlayerMovingEventArgs e)
+        {
+            if (p.Info.isInfected)
+            {
+                foreach (Player target in InfectionPlayers)
+                {
+                    if (p.Position == target.Position && !target.Info.isInfected)
+                    {
+                        world_.Players.Message("&c{0} has infected {1}!", p.Name, target.Name);
+                        target.Info.isInfected = true;
+                    }
+                }
+            }
+
+        }
 
         public static void Interval(SchedulerTask task)
         {
@@ -96,22 +111,14 @@ namespace fCraft.Games
                 if (world_.Players.Count(player => player.Info.isInfected) == world_.Players.Count())
                 {
                     world_.Players.Message("The Zombies have won!!!");
-                    for (int i = 0; i < InfectionPlayers.Count(); i++)
-                    {
-                        string p1 = InfectionPlayers[i].Name.ToString();
-                        PlayerInfo pI = PlayerDB.FindPlayerInfoExact(p1);
-                        Player p = pI.PlayerObject;
-
-                        if (p != null)
-                        {
-                            Stop(p);
-                        }
-                    }
+                    Stop(null);
                     return;
                 }
                 if (world_.Players.Count(player => player.Info.isInfected) == 0 && world_.Players.Count() > 0)
                 {
                     world_.Players.Message("The Zombies have died off! The Humans win!");
+                    Stop(null);
+                    return;
                 }
 
             }
@@ -119,7 +126,7 @@ namespace fCraft.Games
 
             if (lastChecked != null && (DateTime.Now - lastChecked).TotalSeconds > 29.9 && timeLeft <= timeLimit)
             {
-                world_.Players.Message("There are currently {0} humans and {1} zombies left on {2}", world_.Players.Count() - world_.Players.Count(player => player.Info.isInfected), world_.Players.Count(player => player.Info.isInfected), world_.ClassyName);
+                world_.Players.Message("There are currently {0} human(s) and {1} zombie(s) left on {2}", world_.Players.Count() - world_.Players.Count(player => player.Info.isInfected), world_.Players.Count(player => player.Info.isInfected), world_.ClassyName);
             }
         }
 
@@ -148,6 +155,14 @@ namespace fCraft.Games
             isOn = false;
             instance = null;
             world_ = null;
+          
+            foreach (Player p in InfectionPlayers)
+            {
+                p.Info.isInfected = false;
+                p.Info.DisplayedName = p.Info.oldname;
+                p.Info.isPlayingInfection = false;
+                p.Message("Your status has been reverted!");
+            }
 
         }
     }
