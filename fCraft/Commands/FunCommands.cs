@@ -37,6 +37,7 @@ namespace fCraft
             CommandManager.RegisterCommand(CdInsult);
             CommandManager.RegisterCommand(CdStatistics);
             CommandManager.RegisterCommand(CdTeamDeathMatch);
+            CommandManager.RegisterCommand(CdInfection);
             Player.Moving += PlayerMoved;
         }
 
@@ -76,14 +77,87 @@ namespace fCraft
             }
         }
 
+        static readonly CommandDescriptor CdInfection = new CommandDescriptor
+        {
+            Name = "Infection",            
+            Aliases = new[] { "ZombieSurvival", "zs" },
+            Category = CommandCategory.World,
+            Permissions = new Permission[] { Permission.Games },
+            IsConsoleSafe = false,
+            Usage = "/Infection [start | stop]",
+            Help = "Manage the Infection Gamemode!",
+            Handler = InfectionHandler
+        };
+
+        private static void InfectionHandler(Player player, Command cmd)       
+        {
+            string Option = cmd.Next();
+            World world = player.World;
+
+            if (string.IsNullOrEmpty(Option))
+            {
+                CdInfection.PrintUsage(player);
+                return;
+            }
+            if (Option.ToLower() == "start")    
+            {
+                if (world == WorldManager.MainWorld)
+                {
+                    player.Message("&SInfection games cannot be played on the main world");
+                    return;
+                }
+                if (world.gameMode != GameMode.NULL)
+                {
+                    player.Message("&SThere is already a game going on");
+                    return;
+                }
+                if (player.World.CountPlayers(true) < 2)
+                {
+                    player.Message("&SThere must be at least &W2&S players on this world to play Infection");
+                    return;
+                }
+                else
+                {
+                    try
+                    {
+                        fCraft.Games.Infection.GetInstance(player.World);
+                    }
+                    catch(Exception e)
+                    {
+                        Logger.Log(LogType.Warning, "Found Exception:" + e);
+                    }
+                    fCraft.Games.Infection.Start();
+                    return;
+                }
+            }
+            if (Option.ToLower() == "stop")
+            {
+                if (world.gameMode == GameMode.Infection)
+                {
+                    fCraft.Games.Infection.Stop(player);
+                    return;
+                }
+                else
+                {
+                    player.Message("&SNo games of Infection are going on.");
+                    return;
+                }
+            }
+            else
+            {
+                CdInfection.PrintUsage(player);
+                return;
+            }
+        }
         static readonly CommandDescriptor CdTeamDeathMatch = new CommandDescriptor
         {
             Name = "TeamDeathMatch",            //I think I resolved all of the bugs...
-            Aliases = new[] { "td" },
+            Aliases = new[] { "td", "tdm" },
             Category = CommandCategory.World,
             Permissions = new Permission[] { Permission.Games },
             IsConsoleSafe = false,
             Usage = "/TeamDeathMatch [Start | Stop | Time | Score | ScoreLimit | TimeLimit | TimeDelay | About | Help]",
+            Help = "Manage the TDM Gamemode!",
             Handler = TDHandler
         };
 
@@ -104,9 +178,9 @@ namespace fCraft
                     player.Message("TDM games cannot be played on the main world");
                     return;
                 }
-                if (TeamDeathMatch.isOn)
+                if (world.gameMode != GameMode.NULL)
                 {
-                    player.Message("There is already a Team DeathMatch game going on");
+                    player.Message("There is already a game going on");
                     return;
                 }
                 if (player.World.CountPlayers(true) < 2)
@@ -116,16 +190,16 @@ namespace fCraft
                 }
                 else
                 {
-                    TeamDeathMatch.GetInstance(player.World);
-                    TeamDeathMatch.Start();
+                    fCraft.Games.TeamDeathMatch.GetInstance(player.World);
+                    fCraft.Games.TeamDeathMatch.Start();
                     return;
                 }
             }
             if (Option.ToLower() == "stop" || Option.ToLower() == "off") //stops the game
-            { 
-                if (TeamDeathMatch.isOn)
+            {
+                if (fCraft.Games.TeamDeathMatch.isOn)
                 {
-                    TeamDeathMatch.Stop(player);
+                    fCraft.Games.TeamDeathMatch.Stop(player);
                     return;
                 }
                 else
@@ -134,7 +208,7 @@ namespace fCraft
                     return;
                 }
             }
-            if (!TeamDeathMatch.isOn && (Option.ToLower() == "timelimit" || Option.ToLower() == "scorelimit" || Option.ToLower() == "timedelay"))
+            if (!fCraft.Games.TeamDeathMatch.isOn && (Option.ToLower() == "timelimit" || Option.ToLower() == "scorelimit" || Option.ToLower() == "timedelay"))
             {
                 if (Option.ToLower() == "timelimit")    //option to change the length of the game (5m default)
                 {
@@ -158,7 +232,7 @@ namespace fCraft
                     }
                     else
                     {
-                        TeamDeathMatch.timeLimit = (timeLimit * 60);
+                        fCraft.Games.TeamDeathMatch.timeLimit = (timeLimit * 60);
                         player.Message("The time limit has been changed to &W{0}&S minutes", timeLimit);
                         return;
                     }
@@ -185,7 +259,7 @@ namespace fCraft
                     }
                     else
                     {
-                        TeamDeathMatch.timeDelay = timeDelay;
+                        fCraft.Games.TeamDeathMatch.timeDelay = timeDelay;
                         player.Message("The time delay has been changed to &W{0}&s seconds", timeDelay);
                         return;
                     }
@@ -212,21 +286,21 @@ namespace fCraft
                     }
                     else
                     {
-                        TeamDeathMatch.scoreLimit = scoreLimit;
+                        fCraft.Games.TeamDeathMatch.scoreLimit = scoreLimit;
                         player.Message("The score limit has been changed to &W{0}&s points", scoreLimit);
                         return;
                     }
                 }
             }
-            if (TeamDeathMatch.isOn && (Option.ToLower() == "timelimit" || Option.ToLower() == "scorelimit" || Option.ToLower() == "timedelay"))
+            if (fCraft.Games.TeamDeathMatch.isOn && (Option.ToLower() == "timelimit" || Option.ToLower() == "scorelimit" || Option.ToLower() == "timedelay"))
             {
                 player.Message("You cannot adjust game settings while a game is going on");
                 return;
             }
             if (Option.ToLower() == "score")       //scoreboard for the matchs, different messages for when the game has ended. //td score
             {
-                int red = TeamDeathMatch.redScore;
-                int blue = TeamDeathMatch.blueScore;
+                int red = fCraft.Games.TeamDeathMatch.redScore;
+                int blue = fCraft.Games.TeamDeathMatch.blueScore;
 
                 if (red > blue)
                 {
@@ -287,7 +361,7 @@ namespace fCraft
             if (Option.ToLower() == "settings") //shows the current settings for the game (time limit, time delay, score limit)
             {
                 player.Message("The Current Settings For TDM: Time Delay: &c{0}&ss | Time Limit: &c{1}&sm | Score Limit: &c{2}&s points",
-                    TeamDeathMatch.timeDelay, (TeamDeathMatch.timeLimit / 60), TeamDeathMatch.scoreLimit);
+                    fCraft.Games.TeamDeathMatch.timeDelay, (fCraft.Games.TeamDeathMatch.timeLimit / 60), fCraft.Games.TeamDeathMatch.scoreLimit);
                 return;
             }
             if (Option.ToLower() == "help") //detailed help for the cmd
@@ -306,7 +380,7 @@ namespace fCraft
             {
                 if (player.Info.isPlayingTD)
                 {
-                    player.Message("&fThere are &W{0}&f seconds left in the game.", TeamDeathMatch.timeLeft);
+                    player.Message("&fThere are &W{0}&f seconds left in the game.", fCraft.Games.TeamDeathMatch.timeLeft);
                     return;
                 }
                 else

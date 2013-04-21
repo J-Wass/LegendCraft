@@ -20,14 +20,14 @@ namespace fCraft {
             151,
             new DateTime( 2012, 07, 19, 1, 0, 0, DateTimeKind.Utc ),
             "", "",
-            ReleaseFlags.None
+            ReleaseFlags.Dev
 #if DEBUG
             | ReleaseFlags.Dev
 #endif
  );
 
         public static string UserAgent {
-            get { return "LegendCraft " + CurrentRelease.VersionString; }
+            get { return "LegendCraft " + LatestStable; }
         }
 
         public const string LatestStable = "2.0.0";

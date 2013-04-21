@@ -9,7 +9,7 @@ using fCraft.Events;
 
 namespace fCraft.Games
 {
-    class TeamDeathMatch
+    public class TeamDeathMatch
     {
         //Team Tags
         public const string redTeam = "&C-Red-";

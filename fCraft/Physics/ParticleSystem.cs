@@ -407,11 +407,11 @@ namespace fCraft
                 hitted.Kill(world, String.Format("{0}&S was shot by {1}", hitted.ClassyName, hitted.ClassyName == by.ClassyName ? "theirself" : by.ClassyName));
                 updates.Add(new BlockUpdate(null, pos, Block.Air));
                 restDistance = 0;
-                if (TeamDeathMatch.isOn)
+                if (fCraft.Games.TeamDeathMatch.isOn)
                 {
                     if (hitted.Info.isPlayingTD && hitted.Info.isOnBlueTeam && by.Info.isPlayingTD) //if the player is playing TD and on blue team, +1 for Red Team Score
                     {
-                        TeamDeathMatch.redScore++;
+                        fCraft.Games.TeamDeathMatch.redScore++;
                         hitted.Info.gameDeaths++;
                         hitted.Info.totalDeathsTDM++;
                         by.Info.gameKills++;
@@ -419,7 +419,7 @@ namespace fCraft
                     }
                     if (hitted.Info.isPlayingTD && hitted.Info.isOnRedTeam && by.Info.isPlayingTD) //if the player is playing TD and on blue team, +1 for Red Team Score
                     {
-                        TeamDeathMatch.blueScore++;
+                        fCraft.Games.TeamDeathMatch.blueScore++;
                         hitted.Info.gameDeaths++;       //counts the individual players deaths
                         hitted.Info.totalDeathsTDM++;   //tallies total TDM deaths (never gets reset)
                         by.Info.gameKills++;            //counts the individual players amount of kills
