@@ -402,7 +402,7 @@ namespace fCraft
             Category = CommandCategory.Fun,
             Permissions = new Permission[] { Permission.Chat },
             IsConsoleSafe = false,
-            Usage = "/Stats (AllTime|Top10Kills|Top10Deaths|Help)\n&HNote: Leave Blank For Current Game Stats.",
+            Usage = "/Stats (AllTime|TopKills|TopDeaths|Help)\n&HNote: Leave Blank For Current Game Stats.",
             Handler = StatisticsHandler
         };
 
@@ -516,8 +516,8 @@ namespace fCraft
                     case "help": //user does /stats help
                         player.Message("&HDetailed help for the /Stats (options):");
                         player.Message("&HAllTime&S - Shows your all time TDM stats.");
-                        player.Message("&HTop10Kills&S - Starts a game of Team Deathmatch");
-                        player.Message("&HTop10Deaths&S - show the players with the all time most Kills and Deaths.");
+                        player.Message("&HTopKills&S - Starts a game of Team Deathmatch");
+                        player.Message("&HTopDeaths&S - show the players with the all time most Kills and Deaths.");
                         player.Message("&HNote: Leave Blank For Current Game Stats");
                         return;
                 }
