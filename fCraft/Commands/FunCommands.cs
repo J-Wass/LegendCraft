@@ -111,22 +111,21 @@ namespace fCraft
                     player.Message("&SThere is already a game going on");
                     return;
                 }
-                if (player.World.CountPlayers(true) < 2)
-                {
-                    player.Message("&SThere must be at least &W2&S players on this world to play Infection");
-                    return;
-                }
+                //if (player.World.CountPlayers(true) < 2)
+            //    {
+           //         player.Message("&SThere must be at least &W2&S players on this world to play Infection");
+           //         return;
+           //     }
                 else
                 {
                     try
                     {
-                        fCraft.Games.Infection.GetInstance(player.World);
+                        fCraft.Games.Infection.Start(world);
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
-                        Logger.Log(LogType.Warning, "Found Exception:" + e);
+                        Logger.Log(LogType.Error, "Error: " + e);
                     }
-                    fCraft.Games.Infection.Start();
                     return;
                 }
             }

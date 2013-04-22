@@ -93,8 +93,17 @@ THE SOFTWARE.*/
 
         static void PluginsHandler(Player player, Command cmd)
         {
+            List<String> plugins = new List<String>();
             player.Message("&c_Current plugins on {0}&c_", ConfigKey.ServerName.GetString());
-            player.Message(String.Join(", ", PluginManager.Plugins));
+          
+            //Sloppy... PluginManager.Plugins adds .Init, so this should split the .Init from the plugin name
+            foreach (Plugin plugin in PluginManager.Plugins)
+            {
+                String pluginString = plugin.ToString();
+                string[] splitPluginString = pluginString.Split('.');
+                plugins.Add(splitPluginString[0]);
+            }
+            player.Message(String.Join(", ", plugins));
         }
         static readonly CommandDescriptor CdStopWatch = new CommandDescriptor
         {

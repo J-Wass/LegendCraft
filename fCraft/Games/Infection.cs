@@ -1,4 +1,23 @@
-﻿using System;
+﻿/* Copyright (c) <2012> <LeChosenOne, DingusBungus, Eeyle>
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,24 +44,23 @@ namespace fCraft.Games
         public static List<Player> InfectionPlayers = new List<Player>();
 
 
-        public static Infection GetInstance(World world)
+        public Infection(World world)
         {
-            if (instance == null)
-            {
                 world_ = world;
-                instance = new Infection();
                 startTime = DateTime.Now;
                 task_ = new SchedulerTask(Interval, true).RunForever(TimeSpan.FromSeconds(1));
-            }
-            return instance;
         }
 
-        public static void Start()
+        public static void Start(World world)
         {
             Player.Moving += PlayerMoved;
+           
+            world_ = world;           
+            startTime = DateTime.Now;
             world_.gameMode = GameMode.Infection; 
             Scheduler.NewTask(t => world_.Players.Message("&WInfection &fwill be starting in {0} seconds: &WGet ready!", timeDelay))
-                .RunRepeating(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(10), 1);
+                .RunRepeating(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(20), 2);
+            task_ = new SchedulerTask(Interval, true).RunForever(TimeSpan.FromSeconds(1));
         }
 
         public static void Stop(Player p) //for stopping the game early
@@ -97,7 +115,7 @@ namespace fCraft.Games
                     return;
                 }
             }
-            timeLeft = Convert.ToInt16(((timeDelay + timeLimit) - (DateTime.Now - startTime).TotalSeconds));
+            timeLeft = Convert.ToInt16(((timeDelay + timeLimit) - (DateTime.Now -  startTime).TotalSeconds));
 
             if (isOn && (DateTime.Now - lastChecked).TotalSeconds > 2) //Check for win conditions
             {
