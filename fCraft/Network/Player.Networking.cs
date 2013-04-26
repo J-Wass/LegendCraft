@@ -1323,10 +1323,13 @@ namespace fCraft {
                 }
             }
 
+            //Get Player array of all players in the world
             Player[] worldPlayerList = World.Players;
             Position pos = Position;
 
-            for( int i = 0; i < worldPlayerList.Length; i++ ) {
+            //Loop through all players in the world
+            for( int i = 0; i < worldPlayerList.Length; i++ ) 
+            {
                 Player otherPlayer = worldPlayerList[i];
                 if( otherPlayer == this ||
                     !CanSeeMoving( otherPlayer ) ||

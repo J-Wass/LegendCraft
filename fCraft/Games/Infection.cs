@@ -53,12 +53,12 @@ namespace fCraft.Games
             world_ = world;           
             startTime = DateTime.Now;
             world_.gameMode = GameMode.Infection;
+            stopwatch.Reset();
             stopwatch.Start();
             Scheduler.NewTask(t => world_.Players.Message("&WInfection &fwill be starting in {0} seconds: &WGet ready!", (timeDelay - stopwatch.Elapsed.Seconds))).RunRepeating(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(10), 2);
             if (stopwatch.Elapsed.Seconds > 11)
             {
                 stopwatch.Stop();
-                stopwatch.Reset();
             }
             task_ = new SchedulerTask(Interval, true).RunForever(TimeSpan.FromSeconds(1));
         }
@@ -102,6 +102,7 @@ namespace fCraft.Games
                         p.TeleportTo(new Position(x, y, z1 + 2).ToVector3I().ToPlayerCoords()); //teleport players to a random position
                         beginGame(p);
                         chooseInfected();
+                        
                     }
                     isOn = true;
                     lastChecked = DateTime.Now;     //used for intervals
@@ -151,7 +152,10 @@ namespace fCraft.Games
             int randNumber = randInfected.Next(0, world_.Players.Length);
             Player infected = world_.Players[randNumber];
 
-            world_.Players.Message("&c{0} has been infected!", infected.Name);
+            if (world_.Players.Count(player => player.Info.isInfected) == 0)
+            {
+                world_.Players.Message("&c{0} has been infected!", infected.Name);
+            }
             infected.Info.isInfected = true;
             infected.iName = "_Infected_";
             infected.entityChanged = true;
@@ -171,8 +175,6 @@ namespace fCraft.Games
             Player.JoinedWorld -= PlayerLeftWorld;
             Player.Disconnected -= PlayerLeftServer;
 
-            world_.Players.Message("&eEnding the infected game...");
-
             foreach (Player p in world_.Players)
             {
                 p.Info.isPlayingInfection = false;
@@ -183,6 +185,7 @@ namespace fCraft.Games
                     p.entityChanged = false;
                 }
                 p.Message("&aYour status has been reverted!");
+                p.JoinWorld(world_, WorldChangeReason.Rejoin);                
             }
 
             world_.gameMode = GameMode.NULL;
@@ -207,14 +210,13 @@ namespace fCraft.Games
                 {
                     foreach (Player p in world_.Players)
                     {
-                        if (p == e.Player) //ignore the player that moved in the player list
-                        {
-                            return;
-                        }
                         Vector3I pos = p.Position.ToBlockCoords(); //convert to block coords
-                        if (e.NewPosition.DistanceSquaredTo(pos.ToPlayerCoords()) <= 33 * 33)
+                        if (e.NewPosition.DistanceSquaredTo(pos.ToPlayerCoords()) <= 33 * 33 && p != e.Player) //Get blocks on and around player, ignore instances when the target = player
                         {
-                            Infect(p, e.Player);
+                            if (!p.Info.isInfected)
+                            {
+                                Infect(p, e.Player);
+                            }
                         }
                     }
                 }
