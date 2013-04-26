@@ -133,7 +133,7 @@ namespace fCraft
                      Logger.LogToConsole("" + ex);
                  }*/
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //do nothing, server is probably down and host doesnt care
             }

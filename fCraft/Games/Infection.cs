@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 using fCraft.Events;
 
 namespace fCraft.Games
@@ -35,41 +36,38 @@ namespace fCraft.Games
         public static int timeLeft = 0;
         public static int timeLimit = 300;
         public static int timeDelay = 20;
+        public static Stopwatch stopwatch = new Stopwatch();
 
         //Values
         public static bool isOn = false;
         public static Infection instance;
         private static World world_;
         public static Random rand = new Random();
-        public static List<Player> InfectionPlayers = new List<Player>();
-
-
-        public Infection(World world)
-        {
-                world_ = world;
-                startTime = DateTime.Now;
-                task_ = new SchedulerTask(Interval, true).RunForever(TimeSpan.FromSeconds(1));
-        }
 
         public static void Start(World world)
         {
             Player.Moving += PlayerMoved;
+            Player.JoinedWorld += PlayerLeftWorld;
+            Player.Disconnected += PlayerLeftServer;
            
             world_ = world;           
             startTime = DateTime.Now;
-            world_.gameMode = GameMode.Infection; 
-            Scheduler.NewTask(t => world_.Players.Message("&WInfection &fwill be starting in {0} seconds: &WGet ready!", timeDelay))
-                .RunRepeating(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(20), 2);
+            world_.gameMode = GameMode.Infection;
+            stopwatch.Start();
+            Scheduler.NewTask(t => world_.Players.Message("&WInfection &fwill be starting in {0} seconds: &WGet ready!", (timeDelay - stopwatch.Elapsed.Seconds))).RunRepeating(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(10), 2);
+            if (stopwatch.Elapsed.Seconds > 11)
+            {
+                stopwatch.Stop();
+                stopwatch.Reset();
+            }
             task_ = new SchedulerTask(Interval, true).RunForever(TimeSpan.FromSeconds(1));
         }
 
         public static void Stop(Player p) //for stopping the game early
         {
-            Player.Moving -= PlayerMoved;
             if (p != null && world_ != null)
             {
-                world_.Players.Message("{0}&S stopped the game of Infection on world {1}",
-                    p.ClassyName, world_.ClassyName);
+                world_.Players.Message("{0}&S stopped the game of Infection on world {1}", p.ClassyName, world_.ClassyName);                    
             }
             RevertGame();
             return;
@@ -86,11 +84,6 @@ namespace fCraft.Games
             }
             if (!isOn)
             {
-                if (world_.Players.Count() < 2) //in case players leave the world or disconnect during the start delay
-                {
-                    world_.Players.Message("&WInfection&s requires at least 2 people to play.");
-                    return;
-                }
                 if (startTime != null && (DateTime.Now - startTime).TotalSeconds > timeDelay)
                 {
                     foreach (Player p in world_.Players)
@@ -117,127 +110,87 @@ namespace fCraft.Games
             }
             timeLeft = Convert.ToInt16(((timeDelay + timeLimit) - (DateTime.Now -  startTime).TotalSeconds));
 
-            if (isOn && (DateTime.Now - lastChecked).TotalSeconds > 2) //Check for win conditions
+            if (isOn) //Check for win conditions
             {
                 if (world_.Players.Count(player => player.Info.isInfected) == world_.Players.Count())
                 {
-                    world_.Players.Message("&cThe Zombies have won!!!");
-                    Stop(null);
+                    world_.Players.Message("&cThe Zombies have won! All humans have died off!");
+                    RevertGame();
                     return;
                 }
                 if (world_.Players.Count(player => player.Info.isInfected) == 0 && world_.Players.Count() > 0)
                 {
                     world_.Players.Message("&aThe Zombies have died off! The Humans win!");
-                    Stop(null);
+                    RevertGame();
                     return;
                 }
-                if (timeLeft == 0) //if the time limit has hit 0 before all humans are turned into zombies
+                if (timeLeft == 0)
                 {
                     world_.Players.Message("&aThe Zombies failed to infect everyone! The Humans win!");
-                    Stop(null);
+                    RevertGame();
                     return;
                 }
 
             }
 
-            if (lastChecked != null && (DateTime.Now - lastChecked).TotalSeconds > 29.9 && timeLeft <= timeLimit)
+            if (lastChecked != null && (DateTime.Now - lastChecked).TotalSeconds > 29.9 && timeLeft < timeLimit)
             {
                 world_.Players.Message("&sThere are currently {0} human(s) and {1} zombie(s) left on {2}", world_.Players.Count() - world_.Players.Count(player => player.Info.isInfected), world_.Players.Count(player => player.Info.isInfected), world_.ClassyName);
+                lastChecked = DateTime.Now;
             }
         }
 
         public static void beginGame(Player player)
         {
             player.Info.isPlayingInfection = true;
-            InfectionPlayers.Add(player);
         }
-
-        //Choose a random player as the infected player
-        static Random randInfected = new Random();
-        static int randNumber = randInfected.Next(0, InfectionPlayers.Count());
-        static Player infected = InfectionPlayers[randNumber];
        
         public static void chooseInfected()
         {
+            Random randInfected = new Random();
+            int randNumber = randInfected.Next(0, world_.Players.Length);
+            Player infected = world_.Players[randNumber];
+
             world_.Players.Message("&c{0} has been infected!", infected.Name);
             infected.Info.isInfected = true;
-            infected.Info.oldname =  infected.Info.DisplayedName;
-            infected.Info.DisplayedName = "&cINFECTED";
-            infected.iName = "&cINFECTED";
+            infected.iName = "_Infected_";
             infected.entityChanged = true;
         }
 
-        //rather primitive, but yolo
-        public static bool tagged(Player player, Player target)
+        public static void Infect(Player target, Player player)
         {
-            //center center
-            if (player.Position == target.Position)
-            {
-                return true;
-            }
-            //bottom left
-            if ((player.Position.X - 1) == (target.Position.X) && (player.Position.Y - 1) == (target.Position.Y))
-            {
-                return true;
-            }
-            //center left
-            if ((player.Position.X - 1) == (target.Position.X) && (player.Position.Y) == (target.Position.Y))
-            {
-                return true;
-            }
-            //top left
-            if ((player.Position.X - 1) == (target.Position.X) && (player.Position.Y + 1) == (target.Position.Y))
-            {
-                return true;
-            }
-            //top center
-            if ((player.Position.X) == (target.Position.X) && (player.Position.Y + 1) == (target.Position.Y))
-            {
-                return true;
-            }
-            //top right
-            if ((player.Position.X + 1) == (target.Position.X) && (player.Position.Y + 1) == (target.Position.Y))
-            {
-                return true;
-            }
-            //center right
-            if ((player.Position.X + 1) == (target.Position.X) && (player.Position.Y) == (target.Position.Y))
-            {
-                return true;
-            }
-            //bottom right
-            if ((player.Position.X + 1) == (target.Position.X) && (player.Position.Y - 1) == (target.Position.Y))
-            {
-                return true;
-            }
-            //bottom center
-            if ((player.Position.X) == (target.Position.X) && (player.Position.Y - 1) == (target.Position.Y))
-            {
-                return true;
-            }
-            return false;
+            world_.Players.Message("&c{0} has infected {1}!", player.Name, target.Name);
+            target.Info.isInfected = true;
+            target.iName = "_Infected_";
+            target.entityChanged = true;
         }
 
         public static void RevertGame() //Reset game bools/stats and stop timers
         {
+            Player.Moving -= PlayerMoved;
+            Player.JoinedWorld -= PlayerLeftWorld;
+            Player.Disconnected -= PlayerLeftServer;
+
+            world_.Players.Message("&eEnding the infected game...");
+
+            foreach (Player p in world_.Players)
+            {
+                p.Info.isPlayingInfection = false;
+                if (p.Info.isInfected)
+                {
+                    p.Info.isInfected = false;
+                    p.iName = null;
+                    p.entityChanged = false;
+                }
+                p.Message("&aYour status has been reverted!");
+            }
+
             world_.gameMode = GameMode.NULL;
             task_.Stop();
             isOn = false;
             instance = null;
             world_ = null;
           
-            foreach (Player p in InfectionPlayers)
-            {
-                p.Info.isPlayingInfection = false;
-                if (p.Info.isInfected)
-                {
-                    p.Info.isInfected = false;
-                    p.Info.DisplayedName = p.Info.oldname;
-                    p.iName = null;
-                    p.entityChanged = false;
-                }
-                p.Message("&aYour status has been reverted!");
-            }
 
         }
         #region events
@@ -246,21 +199,26 @@ namespace fCraft.Games
         public static void PlayerMoved(object poo, fCraft.Events.PlayerMovingEventArgs e)
         {
             if (e.Player.Info.isInfected)
-            {
-                foreach (Player target in InfectionPlayers)
+            {       
+                Vector3I oldPos = new Vector3I( e.OldPosition.X / 32, e.OldPosition.Y / 32, e.OldPosition.Z / 32 ); //get positions as block coords
+                Vector3I newPos = new Vector3I( e.NewPosition.X / 32, e.NewPosition.Y / 32, e.NewPosition.Z / 32 );
+
+                if (oldPos.X != newPos.X || oldPos.Y != newPos.Y || oldPos.Z != newPos.Z) //check if player has moved at least one block
                 {
-                    if (tagged(e.Player, target) && !target.Info.isInfected)
+                    foreach (Player p in world_.Players)
                     {
-                        world_.Players.Message("&c{0} has infected {1}!", e.Player.Name, target.Name);
-                        target.Info.isInfected = true;
-                        target.Info.oldname = target.Info.DisplayedName;
-                        target.Info.DisplayedName = "&cINFECTED";
-                        target.iName = "&cINFECTED";
-                        target.entityChanged = true;
+                        if (p == e.Player) //ignore the player that moved in the player list
+                        {
+                            return;
+                        }
+                        Vector3I pos = p.Position.ToBlockCoords(); //convert to block coords
+                        if (e.NewPosition.DistanceSquaredTo(pos.ToPlayerCoords()) <= 33 * 33)
+                        {
+                            Infect(p, e.Player);
+                        }
                     }
                 }
             }
-
         }
 
         //check if player left server to reset stats
