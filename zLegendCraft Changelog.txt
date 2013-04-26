@@ -1,6 +1,7 @@
 LegendCraft Changelog v2.0.1
 Add: /plugins
-AddL /back
+Add: /back
+Add: Infection Game
 
 LegendCraft Changelog v2.0.0
 Add: /global
