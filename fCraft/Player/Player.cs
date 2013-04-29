@@ -118,6 +118,7 @@ namespace fCraft
 
 
         /// <summary> Plain version of the name (no formatting). </summary>
+        
         [NotNull]
         public string Name
         {
@@ -204,6 +205,7 @@ namespace fCraft
         public bool GlobalChatIgnore = false;
 
         public Position previousLocation;
+        public World previousWorld = null;
 
         public bool fireworkMode = false;
 

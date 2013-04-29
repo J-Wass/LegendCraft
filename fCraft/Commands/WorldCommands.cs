@@ -105,7 +105,15 @@ THE SOFTWARE.*/
             else
             {
                 player.Message("&aTeleporting you back to your previous location...");
-                player.TeleportTo(player.previousLocation);
+                if (player.previousWorld == null)
+                {
+                    player.TeleportTo(player.previousLocation);
+                }
+                else
+                {
+                    player.JoinWorld(player.previousWorld, WorldChangeReason.ManualJoin);
+                    player.TeleportTo(player.previousLocation);
+                }
                 return;
             }
         }
@@ -2545,6 +2553,8 @@ THE SOFTWARE.*/
 
         static void SpawnHandler( Player player, Command cmd ) {
             if( player.World == null ) PlayerOpException.ThrowNoWorld( player );
+            player.previousLocation = player.Position;
+            player.previousWorld = null;
             player.TeleportTo( player.World.LoadMap().Spawn );
         }
 

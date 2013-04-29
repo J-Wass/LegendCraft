@@ -17,12 +17,14 @@ namespace fCraft.ServerGUI
         volatile bool shutdownPending, startupComplete, shutdownComplete;
         const int MaxLinesInLog = 2000,
                   LinesToTrimWhenExceeded = 50;
+        public bool onGlobal = false;
 
         public MainForm()
         {
             InitializeComponent();
             Shown += StartUp;
             console.OnCommand += console_Enter;
+            tabChat.SelectedIndexChanged += tabChat_tabSelected;
             logBox.LinkClicked += new LinkClickedEventHandler(Link_Clicked);
             MenuItem[] menuItems = new MenuItem[] { new MenuItem("Copy", new EventHandler(CopyMenuOnClickHandler)) };
             logBox.ContextMenu = new ContextMenu(menuItems);
@@ -39,7 +41,7 @@ namespace fCraft.ServerGUI
             Heartbeat.UriChanged += OnHeartbeatUriChanged;
             Server.PlayerListChanged += OnPlayerListChanged;
             Server.ShutdownEnded += OnServerShutdownEnded;
-            Text = "LegendCraft v.1.9.0 - starting...";
+            Text = "LegendCraft v" + fCraft.Updater.LatestStable + " - starting...";
             startupThread = new Thread(StartupThread);
             startupThread.Name = "LegendCraft ServerGUI Startup";
             startupThread.Start();
@@ -207,7 +209,16 @@ namespace fCraft.ServerGUI
                     // insert and color a new message
                     int oldLength = logBox.Text.Length;
                     string msgToAppend = e.Message + Environment.NewLine;
-                    logBox.AppendText(msgToAppend);
+
+                    if (e.MessageType == LogType.GlobalChat) //if global chat, send text to global chat box, not server chat box
+                    {
+                        logGlobal.SelectionColor = System.Drawing.Color.LightGray;
+                        logGlobal.AppendText(msgToAppend);
+                    }
+                    else
+                    {
+                        logBox.AppendText(msgToAppend);
+                    }
                     logBox.Select(oldLength, msgToAppend.Length);
                     switch (e.MessageType)
                     {
@@ -400,7 +411,15 @@ namespace fCraft.ServerGUI
                     }
                     else
                     {
-                        Player.Console.ParseMessage(line, true);
+                        if (onGlobal)
+                        {
+                            fCraft.GlobalChat.GlobalThread.SendChannelMessage("(console): " + line);
+                            Logger.Log(LogType.GlobalChat, "(console): " + line);
+                        }
+                        else
+                        {
+                            Player.Console.ParseMessage(line, true);
+                        }
                     }
 #if !DEBUG
                 }
@@ -587,6 +606,18 @@ namespace fCraft.ServerGUI
             }
         }
 
+        public void tabChat_tabSelected(object sender, EventArgs e)
+        {
+            if (tabChat.SelectedTab == tabChat.TabPages["tabGlobal"])
+            {
+                onGlobal = true;
+            }
+            if (tabChat.SelectedTab == tabChat.TabPages["tabServer"])
+            {
+                onGlobal = false;
+            }
+        }
+
         #region PlayerViewer
       
         private void playerList_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -611,7 +642,7 @@ namespace fCraft.ServerGUI
         #endregion
 
         #region PreventClose
-        //should prevent users from accidently closing the ServerGUI X out window
+        //should prevent users from accidently closing the ServerGUI X out window (taken out for now)
 
         private void Mainform_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -628,6 +659,7 @@ namespace fCraft.ServerGUI
 
 
         #endregion
+
 
 
     }

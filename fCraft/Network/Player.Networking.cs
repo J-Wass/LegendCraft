@@ -539,18 +539,17 @@ namespace fCraft {
             }
 
             string givenName = ReadString();
+            string[] splitGivenName = givenName.Split('@');
 
             // Check name for nonstandard characters
-            if( !IsValidName( givenName ) ) 
+            if( !IsValidName( splitGivenName[0] ) ) 
             {
                     Logger.Log(LogType.SuspiciousActivity,
                                 "Player.LoginSequence: Unacceptable player name: {0} ({1})",
                                 givenName, IP);
                     KickNow("Invalid characters in player name!", LeaveReason.ProtocolViolation);  
-
                 
             }
-            
 
             string verificationCode = ReadString();
             reader.ReadByte(); // unused
@@ -561,13 +560,30 @@ namespace fCraft {
             // ReSharper restore PossibleNullReferenceException
             Info = PlayerDB.FindOrCreateInfoForPlayer( givenName, IP );
             ResetAllBinds();
+
+            //Place mojang account support
+            /*if (givenName.Contains('@'))
+            {
+                if (Info.mojang == 0) //if mojang account player has not logged in yet
+                {
+                    Info.mojang = PlayerDB.PlayerInfoList.Count(info => info.mojang > 0) + 1; //assign unique number to Info.mojang
+                }
+                Info.Name = splitGivenName[0] + "@" + Info.mojang.ToString(); //assign unique name
+            }*/
  
             if( Server.VerifyName( givenName, verificationCode, Heartbeat.Salt ) ) 
             {
                 // update capitalization of player's name
                 if( !Info.Name.Equals( givenName, StringComparison.Ordinal ) )
                 {
-                    Info.Name = givenName;                                               
+                   /* if (givenName.Contains('@'))
+                    {
+                        Info.Name = splitGivenName[0] + "@" + Info.mojang.ToString();
+                    }
+                    else*/
+                    {
+                        Info.Name = givenName;
+                    }                      
                 }
 
             } else {

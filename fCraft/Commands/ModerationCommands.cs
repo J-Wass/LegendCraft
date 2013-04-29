@@ -147,6 +147,7 @@ THE SOFTWARE.*/
             {
                 Position pummeled = new Position(target.Position.X, target.Position.Y, (target.World.Map.Bounds.ZMin) * 32);
                 player.previousLocation = player.Position;
+                player.previousWorld = null;
                 target.TeleportTo(pummeled);
 
                 if (string.IsNullOrEmpty(item))
@@ -1041,6 +1042,7 @@ THE SOFTWARE.*/
             if (player.Can(Permission.Slap, target.Info.Rank)){
                 Position slap = new Position(target.Position.X, target.Position.Y, (target.World.Map.Bounds.ZMax) * 32);
                 player.previousLocation = player.Position;
+                player.previousWorld = null;
                 target.TeleportTo(slap);
                 if (string.IsNullOrEmpty(item)){
                     Server.Players.CanSee(target).Union(target).Message("{0} &Swas slapped sky high by {1}", target.ClassyName, player.ClassyName);
@@ -2101,6 +2103,7 @@ THE SOFTWARE.*/
 
                     } else {
                         player.previousLocation = player.Position;
+                        player.previousWorld = null;
                         player.TeleportTo( new Position {
                             X = (short)(x * 32 + 16),
                             Y = (short)(y * 32 + 16),
@@ -2130,6 +2133,7 @@ THE SOFTWARE.*/
 
                     if( targetWorld == player.World ) {
                         player.previousLocation = player.Position;
+                        player.previousWorld = null;
                         player.TeleportTo( target.Position );
 
                     } else {
@@ -2143,6 +2147,8 @@ THE SOFTWARE.*/
                                     return;
                                 }
                                 player.StopSpectating();
+                                player.previousLocation = player.Position;
+                                player.previousWorld = player.World;
                                 player.JoinWorld( targetWorld, WorldChangeReason.Tp, target.Position );
                                 break;
                             case SecurityCheckResult.BlackListed:
@@ -2230,6 +2236,7 @@ THE SOFTWARE.*/
             if( target.World == world ) {
                 // teleport within the same world
                 target.previousLocation = target.Position;
+                target.previousWorld = null;
                 target.TeleportTo( toPlayer.Position );
                 target.Message("&8You were summoned by {0}", player.ClassyName);
 

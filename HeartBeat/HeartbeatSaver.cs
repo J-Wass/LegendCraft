@@ -1,4 +1,5 @@
 // Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
+// Modified 2012-2013 LegendCraft Team
 using System;
 using System.IO;
 using System.Net;

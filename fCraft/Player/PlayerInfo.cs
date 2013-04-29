@@ -19,6 +19,10 @@ namespace fCraft
         [CanBeNull]
         public int Money = 0;
 
+        ///<summary> Support for mojang accounts.</summary>
+        [NotNull]
+        public int mojang = 0;
+
         /// <summary> Player's Minecraft account name. </summary>
         [NotNull]
         public string Name { get; internal set; }
@@ -522,8 +526,8 @@ namespace fCraft
             if (fields[19].Length > 0) Int32.TryParse(fields[19], out info.BlocksDeleted);
             Int32.TryParse(fields[20], out info.TimesVisited);
             if (fields[20].Length > 0) Int32.TryParse(fields[21], out info.MessagesWritten);
-            // field 23 are no longer in use
             Int32.TryParse(fields[22], out info.PromoCount);
+            //Int32.TryParse(fields[23], out info.mojang);
 
             if (fields[24].Length > 0) info.PreviousRank = Rank.Parse(fields[24]);
             if (fields[25].Length > 0) info.RankChangeReason = Unescape(fields[25]);
@@ -1116,7 +1120,7 @@ namespace fCraft
 
         internal void Serialize(StringBuilder sb)
         {
-            sb.Append(Name).Append(','); // 0
+                sb.Append(Name).Append(','); // 0
             if (!LastIP.Equals(IPAddress.None)) sb.Append(LastIP); // 1
             sb.Append(',');
 
@@ -1177,7 +1181,10 @@ namespace fCraft
             sb.Append(',');
 
             if (PromoCount > 0) sb.Digits(PromoCount); //22
-            sb.Append(',', 2); //23 no longer in use
+            sb.Append(',', 2);
+
+           // sb.Digits(mojang); //23
+           // sb.Append(',');
 
 
             if (PreviousRank != null) sb.Append(PreviousRank.FullName); // 24
@@ -1264,7 +1271,7 @@ namespace fCraft
         {
             if (writer == null) throw new ArgumentNullException("writer");
             // General
-            writer.Write(Name); // 0
+               writer.Write(Name); // 0
             WriteString(writer, DisplayedName); // 1
             Write7BitEncodedInt(writer, ID); // 2
             if (IsOnline)
