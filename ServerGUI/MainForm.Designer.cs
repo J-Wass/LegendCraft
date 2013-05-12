@@ -220,11 +220,11 @@
             this.logBox.BackColor = System.Drawing.Color.Black;
             this.logBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.logBox.HideSelection = false;
-            this.logBox.Location = new System.Drawing.Point(-5, 0);
+            this.logBox.Location = new System.Drawing.Point(-3, -2);
             this.logBox.Name = "logBox";
             this.logBox.ReadOnly = true;
             this.logBox.Size = new System.Drawing.Size(607, 368);
-            this.logBox.TabIndex = 7;
+            this.logBox.TabIndex = 10;
             this.logBox.Text = "";
             this.logBox.TextChanged += new System.EventHandler(this.logBox_TextChanged);
             // 

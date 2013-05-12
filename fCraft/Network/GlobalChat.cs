@@ -294,19 +294,19 @@ namespace fCraft
                             if (msg.Type == IRCMessageType.ChannelAction)
                             {
                                 SendList.Message("&i[Global] * {1} {2}", ActualBotNick, msg.Nick, processedMessage);
-                                Logger.Log(LogType.GlobalChat, Color.IRC + "[Global] * {1} {2}", ActualBotNick, msg.Nick, processedMessage);               
+                                Logger.Log(LogType.GlobalChat,"[Global] * {1} {2}", ActualBotNick, msg.Nick, processedMessage);               
                             }
                             else
                             {
-                                SendList.Message("&i[Global] {1}{2}: {3}", ActualBotNick, msg.Nick, Color.White, processedMessage);
-                                Logger.Log(LogType.GlobalChat, Color.IRC + "[Global] {1}{2}: {3}", ActualBotNick, msg.Nick, Color.White, processedMessage);            
+                                SendList.Message("&i[Global] {1}: {2}", ActualBotNick, msg.Nick, processedMessage);
+                                Logger.Log(LogType.GlobalChat,"[Global] {1}: {2}", ActualBotNick, msg.Nick, processedMessage);            
                             }
                         }
 
                         else if (msg.Message.StartsWith("#"))
                         {
-                            SendList.Message("&i[Global] {1}{2}: {3}", ActualBotNick, msg.Nick, Color.White, processedMessage.Substring(1));
-                            Logger.Log(LogType.GlobalChat, Color.IRC + "[Global] {1}{2}: {3}", ActualBotNick, msg.Nick, Color.White, processedMessage.Substring(1));              
+                            SendList.Message("&i[Global] {1}: {2}", ActualBotNick, msg.Nick, processedMessage.Substring(1));
+                            Logger.Log(LogType.GlobalChat,"[Global] {1}: {2}", ActualBotNick, msg.Nick,  processedMessage.Substring(1));              
                         }
                         return;
 
@@ -316,12 +316,12 @@ namespace fCraft
                         if (msg.Nick.StartsWith("("))
                         {
                             SendList.Message("&i[Global] Server {0} joined the LegendCraft Global Chat", msg.Nick);
-                            Logger.Log(LogType.GlobalChat, Color.IRC + "[Global] Server {0} joined the LegendCraft Global Chat", msg.Nick);               
+                            Logger.Log(LogType.GlobalChat,"[Global] Server {0} joined the LegendCraft Global Chat", msg.Nick);               
                         }
                         else
                         {
                             SendList.Message("&i[Global] {0} joined the LegendCraft Global Chat", msg.Nick);
-                            Logger.Log(LogType.GlobalChat, Color.IRC + "[Global] {0} joined the LegendCraft Global Chat", msg.Nick);                   
+                            Logger.Log(LogType.GlobalChat, "[Global] {0} joined the LegendCraft Global Chat", msg.Nick);                   
                         }
                         return;
 
@@ -338,7 +338,7 @@ namespace fCraft
                         {
                             if (!ResponsibleForInputParsing) return;
                             SendList.Message("&i[Global] {0} kicked {1} ({2})", msg.Nick, kicked, msg.Message);
-                            Logger.Log(LogType.GlobalChat, Color.IRC + "[Global] {0} kicked {1} ({2})", msg.Nick, kicked, msg.Message);                 
+                            Logger.Log(LogType.GlobalChat, "[Global] {0} kicked {1} ({2})", msg.Nick, kicked, msg.Message);                 
                         }
                         return;
 
@@ -347,14 +347,14 @@ namespace fCraft
                     case IRCMessageType.Quit:
                         if (!ResponsibleForInputParsing) return;
                         SendList.Message("&i[Global] Server {0} left the LegendCraft Global Chat", msg.Nick);
-                        Logger.Log(LogType.GlobalChat, Color.IRC + "[Global] Server {0} left the LegendCraft Global Chat", msg.Nick);
+                        Logger.Log(LogType.GlobalChat, "[Global] Server {0} left the LegendCraft Global Chat", msg.Nick);
                         return;
 
 
                     case IRCMessageType.NickChange:
                         if (!ResponsibleForInputParsing) return;
                         SendList.Message("&i[Global] {0} is now known as {1}", msg.Nick, msg.Message);
-                        Logger.Log(LogType.GlobalChat, Color.IRC + "[Global] {0} is now known as {1}", msg.Nick, msg.Message);               
+                        Logger.Log(LogType.GlobalChat, "[Global] {0} is now known as {1}", msg.Nick, msg.Message);               
                         return;
 
 

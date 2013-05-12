@@ -210,10 +210,11 @@ namespace fCraft.ServerGUI
                     int oldLength = logBox.Text.Length;
                     string msgToAppend = e.Message + Environment.NewLine;
 
-                    if (e.MessageType == LogType.GlobalChat) //if global chat, send text to global chat box, not server chat box
+                    if (e.MessageType == LogType.GlobalChat) //If Global Message, send to global and stop
                     {
                         logGlobal.SelectionColor = System.Drawing.Color.LightGray;
                         logGlobal.AppendText(msgToAppend);
+                        return;
                     }
                     else
                     {
@@ -228,7 +229,7 @@ namespace fCraft.ServerGUI
                         case LogType.IRC:
                             if (ThemeBox.SelectedItem == null)
                             {
-                                logBox.SelectionColor = System.Drawing.Color.Navy;
+                                logBox.SelectionColor = System.Drawing.Color.FromName(Color.GetName(fCraft.Color.IRC));
                             }
                             else
                             {

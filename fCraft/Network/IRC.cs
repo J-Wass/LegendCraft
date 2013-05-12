@@ -270,16 +270,16 @@ namespace fCraft
                                     {
                                         Server.Message("&i(IRC) {0}{1}: {2}",
                                                         msg.Nick, Color.White, processedMessage);
-                                        Logger.Log(LogType.IRC, "(IRC) {0}{1}: {2}",
-                                                        msg.Nick, Color.White, processedMessage);
+                                        Logger.Log(LogType.IRC,"(IRC) {0}: {1}",
+                                                        msg.Nick, processedMessage);
                                     }
                                 }
                                 else if (msg.Message.StartsWith("#"))
                                 {
                                     Server.Message("&i(IRC) {0}{1}: {2}",
                                                     msg.Nick, Color.White, processedMessage.Substring(1));
-                                    Logger.Log(LogType.IRC, "(IRC) {0}{1}: {2}",
-                                                    msg.Nick, Color.White, processedMessage.Substring(1));
+                                    Logger.Log(LogType.IRC, "(IRC) {0}: {1}",
+                                                    msg.Nick, processedMessage.Substring(1));
                                 }
                             }
                         }
@@ -357,7 +357,7 @@ namespace fCraft
 
                             case IRCReplyCode.ErrorBadChannelKey:
                                 Logger.Log(LogType.IRC,
-                                            "Error: Channel password required for {0}. fCraft does not currently support passworded channels.",
+                                            "Error: Channel password required for {0}. LegendCraft does not currently support passworded channels.",
                                             msg.Channel);
                                 die = true;
                                 break;
