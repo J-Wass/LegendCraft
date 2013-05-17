@@ -1,10 +1,10 @@
 LegendCraft v2.1.0 RoadMap
 
-[]GlobalChat support on ServerGui
-[]Email Support
+[(sorta)]GlobalChat support on ServerGUI
+[x]Email Support
 [x]Infection
 [x]Cmd Back
 [x]Cmd Plugins
-[]Make TDM smoother
+[x]Make TDM smoother
 []DDoS Blue
 [x]Seduce Women, Obtain Currency

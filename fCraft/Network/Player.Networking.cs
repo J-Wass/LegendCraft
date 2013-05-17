@@ -539,16 +539,65 @@ namespace fCraft {
             }
 
             string givenName = ReadString();
-            string[] splitGivenName = givenName.Split('@');
+            string packetPlayerName = givenName; //make a copy of the full name, in case Mojang support is needed
+            bool UsedMojang = false;
 
             // Check name for nonstandard characters
-            if( !IsValidName( splitGivenName[0] ) ) 
+            if (!IsValidName(givenName))
             {
+                //check if email, provide crappy support here
+                if (givenName.Contains("@"))
+                { //if the user is an email address
+                    UsedMojang = true;
+                    PlayerInfo[] temp = PlayerDB.FindPlayerInfoByEmail(givenName); //check if they have been here before
+                    if (temp != null && temp.Length == 1)
+                    { //restore name if needed
+                        givenName = temp[0].Name;
+                    }
+                    else
+                    { //else, new player. Build a unique name
+                        Logger.Log(LogType.SystemActivity, "Email account " + givenName + " connected, attemping to create unique new name");
+                        int nameAppend = PlayerDB.PlayerInfoList.Where(p => p.MojangAccount != null).Count() + 1;
+                        string trimmedName = givenName.Split('@')[0].Replace("@", ""); //this should be the first part of the name ("Jonty800"@email.com)
+                        if (trimmedName == null) throw new ArgumentNullException("trimmedName");
+                        if (trimmedName.Length > 16)
+                        {
+                            trimmedName = trimmedName.Substring(0, 15 - (nameAppend.ToString().Length)); //shorten name
+                        }
+                        foreach (char ch in trimmedName.ToCharArray())
+                        { //replace invalid chars with "_"
+                            if ((ch < '0' && ch != '.') || (ch > '9' && ch < 'A') || (ch > 'Z' && ch < '_') || (ch > '_' && ch < 'a') || ch > 'z')
+                            {
+                                trimmedName = trimmedName.Replace(ch, '_');
+                            }
+                        }
+                        givenName = trimmedName + "." + nameAppend.ToString(); //this is now the player's new name
+                        //run a test to see if it is unique or not (unable to test)
+                        PlayerInfo[] Players = PlayerDB.FindPlayers(givenName); //gather matches
+                        while (Players.Length != 0)
+                        { //while matches were found
+                            //Name already exists. Reroll
+                            if (givenName.Length > 14)
+                            { //kick if substring causes invalid name
+                                Logger.Log(LogType.SuspiciousActivity,
+                                "Player.LoginSequence: Unacceptable player name, player failed to get new name", IP);
+                                KickNow("Invalid characters in player name!", LeaveReason.ProtocolViolation);
+                                return false;
+                                //returning false breaks loops in C#, right? haha been a while
+                            }
+                            givenName = givenName + (nameAppend + 1); //keep adding a new number to the end of the string until unique
+                            Players = PlayerDB.FindPlayers(givenName); //update Players based on new name
+                        }
+                    }
+                }
+                else
+                {
                     Logger.Log(LogType.SuspiciousActivity,
                                 "Player.LoginSequence: Unacceptable player name: {0} ({1})",
                                 givenName, IP);
-                    KickNow("Invalid characters in player name!", LeaveReason.ProtocolViolation);  
-                
+                    KickNow("Invalid characters in player name!", LeaveReason.ProtocolViolation);
+                    return false;
+                }
             }
 
             string verificationCode = ReadString();
@@ -558,92 +607,91 @@ namespace fCraft {
             // ReSharper disable PossibleNullReferenceException
             Position = WorldManager.MainWorld.Map.Spawn;
             // ReSharper restore PossibleNullReferenceException
-            Info = PlayerDB.FindOrCreateInfoForPlayer( givenName, IP );
+
+            Info = PlayerDB.FindOrCreateInfoForPlayer(givenName, IP);
             ResetAllBinds();
 
-            //Place mojang account support
-            /*if (givenName.Contains('@'))
-            {
-                if (Info.mojang == 0) //if mojang account player has not logged in yet
-                {
-                    Info.mojang = PlayerDB.PlayerInfoList.Count(info => info.mojang > 0) + 1; //assign unique number to Info.mojang
-                }
-                Info.Name = splitGivenName[0] + "@" + Info.mojang.ToString(); //assign unique name
-            }*/
- 
-            if( Server.VerifyName( givenName, verificationCode, Heartbeat.Salt ) ) 
-            {
-                // update capitalization of player's name
-                if( !Info.Name.Equals( givenName, StringComparison.Ordinal ) )
-                {
-                   /* if (givenName.Contains('@'))
-                    {
-                        Info.Name = splitGivenName[0] + "@" + Info.mojang.ToString();
-                    }
-                    else*/
-                    {
-                        Info.Name = givenName;
-                    }                      
-                }
 
-            } else {
+            if (Server.VerifyName(packetPlayerName, verificationCode, Heartbeat.Salt))
+            {
+                IsVerified = true;
+                // update capitalization of player's name
+                if (!Info.Name.Equals(givenName, StringComparison.Ordinal))
+                {
+                    Info.Name = givenName;
+                }
+                if (UsedMojang)
+                {
+                    Info.MojangAccount = packetPlayerName;
+                }
+            }
+            else
+            {
                 NameVerificationMode nameVerificationMode = ConfigKey.VerifyNames.GetEnum<NameVerificationMode>();
 
-                string standardMessage = String.Format( "Player.LoginSequence: Could not verify player name for {0} ({1}).",
-                                                        Name, IP );
-                if( IP.Equals( IPAddress.Loopback ) && nameVerificationMode != NameVerificationMode.Always ) {
-                    Logger.Log( LogType.SuspiciousActivity,
+                string standardMessage = String.Format("Player.LoginSequence: Could not verify player name for {0} ({1}).",
+                                                        Name, IP);
+                if (IP.Equals(IPAddress.Loopback) && nameVerificationMode != NameVerificationMode.Always)
+                {
+                    Logger.Log(LogType.SuspiciousActivity,
                                 "{0} Player was identified as connecting from localhost and allowed in.",
-                                standardMessage );
+                                standardMessage);
                     IsVerified = true;
 
-                } else if( IP.IsLAN() && ConfigKey.AllowUnverifiedLAN.Enabled() ) {
-                    Logger.Log( LogType.SuspiciousActivity,
+                }
+                else if (IP.IsLAN() && ConfigKey.AllowUnverifiedLAN.Enabled())
+                {
+                    Logger.Log(LogType.SuspiciousActivity,
                                 "{0} Player was identified as connecting from LAN and allowed in.",
-                                standardMessage );
+                                standardMessage);
                     IsVerified = true;
 
-                } else if( Info.TimesVisited > 1 && Info.LastIP.Equals( IP ) ) {
-                    switch( nameVerificationMode ) {
+                }
+                else if (Info.TimesVisited > 1 && Info.LastIP.Equals(IP))
+                {
+                    switch (nameVerificationMode)
+                    {
                         case NameVerificationMode.Always:
-                            Info.ProcessFailedLogin( this );
-                            Logger.Log( LogType.SuspiciousActivity,
+                            Info.ProcessFailedLogin(this);
+                            Logger.Log(LogType.SuspiciousActivity,
                                         "{0} IP matched previous records for that name. " +
                                         "Player was kicked anyway because VerifyNames is set to Always.",
-                                        standardMessage );
-                            KickNow( "Could not verify player name!", LeaveReason.UnverifiedName );
+                                        standardMessage);
+                            KickNow("Could not verify player name!", LeaveReason.UnverifiedName);
                             return false;
 
                         case NameVerificationMode.Balanced:
                         case NameVerificationMode.Never:
-                            Logger.Log( LogType.SuspiciousActivity,
+                            Logger.Log(LogType.SuspiciousActivity,
                                         "{0} IP matched previous records for that name. Player was allowed in.",
-                                        standardMessage );
+                                        standardMessage);
                             IsVerified = true;
                             break;
                     }
 
-                } else {
-                    switch( nameVerificationMode ) {
+                }
+                else
+                {
+                    switch (nameVerificationMode)
+                    {
                         case NameVerificationMode.Always:
                         case NameVerificationMode.Balanced:
-                            Info.ProcessFailedLogin( this );
-                            Logger.Log( LogType.SuspiciousActivity,
+                            Info.ProcessFailedLogin(this);
+                            Logger.Log(LogType.SuspiciousActivity,
                                         "{0} IP did not match. Player was kicked.",
-                                        standardMessage );
-                            KickNow( "Could not verify player name!", LeaveReason.UnverifiedName );
+                                        standardMessage);
+                            KickNow("Could not verify player name!", LeaveReason.UnverifiedName);
                             return false;
 
                         case NameVerificationMode.Never:
-                            Logger.Log( LogType.SuspiciousActivity,
+                            Logger.Log(LogType.SuspiciousActivity,
                                         "{0} IP did not match. Player was allowed in anyway because VerifyNames is set to Never.",
-                                        standardMessage );
-                            Message( "&WYour name could not be verified." );
+                                        standardMessage);
+                            Message("&WYour name could not be verified.");
                             break;
                     }
                 }
             }
-
 
             // Check if player is banned
             if( Info.IsBanned ) {

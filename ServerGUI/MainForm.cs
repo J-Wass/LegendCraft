@@ -17,14 +17,12 @@ namespace fCraft.ServerGUI
         volatile bool shutdownPending, startupComplete, shutdownComplete;
         const int MaxLinesInLog = 2000,
                   LinesToTrimWhenExceeded = 50;
-        public bool onGlobal = false;
 
         public MainForm()
         {
             InitializeComponent();
             Shown += StartUp;
-            console.OnCommand += console_Enter;
-            tabChat.SelectedIndexChanged += tabChat_tabSelected;
+            console.OnCommand += console_Enter;            
             logBox.LinkClicked += new LinkClickedEventHandler(Link_Clicked);
             MenuItem[] menuItems = new MenuItem[] { new MenuItem("Copy", new EventHandler(CopyMenuOnClickHandler)) };
             logBox.ContextMenu = new ContextMenu(menuItems);
@@ -37,6 +35,7 @@ namespace fCraft.ServerGUI
 
         void StartUp(object sender, EventArgs a)
         {
+            /*tabChat.SelectedIndexChanged += tabChat_tabSelected;*/
             Logger.Logged += OnLogged;
             Heartbeat.UriChanged += OnHeartbeatUriChanged;
             Server.PlayerListChanged += OnPlayerListChanged;
@@ -210,13 +209,13 @@ namespace fCraft.ServerGUI
                     int oldLength = logBox.Text.Length;
                     string msgToAppend = e.Message + Environment.NewLine;
 
-                    if (e.MessageType == LogType.GlobalChat) //If Global Message, send to global and stop
+                    /*if (e.MessageType == LogType.GlobalChat) //If Global Message, send to global and stop
                     {
                         logGlobal.SelectionColor = System.Drawing.Color.LightGray;
                         logGlobal.AppendText(msgToAppend);
                         return;
                     }
-                    else
+                    else*/
                     {
                         logBox.AppendText(msgToAppend);
                     }
@@ -412,12 +411,13 @@ namespace fCraft.ServerGUI
                     }
                     else
                     {
-                        if (onGlobal)
+                       /* if (onGlobal)
                         {
-                            fCraft.GlobalChat.GlobalThread.SendChannelMessage("(console): " + line);
-                            Logger.Log(LogType.GlobalChat, "(console): " + line);
+                            fCraft.GlobalChat.GlobalThread.SendChannelMessage("[console]: " + line);
+                            Logger.Log(LogType.GlobalChat, "[console]: " + line);
+                            return;
                         }
-                        else
+                        else */
                         {
                             Player.Console.ParseMessage(line, true);
                         }
@@ -607,17 +607,19 @@ namespace fCraft.ServerGUI
             }
         }
 
-        public void tabChat_tabSelected(object sender, EventArgs e)
+      /*public void tabChat_tabSelected(object sender, EventArgs e)
         {
-            if (tabChat.SelectedTab == tabChat.TabPages["tabGlobal"])
-            {
-                onGlobal = true;
-            }
-            if (tabChat.SelectedTab == tabChat.TabPages["tabServer"])
+            if (tabChat.SelectedTab == tabServer)
             {
                 onGlobal = false;
+                return;
             }
-        }
+            if (tabChat.SelectedTab == tabGlobal)
+            {
+                onGlobal = true;
+                return;
+            }
+        }*/
 
         #region PlayerViewer
       

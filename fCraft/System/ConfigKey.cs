@@ -7,7 +7,7 @@ namespace fCraft {
     public enum ConfigKey {
         #region General
 
-        [StringKey( ConfigSection.General, "Custom Minecraft Server (LegendCraft)",
+        [StringKey( ConfigSection.General, "[LegendCraft] Default",
 @"The name of the server, as shown on the welcome screen and the
 official server list (if server is public).",
             MinLength = 1, MaxLength = 64 )]

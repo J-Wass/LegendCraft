@@ -136,7 +136,8 @@ namespace fCraft.Games
 
             if (lastChecked != null && (DateTime.Now - lastChecked).TotalSeconds > 29.9 && timeLeft < timeLimit)
             {
-                world_.Players.Message("&sThere are currently {0} human(s) and {1} zombie(s) left on {2}", world_.Players.Count() - world_.Players.Count(player => player.Info.isInfected), world_.Players.Count(player => player.Info.isInfected), world_.ClassyName);
+                world_.Players.Message("&sThere are currently {0} human(s) and {1} zombie(s) left on {2}.", world_.Players.Count() - world_.Players.Count(player => player.Info.isInfected), world_.Players.Count(player => player.Info.isInfected), world_.ClassyName);
+                world_.Players.Message("&fThere are &W{0}&f seconds left in the game.", timeLeft);
                 lastChecked = DateTime.Now;
             }
         }
@@ -159,6 +160,8 @@ namespace fCraft.Games
             infected.Info.isInfected = true;
             infected.iName = "_Infected_";
             infected.entityChanged = true;
+            infected.Info.infectionOldName = infected.Info.DisplayedName;
+            infected.Info.DisplayedName = "&c_Infected_";
         }
 
         public static void Infect(Player target, Player player)
@@ -167,6 +170,8 @@ namespace fCraft.Games
             target.Info.isInfected = true;
             target.iName = "_Infected_";
             target.entityChanged = true;
+            target.Info.infectionOldName = target.Info.DisplayedName;
+            target.Info.DisplayedName = "&c_Infected_";
         }
 
         public static void RevertGame() //Reset game bools/stats and stop timers
@@ -183,6 +188,7 @@ namespace fCraft.Games
                     p.Info.isInfected = false;
                     p.iName = null;
                     p.entityChanged = false;
+                    p.Info.DisplayedName = p.Info.infectionOldName;
                 }
                 p.Message("&aYour status has been reverted!");
                 p.JoinWorld(world_, WorldChangeReason.Rejoin);                
@@ -230,7 +236,7 @@ namespace fCraft.Games
             if (e.Player.Info.isInfected)
             {
                 e.Player.Info.isInfected = false;
-                e.Player.Info.DisplayedName = e.Player.Info.oldname;
+                e.Player.Info.DisplayedName = e.Player.Info.infectionOldName;
                 e.Player.entityChanged = false;
                 e.Player.iName = null;
             }
@@ -247,7 +253,7 @@ namespace fCraft.Games
                 if (e.Player.Info.isInfected)
                 {
                     e.Player.Info.isInfected = false;
-                    e.Player.Info.DisplayedName = e.Player.Info.oldname;
+                    e.Player.Info.DisplayedName = e.Player.Info.infectionOldName;
                     e.Player.entityChanged = false;
                     e.Player.iName = null;
                 }

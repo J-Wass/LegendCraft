@@ -37,17 +37,17 @@
             this.Kick = new System.Windows.Forms.ToolStripMenuItem();
             this.Rank = new System.Windows.Forms.ToolStripMenuItem();
             this.PM = new System.Windows.Forms.ToolStripMenuItem();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
+            /*this.tabPage3 = new System.Windows.Forms.TabPage();
             this.tabGlobal = new System.Windows.Forms.TabPage();
             this.logGlobal = new System.Windows.Forms.RichTextBox();
-            this.tabServer = new System.Windows.Forms.TabPage();
+            this.tabServer = new System.Windows.Forms.TabPage();*/
             this.logBox = new System.Windows.Forms.RichTextBox();
-            this.tabChat = new System.Windows.Forms.TabControl();
+            /*this.tabChat = new System.Windows.Forms.TabControl();*/
             this.console = new fCraft.ServerGUI.ConsoleBox();
             this.PlayerOptions.SuspendLayout();
-            this.tabGlobal.SuspendLayout();
+            /*this.tabGlobal.SuspendLayout();
             this.tabServer.SuspendLayout();
-            this.tabChat.SuspendLayout();
+            this.tabChat.SuspendLayout();*/
             this.SuspendLayout();
             // 
             // uriDisplay
@@ -175,18 +175,18 @@
             // 
             // tabGlobal
             // 
-            this.tabGlobal.Controls.Add(this.logGlobal);
+            /*this.tabGlobal.Controls.Add(this.logGlobal);
             this.tabGlobal.Location = new System.Drawing.Point(4, 22);
             this.tabGlobal.Name = "tabGlobal";
             this.tabGlobal.Padding = new System.Windows.Forms.Padding(3);
             this.tabGlobal.Size = new System.Drawing.Size(602, 362);
             this.tabGlobal.TabIndex = 1;
             this.tabGlobal.Text = "GlobalChat";
-            this.tabGlobal.UseVisualStyleBackColor = true;
+            this.tabGlobal.UseVisualStyleBackColor = true;*/
             // 
             // logGlobal
             // 
-            this.logGlobal.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            /*this.logGlobal.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
           | System.Windows.Forms.AnchorStyles.Left)
           | System.Windows.Forms.AnchorStyles.Right)));
             this.logGlobal.BackColor = System.Drawing.Color.Black;
@@ -199,44 +199,44 @@
             this.logGlobal.TabIndex = 7;
             this.logGlobal.Text = "";
             this.logGlobal.TextChanged += new System.EventHandler(this.logBox_TextChanged);
-            this.logGlobal.SelectionColor = System.Drawing.Color.Gray;
+            this.logGlobal.SelectionColor = System.Drawing.Color.Gray;*/
             // 
             // tabServer
             // 
-            this.tabServer.Controls.Add(this.logBox);
+            /*this.tabServer.Controls.Add(this.logBox);
             this.tabServer.Location = new System.Drawing.Point(4, 22);
             this.tabServer.Name = "tabServer";
             this.tabServer.Padding = new System.Windows.Forms.Padding(3);
             this.tabServer.Size = new System.Drawing.Size(602, 362);
             this.tabServer.TabIndex = 0;
             this.tabServer.Text = "ServerChat";
-            this.tabServer.UseVisualStyleBackColor = true;
+            this.tabServer.UseVisualStyleBackColor = true;*/
             // 
             // logBox
             // 
-            this.logBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.logBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.logBox.BackColor = System.Drawing.Color.Black;
             this.logBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.logBox.HideSelection = false;
-            this.logBox.Location = new System.Drawing.Point(-3, -2);
+            this.logBox.Location = new System.Drawing.Point(12, 39);//(-3, -2)
             this.logBox.Name = "logBox";
             this.logBox.ReadOnly = true;
-            this.logBox.Size = new System.Drawing.Size(607, 368);
-            this.logBox.TabIndex = 10;
+            this.logBox.Size = new System.Drawing.Size(610, 387);
+            this.logBox.TabIndex = 7;
             this.logBox.Text = "";
             this.logBox.TextChanged += new System.EventHandler(this.logBox_TextChanged);
             // 
             // tabChat
             // 
-            this.tabChat.Controls.Add(this.tabServer);
+            /*this.tabChat.Controls.Add(this.tabServer);
             this.tabChat.Controls.Add(this.tabGlobal);
             this.tabChat.Location = new System.Drawing.Point(12, 38);
             this.tabChat.Name = "tabChat";
             this.tabChat.SelectedIndex = 0;
             this.tabChat.Size = new System.Drawing.Size(610, 388);
-            this.tabChat.TabIndex = 10;
+            this.tabChat.TabIndex = 10;*/
             // 
             // console
             // 
@@ -255,8 +255,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Firebrick;
             this.ClientSize = new System.Drawing.Size(784, 464);
-            this.Controls.Add(this.tabChat);
+            /*this.Controls.Add(this.tabChat);*/
             this.Controls.Add(this.ThemeBox);
+            this.Controls.Add(this.logBox);
             this.Controls.Add(this.SizeBox);
             this.Controls.Add(this.bPlay);
             this.Controls.Add(this.console);
@@ -269,9 +270,9 @@
             this.Name = "MainForm";
             this.Text = "LegendCraft";
             this.PlayerOptions.ResumeLayout(false);
-            this.tabGlobal.ResumeLayout(false);
-            this.tabServer.ResumeLayout(false);
-            this.tabChat.ResumeLayout(false);
+            /*this.tabGlobal.ResumeLayout(false);*/
+            /*this.tabServer.ResumeLayout(false);*/
+            /*this.tabChat.ResumeLayout(false);*/
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -279,6 +280,8 @@
 
         #endregion
 
+        /*private bool onGlobal = false;*/
+        private System.Windows.Forms.RichTextBox logBox;
         private System.Windows.Forms.TextBox uriDisplay;
         private System.Windows.Forms.Label URLLabel;
         private System.Windows.Forms.ListBox playerList;
@@ -292,12 +295,12 @@
         private System.Windows.Forms.ToolStripMenuItem Kick;
         private System.Windows.Forms.ToolStripMenuItem Rank;
         private System.Windows.Forms.ToolStripMenuItem PM;
-        private System.Windows.Forms.TabPage tabPage3;
+        /*private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.TabPage tabGlobal;
         private System.Windows.Forms.RichTextBox logGlobal;
         private System.Windows.Forms.TabPage tabServer;
         private System.Windows.Forms.RichTextBox logBox;
-        private System.Windows.Forms.TabControl tabChat;
+        private System.Windows.Forms.TabControl tabChat;*/
     }
 }
 

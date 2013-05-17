@@ -227,8 +227,8 @@ namespace fCraft.Games
             {
                 p.Message("Let the games Begin! Type &H/Gun"); 
                 p.Message("You are on the &cRed Team"); 
-                p.iName = Color.Red + p.Name;   
-                p.Info.oldname = p.Info.DisplayedName;
+                p.iName = Color.Red + p.Name;
+                p.Info.tdmOldName = p.Info.DisplayedName;
                 p.Info.DisplayedName = "&f(" + redTeam + "&f) " + Color.Red + p.Name;   
                 p.Info.isOnRedTeam = true;      
                 p.Info.isOnBlueTeam = false;
@@ -244,7 +244,7 @@ namespace fCraft.Games
                 p.Message("Let the games Begin! Type &H/Gun");
                 p.Message("You are on the &1Blue Team");
                 p.iName = Color.Navy + p.Name;
-                p.Info.oldname = p.Info.DisplayedName;
+                p.Info.tdmOldName = p.Info.DisplayedName;
                 p.Info.DisplayedName = "&f(" + blueTeam + "&f) " + Color.Navy + p.Name;
                 p.Info.isOnBlueTeam = true;
                 p.Info.isOnRedTeam = false;
@@ -260,7 +260,7 @@ namespace fCraft.Games
                 p.Message("Let the games Begin! Type &H/Gun");
                 p.Message("You are on the &cRed Team"); //notifies the player of their team
                 p.iName = Color.Red + p.Name;   //the name above their head will be colored blue or red depending on team
-                p.Info.oldname = p.Info.DisplayedName;
+                p.Info.tdmOldName = p.Info.DisplayedName;
                 p.Info.DisplayedName = "&f(" + redTeam + "&f) " + Color.Red + p.Name;   //changes their displayed name to include a little tag and their real mc username colored their team color
                 p.Info.isOnRedTeam = true;      //assigns to red team
                 p.Info.isOnBlueTeam = false;
@@ -276,7 +276,7 @@ namespace fCraft.Games
                 p.Message("Let the games Begin! Type &H/Gun");
                 p.Message("You are on the &1Blue Team");
                 p.iName = Color.Navy + p.Name;
-                p.Info.oldname = p.Info.DisplayedName;
+                p.Info.tdmOldName = p.Info.DisplayedName;
                 p.Info.DisplayedName = "&f(" + blueTeam + "&f) " + Color.Navy + p.Name;
                 p.Info.isOnBlueTeam = true;
                 p.Info.isOnRedTeam = false;
@@ -320,7 +320,7 @@ namespace fCraft.Games
                 if (p != null)
                 {
                     p.iName = null;
-                    pI.DisplayedName = pI.oldname;
+                    pI.DisplayedName = pI.tdmOldName;
                     pI.isOnRedTeam = false;
                     pI.isOnBlueTeam = false;
                     pI.isPlayingTD = false;
