@@ -1074,6 +1074,15 @@ namespace fCraft {
             owner.Add( new XElement(Permission.Games.ToString() ) );
             owner.Add( new XElement(Permission.Moderation.ToString() ) );
             owner.Add( new XElement(Permission.Immortal.ToString() ) );
+            owner.Add(new XElement(Permission.Punch.ToString()));
+            owner.Add(new XElement(Permission.Brofist.ToString()));
+            owner.Add(new XElement(Permission.STFU.ToString()));
+            owner.Add(new XElement(Permission.MuteAll.ToString()));
+            owner.Add(new XElement(Permission.LeBot.ToString()));
+            owner.Add(new XElement(Permission.Economy.ToString()));
+            owner.Add(new XElement(Permission.ManageEconomy.ToString()));
+            owner.Add(new XElement(Permission.MakeVotes.ToString()));
+
             permissions.Add( owner );
             try {
                 RankManager.AddRank( new Rank( owner ) );
@@ -1142,6 +1151,12 @@ namespace fCraft {
             op.Add( new XElement( Permission.DrawAdvanced.ToString() ) );
             op.Add( new XElement( Permission.CopyAndPaste.ToString() ) );
             op.Add( new XElement( Permission.UndoOthersActions.ToString() ) );
+            op.Add(new XElement(Permission.Punch.ToString()));
+            op.Add(new XElement(Permission.Brofist.ToString()));
+            op.Add(new XElement(Permission.STFU.ToString()));
+            op.Add(new XElement(Permission.LeBot.ToString()));
+            op.Add(new XElement(Permission.Economy.ToString()));
+            op.Add(new XElement(Permission.MakeVotes.ToString()));
             permissions.Add( op );
             try {
                 RankManager.AddRank( new Rank( op ) );
@@ -1181,6 +1196,9 @@ namespace fCraft {
             builder.Add( new XElement( Permission.Teleport.ToString() ) );
 
             builder.Add( new XElement( Permission.Draw.ToString() ) );
+            builder.Add(new XElement(Permission.Brofist.ToString()));
+            builder.Add(new XElement(Permission.Economy.ToString()));
+            builder.Add(new XElement(Permission.MakeVotes.ToString()));
             permissions.Add( builder );
             try {
                 RankManager.AddRank( new Rank( builder ) );

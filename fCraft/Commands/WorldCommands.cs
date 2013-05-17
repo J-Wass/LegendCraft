@@ -2428,7 +2428,7 @@ THE SOFTWARE.*/
                 if( players.Length == 1 ) {
                     player.LastUsedPlayerName = players[0].Name;
                     player.StopSpectating();
-                    player.ParseMessage( "/TP " + players[0].Name, false );
+                    player.ParseMessage( "/TP " + players[0].Name, false, true );
                 } else {
                     player.MessageNoWorld( worldName );
                 }

@@ -243,7 +243,7 @@ THE SOFTWARE.*/
 	{
 		player.IsPainting = false;			// /paint
 		player.ResetAllBinds();				// /bind
-		player.ParseMessage( "/brush normal", false );  // /brush (totally not a sneaky way to do this)
+		player.ParseMessage( "/brush normal", false, false );  // /brush (totally not a sneaky way to do this)
 		player.BuildingPortal = false;			// /portal
 		player.fireworkMode = false;			// /fireworks
 		player.GunMode = false;				// /gun
@@ -251,7 +251,7 @@ THE SOFTWARE.*/
 		player.SelectionCancel();			// /cancel
 		player.StopSpectating();			// /spectate
 		player.towerMode = false;			// /tower
-		player.ParseMessage( "/nvm", false );		// /nvm
+		player.ParseMessage( "/nvm", false, false );		// /nvm
 	}
         
         #endregion
@@ -2066,6 +2066,7 @@ THE SOFTWARE.*/
             if( player.IsMakingSelection ) {
                 player.SelectionCancel();
                 player.MessageNow( "Selection cancelled." );
+                player.ParseMessage("/nvm", false, false);//LOL lazy
             } else {
                 player.MessageNow( "There is currently nothing to cancel." );
             }

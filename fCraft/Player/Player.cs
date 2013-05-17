@@ -387,19 +387,25 @@ namespace fCraft
         string partialMessage;
 
         // Parses message incoming from the player
-        public void ParseMessage([NotNull] string rawMessage, bool fromConsole)
+        public void ParseMessage([NotNull] string rawMessage, bool fromConsole, bool sendMessage)
         {
             if (rawMessage == null) throw new ArgumentNullException("rawMessage");
             if (rawMessage.Equals("/nvm", StringComparison.OrdinalIgnoreCase))
             {
                 if (partialMessage != null)
                 {
-                    MessageNow("Partial message cancelled.");
+                    if (sendMessage)
+                    {
+                        MessageNow("Partial message cancelled.");
+                    }
                     partialMessage = null;
                 }
                 else
                 {
-                    MessageNow("No partial message to cancel.");
+                    if (sendMessage)
+                    {
+                        MessageNow("No partial message to cancel.");
+                    }
                 }
                 return;
             }

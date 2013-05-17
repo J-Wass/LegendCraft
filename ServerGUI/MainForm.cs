@@ -419,7 +419,7 @@ namespace fCraft.ServerGUI
                         }
                         else */
                         {
-                            Player.Console.ParseMessage(line, true);
+                            Player.Console.ParseMessage(line, true, true);
                         }
                     }
 #if !DEBUG

@@ -1,7 +1,14 @@
 LegendCraft Changelog v2.0.1
 Add: /plugins
 Add: /back
+Add: /LastCommand (/last)
 Add: Infection Game
+Add: Mojang Account Support (yay! thanks jonty800)
+Change: Global Chat feed goes to serverGUI now
+Change: TDM no longer interferes with /bromode
+Change: General color bleeds and bug/stability fixes
+Change: Permission fixes
+Change: /Cancel now also cancel parsed messages
 
 LegendCraft Changelog v2.0.0
 Add: /global

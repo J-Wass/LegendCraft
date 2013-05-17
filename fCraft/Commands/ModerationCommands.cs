@@ -77,6 +77,7 @@ namespace fCraft {
             CommandManager.RegisterCommand(CdBanGrief);
             CommandManager.RegisterCommand(CdStealthKick);
             CommandManager.RegisterCommand(CdBeatDown);
+            CommandManager.RegisterCommand(CdLastCommand);
 
         }
         #region LegendCraft
@@ -99,7 +100,37 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
 
-       
+        static readonly CommandDescriptor CdLastCommand = new CommandDescriptor
+        {
+            Name = "LastCommand",
+            Aliases = new[] { "LastCmd" , "last" },
+            IsConsoleSafe = true,
+            Category = CommandCategory.Moderation,
+            Permissions = new[] { Permission.Spectate },
+            Help = "Checks the last command used by a player. Leave blank for your last command used.",
+            Usage = "/LastCommand player",
+            Handler = LastCommandHandler
+        };
+
+        static void LastCommandHandler(Player player, Command cmd) //a more brutal /slap cmd, sends the player underground to the bottom of the world
+        {
+            string target = cmd.Next();
+            Player targetName = Server.FindPlayerOrPrintMatches(player, target, false, true);
+            if (String.IsNullOrEmpty(target))
+            {
+                player.Message("Your last command used was: " + player.LastCommand.ToString());
+            }
+            if (targetName == null)
+            {
+                player.Message("No player found matching " + target);
+                return;
+            }
+            else
+            {
+                player.Message(targetName.Name + "s last command was " + targetName.LastCommand.ToString());
+                return;
+            }
+        }
         static readonly CommandDescriptor CdBeatDown = new CommandDescriptor
         {
             Name = "Beatdown",
@@ -125,7 +156,7 @@ THE SOFTWARE.*/
             }
             Player target = Server.FindPlayerOrPrintMatches(player, name, false, true);
             if (target == null) return;
-            if (target.Immortal && player.Name.ToLower() != "dingusbungus") //Rising Embers Custom
+            if (target.Immortal) 
             {
                 player.Message("&SYou failed to beatdown {0}&S, they are immortal", target.ClassyName);
                 return;
@@ -2176,7 +2207,7 @@ THE SOFTWARE.*/
                     if( worlds.Length == 1 ) {
                         player.LastUsedWorldName = worlds[0].Name;
                         player.StopSpectating();
-                        player.ParseMessage( "/Join " + worlds[0].Name, false );
+                        player.ParseMessage( "/Join " + worlds[0].Name, false, true );
                     } else {
                         player.MessageNoPlayer( name );
                     }

@@ -286,7 +286,7 @@ namespace fCraft {
                 ParseMessage( message, false );
 #else
             try {
-                ParseMessage( message, false );
+                ParseMessage( message, false, true );
             } catch( IOException ) {
                 throw;
             } catch( SocketException ) {
