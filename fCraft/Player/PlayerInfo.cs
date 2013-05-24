@@ -20,7 +20,7 @@ namespace fCraft
         public int Money = 0;
 
         ///<summary> Support for mojang accounts.</summary>
-        [NotNull]
+        [CanBeNull]
         public string MojangAccount;
 
         /// <summary> Player's Minecraft account name. </summary>
@@ -530,10 +530,7 @@ namespace fCraft
             if (fields[20].Length > 0) Int32.TryParse(fields[21], out info.MessagesWritten);
             Int32.TryParse(fields[22], out info.PromoCount);
 
-            if (fields[14].Length > 0)//idk, maybe
-            {
-                info.MojangAccount = fields[23];
-            }
+            if (fields[23].Length > 0) info.MojangAccount = fields[23].ToString();
 
             if (fields[24].Length > 0) info.PreviousRank = Rank.Parse(fields[24]);
             if (fields[25].Length > 0) info.RankChangeReason = Unescape(fields[25]);
@@ -1187,7 +1184,7 @@ namespace fCraft
             sb.Append(',');
 
             if (PromoCount > 0) sb.Digits(PromoCount); //22
-            sb.Append(',', 2);
+            sb.Append(',');
 
             sb.Append(MojangAccount); //23
             sb.Append(',');
@@ -1307,9 +1304,6 @@ namespace fCraft
                 WriteString(writer, RankChangeReason); // 11
             }
 
-            //idk, mojang stuff
-            WriteString(writer, MojangAccount);//23, i think???
-
             // Bans
             writer.Write((byte)BanStatus); // 13
             WriteDate(writer, BanDate); // 14
@@ -1347,6 +1341,7 @@ namespace fCraft
             Write7BitEncodedInt(writer, TimesVisited); // 26
             Write7BitEncodedInt(writer, MessagesWritten); // 27
             Write7BitEncodedInt(writer, PromoCount); //22 (?)
+            WriteString(writer, MojangAccount); //23 Good enough
             Write7BitEncodedInt(writer, TimesKickedOthers); // 28
             Write7BitEncodedInt(writer, TimesBannedOthers); // 29
 
