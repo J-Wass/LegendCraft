@@ -59,7 +59,7 @@
   <ItemGroup>
     <Reference Include="fCraft, Version=0.6.1.7, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\bin\Debug\fCraft.dll</HintPath>
+      <HintPath>..\bin\release\fCraft.dll</HintPath>
     </Reference>
     <Reference Include="fCraftGUI, Version=0.6.1.7, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

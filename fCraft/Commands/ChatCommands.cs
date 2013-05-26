@@ -96,7 +96,7 @@ THE SOFTWARE.*/
             List<String> plugins = new List<String>();
             player.Message("&c_Current plugins on {0}&c_", ConfigKey.ServerName.GetString());
           
-            //Sloppy... PluginManager.Plugins adds .Init, so this should split the .Init from the plugin name
+            //Sloppy :P, PluginManager.Plugins adds ".Init", so this should split the ".Init" from the plugin name
             foreach (Plugin plugin in PluginManager.Plugins)
             {
                 String pluginString = plugin.ToString();
@@ -374,8 +374,8 @@ THE SOFTWARE.*/
             Category = CommandCategory.Chat | CommandCategory.Math,
             Permissions = new Permission[] { Permission.Chat },
             IsConsoleSafe = true,
-            Usage = "/Calculator [number] [+, -, *, /] [number]",
-            Help = "Lets you use a simple calculator in minecraft. Valid options are [ + , - , * , and / ].",
+            Usage = "/Calculator [number] [+, -, *, /, sqrt, sqr] [(for +,-,*, or /)number]",
+            Help = "Lets you use a simple calculator in minecraft. Valid options are [ + , - , * ,  / , sqrt, and sqr].",
             NotRepeatable = false,
             Handler = CalcHandler,
         };
@@ -385,9 +385,10 @@ THE SOFTWARE.*/
             String numberone = cmd.Next();
             String op = cmd.Next();
             String numbertwo = cmd.Next();
-            double no1, no2;
+            double no1 = 1;
+            double no2 = 1;
 
-            if (numberone == null || numbertwo == null || op == null)
+            if (numberone == null || op == null)
             {
                 CdCalculator.PrintUsage(player);
                 return;
@@ -398,83 +399,129 @@ THE SOFTWARE.*/
                 player.Message("Please choose from a whole number.");
                 return;
             }
-
-            if (!double.TryParse(numbertwo, out no2))
+            if (numbertwo != null)
             {
-                player.Message("Please choose from a whole number.");
-                return;
-            }                                                           
+                if (!double.TryParse(numbertwo, out no2))
+                {
+                    player.Message("Please choose from a whole number.");
+                    return;
+                }
+            }                                        
 
 
             if (player.Can(Permission.Chat))
             {
 
-                if (numberone != null | op != null | numbertwo != null)
+                if (numberone != null || op != null )
                 {
-
-
-                    if (op == "+" | op == "-" | op == "*" | op == "/")
-                    {
-
-                        if (op == "+")
-                        {
-                            double add = no1 + no2;
-                            if (add < 0 | no1 < 0 | no2 < 0)
-                            {
-                                player.Message("Negative Number Detected, please choose from a whole number.");
-                                return;
-                            }
-                            else
-                            {
-                                player.Message("&0Calculator&f: {0} + {1} = {2}", no1, no2, add);
-                            }
-                        }
-                        if (op == "-")
-                        {
-                            double subtr = no1 - no2;
-                            if (subtr < 0 | no1 < 0 | no2 < 0)
-                            {
-                                player.Message("Negative Number Detected, please choose from a whole number.");
-                                return;
-                            }
-                            else
-                            {
-                                player.Message("&0Calculator&f: {0} - {1} = {2}", no1, no2, subtr);
-                            }
-                        }
-                        if (op == "*")
+                        if (op == "+" | op == "-" | op == "*" | op == "/" | op == "sqrt" | op == "sqr")
                         {
 
-                            double mult = no1 * no2;
-                            if (mult < 0 | no1 < 0 | no2 < 0)
+                            if (op == "+")
                             {
-                                player.Message("Negative Number Detected, please choose from a whole number.");
-                                return;
+                                if (numbertwo == null)
+                                {
+                                    player.Message("You must select a second number!");
+                                    return;
+                                }
+                                double add = no1 + no2;
+                                if (add < 0 | no1 < 0 | no2 < 0)
+                                {
+                                    player.Message("Negative Number Detected, please choose from a whole number.");
+                                    return;
+                                }
+                                else
+                                {
+                                    player.Message("&0Calculator&f: {0} + {1} = {2}", no1, no2, add);
+                                }
                             }
-                            else
+                            if (op == "-")
                             {
+                                if (numbertwo == null)
+                                {
+                                    player.Message("You must select a second number!");
+                                    return;
+                                }
+                                double subtr = no1 - no2;
+                                if (subtr < 0 | no1 < 0 | no2 < 0)
+                                {
+                                    player.Message("Negative Number Detected, please choose from a whole number.");
+                                    return;
+                                }
+                                else
+                                {
+                                    player.Message("&0Calculator&f: {0} - {1} = {2}", no1, no2, subtr);
+                                }
+                            }
+                            if (op == "*")
+                            {
+                                if (numbertwo == null)
+                                {
+                                    player.Message("You must select a second number!");
+                                    return;
+                                }
+                                double mult = no1 * no2;
+                                if (mult < 0 | no1 < 0 | no2 < 0)
+                                {
+                                    player.Message("Negative Number Detected, please choose from a whole number.");
+                                    return;
+                                }
+                                else
+                                {
                                     player.Message("&0Calculator&f: {0} * {1} = {2}", no1, no2, mult);
+                                }
                             }
-                        }
-                        if (op == "/")
-                        {
-
-
-                            double div = no1 / no2;
-                            if (div < 0 | no1 < 0 | no2 < 0)
+                            if (op == "/")
                             {
-                                player.Message("Negative Number Detected, please choose froma whole number.");
-                                return;
+                                if (numbertwo == null)
+                                {
+                                    player.Message("You must select a second number!");
+                                    return;
+                                }
+                                double div = no1 / no2;
+                                if (div < 0 | no1 < 0 | no2 < 0)
+                                {
+                                    player.Message("Negative Number Detected, please choose from a whole number.");
+                                    return;
+                                }
+                                else
+                                {
+                                    player.Message("&0Calculator&f: {0} / {1} = {2}", no1, no2, div);
+                                    return;
+                                }
                             }
-                            else
+                            if (op == "sqrt")
                             {
-                                player.Message("&0Calculator&f: {0} / {1} = {2}", no1, no2, div);
+                                double sqrt = Math.Round(Math.Sqrt(no1), 2);
+                                if (no1 < 0)
+                                {
+                                    player.Message("Negative Number Detected, please choose from a whole number.");
+                                    return;
+                                }
+                                else
+                                {
+                                    player.Message("&0Calculator&f: Square Root of {0} = {1}", no1, sqrt);
+                                    return;
+                                }
                             }
-                        }
-                    }
+                            if (op == "sqr")
+                            {
+                                double sqr = no1 * no1;
+                                if (no1 < 0)
+                                {
+                                    player.Message("Negative Number Detected, please choose from a whole number.");
+                                    return;
+                                }
+                                else
+                                {
+                                    player.Message("&0Calculator&f: Square of {0} = {1}", no1, sqr);
+                                    return;
+                                }
+                            }
+                        }                  
                     else
                     {
-                        player.Message("&cInvalid Operator. Please choose from '+' , '-' , '*' , or '/'");
+                        player.Message("&cInvalid Operator. Please choose from '+' , '-' , '*' , '/' , 'sqrt' , or 'sqr'");
                         return;
                     }
                 }

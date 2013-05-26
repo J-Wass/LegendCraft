@@ -78,6 +78,8 @@ namespace fCraft {
             CommandManager.RegisterCommand(CdStealthKick);
             CommandManager.RegisterCommand(CdBeatDown);
             CommandManager.RegisterCommand(CdLastCommand);
+            CommandManager.RegisterCommand(CdFreezeBring);
+            CommandManager.RegisterCommand(CdTPA);
 
         }
         #region LegendCraft
@@ -100,6 +102,82 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
 
+        static readonly CommandDescriptor CdTPA = new CommandDescriptor
+        {
+            Name = "TPA",
+            Aliases = new[] { "TeleportAsk"},
+            IsConsoleSafe = false,
+            Category = CommandCategory.Moderation,
+            Permissions = new[] { Permission.TPA },
+            Help = "&SAsks a player permission to teleport to them before teleporting.",
+            Usage = "&S/Tpa player",
+            Handler = TPAHandler
+        };
+
+        static void TPAHandler(Player player, Command cmd)
+        {
+            string name = cmd.Next();
+            Player player_ = player;
+            if (String.IsNullOrEmpty(name))
+            {
+                CdTPA.PrintUsage(player);
+                return;
+            }
+            Player target = Server.FindPlayerOrPrintMatches(player, name, false, true);
+            if (target == null)
+            {
+                return;
+            }
+            else
+            {
+                if (!cmd.IsConfirmed)
+                {
+                    target.Confirm(cmd, player.ClassyName + "&S would like to teleport to you.");
+                }
+                else
+                {
+                    //Big error here. Both of the following messages are sent to the target, and the target teleports towards itself.
+                    player.Message("&STeleporting you to {0}...", name);
+                    target.ParseMessage("/tp " + name, false, false);
+                    return;
+                }
+            }
+        }
+        static readonly CommandDescriptor CdFreezeBring = new CommandDescriptor
+        {
+            Name = "FreezeBring",
+            Aliases = new[] { "fBring" , "fSummon", "fb" },
+            IsConsoleSafe = false,
+            Category = CommandCategory.Moderation,
+            Permissions = new[] { Permission.Freeze },
+            Help = "&SFreezes and summons a player to your location. Usefull for griefers.",
+            Usage = "&S/FreezeBring player",
+            Handler = FBHandler
+        };
+
+        static void FBHandler(Player player, Command cmd) 
+        {
+            string name = cmd.Next();
+            if (String.IsNullOrEmpty(name))
+            {
+                CdFreezeBring.PrintUsage(player);
+                return;
+            }
+            else
+            {
+                Player target = Server.FindPlayerOrPrintMatches(player, name, false, true);
+                if (target == null)
+                {
+                    return;
+                }
+                else
+                {
+                    player.ParseMessage("/summon " + name, false, false); //to lazy to change target's coords, so ill just summon
+                    target.Info.IsFrozen = true;
+                    return;
+                }
+            }
+        }
         static readonly CommandDescriptor CdLastCommand = new CommandDescriptor
         {
             Name = "LastCommand",
@@ -107,27 +185,42 @@ THE SOFTWARE.*/
             IsConsoleSafe = true,
             Category = CommandCategory.Moderation,
             Permissions = new[] { Permission.Spectate },
-            Help = "Checks the last command used by a player. Leave blank for your last command used.",
-            Usage = "/LastCommand player",
+            Help = "&SChecks the last command used by a player. Leave blank for your last command used.",
+            Usage = "&S/LastCommand player",
             Handler = LastCommandHandler
         };
 
-        static void LastCommandHandler(Player player, Command cmd) //a more brutal /slap cmd, sends the player underground to the bottom of the world
+        static void LastCommandHandler(Player player, Command cmd) 
         {
+            string[] pLastCommandA = player.LastCommand.ToString().Split('"');
+            string[] pLastCommandB = pLastCommandA[1].Split('"');
             string target = cmd.Next();
-            Player targetName = Server.FindPlayerOrPrintMatches(player, target, false, true);
             if (String.IsNullOrEmpty(target))
             {
-                player.Message("Your last command used was: " + player.LastCommand.ToString());
+                if(String.IsNullOrEmpty(pLastCommandB[0]))
+                {
+                    player.Message("&SYou haven't used a command yet!");
+                    return;
+                }
+                player.Message("&SYour last command used was: " + pLastCommandB[0]);
+                return;
             }
+            Player targetName = Server.FindPlayerOrPrintMatches(player, target, false, true);
+
+            string[] tLastCommandA = targetName.LastCommand.ToString().Split('"');
+            string[] tLastCommandB = tLastCommandA[1].Split('"');
             if (targetName == null)
             {
-                player.Message("No player found matching " + target);
+                player.Message("&SNo player found matching " + target);
                 return;
             }
             else
             {
-                player.Message(targetName.Name + "s last command was " + targetName.LastCommand.ToString());
+                if(String.IsNullOrEmpty(tLastCommandB[0]))
+                {
+                    player.Message("{0}&S hasn't used a command yet!", targetName.ClassyName);
+                }
+                player.Message(targetName.ClassyName + "&Ss last command was " + tLastCommandB[0]);
                 return;
             }
         }
@@ -1191,7 +1284,7 @@ THE SOFTWARE.*/
             IsConsoleSafe = true,
             Aliases = new[] { "tban" },
             Permissions = new[] { Permission.TempBan },
-            Help = "Bans a player for a selected amount of time. Example: 10s | 10 m | 10h ",
+            Help = "Bans a player for a selected amount of time. Example: 10s | 10m | 10h ",
             Usage = "/Tempban Player Duration",
             Handler = Tempban
         };

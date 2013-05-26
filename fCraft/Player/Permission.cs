@@ -265,6 +265,9 @@ namespace fCraft {
         MakeVotes,
 
         ///<summary> Permission to toggle WorldChat.</summary>
-        ManageWorldChat
+        ManageWorldChat,
+
+        ///<summary> Permission to use /tpa.</summary>
+        TPA
     }
 }

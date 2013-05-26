@@ -1082,6 +1082,7 @@ namespace fCraft {
             owner.Add(new XElement(Permission.Economy.ToString()));
             owner.Add(new XElement(Permission.ManageEconomy.ToString()));
             owner.Add(new XElement(Permission.MakeVotes.ToString()));
+            owner.Add(new XElement(Permission.TPA.ToString()));
 
             permissions.Add( owner );
             try {
@@ -1157,6 +1158,7 @@ namespace fCraft {
             op.Add(new XElement(Permission.LeBot.ToString()));
             op.Add(new XElement(Permission.Economy.ToString()));
             op.Add(new XElement(Permission.MakeVotes.ToString()));
+            op.Add(new XElement(Permission.TPA.ToString()));
             permissions.Add( op );
             try {
                 RankManager.AddRank( new Rank( op ) );
@@ -1199,6 +1201,7 @@ namespace fCraft {
             builder.Add(new XElement(Permission.Brofist.ToString()));
             builder.Add(new XElement(Permission.Economy.ToString()));
             builder.Add(new XElement(Permission.MakeVotes.ToString()));
+            owner.Add(new XElement(Permission.TPA.ToString()));
             permissions.Add( builder );
             try {
                 RankManager.AddRank( new Rank( builder ) );

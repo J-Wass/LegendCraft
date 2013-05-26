@@ -20,6 +20,8 @@
  *  THE SOFTWARE.
  *
  */
+
+//Modified 5/25/13 LegendCraft Team
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -39,7 +41,7 @@ namespace fCraft.ServerCLI {
             Logger.Logged += OnLogged;
             Heartbeat.UriChanged += OnHeartbeatUriChanged;
 
-            Console.Title = "LegendCraft v.1.9.0 - starting...";
+            Console.Title = "LegendCraft " + fCraft.Updater.LatestStable + " - starting...";
 
 #if !DEBUG
             try {
@@ -50,7 +52,7 @@ namespace fCraft.ServerCLI {
                 Server.InitServer();
 
                 CheckForUpdates();
-                Console.Title = "LegendCraft " + Updater.CurrentRelease.VersionString + " - " + ConfigKey.ServerName.GetString();
+                Console.Title = "LegendCraft " + Updater.LatestStable + " - " + ConfigKey.ServerName.GetString();
 
                 if( !ConfigKey.ProcessPriority.IsBlank() ) {
                     try {
@@ -61,7 +63,7 @@ namespace fCraft.ServerCLI {
                 }
 
                 if( Server.StartServer() ) {
-                    Console.WriteLine( "** Running LegendCraft version 1.8.1 **", Updater.CurrentRelease.VersionString );
+                    Console.WriteLine( "** Running LegendCraft version {0} **", Updater.LatestStable );
                     Console.WriteLine( "** Server is now ready. Type /Shutdown to exit safely. **" );
 
                     while( !Server.IsShuttingDown ) {
@@ -70,7 +72,7 @@ namespace fCraft.ServerCLI {
                             Console.Clear();
                         } else {
                             try {
-                                Player.Console.ParseMessage( cmd, true );
+                                Player.Console.ParseMessage( cmd, true, false);
                             } catch( Exception ex ) {
                                 Logger.LogAndReportCrash( "Error while executing a command from console", "ServerCLI", ex, false );
                             }
@@ -92,7 +94,7 @@ namespace fCraft.ServerCLI {
 
 
         static void ReportFailure( ShutdownReason reason ) {
-            Console.Title = String.Format( "LegendCraft 1.8.1 {1}", Updater.CurrentRelease.VersionString, reason );
+            Console.Title = String.Format( "LegendCraft {0} {1}", Updater.LatestStable, reason );
             if( useColor ) Console.ForegroundColor = ConsoleColor.Red;
             Console.Error.WriteLine( "** {0} **", reason );
             if( useColor ) Console.ResetColor();

@@ -1,5 +1,8 @@
 LegendCraft v2.1.0 RoadMap
 
+[]Cmd Tpa
+[x]Cmd FreezeBring
+[x]Add SquareRoot and Square to Cmd Calculator
 [(sorta)]GlobalChat support on ServerGUI
 [x]Email Support
 [x]Infection
