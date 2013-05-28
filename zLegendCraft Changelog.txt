@@ -1,4 +1,5 @@
 LegendCraft Changelog v2.0.1
+Add: /freezebring (/fb)
 Add: /plugins
 Add: /back
 Add: /LastCommand (/last)
@@ -8,7 +9,7 @@ Change: Global Chat feed goes to serverGUI now
 Change: TDM no longer interferes with /bromode
 Change: General color bleeds and bug/stability fixes
 Change: Permission fixes
-Change: /Cancel now also cancel parsed messages
+Change: /Cancel now also cancels parsed messages
 
 LegendCraft Changelog v2.0.0
 Add: /global

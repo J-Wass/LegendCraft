@@ -103,7 +103,7 @@ THE SOFTWARE.*/
             Category = CommandCategory.World,
             Permissions = new Permission[] { Permission.Games },
             IsConsoleSafe = false,
-            Usage = "/Infection [start | stop]",
+            Usage = "/Infection [start | stop | custom | help]",
             Help = "Manage the Infection Gamemode!",
             Handler = InfectionHandler
         };
@@ -160,6 +160,66 @@ THE SOFTWARE.*/
                     player.Message("&SNo games of Infection are going on.");
                     return;
                 }
+            }
+            if (Option.ToLower() == "custom")
+            {
+                string stringLimit = cmd.Next();
+                string stringDelay = cmd.Next();
+                int intLimit, intDelay;
+
+                if (String.IsNullOrEmpty(stringLimit) || String.IsNullOrEmpty(stringDelay))
+                {
+                    player.Message("Usage for '/infection custom' is '/infection custom TimeLimit TimeDelay'.");
+                }
+
+                if (!int.TryParse(stringLimit, out intLimit))
+                {
+                    player.Message("Please select a number for the time limit.");
+                    return;
+                }
+
+                if (!int.TryParse(stringDelay, out intDelay))
+                {
+                    player.Message("Please select a number for the time delay.");
+                    return;
+                }
+
+                if (world == WorldManager.MainWorld)
+                {
+                    player.Message("&SInfection games cannot be played on the main world");
+                    return;
+                }
+                if (world.gameMode != GameMode.NULL)
+                {
+                    player.Message("&SThere is already a game going on");
+                    return;
+                }
+                if (player.World.CountPlayers(true) < 2)
+                {
+                    player.Message("&SThere must be at least &W2&S players on this world to play Infection");
+                    return;
+                }
+                else
+                {
+                    try
+                    {
+                        fCraft.Games.Infection.Custom(world, intLimit, intDelay);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Log(LogType.Error, "Error: " + e + e.Message);
+                    }
+                    return;
+                }
+            }
+            if (Option.ToLower() == "help")
+            {
+                player.Message("&SStart: Will begin a game of infection on the current world." +                                       
+                    "&SStop: Will end a game of infection on the current world." +
+                    "&SCustom: Determines factors in the next Infection game. Factors are TimeLimit and TimeDelay." +
+                    "&fExample: '/Infection Custom 100 10' would start an Infection game with a game length of 100 seconds, and it will begin in 10 seconds."
+                    );
+
             }
             else
             {

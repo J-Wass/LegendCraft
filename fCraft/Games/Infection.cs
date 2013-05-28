@@ -73,6 +73,28 @@ namespace fCraft.Games
             return;
         }
 
+        public static void Custom(World world, int limit, int delay)
+        {
+            timeDelay = delay;
+            timeLimit = limit;
+
+            Player.Moving += PlayerMoved;
+            Player.JoinedWorld += PlayerLeftWorld;
+            Player.Disconnected += PlayerLeftServer;
+           
+            world_ = world;           
+            startTime = DateTime.Now;
+            world_.gameMode = GameMode.Infection;
+            stopwatch.Reset();
+            stopwatch.Start();
+            Scheduler.NewTask(t => world_.Players.Message("&WInfection &fwill be starting in {0} seconds: &WGet ready!", (timeDelay - stopwatch.Elapsed.Seconds))).RunRepeating(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(10), 2);
+            if (stopwatch.Elapsed.Seconds > 11)
+            {
+                stopwatch.Stop();
+            }
+            task_ = new SchedulerTask(Interval, true).RunForever(TimeSpan.FromSeconds(1));
+        }       
+
         public static void Interval(SchedulerTask task)
         {
             //check to stop Interval
@@ -115,18 +137,21 @@ namespace fCraft.Games
             {
                 if (world_.Players.Count(player => player.Info.isInfected) == world_.Players.Count())
                 {
+                    world_.Players.Message("");
                     world_.Players.Message("&cThe Zombies have won! All humans have died off!");
                     RevertGame();
                     return;
                 }
                 if (world_.Players.Count(player => player.Info.isInfected) == 0 && world_.Players.Count() > 0)
                 {
+                    world_.Players.Message("");
                     world_.Players.Message("&aThe Zombies have died off! The Humans win!");
                     RevertGame();
                     return;
                 }
                 if (timeLeft == 0)
                 {
+                    world_.Players.Message("");
                     world_.Players.Message("&aThe Zombies failed to infect everyone! The Humans win!");
                     RevertGame();
                     return;

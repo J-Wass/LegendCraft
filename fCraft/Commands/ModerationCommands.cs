@@ -79,7 +79,7 @@ namespace fCraft {
             CommandManager.RegisterCommand(CdBeatDown);
             CommandManager.RegisterCommand(CdLastCommand);
             CommandManager.RegisterCommand(CdFreezeBring);
-            CommandManager.RegisterCommand(CdTPA);
+            //CommandManager.RegisterCommand(CdTPA);
 
         }
         #region LegendCraft
@@ -443,7 +443,7 @@ THE SOFTWARE.*/
                  return;
              }
              
-             PayHandler(player, new Command("/economy pay " + target + " " + money));
+             EconomyHandler(player, new Command("/economy pay " + target.Name + " " + money));
          }
 
          static readonly CommandDescriptor CdEconomy = new CommandDescriptor

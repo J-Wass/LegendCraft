@@ -1201,7 +1201,7 @@ namespace fCraft {
             builder.Add(new XElement(Permission.Brofist.ToString()));
             builder.Add(new XElement(Permission.Economy.ToString()));
             builder.Add(new XElement(Permission.MakeVotes.ToString()));
-            owner.Add(new XElement(Permission.TPA.ToString()));
+            builder.Add(new XElement(Permission.TPA.ToString()));
             permissions.Add( builder );
             try {
                 RankManager.AddRank( new Rank( builder ) );
