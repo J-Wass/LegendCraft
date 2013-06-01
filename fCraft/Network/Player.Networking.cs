@@ -557,7 +557,8 @@ namespace fCraft {
                     else
                     { //else, new player. Build a unique name
                         Logger.Log(LogType.SystemActivity, "Email account " + givenName + " connected, attemping to create unique new name");
-                        int nameAppend = PlayerDB.PlayerInfoList.Where(p => p.MojangAccount != null).Count() + 1;
+                        
+                        int nameAppend = 1;//by default, set number to 1                        
                         string trimmedName = givenName.Split('@')[0].Replace("@", ""); //this should be the first part of the name ("Jonty800"@email.com)
                         if (trimmedName == null) throw new ArgumentNullException("trimmedName");
                         if (trimmedName.Length > 16)
@@ -571,7 +572,15 @@ namespace fCraft {
                                 trimmedName = trimmedName.Replace(ch, '_');
                             }
                         }
-                        givenName = trimmedName + "." + nameAppend.ToString(); //this is now the player's new name
+
+                        //PROTOTYPE
+                        while (PlayerDB.PlayerInfoList.Contains(PlayerDB.FindPlayerInfoExact(trimmedName + "." + nameAppend.ToString())))//while the name is taken
+                        {
+                            nameAppend++; //while the default name is taken, continuously add one until the name is free
+                        }
+                        //END PROTOTYPE 
+                        givenName = trimmedName + "." + nameAppend.ToString(); //Once the name is free, the new generated number is added to the end of the player
+
                         //run a test to see if it is unique or not (unable to test)
                         PlayerInfo[] Players = PlayerDB.FindPlayers(givenName); //gather matches
                         while (Players.Length != 0)
