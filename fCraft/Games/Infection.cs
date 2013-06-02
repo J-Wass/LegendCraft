@@ -185,7 +185,14 @@ namespace fCraft.Games
             infected.Info.isInfected = true;
             infected.iName = "_Infected_";
             infected.entityChanged = true;
-            infected.Info.infectionOldName = infected.Info.DisplayedName;
+            if (infected.Info.DisplayedName == null)
+            {
+                infected.Info.infectionOldName = null;
+            }
+            else
+            {
+                infected.Info.infectionOldName = infected.Info.DisplayedName;
+            }
             infected.Info.DisplayedName = "&c_Infected_";
         }
 
@@ -195,7 +202,14 @@ namespace fCraft.Games
             target.Info.isInfected = true;
             target.iName = "_Infected_";
             target.entityChanged = true;
-            target.Info.infectionOldName = target.Info.DisplayedName;
+            if (target.Info.DisplayedName == null)
+            {
+                target.Info.infectionOldName = null;
+            }
+            else
+            {
+                target.Info.infectionOldName = target.Info.DisplayedName;
+            }
             target.Info.DisplayedName = "&c_Infected_";
         }
 
@@ -213,7 +227,14 @@ namespace fCraft.Games
                     p.Info.isInfected = false;
                     p.iName = null;
                     p.entityChanged = false;
-                    p.Info.DisplayedName = p.Info.infectionOldName;
+                    if (p.Info.infectionOldName == null)
+                    {
+                        p.Info.DisplayedName = null;
+                    }
+                    else
+                    {
+                        p.Info.DisplayedName = p.Info.infectionOldName;
+                    }
                 }
                 p.Message("&aYour status has been reverted!");
                 p.JoinWorld(world_, WorldChangeReason.Rejoin);                
@@ -261,9 +282,16 @@ namespace fCraft.Games
             if (e.Player.Info.isInfected)
             {
                 e.Player.Info.isInfected = false;
-                e.Player.Info.DisplayedName = e.Player.Info.infectionOldName;
                 e.Player.entityChanged = false;
                 e.Player.iName = null;
+                if (e.Player.Info.infectionOldName == null)
+                {
+                    e.Player.Info.DisplayedName = null;
+                }
+                else
+                {
+                    e.Player.Info.DisplayedName = e.Player.Info.infectionOldName;
+                }
             }
 
         }
@@ -278,9 +306,16 @@ namespace fCraft.Games
                 if (e.Player.Info.isInfected)
                 {
                     e.Player.Info.isInfected = false;
-                    e.Player.Info.DisplayedName = e.Player.Info.infectionOldName;
                     e.Player.entityChanged = false;
                     e.Player.iName = null;
+                    if (e.Player.Info.infectionOldName == null)
+                    {
+                        e.Player.Info.DisplayedName = null;
+                    }
+                    else
+                    {
+                        e.Player.Info.DisplayedName = e.Player.Info.infectionOldName;
+                    }
                 }
             }
         }

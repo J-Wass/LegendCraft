@@ -174,6 +174,7 @@ THE SOFTWARE.*/
                 {
                     player.ParseMessage("/summon " + name, false, false); //to lazy to change target's coords, so ill just summon
                     target.Info.IsFrozen = true;
+                    target.Message("&SYou have been frozen by {0}", player.ClassyName);
                     return;
                 }
             }

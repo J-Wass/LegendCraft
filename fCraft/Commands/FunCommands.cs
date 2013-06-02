@@ -214,10 +214,10 @@ THE SOFTWARE.*/
             }
             if (Option.ToLower() == "help")
             {
-                player.Message("&SStart: Will begin a game of infection on the current world." +                                       
-                    "&SStop: Will end a game of infection on the current world." +
-                    "&SCustom: Determines factors in the next Infection game. Factors are TimeLimit and TimeDelay." +
-                    "&fExample: '/Infection Custom 100 10' would start an Infection game with a game length of 100 seconds, and it will begin in 10 seconds."
+                player.Message("&SStart: Will begin a game of infection on the current world.\n" +                                       
+                    "&SStop: Will end a game of infection on the current world.\n" +
+                    "&SCustom: Determines factors in the next Infection game. Factors are TimeLimit and TimeDelay.\n" +
+                    "&fExample: '/Infection Custom 100 10' would start an Infection game with a game length of 100 seconds, and it will begin in 10 seconds.\n"
                     );
 
             }

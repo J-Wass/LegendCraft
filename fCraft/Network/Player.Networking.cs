@@ -572,13 +572,10 @@ namespace fCraft {
                                 trimmedName = trimmedName.Replace(ch, '_');
                             }
                         }
-
-                        //PROTOTYPE
                         while (PlayerDB.PlayerInfoList.Contains(PlayerDB.FindPlayerInfoExact(trimmedName + "." + nameAppend.ToString())))//while the name is taken
                         {
-                            nameAppend++; //while the default name is taken, continuously add one until the name is free
+                            nameAppend++; //while the default name is taken, continuously add one until the name is free (shouldn't be a very long loop at all)
                         }
-                        //END PROTOTYPE 
                         givenName = trimmedName + "." + nameAppend.ToString(); //Once the name is free, the new generated number is added to the end of the player
 
                         //run a test to see if it is unique or not (unable to test)
