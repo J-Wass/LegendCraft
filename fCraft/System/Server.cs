@@ -382,6 +382,27 @@ namespace fCraft {
                             ExternalIP, Port );
             }
 
+            //check for updates
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://legendcraft.webuda.com//CurrentVersion.html");
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                using (Stream stream = response.GetResponseStream())
+                {
+                    if (stream != null)
+                    {
+                        StreamReader streamReader = new StreamReader(stream);
+                        string version = streamReader.ReadLine();
+                        if (version != null && version != fCraft.Updater.LatestStable)
+                        {
+                            Logger.Log(LogType.Warning, "Server.Run: Your LegendCraft version is out of date. A LegendCraft Update is available!");
+                            Logger.Log(LogType.Warning, "Download the latest LegendCraft at: http://www.mediafire.com/folder/oy3rdjfanvdt7/LegendCraft_Releases");
+                        }
+                    }
+                }
+            }
+
 
             // list loaded worlds
             WorldManager.UpdateWorldList();

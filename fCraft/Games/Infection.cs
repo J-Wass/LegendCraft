@@ -44,23 +44,32 @@ namespace fCraft.Games
         private static World world_;
         public static Random rand = new Random();
 
-        public static void Start(World world)
+        public static Infection GetInstance(World world)
         {
-            Player.Moving += PlayerMoved;
-            Player.JoinedWorld += PlayerLeftWorld;
-            Player.Disconnected += PlayerLeftServer;
-           
-            world_ = world;           
-            startTime = DateTime.Now;
-            world_.gameMode = GameMode.Infection;
+            if (instance == null)
+            {
+                Player.Moving += PlayerMoved;
+                Player.JoinedWorld += PlayerLeftWorld;
+                Player.Disconnected += PlayerLeftServer;
+
+                world_ = world;
+                instance = new Infection();
+                startTime = DateTime.Now;
+                task_ = new SchedulerTask(Interval, true).RunForever(TimeSpan.FromSeconds(1));
+            }
+            return instance;
+        }
+
+        public static void Start()
+        {                   
             stopwatch.Reset();
             stopwatch.Start();
+            world_.gameMode = GameMode.Infection;
             Scheduler.NewTask(t => world_.Players.Message("&WInfection &fwill be starting in {0} seconds: &WGet ready!", (timeDelay - stopwatch.Elapsed.Seconds))).RunRepeating(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(10), 2);
             if (stopwatch.Elapsed.Seconds > 11)
             {
                 stopwatch.Stop();
             }
-            task_ = new SchedulerTask(Interval, true).RunForever(TimeSpan.FromSeconds(1));
         }
 
         public static void Stop(Player p) //for stopping the game early
@@ -73,17 +82,11 @@ namespace fCraft.Games
             return;
         }
 
-        public static void Custom(World world, int limit, int delay)
+        public static void Custom(int limit, int delay)
         {
             timeDelay = delay;
             timeLimit = limit;
 
-            Player.Moving += PlayerMoved;
-            Player.JoinedWorld += PlayerLeftWorld;
-            Player.Disconnected += PlayerLeftServer;
-           
-            world_ = world;           
-            startTime = DateTime.Now;
             world_.gameMode = GameMode.Infection;
             stopwatch.Reset();
             stopwatch.Start();
@@ -185,15 +188,6 @@ namespace fCraft.Games
             infected.Info.isInfected = true;
             infected.iName = "_Infected_";
             infected.entityChanged = true;
-            if (infected.Info.DisplayedName == null)
-            {
-                infected.Info.infectionOldName = null;
-            }
-            else
-            {
-                infected.Info.infectionOldName = infected.Info.DisplayedName;
-            }
-            infected.Info.DisplayedName = "&c_Infected_";
         }
 
         public static void Infect(Player target, Player player)
@@ -202,15 +196,6 @@ namespace fCraft.Games
             target.Info.isInfected = true;
             target.iName = "_Infected_";
             target.entityChanged = true;
-            if (target.Info.DisplayedName == null)
-            {
-                target.Info.infectionOldName = null;
-            }
-            else
-            {
-                target.Info.infectionOldName = target.Info.DisplayedName;
-            }
-            target.Info.DisplayedName = "&c_Infected_";
         }
 
         public static void RevertGame() //Reset game bools/stats and stop timers
@@ -227,14 +212,6 @@ namespace fCraft.Games
                     p.Info.isInfected = false;
                     p.iName = null;
                     p.entityChanged = false;
-                    if (p.Info.infectionOldName == null)
-                    {
-                        p.Info.DisplayedName = null;
-                    }
-                    else
-                    {
-                        p.Info.DisplayedName = p.Info.infectionOldName;
-                    }
                 }
                 p.Message("&aYour status has been reverted!");
                 p.JoinWorld(world_, WorldChangeReason.Rejoin);                
@@ -263,6 +240,15 @@ namespace fCraft.Games
                     foreach (Player p in world_.Players)
                     {
                         Vector3I pos = p.Position.ToBlockCoords(); //convert to block coords
+                       
+                        if (e.Player.Position == p.Position)//In the case of the player being right on top of the target
+                        {
+                            if (!p.Info.isInfected)
+                            {
+                                Infect(p, e.Player);
+                            }
+                        }
+
                         if (e.NewPosition.DistanceSquaredTo(pos.ToPlayerCoords()) <= 33 * 33 && p != e.Player) //Get blocks on and around player, ignore instances when the target = player
                         {
                             if (!p.Info.isInfected)
@@ -284,14 +270,6 @@ namespace fCraft.Games
                 e.Player.Info.isInfected = false;
                 e.Player.entityChanged = false;
                 e.Player.iName = null;
-                if (e.Player.Info.infectionOldName == null)
-                {
-                    e.Player.Info.DisplayedName = null;
-                }
-                else
-                {
-                    e.Player.Info.DisplayedName = e.Player.Info.infectionOldName;
-                }
             }
 
         }
@@ -308,14 +286,6 @@ namespace fCraft.Games
                     e.Player.Info.isInfected = false;
                     e.Player.entityChanged = false;
                     e.Player.iName = null;
-                    if (e.Player.Info.infectionOldName == null)
-                    {
-                        e.Player.Info.DisplayedName = null;
-                    }
-                    else
-                    {
-                        e.Player.Info.DisplayedName = e.Player.Info.infectionOldName;
-                    }
                 }
             }
         }

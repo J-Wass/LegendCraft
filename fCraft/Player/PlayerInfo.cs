@@ -100,7 +100,6 @@ namespace fCraft
         //Infection
         public bool isPlayingInfection = false;
         public bool isInfected = false;
-        public string infectionOldName;
 
 
         #region Rank

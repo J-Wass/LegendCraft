@@ -139,7 +139,8 @@ THE SOFTWARE.*/
                 {
                     try
                     {
-                        fCraft.Games.Infection.Start(world);
+                        fCraft.Games.Infection.GetInstance(world);
+                        fCraft.Games.Infection.Start();
                     }
                     catch (Exception e)
                     {
@@ -203,7 +204,8 @@ THE SOFTWARE.*/
                 {
                     try
                     {
-                        fCraft.Games.Infection.Custom(world, intLimit, intDelay);
+                        fCraft.Games.Infection.GetInstance(world);
+                        fCraft.Games.Infection.Custom(intLimit, intDelay);
                     }
                     catch (Exception e)
                     {

@@ -94,7 +94,7 @@ namespace fCraft {
                         }
                     }
                 }
-            } catch( Exception ex ) {
+            } catch( Exception ) {
                 return UpdaterResult.NoUpdate;
             }
         }
