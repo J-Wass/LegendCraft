@@ -27,7 +27,7 @@ namespace fCraft {
                 return false;
             }
 
-            rawMessage = rawMessage.Replace("$name", player.ClassyName);
+            rawMessage = rawMessage.Replace("$name", player.ClassyName + "&f");
             rawMessage = rawMessage.Replace("$kicks", player.Info.TimesKickedOthers.ToString());
             rawMessage = rawMessage.Replace("$bans", player.Info.TimesBannedOthers.ToString());
             rawMessage = rawMessage.Replace("$awesome", "It is my professional opinion, that " + ConfigKey.ServerName.GetString() + " is the best server on Minecraft");

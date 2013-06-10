@@ -55,7 +55,7 @@ namespace fCraft.Games
                 world_ = world;
                 instance = new Infection();
                 startTime = DateTime.Now;
-                task_ = new SchedulerTask(Interval, true).RunForever(TimeSpan.FromSeconds(1));
+                task_ = new SchedulerTask(Interval, true).RunForever(TimeSpan.FromMilliseconds(250)); //run loop every quarter second
             }
             return instance;
         }
@@ -78,6 +78,7 @@ namespace fCraft.Games
             {
                 world_.Players.Message("{0}&S stopped the game of Infection on world {1}", p.ClassyName, world_.ClassyName);                    
             }
+            stopwatch.Reset();//reset timer for next game
             RevertGame();
             return;
         }
@@ -101,12 +102,18 @@ namespace fCraft.Games
         public static void Interval(SchedulerTask task)
         {
             //check to stop Interval
-            if (world_.gameMode != GameMode.Infection || world_ == null)
+            if (world_ == null)
+            {
+                task.Stop();
+                return;
+            }
+            if (world_.gameMode != GameMode.Infection)
             {
                 world_ = null;
                 task.Stop();
                 return;
             }
+
             if (!isOn)
             {
                 if (startTime != null && (DateTime.Now - startTime).TotalSeconds > timeDelay)
@@ -239,15 +246,7 @@ namespace fCraft.Games
                 {
                     foreach (Player p in world_.Players)
                     {
-                        Vector3I pos = p.Position.ToBlockCoords(); //convert to block coords
-                       
-                        if (e.Player.Position == p.Position)//In the case of the player being right on top of the target
-                        {
-                            if (!p.Info.isInfected)
-                            {
-                                Infect(p, e.Player);
-                            }
-                        }
+                        Vector3I pos = p.Position.ToBlockCoords(); //convert to block coords                       
 
                         if (e.NewPosition.DistanceSquaredTo(pos.ToPlayerCoords()) <= 33 * 33 && p != e.Player) //Get blocks on and around player, ignore instances when the target = player
                         {

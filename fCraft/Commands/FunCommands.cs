@@ -200,6 +200,16 @@ THE SOFTWARE.*/
                     player.Message("&SThere must be at least &W2&S players on this world to play Infection");
                     return;
                 }
+                if (intLimit > 900 || intLimit < 60)
+                {
+                    player.Message("&SThe game must be between 60 and 900 seconds! (1 and 15 minutes)");
+                    return;
+                }
+                if (intDelay > 60 || intDelay < 11)
+                {
+                    player.Message("&SThe game delay must be greater than 10 seconds, but less than 60 seconds!");
+                    return;
+                }
                 else
                 {
                     try
@@ -218,8 +228,8 @@ THE SOFTWARE.*/
             {
                 player.Message("&SStart: Will begin a game of infection on the current world.\n" +                                       
                     "&SStop: Will end a game of infection on the current world.\n" +
-                    "&SCustom: Determines factors in the next Infection game. Factors are TimeLimit and TimeDelay.\n" +
-                    "&fExample: '/Infection Custom 100 10' would start an Infection game with a game length of 100 seconds, and it will begin in 10 seconds.\n"
+                    "&SCustom: Determines factors in the next Infection game. Factors are TimeLimit and TimeDelay. TimeDelay must be greater than 10.\n" +
+                    "&fExample: '/Infection Custom 100 12' would start an Infection game with a game length of 100 seconds, and it will begin in 12 seconds.\n"
                     );
 
             }

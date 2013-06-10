@@ -193,6 +193,11 @@ THE SOFTWARE.*/
 
         static void LastCommandHandler(Player player, Command cmd) 
         {
+            if (String.IsNullOrEmpty(player.LastCommand.ToString()))
+            {
+                player.Message("&SYou haven't used a command yet!");
+                return;
+            }
             string[] pLastCommandA = player.LastCommand.ToString().Split('"');
             string[] pLastCommandB = pLastCommandA[1].Split('"');
             string target = cmd.Next();
@@ -207,6 +212,11 @@ THE SOFTWARE.*/
                 return;
             }
             Player targetName = Server.FindPlayerOrPrintMatches(player, target, false, true);
+
+            if (String.IsNullOrEmpty(targetName.LastCommand.ToString()))
+            {
+                player.Message("{0}&S hasn't used a command yet!", targetName.ClassyName);
+            }
 
             string[] tLastCommandA = targetName.LastCommand.ToString().Split('"');
             string[] tLastCommandB = tLastCommandA[1].Split('"');
