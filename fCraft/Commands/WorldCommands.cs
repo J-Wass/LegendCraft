@@ -796,7 +796,7 @@ THE SOFTWARE.*/
 
                 case "review":
 
-                    if (player.World.Name == player.Name)
+                    if (player.World.Name == player.Name.Replace(".", "_"))
                     {
                         var recepientList = Server.Players.Can(Permission.ReadStaffChat)
                                               .NotIgnoring(player)
@@ -828,13 +828,13 @@ THE SOFTWARE.*/
 
                 case "flush":
 
-                    WorldFlushHandler(player, new Command("/wflush " + player.Name));
+                    WorldFlushHandler(player, new Command("/wflush " + player.Name.Replace(".", "_")));
                     break;
 
                 case "create":
 
                     string create = cmd.Next();
-                    if (player.World.Name == player.Name)
+                    if (player.World.Name == player.Name.Replace(".", "_"))
                     {
                         player.Message("You cannot create a new Realm when you are inside your Realm");
                         return;
@@ -897,7 +897,7 @@ THE SOFTWARE.*/
                     break;
 
                 case "home":
-                    JoinHandler(player, new Command("/join " + player.Name));
+                    JoinHandler(player, new Command("/join " + player.Name.Replace(".", "_")));
                     break;
 
                 case "help":
@@ -909,21 +909,21 @@ THE SOFTWARE.*/
 
                 case "activate":
                     {
-                        if (player.World.Name == player.Name)
+                        if (player.World.Name == player.Name.Replace(".", "_"))
                         {
                             player.Message("You cannot use /Realm activate when you are in your Realm");
                             return;
                         }
-                        RealmHandler.RealmLoad(player, cmd, player.Name + ".fcm", player.Name);
-                        RealmHandler.RealmBuild(player, cmd, player.Name, RankManager.HighestRank.Name, null);
-                        RealmHandler.RealmBuild(player, cmd, player.Name, "+" + player.Name, null);
+                        RealmHandler.RealmLoad(player, cmd, player.Name.Replace(".", "_") + ".fcm", player.Name.Replace(".", "_"));
+                        RealmHandler.RealmBuild(player, cmd, player.Name.Replace(".", "_"), RankManager.HighestRank.Name, null);
+                        RealmHandler.RealmBuild(player, cmd, player.Name.Replace(".", "_"), "+" + player.Name, null);
                         WorldManager.SaveWorldList();
                         break;
                     }
 
                 case "spawn":
 
-                    if (player.World.Name == player.Name)
+                    if (player.World.Name == player.Name.Replace(".", "_"))
                     {
                         ModerationCommands.SetSpawnHandler(player, new Command("/setspawn"));
                         return;
@@ -945,7 +945,7 @@ THE SOFTWARE.*/
                         player.Message("Turn physics on in your realm. Useage: /Realm physics [Plant|Water|Gun|Fireworks] On/Off.");
                         return;
                     }
-                    if (world.Name != player.Name)
+                    if (world.Name != player.Name.Replace(".", "_"))
                     {
                         player.Message("&WYou can only turn physics on in your realm");
                         return;

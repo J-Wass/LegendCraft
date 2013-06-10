@@ -383,24 +383,35 @@ namespace fCraft {
             }
 
             //check for updates
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://legendcraft.webuda.com//CurrentVersion.html");
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-
-            if (response.StatusCode == HttpStatusCode.OK)
+            try
             {
-                using (Stream stream = response.GetResponseStream())
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://legendcraft.webuda.com//CurrentVersion.html");
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+                if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    if (stream != null)
+                    using (Stream stream = response.GetResponseStream())
                     {
-                        StreamReader streamReader = new StreamReader(stream);
-                        string version = streamReader.ReadLine();
-                        if (version != null && version != fCraft.Updater.LatestStable)
+                        if (stream != null)
                         {
-                            Logger.Log(LogType.Warning, "Server.Run: Your LegendCraft version is out of date. A LegendCraft Update is available!");
-                            Logger.Log(LogType.Warning, "Download the latest LegendCraft at: http://www.mediafire.com/folder/oy3rdjfanvdt7/LegendCraft_Releases");
+                            StreamReader streamReader = new StreamReader(stream);
+                            string version = streamReader.ReadLine();
+                            if (version != null && version != fCraft.Updater.LatestStable)
+                            {
+                                Logger.Log(LogType.Warning, "Server.Run: Your LegendCraft version is out of date. A LegendCraft Update is available!");
+                                Logger.Log(LogType.Warning, "Download the latest LegendCraft at: http://www.mediafire.com/folder/oy3rdjfanvdt7/LegendCraft_Releases");
+                            }
                         }
                     }
                 }
+            }
+            catch (WebException)
+            {
+                Logger.Log(LogType.Warning, "There was an internet connection error. Server was unable to check for updates.");
+            }
+            catch(Exception e)
+            {
+                Logger.Log(LogType.Error, "There was an error in trying to check for updates:\n\r " + e);
             }
 
 

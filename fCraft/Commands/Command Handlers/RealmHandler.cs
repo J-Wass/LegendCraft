@@ -15,6 +15,8 @@
 
 //Copyright (C) <2012> Jon Baker (http://au70.net)
 
+//Modified 6/10/13 LegendCraft Team
+
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
@@ -305,7 +307,7 @@ namespace fCraft
                 return;
             }
 
-            string fileName = player.Name;
+            string fileName = player.Name.Replace(".", "_"); //support for email names
             string fullFileName = null;
 
             if (fileName == null)
