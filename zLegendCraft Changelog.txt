@@ -4,6 +4,7 @@ Add: /plugins
 Add: /back
 Add: /LastCommand (/last)
 Add: Infection Game
+Add: LegendCraft Auto Updater
 Add: Mojang Account Support (yay! thanks jonty800)
 Change: Global Chat feed goes to serverGUI now
 Change: TDM no longer interferes with /bromode

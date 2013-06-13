@@ -26,7 +26,7 @@ namespace fCraft.GUI {
         {
             try
             {
-                Process.Start("http://www.800craft.net");
+                Process.Start("https://github.com/GlennMR/800craft");
             }
             catch { }
         }
@@ -35,7 +35,7 @@ namespace fCraft.GUI {
         {
             try
             {
-                Process.Start("http://risingembers.us");
+                Process.Start("http://legendcraft.webuda.com/");
             }
             catch { }
 

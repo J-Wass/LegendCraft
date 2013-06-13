@@ -54,7 +54,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>LegendCraftLogoText.ico</ApplicationIcon>
+    <ApplicationIcon>LegendCraftLogoIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="fCraft, Version=0.6.1.7, Culture=neutral, processorArchitecture=MSIL">
@@ -89,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ConfigGUI.ico" />
+    <Content Include="LegendCraftLogoIcon.ico" />
     <Content Include="LegendCraftLogoText.ico" />
     <Content Include="Tileset.png" />
     <Content Include="TilesetShadowed.png" />

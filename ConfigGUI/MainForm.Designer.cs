@@ -31,19 +31,19 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabs = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.softButton = new System.Windows.Forms.Button();
-            this.wikiButton = new System.Windows.Forms.Button();
-            this.webButton = new System.Windows.Forms.Button();
+            this.bSoft = new System.Windows.Forms.Button();
+            this.bWiki = new System.Windows.Forms.Button();
+            this.bWeb = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.bChangelog = new System.Windows.Forms.Button();
             this.bCredits = new System.Windows.Forms.Button();
-            this.ReadmeButton = new System.Windows.Forms.Button();
+            this.bReadme = new System.Windows.Forms.Button();
             this.gInformation = new System.Windows.Forms.GroupBox();
             this.bGreeting = new System.Windows.Forms.Button();
             this.lAnnouncementsUnits = new System.Windows.Forms.Label();
@@ -416,9 +416,9 @@
             // 
             this.groupBox4.AccessibleRole = System.Windows.Forms.AccessibleRole.Window;
             this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox4.Controls.Add(this.softButton);
-            this.groupBox4.Controls.Add(this.wikiButton);
-            this.groupBox4.Controls.Add(this.webButton);
+            this.groupBox4.Controls.Add(this.bSoft);
+            this.groupBox4.Controls.Add(this.bWiki);
+            this.groupBox4.Controls.Add(this.bWeb);
             this.groupBox4.Location = new System.Drawing.Point(468, 270);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(126, 135);
@@ -426,36 +426,33 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Contact Us";
             // 
-            // softButton
+            // bSoft
             // 
-            this.softButton.Location = new System.Drawing.Point(7, 89);
-            this.softButton.Name = "softButton";
-            this.softButton.Size = new System.Drawing.Size(110, 23);
-            this.softButton.TabIndex = 2;
-            this.softButton.Text = "Other Software";
-            this.softButton.UseVisualStyleBackColor = true;
-            this.softButton.Click += new System.EventHandler(this.softButton_Click);
+            this.bSoft.Location = new System.Drawing.Point(7, 89);
+            this.bSoft.Name = "bSoft";
+            this.bSoft.Size = new System.Drawing.Size(110, 23);
+            this.bSoft.TabIndex = 2;
+            this.bSoft.Text = "Other Software";
+            this.bSoft.UseVisualStyleBackColor = true;
+            this.bSoft.Click += new System.EventHandler(this.bSoft_Click);
             // 
-            // wikiButton
+            // bWiki
             // 
-            this.wikiButton.Location = new System.Drawing.Point(6, 60);
-            this.wikiButton.Name = "wikiButton";
-            this.wikiButton.Size = new System.Drawing.Size(111, 23);
-            this.wikiButton.TabIndex = 1;
-            this.wikiButton.Text = "Wiki";
-            this.wikiButton.UseVisualStyleBackColor = true;
-            this.wikiButton.Click += new System.EventHandler(this.wikiButton_Click);
+            this.bWiki.Location = new System.Drawing.Point(6, 60);
+            this.bWiki.Name = "bWiki";
+            this.bWiki.Size = new System.Drawing.Size(111, 23);
+            this.bWiki.TabIndex = 1;
+            this.bWiki.Text = "Wiki";
+            this.bWiki.UseVisualStyleBackColor = true;
             // 
-            // webButton
+            // bWeb
             // 
-            this.webButton.Enabled = false;
-            this.webButton.Location = new System.Drawing.Point(7, 31);
-            this.webButton.Name = "webButton";
-            this.webButton.Size = new System.Drawing.Size(110, 23);
-            this.webButton.TabIndex = 1;
-            this.webButton.Text = "Website";
-            this.webButton.UseVisualStyleBackColor = true;
-            this.webButton.Click += new System.EventHandler(this.webButton_Click);
+            this.bWeb.Location = new System.Drawing.Point(7, 31);
+            this.bWeb.Name = "bWeb";
+            this.bWeb.Size = new System.Drawing.Size(110, 23);
+            this.bWeb.TabIndex = 1;
+            this.bWeb.Text = "Website";
+            this.bWeb.UseVisualStyleBackColor = true;
             // 
             // pictureBox1
             // 
@@ -472,7 +469,7 @@
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox2.Controls.Add(this.bChangelog);
             this.groupBox2.Controls.Add(this.bCredits);
-            this.groupBox2.Controls.Add(this.ReadmeButton);
+            this.groupBox2.Controls.Add(this.bReadme);
             this.groupBox2.Location = new System.Drawing.Point(53, 270);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(123, 135);
@@ -500,16 +497,15 @@
             this.bCredits.UseVisualStyleBackColor = true;
             this.bCredits.Click += new System.EventHandler(this.bCredits_Click);
             // 
-            // ReadmeButton
+            // bReadme
             // 
-            this.ReadmeButton.Enabled = false;
-            this.ReadmeButton.Location = new System.Drawing.Point(7, 60);
-            this.ReadmeButton.Name = "ReadmeButton";
-            this.ReadmeButton.Size = new System.Drawing.Size(110, 23);
-            this.ReadmeButton.TabIndex = 1;
-            this.ReadmeButton.Text = "Readme";
-            this.ReadmeButton.UseVisualStyleBackColor = true;
-            this.ReadmeButton.Click += new System.EventHandler(this.Readmebutton_Click);
+            this.bReadme.Location = new System.Drawing.Point(7, 60);
+            this.bReadme.Name = "bReadme";
+            this.bReadme.Size = new System.Drawing.Size(110, 23);
+            this.bReadme.TabIndex = 1;
+            this.bReadme.Text = "Readme";
+            this.bReadme.UseVisualStyleBackColor = true;
+            this.bReadme.Click += new System.EventHandler(this.bReadme_Click);
             // 
             // gInformation
             // 
@@ -1290,8 +1286,8 @@
             this.dgvWorlds.MultiSelect = false;
             this.dgvWorlds.Name = "dgvWorlds";
             this.dgvWorlds.RowHeadersVisible = false;
-            dataGridViewCellStyle2.Padding = new System.Windows.Forms.Padding(0, 1, 0, 1);
-            this.dgvWorlds.RowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Padding = new System.Windows.Forms.Padding(0, 1, 0, 1);
+            this.dgvWorlds.RowsDefaultCellStyle = dataGridViewCellStyle4;
             this.dgvWorlds.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvWorlds.Size = new System.Drawing.Size(636, 325);
             this.dgvWorlds.TabIndex = 0;
@@ -1349,8 +1345,8 @@
             // dgvcBlockDB
             // 
             this.dgvcBlockDB.DataPropertyName = "BlockDBEnabled";
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.dgvcBlockDB.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.dgvcBlockDB.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgvcBlockDB.HeaderText = "BlockDB";
             this.dgvcBlockDB.Name = "dgvcBlockDB";
             this.dgvcBlockDB.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
@@ -3933,7 +3929,7 @@
         private System.Windows.Forms.Label lConsoleName;
         private System.Windows.Forms.TextBox tConsoleName;
         private System.Windows.Forms.CheckBox xShowConnectionMessages;
-        private System.Windows.Forms.Button ReadmeButton;
+        private System.Windows.Forms.Button bReadme;
         private System.Windows.Forms.Button bCredits;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label lIPWarning;
@@ -3991,9 +3987,9 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.Button softButton;
-        private System.Windows.Forms.Button wikiButton;
-        private System.Windows.Forms.Button webButton;
+        private System.Windows.Forms.Button bSoft;
+        private System.Windows.Forms.Button bWiki;
+        private System.Windows.Forms.Button bWeb;
         private System.Windows.Forms.LinkLabel linkLabel1;
     }
 }

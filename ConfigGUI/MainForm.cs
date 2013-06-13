@@ -1594,11 +1594,11 @@ Your rank is {RANK}&S. Type &H/Help&S for help." );
             websiteURL.Text = websiteURL.Text.Trim();
         }
 
-        private void webButton_Click(object sender, EventArgs e)
+        private void bWeb_Click(object sender, EventArgs e)
         {
             try
             {
-                Process.Start("http://risingembers.us/");
+                Process.Start("http://legendcraft.webuda.com/");
             }
             catch { }
         }
@@ -1612,7 +1612,7 @@ Your rank is {RANK}&S. Type &H/Help&S for help." );
             catch { }
         }
 
-        private void wikiButton_Click(object sender, EventArgs e)
+        private void bWiki_Click(object sender, EventArgs e)
         {
             try
             {
@@ -1621,20 +1621,20 @@ Your rank is {RANK}&S. Type &H/Help&S for help." );
             catch { }
         }
 
-        private void softButton_Click(object sender, EventArgs e)
+        private void bSoft_Click(object sender, EventArgs e)
         {
             try
             {
-                Process.Start("http://risingembers.us/");
+                Process.Start("http://legendcraft.webuda.com/");
             }
             catch { }
         }
 
-        private void Readmebutton_Click(object sender, EventArgs e)
+        private void bReadme_Click(object sender, EventArgs e)
         {
             try
             {
-                Process.Start("https://github.com/LeChosenOne/LegendCraft/blob/master/README.txt");
+                Process.Start("https://github.com/LeChosenOne/LegendCraft/blob/master/README.md");
             }
             catch { }
         }
