@@ -795,18 +795,38 @@ THE SOFTWARE.*/
                     break;
 
                 case "review":
-
-                    if (player.World.Name == player.Name.Replace(".", "_"))
+                    if (String.IsNullOrEmpty(player.Info.MojangAccount))
                     {
-                        var recepientList = Server.Players.Can(Permission.ReadStaffChat)
-                                              .NotIgnoring(player)
-                                              .Union(player);
-                        string message = String.Format("{0}&C would like staff to review their realm", player.ClassyName);
-                        recepientList.Message(message);
+                        if (player.World.Name == player.Name)
+                        {
+                            var recepientList = Server.Players.Can(Permission.ReadStaffChat)
+                                                  .NotIgnoring(player)
+                                                  .Union(player);
+                            string message = String.Format("{0}&C would like staff to review their realm", player.ClassyName);
+                            recepientList.Message(message);
+                        }
+                        else
+                        {
+                            player.Message("You are not in your Realm");
+                        }
                     }
-
                     else
-                        player.Message("You are not in your Realm");
+                    {
+                        if (player.World.Name == player.Name.Replace(".", "-"))
+                        {
+                            var recepientList = Server.Players.Can(Permission.ReadStaffChat)
+                                                  .NotIgnoring(player)
+                                                  .Union(player);
+                            string message = String.Format("{0}&C would like staff to review their realm", player.ClassyName);
+                            recepientList.Message(message);
+                        }
+
+                        else
+                        {
+                            player.Message("You are not in your Realm");
+                        }
+                    }
+                    
 
                     break;
 
@@ -827,17 +847,34 @@ THE SOFTWARE.*/
                     break;
 
                 case "flush":
-
-                    WorldFlushHandler(player, new Command("/wflush " + player.Name.Replace(".", "_")));
+                    if (String.IsNullOrEmpty(player.Info.MojangAccount))
+                    {
+                        WorldFlushHandler(player, new Command("/wflush " + player.Name));
+                    }
+                    else
+                    {
+                        WorldFlushHandler(player, new Command("/wflush " + player.Name.Replace(".", "-")));
+                    }
                     break;
 
                 case "create":
 
                     string create = cmd.Next();
-                    if (player.World.Name == player.Name.Replace(".", "_"))
+                    if (String.IsNullOrEmpty(player.Info.MojangAccount))
                     {
-                        player.Message("You cannot create a new Realm when you are inside your Realm");
-                        return;
+                        if (player.World.Name == player.Name)
+                        {
+                            player.Message("You cannot create a new Realm when you are inside your Realm");
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        if (player.World.Name == player.Name.Replace(".", "-"))
+                        {
+                            player.Message("You cannot create a new Realm when you are inside your Realm");
+                            return;
+                        }
                     }
 
                     if (create == null)
@@ -897,7 +934,14 @@ THE SOFTWARE.*/
                     break;
 
                 case "home":
-                    JoinHandler(player, new Command("/join " + player.Name.Replace(".", "_")));
+                    if (String.IsNullOrEmpty(player.Info.MojangAccount))
+                    {
+                        JoinHandler(player, new Command("/join " + player.Name));
+                    }
+                    else 
+                    {
+                        JoinHandler(player, new Command("/join " + player.Name.Replace(".", "-")));
+                    }
                     break;
 
                 case "help":
@@ -909,30 +953,66 @@ THE SOFTWARE.*/
 
                 case "activate":
                     {
-                        if (player.World.Name == player.Name.Replace(".", "_"))
+                        if (String.IsNullOrEmpty(player.Info.MojangAccount))//if a player is not using a mojang account, check normally
                         {
-                            player.Message("You cannot use /Realm activate when you are in your Realm");
-                            return;
+                            if (player.World.Name == player.Name)
+                            {
+                                player.Message("You cannot use /Realm activate when you are in your Realm");
+                                return;
+                            }
                         }
-                        RealmHandler.RealmLoad(player, cmd, player.Name.Replace(".", "_") + ".fcm", player.Name.Replace(".", "_"));
-                        RealmHandler.RealmBuild(player, cmd, player.Name.Replace(".", "_"), RankManager.HighestRank.Name, null);
-                        RealmHandler.RealmBuild(player, cmd, player.Name.Replace(".", "_"), "+" + player.Name, null);
+                        else //if a player is using a mojang account, check the map with special chars
+                        {
+                            if (player.World.Name == player.Name.Replace(".", "-"))
+                            {
+                                player.Message("You cannot use /Realm activate when you are in your Realm");
+                                return;
+                            }
+                        }
+                        if (player.Info.MojangAccount == null)
+                        {
+                            RealmHandler.RealmLoad(player, cmd, player.Name + ".fcm", player.Name);
+                            RealmHandler.RealmBuild(player, cmd, player.Name, RankManager.HighestRank.Name, null);
+                            RealmHandler.RealmBuild(player, cmd, player.Name, "+" + player.Name, null);
+                        }
+                        else
+                        {
+                            RealmHandler.RealmLoad(player, cmd, player.Name.Replace(".", "-") + ".fcm", player.Name.Replace(".", "-"));
+                            RealmHandler.RealmBuild(player, cmd, player.Name.Replace(".", "-"), RankManager.HighestRank.Name, null);
+                            RealmHandler.RealmBuild(player, cmd, player.Name.Replace(".", "-"), "+" + player.Name, null);
+                        }
                         WorldManager.SaveWorldList();
                         break;
                     }
 
                 case "spawn":
-
-                    if (player.World.Name == player.Name.Replace(".", "_"))
+                    if (player.Info.MojangAccount == null)
                     {
-                        ModerationCommands.SetSpawnHandler(player, new Command("/setspawn"));
-                        return;
+                        if (player.World.Name == player.Name)
+                        {
+                            ModerationCommands.SetSpawnHandler(player, new Command("/setspawn"));
+                            return;
+                        }
+                        else
+                        {
+                            player.Message("You can only change the Spawn on your own realm");
+                            return;
+                        }
                     }
                     else
                     {
-                        player.Message("You can only change the Spawn on your own realm");
-                        return;
+                        if (player.World.Name == player.Name.Replace(".", "-"))
+                        {
+                            ModerationCommands.SetSpawnHandler(player, new Command("/setspawn"));
+                            return;
+                        }
+                        else
+                        {
+                            player.Message("You can only change the Spawn on your own realm");
+                            return;
+                        }
                     }
+                    
 
                 case "physics":
 
@@ -942,13 +1022,24 @@ THE SOFTWARE.*/
 
                     if (phyOption == null)
                     {
-                        player.Message("Turn physics on in your realm. Useage: /Realm physics [Plant|Water|Gun|Fireworks] On/Off.");
+                        player.Message("Turn physics on in your realm. Usage: /Realm physics [Plant|Water|Gun|Fireworks] On/Off.");
                         return;
                     }
-                    if (world.Name != player.Name.Replace(".", "_"))
+                    if (player.Info.MojangAccount != null)//mojang account in use
                     {
-                        player.Message("&WYou can only turn physics on in your realm");
-                        return;
+                        if (player.World.Name != player.Name.Replace(".", "-"))
+                        {
+                            player.Message("&WYou can only turn physics on in your realm");
+                            return;
+                        }
+                    }
+                    else //mojang account not in use
+                    {
+                        if (player.World.Name != player.Name)
+                        {
+                            player.Message("&WYou can only turn physics on in your realm");
+                            return;
+                        }
                     }
                     switch (phyOption.ToLower())
                     {
@@ -956,21 +1047,28 @@ THE SOFTWARE.*/
                             if (onOff.ToLower() == "on")
                             {
                                 world.EnableWaterPhysics(player, true);
+                                break;
                             }
                             if (onOff.ToLower() == "off")
                             {
                                 world.DisableWaterPhysics(player, true);
+                                break;
                             }
-                            else player.Message("&WInvalid option: /Realm Physics [Type] [On/Off]");
+                            else
+                            {
+                                player.Message("&WInvalid option: /Realm Physics [Type] [On/Off]");
+                            }
                             break;
                         case "plant":
                             if (onOff.ToLower() == "on")
                             {
                                 world.EnablePlantPhysics(player, true);
+                                break;
                             }
                             if (onOff.ToLower() == "off")
                             {
                                 world.DisablePlantPhysics(player, true);
+                                break;
                             }
                             else player.Message("&WInvalid option: /Realm Physics [Type] [On/Off]");
                             break;
@@ -978,10 +1076,12 @@ THE SOFTWARE.*/
                             if (onOff.ToLower() == "on")
                             {
                                 world.EnableGunPhysics(player, true);
+                                break;
                             }
                             if (onOff.ToLower() == "off")
                             {
                                 world.DisableGunPhysics(player, true);
+                                break;
                             }
                             else player.Message("&WInvalid option: /Realm Physics [Type] [On/Off]");
                             break;
@@ -990,10 +1090,12 @@ THE SOFTWARE.*/
                             if (onOff.ToLower() == "on")
                             {
                                 world.EnableFireworkPhysics(player, true);
+                                break;
                             }
                             if (onOff.ToLower() == "off")
                             {
                                 world.DisableFireworkPhysics(player, true);
+                                break;
                             }
                             else player.Message("&WInvalid option: /Realm Physics [Type] [On/Off]");
                             break;
@@ -1044,12 +1146,31 @@ THE SOFTWARE.*/
 
                     else
                     {
-                        RealmHandler.RealmBuild(player, cmd, player.Name, "+" + targetAllow.Name, null);
-                        if (!Player.IsValidName(targetAllow.Name))
+                        if (player.Info.MojangAccount != null)
                         {
-                            player.Message("Player not found. Please specify valid name.");
-                            return;
+                            if (player.World.Name == player.Name.Replace(".", "-"))
+                            {
+                                RealmHandler.RealmBuild(player, cmd, player.Name.Replace(".", "-"), "+" + targetAllow.Name, null);
+                                if (!Player.IsValidName(targetAllow.Name))
+                                {
+                                    player.Message("Player not found. Please specify valid name.");
+                                    return;
+                                }
+                            }
                         }
+                        else
+                        {
+                            if (player.World.Name == player.Name)
+                            {
+                                RealmHandler.RealmBuild(player, cmd, player.Name, "+" + targetAllow.Name, null);
+                                if (!Player.IsValidName(targetAllow.Name))
+                                {
+                                    player.Message("Player not found. Please specify valid name.");
+                                    return;
+                                }
+                            }
+                        }
+
                     }
                     break;
 
@@ -1079,12 +1200,31 @@ THE SOFTWARE.*/
 
                     else
                     {
-                        RealmHandler.RealmBuild(player, cmd, player.Name, "-" + targetUnallow.Name, null);
-                        if (!Player.IsValidName(targetUnallow.Name))
+                        if (player.Info.MojangAccount != null)
                         {
-                            player.Message("Player not found. Please specify valid name.");
-                            return;
+                            if (player.World.Name == player.Name.Replace(".", "-"))
+                            {
+                                RealmHandler.RealmBuild(player, cmd, player.Name.Replace(".", "-"), "-" + targetUnallow.Name, null);
+                                if (!Player.IsValidName(targetUnallow.Name))
+                                {
+                                    player.Message("Player not found. Please specify valid name.");
+                                    return;
+                                }
+                            }
                         }
+                        else
+                        {
+                            if (player.World.Name == player.Name)
+                            {
+                                RealmHandler.RealmBuild(player, cmd, player.Name, "-" + targetUnallow.Name, null);
+                                if (!Player.IsValidName(targetUnallow.Name))
+                                {
+                                    player.Message("Player not found. Please specify valid name.");
+                                    return;
+                                }
+                            }
+                        }
+
                     }
                     break;
 
@@ -1097,7 +1237,7 @@ THE SOFTWARE.*/
                         player.Message("Bans a player from accessing your Realm. Useage: /Realm ban playername.");
                         return;
                     }
-                    Player targetBan = Server.FindPlayerOrPrintMatches(player, Ban, false, true);
+                    PlayerInfo targetBan = PlayerDB.FindPlayerInfoOrPrintMatches(player, Ban);
 
 
                     if (targetBan == null)
@@ -1114,11 +1254,29 @@ THE SOFTWARE.*/
 
                     else
                     {
-                        RealmHandler.RealmAccess(player, cmd, player.Name, "-" + targetBan.Name);
-                        if (!Player.IsValidName(targetBan.Name))
+                        if (player.Info.MojangAccount != null)
                         {
-                            player.Message("Player not found. Please specify valid name.");
-                            return;
+                            if (player.World.Name == player.Name.Replace(".", "-"))
+                            {
+                                RealmHandler.RealmAccess(player, cmd, player.Name.Replace(".", "-"), "-" + targetBan.Name);
+                                if (!Player.IsValidName(targetBan.Name))
+                                {
+                                    player.Message("Player not found. Please specify valid name.");
+                                    return;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (player.World.Name == player.Name)
+                            {
+                                RealmHandler.RealmAccess(player, cmd, player.Name, "-" + targetBan.Name);
+                                if (!Player.IsValidName(targetBan.Name))
+                                {
+                                    player.Message("Player not found. Please specify valid name.");
+                                    return;
+                                }
+                            }
                         }
                     }
 
@@ -1149,12 +1307,31 @@ THE SOFTWARE.*/
 
                     else
                     {
-                        RealmHandler.RealmAccess(player, cmd, player.Name, "+" + targetUnBan.Name);
-                        if (!Player.IsValidName(targetUnBan.Name))
+                        if (player.Info.MojangAccount != null)
                         {
-                            player.Message("Player not found. Please specify valid name.");
-                            return;
+                            if (player.World.Name == player.Name.Replace(".", "-"))
+                            {
+                                RealmHandler.RealmAccess(player, cmd, player.Name.Replace(".", "-"), "+" + targetUnBan.Name);
+                                if (!Player.IsValidName(targetUnBan.Name))
+                                {
+                                    player.Message("Player not found. Please specify valid name.");
+                                    return;
+                                }
+                            }
                         }
+                        else
+                        {
+                            if (player.World.Name == player.Name)
+                            {
+                                RealmHandler.RealmAccess(player, cmd, player.Name, "+" + targetUnBan.Name);
+                                if (!Player.IsValidName(targetUnBan.Name))
+                                {
+                                    player.Message("Player not found. Please specify valid name.");
+                                    return;
+                                }
+                            }
+                        }
+
                         break;
                     }
             }

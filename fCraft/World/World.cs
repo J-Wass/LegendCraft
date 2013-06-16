@@ -1015,13 +1015,14 @@ namespace fCraft {
             // ReSharper disable LoopCanBeConvertedToQuery
             for( int i = 0; i < name.Length; i++ ) {
                 char ch = name[i];
-                if( ch < '0' ||
+                if( ch < '0' && ch != '-'||
                     ch > '9' && ch < 'A' ||
                     ch > 'Z' && ch < '_' ||
                     ch > '_' && ch < 'a' ||
-                    ch > 'z' ) {
+                    ch > 'z') {
+                    
                     return false;
-                }
+                    }               
             }
             // ReSharper restore LoopCanBeConvertedToQuery
             return true;

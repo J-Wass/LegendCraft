@@ -307,7 +307,12 @@ namespace fCraft
                 return;
             }
 
-            string fileName = player.Name.Replace(".", "_"); //support for email names
+            string fileName = player.Name;
+            if (player.Info.MojangAccount != null)
+            {
+                fileName = player.Name.Replace(".", "-"); //support for email names
+            }
+            
             string fullFileName = null;
 
             if (fileName == null)
