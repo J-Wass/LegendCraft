@@ -308,7 +308,7 @@ namespace fCraft
             }
 
             string fileName = player.Name;
-            if (player.Info.MojangAccount != null)
+            if (player.Name.Contains('.'))
             {
                 fileName = player.Name.Replace(".", "-"); //support for email names
             }

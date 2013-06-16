@@ -795,7 +795,7 @@ THE SOFTWARE.*/
                     break;
 
                 case "review":
-                    if (String.IsNullOrEmpty(player.Info.MojangAccount))
+                    if (!player.Name.Contains('.'))
                     {
                         if (player.World.Name == player.Name)
                         {
@@ -847,7 +847,7 @@ THE SOFTWARE.*/
                     break;
 
                 case "flush":
-                    if (String.IsNullOrEmpty(player.Info.MojangAccount))
+                    if (!player.Name.Contains('.'))
                     {
                         WorldFlushHandler(player, new Command("/wflush " + player.Name));
                     }
@@ -860,7 +860,7 @@ THE SOFTWARE.*/
                 case "create":
 
                     string create = cmd.Next();
-                    if (String.IsNullOrEmpty(player.Info.MojangAccount))
+                    if (!player.Name.Contains('.'))
                     {
                         if (player.World.Name == player.Name)
                         {
@@ -934,7 +934,7 @@ THE SOFTWARE.*/
                     break;
 
                 case "home":
-                    if (String.IsNullOrEmpty(player.Info.MojangAccount))
+                    if (!player.Name.Contains('.'))
                     {
                         JoinHandler(player, new Command("/join " + player.Name));
                     }
@@ -953,7 +953,7 @@ THE SOFTWARE.*/
 
                 case "activate":
                     {
-                        if (String.IsNullOrEmpty(player.Info.MojangAccount))//if a player is not using a mojang account, check normally
+                        if (!player.Name.Contains('.'))//if a player is not using a mojang account, check normally
                         {
                             if (player.World.Name == player.Name)
                             {
@@ -969,7 +969,7 @@ THE SOFTWARE.*/
                                 return;
                             }
                         }
-                        if (player.Info.MojangAccount == null)
+                        if (!player.Name.Contains('.'))
                         {
                             RealmHandler.RealmLoad(player, cmd, player.Name + ".fcm", player.Name);
                             RealmHandler.RealmBuild(player, cmd, player.Name, RankManager.HighestRank.Name, null);
@@ -986,7 +986,7 @@ THE SOFTWARE.*/
                     }
 
                 case "spawn":
-                    if (player.Info.MojangAccount == null)
+                    if (!player.Name.Contains('.'))
                     {
                         if (player.World.Name == player.Name)
                         {
@@ -1025,7 +1025,7 @@ THE SOFTWARE.*/
                         player.Message("Turn physics on in your realm. Usage: /Realm physics [Plant|Water|Gun|Fireworks] On/Off.");
                         return;
                     }
-                    if (player.Info.MojangAccount != null)//mojang account in use
+                    if (player.Name.Contains('.'))//mojang account in use
                     {
                         if (player.World.Name != player.Name.Replace(".", "-"))
                         {
@@ -1254,7 +1254,7 @@ THE SOFTWARE.*/
 
                     else
                     {
-                        if (player.Info.MojangAccount != null)
+                        if (player.Name.Contains('.'))
                         {
                             if (player.World.Name == player.Name.Replace(".", "-"))
                             {
@@ -1307,7 +1307,7 @@ THE SOFTWARE.*/
 
                     else
                     {
-                        if (player.Info.MojangAccount != null)
+                        if (player.Name.Contains('.'))
                         {
                             if (player.World.Name == player.Name.Replace(".", "-"))
                             {
