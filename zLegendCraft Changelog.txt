@@ -1,11 +1,13 @@
 LegendCraft Changelog v2.0.1
 Add: /freezebring (/fb)
+Add: /name
 Add: /plugins
 Add: /back
 Add: /LastCommand (/last)
 Add: Infection Game
 Add: LegendCraft Auto Updater
 Add: Mojang Account Support (yay! thanks jonty800)
+Change: /Nick updated and refined + added /Nick <playername> revert
 Change: Global Chat feed goes to serverGUI now
 Change: TDM no longer interferes with /bromode
 Change: General color bleeds and bug/stability fixes
