@@ -98,6 +98,7 @@ THE SOFTWARE.*/
         {
             Name = "Name",
             Category = CommandCategory.Chat | CommandCategory.Fun,
+            Permissions = new[] {Permission.Name},
             IsConsoleSafe = false,
             Usage = "/Name (NewName|Revert|Blank)",
             Help = "Allows you to edit your name. Doing /Name revert makes your nick your last used nickname. Do just /Name to reset your nick.",
