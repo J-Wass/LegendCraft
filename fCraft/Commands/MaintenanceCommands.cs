@@ -73,7 +73,93 @@ namespace fCraft {
             } );
 #endif
         }
-        
+        #region LegendCraft
+        /* Copyright (c) <2012> <LeChosenOne, DingusBungus, Eeyle>
+   Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.*/
+
+        static readonly CommandDescriptor CdName = new CommandDescriptor
+        {
+            Name = "Name",
+            Category = CommandCategory.Chat | CommandCategory.Fun,
+            IsConsoleSafe = true,
+            Usage = "/Name (NewName|revert)",
+            Help = "Allows you to edit your name. Doing /Name revert makes your nick your last used nickname. Do just /Name to reset your nick.",
+            NotRepeatable = true,
+            Handler = NameHandler,
+        };
+
+        static void NameHandler(Player p, Command cmd)
+        {
+                string displayedname = cmd.NextAll();
+                string nameBuffer = p.Info.DisplayedName;
+
+                if (string.IsNullOrEmpty(displayedname) || displayedname.Length < 1)
+                {
+                    p.Info.oldDisplayedName = p.Info.DisplayedName;
+                    p.Info.DisplayedName = p.Name;
+                    p.Message("Your name has been reset.");
+                    p.Info.isJelly = false;
+                    p.Info.isMad = false;
+                    return;
+                }
+                else
+                {
+                    if (displayedname == "revert")      //swaps the new and old names by using a buffer name for swapping.
+                    {
+                        if (p.Info.oldDisplayedName == null)
+                        {
+                            p.Message("You do not have an old Nick-Name to revert to.");
+                            return;
+                        }
+                        p.Info.DisplayedName = p.Info.oldDisplayedName;
+                        p.Info.oldDisplayedName = nameBuffer;
+                        p.Message("Your name has been reverted.");
+                        return;
+                    }
+                    if (displayedname == "blank")      //swaps the new and old names by using a buffer name for swapping.
+                    {
+                        p.Info.oldDisplayedName = nameBuffer;
+                        p.Info.DisplayedName = p.Info.oldDisplayedName;
+                        p.Info.DisplayedName = "";
+                        p.Message("Name: DisplayedName was set to blank", p.Info.DisplayedName);
+                        return;
+                    }
+                    else
+                    {
+                        p.Info.oldDisplayedName = p.Info.DisplayedName;
+                        p.Info.DisplayedName = displayedname;
+                        if (p.Info.oldDisplayedName == null)
+                        {
+                            p.Message("Name: DisplayedName was set to \"{0}&S\"", p.Info.DisplayedName);
+                            p.Info.isMad = false;
+                            p.Info.isJelly = false;
+                            return;
+                        }
+                        else
+                        {
+                            p.Message("Name: DisplayedName changed from \"{0}&S\" to \"{1}&S\"", p.Info.oldDisplayedName, p.Info.DisplayedName);
+                            return;
+                        }
+                    }
+                }
+        }
+    #endregion 
         
         #region 800Craft
 
