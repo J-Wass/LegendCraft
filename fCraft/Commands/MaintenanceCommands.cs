@@ -33,6 +33,7 @@ namespace fCraft {
             CommandManager.RegisterCommand(CdFixRealms);
 
             CommandManager.RegisterCommand(CdNick);
+            CommandManager.RegisterCommand(CdName);
 
 #if DEBUG
             CommandManager.RegisterCommand( new CommandDescriptor {
@@ -220,16 +221,60 @@ THE SOFTWARE.*/
 
         static void NickHandler(Player player, Command cmd)
         {
-            string target = cmd.Next();
-            string displayedname = cmd.NextAll();
+            string name = cmd.Next();
+            string displayedName = cmd.NextAll();
+            string nameBuffer = player.Info.DisplayedName;
 
-            if (target == null && displayedname == null)
+            if (string.IsNullOrEmpty(name))
             {
                 CdNick.PrintUsage(player);
             }
+            PlayerInfo target = PlayerDB.FindPlayerInfoOrPrintMatches(player, name);
+            if (target == null){ return; }
+            if (displayedName == "revert")      //swaps the new and old names by using a buffer name for swapping.
+            {
+                if (target.oldDisplayedName == null)
+                {
+                    player.Message("{0} does not have an old Nick-Name to revert to.", target.Name);
+                    return;
+                }
+                target.DisplayedName = target.oldDisplayedName;
+                target.oldDisplayedName = nameBuffer;
+                player.Message("{0}'s name has been reverted.", target.Name);
+                return;
+            }
             else
             {
-                SetInfoHandler(player, new Command("/setinfo " + target + " displayedname " + displayedname));
+                if (target.DisplayedName != null)
+                {
+                    target.oldDisplayedName = target.DisplayedName;
+                }
+                if (displayedName.Length > 0)
+                {
+                    target.DisplayedName = displayedName;
+                }
+                if (player.Info.oldDisplayedName == null)
+                {
+                    player.Message("Nick: DisplayedName for {0} set to \"{1}&S\"",
+                                    target.Name,
+                                    target.DisplayedName);
+                }
+                else if (target.DisplayedName == null || displayedName.Length < 1)
+                {
+                    player.Message("Nick: DisplayedName for {0} was reset (was \"{1}&S\")",
+                                    target.Name,
+                                    target.oldDisplayedName);
+                    target.isMad = false;
+                    target.isJelly = false;
+                }
+                else
+                {
+                    player.Message("Nick: DisplayedName for {0} changed from \"{1}&S\" to \"{2}&S\"",
+                                    target.Name,
+                                    target.oldDisplayedName,
+                                    target.DisplayedName);
+                    return;
+                }
             }
         }
         #endregion
