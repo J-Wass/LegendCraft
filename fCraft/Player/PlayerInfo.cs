@@ -64,6 +64,7 @@ namespace fCraft
         public int followingCount = 0;
         public bool Static = true;
         public string LeaveMsg = "left the server";
+        public string oldDisplayedName = null;
 
         //Games
         public bool ArrivedLate = false;
