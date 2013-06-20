@@ -97,8 +97,8 @@ THE SOFTWARE.*/
         {
             Name = "Name",
             Category = CommandCategory.Chat | CommandCategory.Fun,
-            IsConsoleSafe = true,
-            Usage = "/Name (NewName|revert)",
+            IsConsoleSafe = false,
+            Usage = "/Name (NewName|Revert|Blank)",
             Help = "Allows you to edit your name. Doing /Name revert makes your nick your last used nickname. Do just /Name to reset your nick.",
             NotRepeatable = true,
             Handler = NameHandler,
@@ -120,7 +120,7 @@ THE SOFTWARE.*/
                 }
                 else
                 {
-                    if (displayedname == "revert")      //swaps the new and old names by using a buffer name for swapping.
+                    if (displayedname.ToLower() == "revert")      //swaps the new and old names by using a buffer name for swapping.
                     {
                         if (p.Info.oldDisplayedName == null)
                         {
@@ -132,7 +132,7 @@ THE SOFTWARE.*/
                         p.Message("Your name has been reverted.");
                         return;
                     }
-                    if (displayedname == "blank")      //swaps the new and old names by using a buffer name for swapping.
+                    if (displayedname.ToLower() == "blank")      //swaps the new and old names by using a buffer name for swapping.
                     {
                         p.Info.oldDisplayedName = nameBuffer;
                         p.Info.DisplayedName = p.Info.oldDisplayedName;
