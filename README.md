@@ -117,7 +117,7 @@ or any other files from Minecraft... neither does 800Craft or LegendCraft.
 ##Credits 
 
 LegendCraft was developed by LeChosenOne, and DingusBungus <br />
-    With code contribution by Jonty800(who lifts) Eeyle.
+    With code contribution by Jonty800(who lifts) and Eeyle.
 
 Thanks to 800Craft code contributers:<br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rebelliousdude, boblol0909, WaterGod469 and Maicke98 for trying. 

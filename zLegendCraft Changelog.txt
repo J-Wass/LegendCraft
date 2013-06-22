@@ -1,4 +1,6 @@
-LegendCraft Changelog v2.0.1
+LegendCraft Changelog v2.2.0
+
+LegendCraft Changelog v2.1.0
 Add: /freezebring (/fb)
 Add: /name
 Add: /plugins

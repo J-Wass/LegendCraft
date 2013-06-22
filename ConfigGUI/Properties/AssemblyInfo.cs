@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("800Craft ConfigGUI")]
-[assembly: AssemblyDescription("800Craft graphical configuration tool")]
+[assembly: AssemblyTitle("LegendCraft ConfigGUI")]
+[assembly: AssemblyDescription("LegendCraft graphical configuration tool")]
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany("au70.net")]
-[assembly: AssemblyProduct("800Craft ConfigGUI")]
+[assembly: AssemblyProduct("LegendCraft ConfigGUI")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]

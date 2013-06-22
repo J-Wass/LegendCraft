@@ -1,13 +1,5 @@
-LegendCraft v2.1.0 RoadMap
+LegendCraft v2.2.0 Roadmap
 
-[(postponed)]Cmd Tpa
-[x]Cmd FreezeBring
-[x]Add SquareRoot and Square to Cmd Calculator
-[(sorta)]GlobalChat support on ServerGUI
-[x]Email Support
-[x]Infection
-[x]Cmd Back
-[x]Cmd Plugins
-[x]Make TDM smoother
-[]DDoS Blue
-[x]Seduce Women, Obtain Currency
+[]Edit Rules, Announcements, and Greeting ingame
+[]Seduce Women, Obtain Currency
+[]More to come
