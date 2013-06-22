@@ -224,15 +224,26 @@ THE SOFTWARE.*/
         {
             string name = cmd.Next();
             string displayedName = cmd.NextAll();
-            string nameBuffer = player.Info.DisplayedName;
 
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name) || name.Length < 1)
             {
                 CdNick.PrintUsage(player);
+                return;
             }
             PlayerInfo target = PlayerDB.FindPlayerInfoOrPrintMatches(player, name);
             if (target == null){ return; }
-            if (displayedName == "revert")      //swaps the new and old names by using a buffer name for swapping.
+
+            string nameBuffer = null;
+            if (target.DisplayedName == null)
+            {
+                nameBuffer = target.Name;
+            }
+            else
+            {
+                nameBuffer = target.DisplayedName;
+            }
+
+            if (displayedName.ToLower() == "revert")      //swaps the new and old names by using a buffer name for swapping.
             {
                 if (target.oldDisplayedName == null)
                 {
@@ -249,33 +260,32 @@ THE SOFTWARE.*/
                 if (target.DisplayedName != null)
                 {
                     target.oldDisplayedName = target.DisplayedName;
-                }
-                if (displayedName.Length > 0)
+                } 
+                if (string.IsNullOrEmpty(displayedName) || displayedName.Length < 1)
                 {
-                    target.DisplayedName = displayedName;
-                }
-                if (player.Info.oldDisplayedName == null)
-                {
-                    player.Message("Nick: DisplayedName for {0} set to \"{1}&S\"",
-                                    target.Name,
-                                    target.DisplayedName);
-                }
-                else if (target.DisplayedName == null || displayedName.Length < 1)
-                {
+                    target.DisplayedName = null;
                     player.Message("Nick: DisplayedName for {0} was reset (was \"{1}&S\")",
                                     target.Name,
                                     target.oldDisplayedName);
-                    target.isMad = false;
-                    target.isJelly = false;
+                    return;
+                }
+                else if (target.oldDisplayedName == null || target.oldDisplayedName == target.Name)
+                {
+                    target.DisplayedName = displayedName;
+                    player.Message("Nick: DisplayedName for {0} set to \"{1}&S\"",
+                                    target.Name,
+                                    target.DisplayedName);
+                    return;
                 }
                 else
                 {
+                    target.DisplayedName = displayedName;
                     player.Message("Nick: DisplayedName for {0} changed from \"{1}&S\" to \"{2}&S\"",
                                     target.Name,
                                     target.oldDisplayedName,
                                     target.DisplayedName);
                     return;
-                }
+                }          
             }
         }
         #endregion
