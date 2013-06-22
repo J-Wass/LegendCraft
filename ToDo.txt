@@ -1,5 +1,5 @@
 LegendCraft v2.2.0 Roadmap
 
-[]Edit Rules, Announcements, and Greeting ingame
-[]Seduce Women, Obtain Currency
+[(partial)]Edit Rules, Announcements, and Greeting ingame
+[x]Seduce Women, Obtain Currency
 []More to come

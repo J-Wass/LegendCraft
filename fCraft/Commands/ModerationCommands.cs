@@ -281,8 +281,8 @@ THE SOFTWARE.*/
             if (player.Can(Permission.Basscannon, target.Info.Rank))
             {
                 Position pummeled = new Position(target.Position.X, target.Position.Y, (target.World.Map.Bounds.ZMin) * 32);
-                player.previousLocation = player.Position;
-                player.previousWorld = null;
+                target.previousLocation = target.Position;
+                target.previousWorld = null;
                 target.TeleportTo(pummeled);
 
                 if (string.IsNullOrEmpty(item))
@@ -1176,8 +1176,8 @@ THE SOFTWARE.*/
             string aMessage;
             if (player.Can(Permission.Slap, target.Info.Rank)){
                 Position slap = new Position(target.Position.X, target.Position.Y, (target.World.Map.Bounds.ZMax) * 32);
-                player.previousLocation = player.Position;
-                player.previousWorld = null;
+                target.previousLocation = target.Position;
+                target.previousWorld = null;
                 target.TeleportTo(slap);
                 if (string.IsNullOrEmpty(item)){
                     Server.Players.CanSee(target).Union(target).Message("{0} &Swas slapped sky high by {1}", target.ClassyName, player.ClassyName);

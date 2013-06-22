@@ -34,6 +34,7 @@ namespace fCraft {
 
             CommandManager.RegisterCommand(CdNick);
             CommandManager.RegisterCommand(CdName);
+            CommandManager.RegisterCommand(CdEdit);
 
 #if DEBUG
             CommandManager.RegisterCommand( new CommandDescriptor {
@@ -75,7 +76,7 @@ namespace fCraft {
 #endif
         }
         #region LegendCraft
-        /* Copyright (c) <2012> <LeChosenOne, DingusBungus, Eeyle>
+        /* Copyright (c) <2013> <LeChosenOne, DingusBungus>
    Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -93,6 +94,74 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
+        
+        static readonly CommandDescriptor CdEdit = new CommandDescriptor
+        {
+            Name = "Edit",
+            Aliases = new[] { "configure", "set" },
+            Category = CommandCategory.Chat | CommandCategory.Fun,
+            Permissions = new[] {Permission.ReloadConfig},
+            IsConsoleSafe = false,
+            Usage = "/Edit [Swears|Rules|Greeting]",
+            Help = "Allows a player to add items to the swearwords and rules, or create a new greeting.",
+            NotRepeatable = true,
+            Handler = EditHandler,
+        };
+
+        static void EditHandler(Player player, Command cmd)
+        {
+            string target = cmd.Next().ToLower();
+
+            string newItem = cmd.NextAll();
+            if (String.IsNullOrEmpty(newItem))
+            {
+                CdEdit.PrintUsage(player);
+                return;
+            }
+            switch (target)
+            {
+                case "swears":
+                    if (!File.Exists("swearwords.txt"))
+                    {
+                        player.Message("&cThe swearword.txt file could not be found. Ask your server host to set it up.");
+                        break;
+                    }
+                    using (StreamWriter sw = File.AppendText("swearwords.txt"))
+                    {
+                        player.Message("&eAdded &c'{0}'&e to the list of swear words.", newItem);
+                        sw.WriteLine(newItem);
+                        sw.Close();
+                    }	
+                    break;
+                case "rules":
+                    if (!File.Exists("rules.txt"))
+                    {
+                        player.Message("&cThe rules.txt file could not be found. Ask your server host to set it up.");
+                        break;
+                    }
+                    using (StreamWriter sw = File.AppendText("rules.txt"))
+                    {
+                        player.Message("&eAdded &c'{0}'&e to the /rules.", newItem);
+                        sw.WriteLine(newItem);
+                        sw.Close();
+                    }	
+                    break;
+                case "greeting":
+                    File.Create("greeting2.txt2");//create a quick temp file to store the new greeting
+                    using (StreamWriter sw = File.AppendText("greeting2.txt"))
+                    {
+                        player.Message("&eChanged greeting to &c{0}&e.", newItem);
+                        sw.Write(newItem);
+                        sw.Close();
+                    }
+                    File.Replace("greeting2.txt", "greeting.txt", "oldgreeting.txt");
+                    File.Delete("oldgreeting.txt");//C# forces you to create a backup of the replaced file, im just going to delete it
+                    break;
+                default:
+                    CdEdit.PrintUsage(player);
+                    break;
+            }
+        }
 
         static readonly CommandDescriptor CdName = new CommandDescriptor
         {
