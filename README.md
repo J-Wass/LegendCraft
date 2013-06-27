@@ -14,6 +14,8 @@ Special thanks to fragmer, for creating fCraft! Special thanks to Jonty800, Glen
 
 LegendCraft requires Microsoft .NET Framework 4.0. Your system may already have it
 installed, and you can download it from  http://www.microsoft.com/en-us/download/details.aspx?id=17851
+Plugins not working? Getting plugin errors?
+Go to your plugins folder and right click on all the plugin.dll's. Select unblock for all of them.
 
 ####(Linux, Unix, MacOS X)
 
@@ -32,7 +34,6 @@ Mono 2.8+:  "mono --gc=sgen SomeFile.exe"
 If you're intending to run a public server that appears on minecraft.net's server list, 	
 you need to import https certificates to tell mono you trust them, this can be done by 
 running mozroots --import --ask-remove as the 800Craft user on your system.
-
 
 ##Licensing 
 
