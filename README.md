@@ -1,9 +1,23 @@
-﻿#LegendCraft
-﻿![LegendCraft](http://i.imgur.com/YNPR6p0.png "Ya it's a logo deal with it")<br />
+﻿#Notice
 ﻿
-﻿Download LegendCraft here: http://www.mediafire.com/folder/oy3rdjfanvdt7/LegendCraft_Releases!
+All LegendCraft Software production has been put to a halt while we focus all of our
+energy towards saving minecraft classic.
+Mojang has removed the link to minecraft classic on the homepage, meaning that there will be
+no new guests on any server. This will cause classic to die within a month or so.
 
-﻿Thank you for downloading LegendCraft, a custom Minecraft server based on fCraft and 800craft.
+You can help by signing this petition: http://twitition.com/p66zh
+Go ahead and tell mollstam (mojang web dev)why you dissaprove of his actions: @mollstam
+
+Remember to tweet and spread the word. This is important: (hashtag) SaveClassic
+
+
+
+#LegendCraft
+![LegendCraft](http://i.imgur.com/YNPR6p0.png "Ya it's a logo deal with it")<br />
+
+Download LegendCraft here: http://www.mediafire.com/folder/oy3rdjfanvdt7/LegendCraft_Releases!
+
+Thank you for downloading LegendCraft, a custom Minecraft server based on fCraft and 800craft.
 
 Special thanks to fragmer, for creating fCraft! Special thanks to Jonty800, GlennMR and LaoTszy for their hard work with
 800Craft! LegendCraft is a modified version of 800Craft. 
