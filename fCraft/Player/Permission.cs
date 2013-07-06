@@ -261,8 +261,14 @@ namespace fCraft {
         ///<summary>Permission to manage the economy. (Use /give and /take)</summary>
         ManageEconomy,
 
-         /// <summary> Ability to Make votes in /vote </summary>
+        /// <summary> Ability to Make votes in /vote </summary>
         MakeVotes,
+         
+        ///<summary> Permission to toggle WorldChat.</summary>
+        ManageWorldChat,      
+       
+        ///<summary> Permission to use /tpa.</summary>
+        TPA, 
         
         /// <summary> Permission for players to change their own Displayed Name with the /Name command</summary>
         Name
