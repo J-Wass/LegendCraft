@@ -15,7 +15,7 @@ Remember to tweet and spread the word. This is important: (hashtag) SaveClassic
 #LegendCraft
 ![LegendCraft](http://i.imgur.com/YNPR6p0.png "Ya it's a logo deal with it")<br />
 
-Download LegendCraft here: http://www.mediafire.com/folder/oy3rdjfanvdt7/LegendCraft_Releases!
+Download LegendCraft here: http://tinyurl.com/n4cnm3p
 
 Thank you for downloading LegendCraft, a custom Minecraft server based on fCraft and 800craft.
 
