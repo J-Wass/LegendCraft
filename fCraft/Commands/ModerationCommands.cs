@@ -182,56 +182,38 @@ THE SOFTWARE.*/
         static readonly CommandDescriptor CdLastCommand = new CommandDescriptor
         {
             Name = "LastCommand",
-            Aliases = new[] { "LastCmd" , "last" },
+            Aliases = new[] { "LastCmd", "last" },
             IsConsoleSafe = true,
             Category = CommandCategory.Moderation,
             Permissions = new[] { Permission.Spectate },
-            Help = "&SChecks the last command used by a player. Leave blank for your last command used.",
-            Usage = "&S/LastCommand player",
+            Help = "Checks the last command used by a player. Leave the player parameter blank for your last command.",
+            Usage = "/LastCommand (player)",
             Handler = LastCommandHandler
         };
 
-        static void LastCommandHandler(Player player, Command cmd) 
+        static void LastCommandHandler(Player player, Command cmd) //allows the user to see the last command a target player has used
         {
-            if (String.IsNullOrEmpty(player.LastCommand.ToString()))
-            {
-                player.Message("&SYou haven't used a command yet!");
-                return;
-            }
-            string[] pLastCommandA = player.LastCommand.ToString().Split('"');
-            string[] pLastCommandB = pLastCommandA[1].Split('"');
             string target = cmd.Next();
             if (String.IsNullOrEmpty(target))
             {
-                if(String.IsNullOrEmpty(pLastCommandB[0]))
+                if (player.LastCommand == null)
                 {
-                    player.Message("&SYou haven't used a command yet!");
+                    player.Message("You do not have a last command");
+                    CdLastCommand.PrintUsage(player);
                     return;
                 }
-                player.Message("&SYour last command used was: " + pLastCommandB[0]);
+                player.Message("Your last command used was: " + player.LastCommand.ToString());
                 return;
             }
             Player targetName = Server.FindPlayerOrPrintMatches(player, target, false, true);
-
-            if (String.IsNullOrEmpty(targetName.LastCommand.ToString()))
-            {
-                player.Message("{0}&S hasn't used a command yet!", targetName.ClassyName);
-            }
-
-            string[] tLastCommandA = targetName.LastCommand.ToString().Split('"');
-            string[] tLastCommandB = tLastCommandA[1].Split('"');
             if (targetName == null)
             {
-                player.Message("&SNo player found matching " + target);
+                player.Message("No player found matching " + target);
                 return;
             }
             else
             {
-                if(String.IsNullOrEmpty(tLastCommandB[0]))
-                {
-                    player.Message("{0}&S hasn't used a command yet!", targetName.ClassyName);
-                }
-                player.Message(targetName.ClassyName + "&Ss last command was " + tLastCommandB[0]);
+                player.Message(targetName.Name + "s last command was " + targetName.LastCommand.ToString());
                 return;
             }
         }
