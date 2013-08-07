@@ -399,7 +399,7 @@ THE SOFTWARE.*/
 
         #region Economy
 
-         static readonly CommandDescriptor CdPay = new CommandDescriptor
+        static readonly CommandDescriptor CdPay = new CommandDescriptor
         {
             Name = "Pay",
             Aliases = new[] { "Purchase" },
@@ -411,249 +411,288 @@ THE SOFTWARE.*/
             Handler = PayHandler
         };
 
-         static void PayHandler(Player player, Command cmd)
-         {
-             string targetName = cmd.Next();
-             string money = cmd.Next();
-             int amount;
+        static void PayHandler(Player player, Command cmd)
+        {
+            string targetName = cmd.Next();
+            string amount = cmd.Next();
+            int amountnum;
+            //lotsa idiot proofing in this one ^.^
 
-             if (money == null)
-             {
-                 player.Message("&ePlease select the amount of bits you wish to send.");
-                 return;
-             }
-            
-             Player target = Server.FindPlayerOrPrintMatches(player, targetName, false, true);
-             if (target == null)
-             {
-                 player.Message("&ePlease select a player to pay bits towards.");
-                 return;
-             }
+            if (targetName == null)
+            {
+                player.Message("&ePlease type in a player's name to pay bits towards.");
+                return;
+            }
+            Player target = Server.FindPlayerOrPrintMatches(player, targetName, false, true);
+            if (target == player)
+            {
+                player.Message("You can't pay yourself >.> Doesn't work like that.");
+                return;
+            }
 
-             if (!int.TryParse(money, out amount))
-             {
-                 player.Message("&ePlease select from a whole number.");
-                 return;
-             }
-             
-             EconomyHandler(player, new Command("/economy pay " + target.Name + " " + money));
-         }
+            if (target == null)
+            {
+                return;
+            }
+            else
+            {
+                if (!int.TryParse(amount, out amountnum))
+                {
+                    player.Message("&eThe amount must be a positive whole number!");
+                    return;
+                }
+                if (amountnum < 1)
+                {
+                    player.Message("&eThe amount must be a positive whole number!");
+                    return;
+                }
 
-         static readonly CommandDescriptor CdEconomy = new CommandDescriptor
-         {
-             Name = "Economy",
-             Aliases = new[] { "Money", "Econ" },
-             Category = CommandCategory.Moderation,
-             IsConsoleSafe = true,
-             Permissions = new[] { Permission.Economy },
-             Usage = "/Economy [pay/give/take/show] [playername] [pay/take/give: amount]",
-             Help = "&SEconomy commands for LegendCraft. Show will show you the amount of money a player has," +
-             "pay will pay that player an amount of bits," +
-             "and give/take will give/take bits from or to a player. WARNING, give and take will change your server's inflation.",
-             Handler = EconomyHandler
-         };
-
-         static void EconomyHandler(Player player, Command cmd)
-         {
-             try
-             {
-                 string option = cmd.Next();
-                 string targetName = cmd.Next();
-                 string amount = cmd.Next();
-                 int amountnum;
-                 if (option == null)
-                 {
-                     CdEconomy.PrintUsage(player);
-                 }
-                 if (option == "give")
-                 {
-                     if (!player.Can(Permission.ManageEconomy))
-                     {
-                         player.Message("You do not have the required permisions to use that command!");
-                         return;
-                     }
-                     if (targetName == null)
-                     {
-                         player.Message("&ePlease type in a player's name to give bits towards.");
-                         return;
-                     }
-                     Player target = Server.FindPlayerOrPrintMatches(player, targetName, false, true);
-                    
-                     if (target == null)
-                     {
-                         return;
-                     }
-                     else
-                     {
-                         if (!int.TryParse(amount, out amountnum))
-                         {
-                             player.Message("&eThe amount must be a number with no decimals foo'!");
-                             return;
-                         }
-                         if (cmd.IsConfirmed)
-                         {
-                             //actually give the player the money
-                             int tNewMoney = target.Info.Money + amountnum;
-                             player.Message("&eYou have given {0} &C{1} &ebit(s).", target.ClassyName, amountnum);
-                             target.Message("&e{0} &ehas given you {1} &ebit(s).", player.ClassyName, amountnum);
-                             Server.Players.Except(target).Except(player).Message("&e{0} &ewas given {1} &ebit(s) from {2}&e.", target.ClassyName, amountnum, player.ClassyName);
-                             target.Info.Money = tNewMoney;
-                             return;
-                         }
-                         else
-                         {
-                             player.Confirm(cmd, "&eAre you sure you want to give {0} &C{1} &ebits?", target.ClassyName, amountnum);
-                             return;
-                         }
-
-                     }
-                 }
-                 if (option == "take")
-                 {
-                     if (!player.Can(Permission.ManageEconomy))
-                     {
-                         player.Message("You do not have the required permisions to use that command!");
-                         return;
-                     }
-                     if (targetName == null)
-                     {
-                         player.Message("&ePlease type in a player's name to take bits away from.");
-                         return;
-                     }
-                     Player target = Server.FindPlayerOrPrintMatches(player, targetName, false, true);
-                     
-                     if (target == null)
-                     {
-                         return;
-                     }
-                     else
-                     {
-                         if (!int.TryParse(amount, out amountnum))
-                         {
-                             player.Message("&eThe amount must be a number!");
-                             return;
-                         }
-
-                         if (cmd.IsConfirmed)
-                         {
-                             if (amountnum > target.Info.Money)
-                             {
-                                 player.Message("{0}&e doesn't have that many bits!", target.ClassyName);
-                                 return;
-                             }
-                             else
-                             {
-                                 //actually give the player the money
-                                 int tNewMoney = target.Info.Money - amountnum;
-                                 player.Message("&eYou have taken &c{1}&e from {0}.", target.ClassyName, amountnum);
-                                 target.Message("&e{0} &ehas taken {1} &ebit(s) from you.", player.ClassyName, amountnum);
-                                 Server.Players.Except(target).Except(player).Message("&e{0} &etook {1} &ebit(s) from {2}&e.", player.ClassyName, amountnum, target.ClassyName);
-                                 target.Info.Money = tNewMoney;
-                                 return;
-                             }
-                         }
-                         else
-                         {
-                             player.Confirm(cmd, "&eAre you sure you want to take &c{1} &ebits from {0}?", target.ClassyName, amountnum);
-                             return;
-                         }
-
-                     }
+                if (cmd.IsConfirmed)
+                {
+                    if (amountnum > player.Info.Money)
+                    {
+                        player.Message("You don't have that many bits!");
+                        return;
+                    }
+                    else
+                    {
+                        //show him da monai
+                        int pNewMoney = player.Info.Money - amountnum;
+                        int tNewMoney = target.Info.Money + amountnum;
+                        player.Message("&eYou have paid &C{1}&e to {0}&e.", target.ClassyName, amountnum);
+                        target.Message("&e{0} &ehas paid you {1} &ebit(s).", player.ClassyName, amountnum);
+                        Server.Players.Except(target).Except(player).Message("&e{0} &ewas paid {1} &ebit(s) from {2}&e.", target.ClassyName, amountnum, player.ClassyName);
+                        player.Info.Money = pNewMoney;
+                        target.Info.Money = tNewMoney;
+                        return;
+                    }
+                }
+                else
+                {
+                    player.Confirm(cmd, "&eAre you sure you want to pay {0}&e {1} &ebits?", target.ClassyName, amountnum);
+                    return;
+                }
 
 
-                 }
-                 if (option == "pay")
-                 {
-                     //lotsa idiot proofing in this one ^.^
-                     
-                     if (targetName == null)
-                     {
-                         player.Message("&ePlease type in a player's name to pay bits towards.");
-                         return;
-                     }
-                     Player target = Server.FindPlayerOrPrintMatches(player, targetName, false, true);
-                     if (target == player)
-                     {
-                         player.Message("You can't pay yourself >.> Doesn't work like that.");
-                         return;
-                     }
+            }
+        }
 
-                     if (target == null)
-                     {
-                         return;
-                     }
-                     else
-                     {
-                         if (!int.TryParse(amount, out amountnum))
-                         {
-                             player.Message("&eThe amount must be a number!");
-                             return;
-                         }
+        static readonly CommandDescriptor CdEconomy = new CommandDescriptor
+        {
+            Name = "Economy",
+            Aliases = new[] { "Money", "Econ" },
+            Category = CommandCategory.Moderation,
+            IsConsoleSafe = false,
+            Permissions = new[] { Permission.Economy },
+            Usage = "/Economy [give/take/show/pay] [playername] [pay/give/take: amount]",
+            Help = "&SEconomy commands for LegendCraft. Show will show you the amount of money a player has" +
+            "and give/take will give or take bits from or to a player. WARNING, give and take will change your server's inflation.",
+            Handler = EconomyHandler
+        };
 
-                         if (cmd.IsConfirmed)
-                         {
-                             if (amountnum > player.Info.Money)
-                             {
-                                 player.Message("You don't have that many bits!");
-                                 return;
-                             }
-                             else
-                             {
-                                 //show him da monai
-                                 int pNewMoney = player.Info.Money - amountnum;
-                                 int tNewMoney = target.Info.Money + amountnum;
-                                 player.Message("&eYou have paid &C{1}&e to {0}.", target.ClassyName, amountnum);
-                                 target.Message("&e{0} &ehas paid you {1} &ebit(s).", player.ClassyName, amountnum);
-                                 Server.Players.Except(target).Except(player).Message("&e{0} &ewas paid {1} &ebit(s) from {2}&e.", target.ClassyName, amountnum, player.ClassyName);
-                                 player.Info.Money = pNewMoney;
-                                 target.Info.Money = tNewMoney;
-                                 return;
-                             }
-                         }
-                         else
-                         {
-                             player.Confirm(cmd, "&eAre you sure you want to pay {0}&e {1} &ebits? Type /ok to continue.", target.ClassyName, amountnum);
-                             return;
-                         }
+        static void EconomyHandler(Player player, Command cmd)
+        {
+            try
+            {
+                string option = cmd.Next();
+                string targetName = cmd.Next();
+                string amount = cmd.Next();
+                int amountnum;
+                if (option == null)
+                {
+                    CdEconomy.PrintUsage(player);
+                }
+                if (option == "give")
+                {
+                    if (!player.Can(Permission.ManageEconomy))
+                    {
+                        player.Message("You do not have the required permisions to use that command!");
+                        return;
+                    }
+                    Player target = Server.FindPlayerOrPrintMatches(player, targetName, false, true);
+                    if (targetName == null)
+                    {
+                        player.Message("&ePlease type in a player's name to give bits towards.");
+                        return;
+                    }
+                    if (target == null)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        if (!int.TryParse(amount, out amountnum))
+                        {
+                            player.Message("&ePlease select from a whole number.");
+                            return;
+                        }
+                        if (cmd.IsConfirmed)
+                        {
+                            //actually give the player the money
+                            int tNewMoney = target.Info.Money + amountnum;
+                            player.Message("&eYou have given {0} &C{1} &ebit(s).", target.ClassyName, amountnum);
+                            target.Message("&e{0} &ehas given you {1} &ebit(s).", player.ClassyName, amountnum);
+                            Server.Players.Except(target).Except(player).Message("&e{0} &ewas given {1} &ebit(s) from {2}&e.", target.ClassyName, amountnum, player.ClassyName);
+                            target.Info.Money = tNewMoney;
+                            return;
+                        }
+                        else
+                        {
+                            player.Confirm(cmd, "&eAre you sure you want to give {0} &C{1} &ebits?&s", target.ClassyName, amountnum);
+                            return;
+                        }
+
+                    }
+                }
+                if (option == "take")
+                {
+                    if (!player.Can(Permission.ManageEconomy))
+                    {
+                        player.Message("You do not have the required permisions to use that command!");
+                        return;
+                    }
+                    Player target = Server.FindPlayerOrPrintMatches(player, targetName, false, true);
+                    if (targetName == null)
+                    {
+                        player.Message("&ePlease type in a player's name to take bits away from.");
+                        return;
+                    }
+                    if (target == null)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        if (!int.TryParse(amount, out amountnum))
+                        {
+                            player.Message("&eThe amount must be a number!");
+                            return;
+                        }
+
+                        if (cmd.IsConfirmed)
+                        {
+                            if (amountnum > target.Info.Money)
+                            {
+                                player.Message("{0}&e doesn't have that many bits!", target.ClassyName);
+                                return;
+                            }
+                            else
+                            {
+                                //actually give the player the money
+                                int tNewMoney = target.Info.Money - amountnum;
+                                player.Message("&eYou have taken &c{1}&e from {0}.", target.ClassyName, amountnum);
+                                target.Message("&e{0} &ehas taken {1} &ebit(s) from you.", player.ClassyName, amountnum);
+                                Server.Players.Except(target).Except(player).Message("&e{0} &etook {1} &ebit(s) from {2}&e.", player.ClassyName, amountnum, target.ClassyName);
+                                target.Info.Money = tNewMoney;
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            player.Confirm(cmd, "&eAre you sure you want to take &c{1} &ebits from {0}&e?&s", target.ClassyName, amountnum);
+                            return;
+                        }
+
+                    }
 
 
-                     }
-                 }
+                }
+
+                if (option == "pay")
+                {
+                    //lotsa idiot proofing in this one ^.^
+
+                    if (targetName == null)
+                    {
+                        player.Message("&ePlease type in a player's name to pay bits towards.");
+                        return;
+                    }
+                    Player target = Server.FindPlayerOrPrintMatches(player, targetName, false, true);
+                    if (target == player)
+                    {
+                        player.Message("You can't pay yourself >.> Doesn't work like that.");
+                        return;
+                    }
+
+                    if (target == null)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        if (!int.TryParse(amount, out amountnum))
+                        {
+                            player.Message("&eThe amount must be a positive whole number!");
+                            return;
+                        }
+                        if (amountnum < 1)
+                        {
+                            player.Message("&eThe amount must be a positive whole number!");
+                            return;
+                        }
+
+                        if (cmd.IsConfirmed)
+                        {
+                            if (amountnum > player.Info.Money)
+                            {
+                                player.Message("You don't have that many bits!");
+                                return;
+                            }
+                            else
+                            {
+                                //show him da monai
+                                int pNewMoney = player.Info.Money - amountnum;
+                                int tNewMoney = target.Info.Money + amountnum;
+                                player.Message("&eYou have paid &C{1}&e to {0}&e.", target.ClassyName, amountnum);
+                                target.Message("&e{0} &ehas paid you {1} &ebit(s).", player.ClassyName, amountnum);
+                                Server.Players.Except(target).Except(player).Message("&e{0} &ewas paid {1} &ebit(s) from {2}&e.", target.ClassyName, amountnum, player.ClassyName);
+                                player.Info.Money = pNewMoney;
+                                target.Info.Money = tNewMoney;
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            player.Confirm(cmd, "&eAre you sure you want to pay {0}&e {1} &ebits?&s", target.ClassyName, amountnum);
+                            return;
+                        }
 
 
-                 else if (option == "show")
-                 {
-                     
-                     if (targetName == null)
-                     {
-                         player.Message("&ePlease type in a player's name to see how many bits they have.");
-                         return;
-                     }
-                     Player target = Server.FindPlayerOrPrintMatches(player, targetName, false, true);
+                    }
+                }
 
-                     if (target == null)
-                     {
-                         return;
-                     }
-                     else
-                     {
-                         //actually show how much money that person has
-                         player.Message("&e{0} has &C{1} &ebits currently!", target.ClassyName, target.Info.Money);
-                     }
+                else if (option == "show")
+                {
+                    Player target = Server.FindPlayerOrPrintMatches(player, targetName, false, true);
+                    if (targetName == null)
+                    {
+                        player.Message("&ePlease type in a player's name to see how many bits they have.");
+                        return;
+                    }
 
-                 }
-                 else
-                 {
-                     player.Message("&eValid choices are '/economy pay', '/economy take', '/economy give', and '/economy show.'");
-                     return;
-                 }
-             }
-             catch (ArgumentNullException)
-             {
-                 CdEconomy.PrintUsage(player);
-             }
-         }
-        #endregion 
+                    if (target == null)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        //actually show how much money that person has
+                        player.Message("&e{0}&e has &C{1}&e bits currently!", target.ClassyName, target.Info.Money);
+                    }
+
+                }
+                else
+                {
+                    player.Message("&eValid choices are '/economy take', '/economy give', '/economy show' and '/econ pay'.");
+                    return;
+                }
+            }
+            catch (ArgumentNullException)
+            {
+                CdEconomy.PrintUsage(player);
+            }
+        }
+        #endregion
 
 
         static readonly CommandDescriptor CdBanAll = new CommandDescriptor
