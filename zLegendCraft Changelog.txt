@@ -2,7 +2,7 @@ LegendCraft Changelog v2.2.0
 Add: /edit
 Change: /Econ and /Pay bug fixes
 
-LegendCraft Changelog v2.1.0
+LegendCraft Changelog v2.1.1 (Bug Fix Update)
 Add: /name
 Add: /Wom 
 Change: /Nick updated and refined + added /Nick <playername> revert
