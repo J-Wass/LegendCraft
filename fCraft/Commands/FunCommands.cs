@@ -246,7 +246,7 @@ THE SOFTWARE.*/
             Category = CommandCategory.World,
             Permissions = new Permission[] { Permission.Games },
             IsConsoleSafe = false,
-            Usage = "/TeamDeathMatch [Start | Stop | Time | Score | ScoreLimit | TimeLimit | TimeDelay | About | Help]",
+            Usage = "/TeamDeathMatch [Start | Stop | Time | Score | ScoreLimit | TimeLimit | TimeDelay | Settings | Red | Blue | ManualTeams | About | Help]",
             Help = "Manage the TDM Gamemode!",
             Handler = TDHandler
         };
@@ -268,7 +268,7 @@ THE SOFTWARE.*/
                     player.Message("TDM games cannot be played on the main world");
                     return;
                 }
-                if (world.gameMode != GameMode.NULL)
+                if (world.gameMode == GameMode.TeamDeathMatch)
                 {
                     player.Message("There is already a game going on");
                     return;
@@ -278,18 +278,23 @@ THE SOFTWARE.*/
                     player.Message("There needs to be at least &W2&S players to play TDM");
                     return;
                 }
+                if (TeamDeathMatch.blueSpawn == Position.Zero || TeamDeathMatch.redSpawn == Position.Zero)
+                {
+                    player.Message("You must first assign the team's spawn points with &H/TD SetSpawn (Red/Blue)");
+                    return;
+                }
                 else
                 {
-                    fCraft.Games.TeamDeathMatch.GetInstance(player.World);
-                    fCraft.Games.TeamDeathMatch.Start();
+                    TeamDeathMatch.GetInstance(player.World);
+                    TeamDeathMatch.Start();
                     return;
                 }
             }
             if (Option.ToLower() == "stop" || Option.ToLower() == "off") //stops the game
             {
-                if (fCraft.Games.TeamDeathMatch.isOn)
+                if (TeamDeathMatch.isOn)
                 {
-                    fCraft.Games.TeamDeathMatch.Stop(player);
+                    TeamDeathMatch.Stop(player);
                     return;
                 }
                 else
@@ -298,7 +303,43 @@ THE SOFTWARE.*/
                     return;
                 }
             }
-            if (!fCraft.Games.TeamDeathMatch.isOn && (Option.ToLower() == "timelimit" || Option.ToLower() == "scorelimit" || Option.ToLower() == "timedelay"))
+            if (Option.ToLower() == "manualteams")
+            {
+                string option = cmd.Next();
+                if (string.IsNullOrEmpty(option) || option.Length < 2 || option.Length > 9)
+                {
+                    player.Message("Use like: /TD ManualTeams (On/Off)");
+                    return;
+                }
+                if (option.ToLower() == "off" || option.ToLower() == "auto" || option.ToLower() == "automatic")
+                {
+                    if (!TeamDeathMatch.manualTeams)
+                    {
+                        player.Message("The team assign option is already set to &wAuto");
+                        return;
+                    }
+                    TeamDeathMatch.manualTeams = false;
+                    player.Message("The team assign option has been set to &WAuto&s.");
+                    return;
+                }
+                if (option.ToLower() == "on" || option.ToLower() == "manual")
+                {
+                    if (TeamDeathMatch.manualTeams)
+                    {
+                        player.Message("The team assign option is already set to &wManual");
+                        return;
+                    }
+                    TeamDeathMatch.manualTeams = true;
+                    player.Message("The team assign option has been set to &WManual&s.");
+                    return;
+                }
+            }
+            if (TeamDeathMatch.isOn && (Option.ToLower() == "timelimit" || Option.ToLower() == "scorelimit" || Option.ToLower() == "timedelay"))
+            {
+                player.Message("You cannot adjust game settings while a game is going on");
+                return;
+            }
+            if (!TeamDeathMatch.isOn && (Option.ToLower() == "timelimit" || Option.ToLower() == "scorelimit" || Option.ToLower() == "timedelay"))
             {
                 if (Option.ToLower() == "timelimit")    //option to change the length of the game (5m default)
                 {
@@ -322,13 +363,18 @@ THE SOFTWARE.*/
                     }
                     else
                     {
-                        fCraft.Games.TeamDeathMatch.timeLimit = (timeLimit * 60);
+                        TeamDeathMatch.timeLimit = (timeLimit * 60);
                         player.Message("The time limit has been changed to &W{0}&S minutes", timeLimit);
                         return;
                     }
                 }
                 if (Option.ToLower() == "timedelay")    //option to set the time delay for TDM games (20s default)
                 {
+                    if (TeamDeathMatch.manualTeams)
+                    {
+                        player.Message("The manual team assign option is enabled so the delay is 30 seconds to enable team assigning");
+                        return;
+                    }
                     string time = cmd.Next();
                     if (time == null)
                     {
@@ -349,12 +395,12 @@ THE SOFTWARE.*/
                     }
                     else
                     {
-                        fCraft.Games.TeamDeathMatch.timeDelay = timeDelay;
+                        TeamDeathMatch.timeDelay = timeDelay;
                         player.Message("The time delay has been changed to &W{0}&s seconds", timeDelay);
                         return;
                     }
                 }
-                if (Option.ToLower() == "scorelimit")       //changes the score limit
+                if (Option.ToLower() == "scorelimit")       //changes the score limit (30 default)
                 {
                     string score = cmd.Next();
                     if (score == null)
@@ -376,21 +422,98 @@ THE SOFTWARE.*/
                     }
                     else
                     {
-                        fCraft.Games.TeamDeathMatch.scoreLimit = scoreLimit;
+                        TeamDeathMatch.scoreLimit = scoreLimit;
                         player.Message("The score limit has been changed to &W{0}&s points", scoreLimit);
                         return;
                     }
                 }
             }
-            if (fCraft.Games.TeamDeathMatch.isOn && (Option.ToLower() == "timelimit" || Option.ToLower() == "scorelimit" || Option.ToLower() == "timedelay"))
+            if (Option.ToLower() == "red")
             {
-                player.Message("You cannot adjust game settings while a game is going on");
-                return;
+                string target = cmd.Next();
+                if (target == null)
+                {
+                    player.Message("Use like: /TD Red <PlayerName>");
+                    return;
+                }
+                Player targetP = Server.FindPlayerOrPrintMatches(player, target, true, true);
+                if (targetP == null) return;
+                if (player.World.gameMode == GameMode.TeamDeathMatch && !TeamDeathMatch.isOn)
+                {
+                    TeamDeathMatch.AssignRed(targetP);
+                    return;
+                }
+                else
+                {
+                    player.Message("You can only assign teams during the delay of a Team DeathMatch Game.");
+                    return;
+                }
+            }
+            if (Option.ToLower() == "blue")
+            {
+                string target = cmd.Next();
+                if (target == null)
+                {
+                    player.Message("Use like: /TD Blue <PlayerName>");
+                    return;
+                }
+                Player targetP = Server.FindPlayerOrPrintMatches(player, target, true, true);
+                if (targetP == null) return;
+                if (player.World.gameMode == GameMode.TeamDeathMatch && !TeamDeathMatch.isOn)
+                {
+                    TeamDeathMatch.AssignBlue(targetP);
+                    return;
+                }
+                else
+                {
+                    player.Message("You can only assign teams during the delay of a Team DeathMatch Game.");
+                    return;
+                }
+            }
+            if (Option.ToLower() == "setspawn")
+            {
+                string team = cmd.Next();
+                if (string.IsNullOrEmpty(team) || team.Length < 1)
+                {
+                    player.Message("Use like: /TD SetSpawn (Red/Blue)");
+                    return;
+                }
+                if (TeamDeathMatch.isOn)
+                {
+                    player.Message("You cannot change the spawn during the game!");
+                    return;
+                }
+                if (!TeamDeathMatch.isOn && player.World != WorldManager.MainWorld)
+                {
+                    switch (team.ToLower())
+                    {
+                        default:
+                            player.Message("Use like: /TD SetSpawn (Red/Blue)");
+                            return;
+                        case "red":
+                            TeamDeathMatch.redSpawn = player.Position;
+                            player.Message("&SSpawn for the &cRed&S team set.");
+                            return;
+                        case "blue":
+                            TeamDeathMatch.blueSpawn = player.Position;
+                            player.Message("&SSpawn for the &1Blue&S team set.");
+                            return;
+                    }
+                }
+                else
+                {
+                    if (player.World == WorldManager.MainWorld) { player.Message("You cannot play TDM on the main world"); return; }
+                    else if (TeamDeathMatch.isOn)
+                    {
+                        player.Message("You can only set the team spawns during the delay or before the game");
+                        return;
+                    }
+                }
             }
             if (Option.ToLower() == "score")       //scoreboard for the matchs, different messages for when the game has ended. //td score
             {
-                int red = fCraft.Games.TeamDeathMatch.redScore;
-                int blue = fCraft.Games.TeamDeathMatch.blueScore;
+                int red = TeamDeathMatch.redScore;
+                int blue = TeamDeathMatch.blueScore;
 
                 if (red > blue)
                 {
@@ -444,33 +567,46 @@ THE SOFTWARE.*/
             }
             if (Option.ToLower() == "about")    //td about
             {
-                player.Message("&cTeam Deathmatch&S is a team game where all players are assigned to a red or blue team. Players cannot shoot players on their own team. The game will start the gun physics for you. The game keeps score and notifications come up about the score and time left every 30 seconds. The Score Limit, Time Delay and Time Limit are customizable. Detailed help is on &H/TD Help"
+                player.Message("&cTeam Deathmatch&S is a team game where all players are assigned to a red or blue team. Players cannot shoot players on their own team. The game will start the gun physics and do /gun for you. The game keeps score and notifications come up about the score and time left every 30 seconds. The Score Limit, Time Delay, Time Limit, and Team Assigning are customizable. Detailed help is on &H/TD Help"
                 + "\n&SDeveloped for &5Legend&WCraft&S by &fDingus&0Bungus&S 2013 - Based on the template of ZombieGame.cs written by Jonty800.");
                 return;
             }
-            if (Option.ToLower() == "settings") //shows the current settings for the game (time limit, time delay, score limit)
+            if (Option.ToLower() == "settings") //shows the current settings for the game (time limit, time delay, score limit, team assigning)
             {
-                player.Message("The Current Settings For TDM: Time Delay: &c{0}&ss | Time Limit: &c{1}&sm | Score Limit: &c{2}&s points",
-                    fCraft.Games.TeamDeathMatch.timeDelay, (fCraft.Games.TeamDeathMatch.timeLimit / 60), fCraft.Games.TeamDeathMatch.scoreLimit);
-                return;
+                if (!TeamDeathMatch.manualTeams)
+                {
+                    player.Message("The Current Settings For TDM: Auto Team Assign: &cOn&s | Time Delay: &c{0}&ss | Time Limit: &c{1}&sm | Score Limit: &c{2}&s points",
+                        TeamDeathMatch.timeDelay, (TeamDeathMatch.timeLimit / 60), TeamDeathMatch.scoreLimit);
+                    return;
+                }
+                if (TeamDeathMatch.manualTeams)
+                {
+                    player.Message("The Current Settings For TDM: Auto Team Assign: &cOff&s | Time Delay: &c30&ss | Time Limit: &c{1}&sm | Score Limit: &c{2}&s points",
+                        TeamDeathMatch.timeDelay, (TeamDeathMatch.timeLimit / 60), TeamDeathMatch.scoreLimit);
+                    return;
+                }
             }
             if (Option.ToLower() == "help") //detailed help for the cmd
             {
-                player.Message("Showing Option Descriptions for /TD (Option):\n&HTime &f- Tells how much time left in the game"
-                + "\n&HScore &f- Tells the score of the current game(or last game played)"
-                + "\n&HScoreLimit [number(5-300)] &f- Sets the score at which the game will end (Enter Whole Numbers from 5-300)"
-                + "\n&HTimeLimit [time(m)] &f- Sets the time at which the game will end (Enter whole minutes from 1-15)"
-                + "\n&HTimeDelay [time(s)] &f- Sets the time delay at the beginning of the match (Enter 10 second incriments from 10-60)"
+                player.Message("Showing Option Descriptions for /TD (Option):"
+                + "\n&HTime &f- Tells how much time left in the game"
+                + "\n&HScore &f- Tells the score of the game (or last game played)"
+                + "\n&HSetSpawn [Red/Blue] &f- Sets the teams spawns"
+                + "\n&HScoreLimit [number] &f- Sets score limit (Whole Numbers from 5-300)"
+                + "\n&HTimeLimit [time(m)] &f- Sets end time (Whole minutes from 1-15)"
+                + "\n&HTimeDelay [time(s)] &f- Sets start delay (10 second incriments from 10-60)"
+                + "\n&HManualTeams [On/Off] &f- Create teams manually/automatically"
+                + "\n&HRed [PlayerName] &f- Assigns the given player to the red team"
+                + "\n&HBlue [PlayerName] &f - Assigns the given player to the blue team"
                 + "\n&HSettings&f - Shows the current TDM settings"
-                + "\n&HAbout &f- General Game Description and Credits"
-                + "\n&HDefaults&f: TimeDelay: 20s, TimeLimit: 5m, ScoreLimit 50");
+                + "\n&HAbout&f - General description and credits");
                 return;
             }
             if (Option.ToLower() == "time" || Option.ToLower() == "timeleft")
             {
                 if (player.Info.isPlayingTD)
                 {
-                    player.Message("&fThere are &W{0}&f seconds left in the game.", fCraft.Games.TeamDeathMatch.timeLeft);
+                    player.Message("&fThere are &W{0}&f seconds left in the game.", TeamDeathMatch.timeLeft);
                     return;
                 }
                 else
@@ -537,7 +673,92 @@ THE SOFTWARE.*/
                 switch (option.ToLower())
                 {
                     default:
-                        CdStatistics.PrintUsage(player);
+                        if (option.Length < 2)
+                        {
+                            player.Message("Invalid /Stats option. Do &H/Stats Help&s for all /Stats options.");
+                            return;
+                        }
+                        PlayerInfo tar = PlayerDB.FindPlayerInfoOrPrintMatches(player, option);
+                        if (tar == null) { return; }                       
+                        else
+                        {
+                            double tarKills = tar.gameKills;
+                            double tarDeaths = tar.gameDeaths;    //for use in division (for precision)
+                            double gameKDR = 0;
+                            string opt = cmd.Next();
+                            if (opt == null)
+                            {
+                                player.Message("By default, checking game stats for {0}", tar.ClassyName);
+                                if (tarKills == 0)
+                                {
+                                    gameKDR = 0;
+                                }
+                                else if (tarDeaths == 0 && tarKills > 0)
+                                {
+                                    gameKDR = tarKills;
+                                }
+                                else if (tarDeaths > 0 && tarKills > 0)
+                                {
+                                    gameKDR = tarKills / tarDeaths;
+                                }
+                                if (tar.isPlayingTD)
+                                {
+                                    player.Message("&s{0}&S has &W{1}&s Kills and &W{2}&s Deaths. Their Kill/Death Ratio is &W{3:0.00}&s.", tar.ClassyName, tarKills, tarDeaths, gameKDR);
+                                }
+                                else
+                                {
+                                    player.Message("&s{0}&S had &W{1}&s Kills and &W{2}&s Deaths. Their Kill/Death Ratio was &W{3:0.00}&s.", tar.ClassyName, tarKills, tarDeaths, gameKDR);
+                                }
+                                return;
+                            }
+                            switch(opt.ToLower())
+                            {
+                                default:
+                                player.Message("By default, checking game stats for {0}", tar.ClassyName);
+                                if (tarKills == 0)
+                                {
+                                    gameKDR = 0;
+                                }
+                                else if (tarDeaths == 0 && tarKills > 0)
+                                {
+                                    gameKDR = tarKills;
+                                }
+                                else if (tarDeaths > 0 && tarKills > 0)
+                                {
+                                    gameKDR = tarKills / tarDeaths;
+                                }
+                                if (tar.isPlayingTD)
+                                {
+                                    player.Message("&s{0}&S has &W{1}&s Kills and &W{2}&s Deaths. Their Kill/Death Ratio is &W{3:0.00}&s.", tar.ClassyName, tarKills, tarDeaths, gameKDR);
+                                }
+                                else
+                                {
+                                    player.Message("&s{0}&S had &W{1}&s Kills and &W{2}&s Deaths. Their Kill/Death Ratio was &W{3:0.00}&s.", tar.ClassyName, tarKills, tarDeaths, gameKDR);
+                                }
+                                break;
+
+                                case "alltime":
+
+                                double alltimeKDR = 0;
+                                double dubKills = tar.totalKillsTDM;
+                                double dubDeaths = tar.totalDeathsTDM;
+                                if (tar.totalKillsTDM == 0)
+                                {
+                                    alltimeKDR = 0;
+                                }
+                                else if (dubDeaths == 0 && dubKills > 0)
+                                {
+                                    alltimeKDR = dubKills;
+                                }
+                                else if (dubDeaths > 0 && dubKills > 0)
+                                {
+                                    alltimeKDR = dubKills / dubDeaths;
+                                }
+                                player.Message("&sIn all &WTeam Deathmatch&S games {0}&S has played, they have gotten: &W{1}&S Kills and &W{2}&s Deaths giving them a Kill/Death ratio of &W{3:0.00}&S.",
+                                    tar.ClassyName, dubKills, dubDeaths, alltimeKDR);
+                                break;
+                            }
+                        }
                         return;
 
                     case "alltime": //user does /stats alltime
@@ -571,7 +792,7 @@ THE SOFTWARE.*/
                         player.Message("&HShowing the players with the most all-time TDM Kills:");
                         if (TDPlayers.Count() < 10)
                         {
-                            for (int i = 0; i < TDPlayers.Count(); i++)
+                            for (int i = 0; i < TDPlayers.Count(); i++) 
                             {
                                 player.Message("{0}&s - {1} Kills", TDPlayers[i].ClassyName, TDPlayers[i].totalKillsTDM);
                             }
@@ -604,11 +825,54 @@ THE SOFTWARE.*/
                         }
                         return;
 
+                    case "scoreboard": //user does /stats scoreboard
+                        List<PlayerInfo> TDPlayersRed = new List<PlayerInfo>(PlayerDB.PlayerInfoList.Where(r => r.isPlayingTD).Where(r => r.isOnRedTeam).ToArray().OrderBy(r => r.totalKillsTDM).Reverse());
+                        List<PlayerInfo> TDPlayersBlue = new List<PlayerInfo>(PlayerDB.PlayerInfoList.Where(r => r.isPlayingTD).Where(r => r.isOnBlueTeam).ToArray().OrderBy(r => r.totalKillsTDM).Reverse());
+                        if (TeamDeathMatch.redScore >= TeamDeathMatch.blueScore)
+                        {
+                            player.Message("&CRed Team &f{0}&1:", TeamDeathMatch.redScore);
+                            for (int i = 0; i < TDPlayersRed.Count(); i++)
+                            {
+                                string sbNameRed = TDPlayersRed[i].Name;
+                                player.Message("&C{0} &f| &c{1} &fKills - &c{2} &fDeaths",
+                                    sbNameRed, TDPlayersRed[i].gameKills, TDPlayersRed[i].gameDeaths);
+                            }
+                            player.Message("&f--------------------------------------------");
+                            player.Message("&1Blue Team &f{0}&1:", TeamDeathMatch.blueScore);
+                            for (int i = 0; i < TDPlayersBlue.Count(); i++)
+                            {
+                                string sbNameBlue = TDPlayersBlue[i].Name;
+                                player.Message("&1{0} &f| &c{1} &fKills - &c{2} &fDeaths",
+                                    sbNameBlue, TDPlayersBlue[i].gameKills, TDPlayersBlue[i].gameDeaths);
+                            }
+                        }
+                        if (TeamDeathMatch.redScore < TeamDeathMatch.blueScore)
+                        {
+                            player.Message("&1Blue Team &f{0}&1:", TeamDeathMatch.blueScore);
+                            for (int i = 0; i < TDPlayersBlue.Count(); i++)
+                            {
+                                string sbNameBlue = TDPlayersBlue[i].Name;
+                                player.Message("&1{0} &f| &c{1} &fKills - &c{2} &fDeaths",
+                                    sbNameBlue, TDPlayersBlue[i].gameKills, TDPlayersBlue[i].gameDeaths);
+                            }
+                            player.Message("&f--------------------------------------------");
+                            player.Message("&CRed Team &f{0}&1:", TeamDeathMatch.redScore);
+                            for (int i = 0; i < TDPlayersRed.Count(); i++)
+                            {
+                                string sbNameRed = TDPlayersRed[i].Name;
+                                player.Message("&C{0} &f| &c{1} &fKills - &c{2} &fDeaths",
+                                    sbNameRed, TDPlayersRed[i].gameKills, TDPlayersRed[i].gameDeaths);
+                            }
+                        }
+                        return;
+
                     case "help": //user does /stats help
                         player.Message("&HDetailed help for the /Stats (options):");
                         player.Message("&HAllTime&S - Shows your all time TDM stats.");
-                        player.Message("&HTopKills&S - Starts a game of Team Deathmatch");
-                        player.Message("&HTopDeaths&S - show the players with the all time most Kills and Deaths.");
+                        player.Message("&HTopKills&S - Show the players with the most all time kills");
+                        player.Message("&HTopDeaths&S - Show the players with the most all time Deaths.");
+                        player.Message("&HScoreBoard&S - Shows a scoreboard of the current TDM game.");
+                        player.Message("&H(PlayerName) (Alltime|Game) - Shows the alltime or game stats of a player");
                         player.Message("&HNote: Leave Blank For Current Game Stats");
                         return;
                 }
