@@ -101,65 +101,150 @@ THE SOFTWARE.*/
             Aliases = new[] { "configure", "set" },
             Category = CommandCategory.Chat | CommandCategory.Fun,
             Permissions = new[] {Permission.ReloadConfig},
-            IsConsoleSafe = false,
-            Usage = "/Edit [Swears|Rules|Greeting]",
-            Help = "Allows a player to add items to the swearwords and rules, or create a new greeting.",
+            IsConsoleSafe = true,
+            Usage = "/Edit [Add|Clear|Help] [Swears|Rules|Greeting|Announcements] [Message]",
+            Help = "Allows a player to add items to the swearwords, rules, amd announcements or create a new greeting. You can also clear one of the options.",
             NotRepeatable = true,
             Handler = EditHandler,
         };
 
         static void EditHandler(Player player, Command cmd)
         {
-            string target = cmd.Next().ToLower();
+            string option;
+            string target;
 
-            string newItem = cmd.NextAll();
-            if (String.IsNullOrEmpty(newItem))
+            try
+            {
+                option = cmd.Next().ToLower();
+            }
+            catch (NullReferenceException)
             {
                 CdEdit.PrintUsage(player);
                 return;
             }
-            switch (target)
+            
+            if (option == "help")
             {
-                case "swears":
-                    if (!File.Exists("swearwords.txt"))
-                    {
-                        player.Message("&cThe swearword.txt file could not be found. Ask your server host to set it up.");
+                player.Message("Options are Add and Clear.\r\n " +
+                    "'/Edit Clear Swears' will completely erase all the swears so you can start from scratch.\r\n " +
+                    "'/Edit Add Swears Monkey' will add the word 'Monkey' to the current list of swears.");
+                return;
+            }
+                       
+            else if(option == "clear")
+            {
+                target = cmd.Next().ToLower();
+               
+                //clear the files
+                switch (target)
+                {
+                    case "swears":
+                        if (File.Exists("swearwords.txt"))
+                        {
+                            File.Delete("swearwords.txt");
+                        }
+                        File.Create("swearwords.txt").Dispose();
+                        player.Message("&eThe swear words for the server has been wiped.");
                         break;
-                    }
-                    using (StreamWriter sw = File.AppendText("swearwords.txt"))
-                    {
-                        player.Message("&eAdded &c'{0}'&e to the list of swear words.", newItem);
-                        sw.WriteLine(newItem);
-                        sw.Close();
-                    }	
-                    break;
-                case "rules":
-                    if (!File.Exists("rules.txt"))
-                    {
-                        player.Message("&cThe rules.txt file could not be found. Ask your server host to set it up.");
+                    case "rules":
+                        if (File.Exists("rules.txt"))
+                        {
+                            File.Delete("rules.txt");
+                        }
+                        File.Create("rules.txt").Dispose();
+                        player.Message("&eThe rules for the server has been wiped.");
                         break;
-                    }
-                    using (StreamWriter sw = File.AppendText("rules.txt"))
-                    {
-                        player.Message("&eAdded &c'{0}'&e to the /rules.", newItem);
-                        sw.WriteLine(newItem);
-                        sw.Close();
-                    }	
-                    break;
-                case "greeting":
-                    File.Create("greeting2.txt2");//create a quick temp file to store the new greeting
-                    using (StreamWriter sw = File.AppendText("greeting2.txt"))
-                    {
-                        player.Message("&eChanged greeting to &c{0}&e.", newItem);
-                        sw.Write(newItem);
-                        sw.Close();
-                    }
-                    File.Replace("greeting2.txt", "greeting.txt", "oldgreeting.txt");
-                    File.Delete("oldgreeting.txt");//C# forces you to create a backup of the replaced file, im just going to delete it
-                    break;
-                default:
+                    case "greeting":  
+                        if (File.Exists("greeting.txt"))
+                        {
+                            File.Delete("greeting.txt");
+                        }
+                        File.Create("greeting.txt").Dispose();
+                        player.Message("&eThe greeting for the server has been wiped.");
+                        break;
+                    case "announcements":
+                        if (File.Exists("announcements.txt"))
+                        {
+                            File.Delete("announcements.txt");
+                        }
+                        File.Create("announcements.txt").Dispose();
+                        player.Message("&eThe announcements for the server has been wiped.");
+                        break;
+                    default:
+                        player.Message("&ePlease choose either greeting, rules, or swears as an option to clear.");
+                        break;
+                }
+                return;
+            }
+
+            else if (option == "add")
+            {
+                target = cmd.Next().ToLower();
+                
+                //append the files
+                string newItem = cmd.NextAll();
+                if (String.IsNullOrEmpty(newItem))
+                {
                     CdEdit.PrintUsage(player);
-                    break;
+                    return;
+                }
+                switch (target)
+                {
+                    case "swears":
+                        if (!File.Exists("swearwords.txt"))
+                        {
+                            File.Create("swearwords.txt").Dispose();
+                        }
+                        using (StreamWriter sw = File.AppendText("swearwords.txt"))
+                        {
+                            player.Message("&eAdded &c'{0}'&e to the list of swear words.", newItem);
+                            sw.WriteLine(newItem);
+                            sw.Close();
+                        }
+                        player.ParseMessage("/reload swears", true, false);
+                        break;
+                    case "rules":
+                        if (!File.Exists("rules.txt"))
+                        {
+                            File.Create("rules.txt").Dispose();
+                        }
+                        using (StreamWriter sw = File.AppendText("rules.txt"))
+                        {
+                            player.Message("&eAdded &c'{0}'&e to the /rules.", newItem);
+                            sw.WriteLine(newItem);
+                            sw.Close();
+                        }
+                        break;
+                    case "announcements":
+                        if (!File.Exists("announcements.txt"))
+                        {
+                            File.Create("announcements.txt").Dispose();
+                        }
+                        using (StreamWriter sw = File.AppendText("announcements.txt"))
+                        {
+                            player.Message("&eAdded &c'{0}'&e to the announcements.", newItem);
+                            sw.WriteLine(newItem);
+                            sw.Close();
+                        }
+                        break;
+                    case "greeting":
+                        File.Create("greeting.txt").Close();
+                        using (StreamWriter sw = File.AppendText("greeting.txt"))
+                        {
+                            player.Message("&eChanged greeting to {0}.", newItem);
+                            sw.WriteLine(newItem);
+                            sw.Close();
+                        }
+                        break;
+                    default:
+                        player.Message("&ePlease choose either greeting, rules, or swears as an option to add to.");
+                        break;
+                }
+            }
+            else
+            {
+                CdEdit.PrintUsage(player);
+                return;
             }
         }
 

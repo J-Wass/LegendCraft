@@ -1,6 +1,6 @@
 LegendCraft v2.2.0 Roadmap
 
-[(partial)]Edit Rules, Announcements, and Greeting ingame
+[x]Edit Rules, Swears, Announcements, and Greeting ingame
 []Work on a generator to create autorank.xml's
 [x]Seduce Women, Obtain Currency
 []More to come
