@@ -1,5 +1,6 @@
 LegendCraft v2.2.0 Roadmap
 
+[]/GameStats, states a players ranking in all major /list stats (kicks, bans, blocks built, promos, time, logins)
 [x]Edit Rules, Swears, Announcements, and Greeting ingame
 []Work on a generator to create autorank.xml's
 [x]Seduce Women, Obtain Currency
