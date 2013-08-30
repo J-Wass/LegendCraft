@@ -10,6 +10,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
+using System.Speech;
+using System.Speech.Synthesis;
 using fCraft.GUI;
 using JetBrains.Annotations;
 
@@ -21,6 +23,7 @@ namespace fCraft.ConfigGUI {
         Rank selectedRank;
         readonly UpdaterSettingsPopup updaterWindow = new UpdaterSettingsPopup();
         internal static readonly SortableBindingList<WorldListEntry> Worlds = new SortableBindingList<WorldListEntry>();
+        SpeechSynthesizer reader = new SpeechSynthesizer();
 
 
         #region Initialization
@@ -67,6 +70,7 @@ namespace fCraft.ConfigGUI {
             // Redraw chat preview when re-entering the tab.
             // This ensured that changes to rank colors/prefixes are applied.
             tabChat.Enter += ( o, e2 ) => UpdateChatPreview();
+            reader.Speak("Welcome to the Legend Craft Configuration Tool.");
         }
 
 

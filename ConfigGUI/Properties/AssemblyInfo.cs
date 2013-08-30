@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("LegendCraft ConfigGUI")]
 [assembly: AssemblyDescription("LegendCraft graphical configuration tool")]
 [assembly: AssemblyConfiguration( "" )]
-[assembly: AssemblyCompany("au70.net")]
+[assembly: AssemblyCompany("LegendCraft")]
 [assembly: AssemblyProduct("LegendCraft ConfigGUI")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark( "" )]

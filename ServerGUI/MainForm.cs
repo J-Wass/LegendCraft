@@ -4,9 +4,15 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
+using System.Speech;
+using System.Speech.Synthesis;
+using System.Speech.Synthesis.TtsEngine;
+using System.Speech.Recognition;
+using System.Speech.Recognition.SrgsGrammar;
+using System.Speech.AudioFormat;
+using System.Threading;
 using fCraft.Events;
 using fCraft.GUI;
-using System.Threading;
 using fCraft.ServerGUI;
 
 namespace fCraft.ServerGUI
@@ -17,6 +23,8 @@ namespace fCraft.ServerGUI
         volatile bool shutdownPending, startupComplete, shutdownComplete;
         const int MaxLinesInLog = 2000,
                   LinesToTrimWhenExceeded = 50;
+        SpeechSynthesizer reader = new SpeechSynthesizer();
+        SpeechRecognitionEngine engine = new SpeechRecognitionEngine();
 
         public MainForm()
         {
@@ -44,6 +52,7 @@ namespace fCraft.ServerGUI
             startupThread = new Thread(StartupThread);
             startupThread.Name = "LegendCraft ServerGUI Startup";
             startupThread.Start();
+            reader.Speak("Starting up the Legend Craft server. This may take a few minutes.");
         }
 
 
@@ -112,6 +121,7 @@ namespace fCraft.ServerGUI
             }
             console.Enabled = true;
             console.Text = "";
+            reader.Speak("The Legend Craft server is now up and ready to run.");
         }
 
 
@@ -663,7 +673,67 @@ namespace fCraft.ServerGUI
 
         #endregion
 
+        #region VoiceCommands
+        private void bVoice_Click(object sender, EventArgs e)
+        {
+            bVoice.ForeColor = System.Drawing.Color.Aqua;
+            Choices commands = new Choices();
+            commands.Add(new string[] { "restart", "shutdown", "status report", "players" });
+            Grammar gr = new Grammar(new GrammarBuilder(commands));
+            try
+            {
+                engine.RequestRecognizerUpdate();
+                engine.LoadGrammar(gr);
+                engine.SpeechRecognized += engine_SpeechRecognized;
+                engine.SetInputToDefaultAudioDevice();
+                engine.RecognizeAsync(RecognizeMode.Multiple);
+                engine.Recognize();
+            }
 
+            catch
+            {
+                return;
+            }
+        }
+
+        void engine_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
+        {
+            engine.RecognizeAsyncStop();
+            String message = "";
+            switch (e.Result.Text)
+            {
+                case "restart":
+                    reader.Speak("The server is now restarting.");
+                    ShutdownParams param = new ShutdownParams(ShutdownReason.Restarting, TimeSpan.FromSeconds(5), true, true, "Restarting", Player.Console);
+                    Server.Shutdown(param , true);
+                    bVoice.ForeColor = System.Drawing.Color.Black;
+                    break;
+                case "shutdown":
+                    reader.Speak("The server is now shutting down.");
+                    Shutdown(ShutdownReason.ShuttingDown, true);
+                    bVoice.ForeColor = System.Drawing.Color.Black;
+                    break;
+                case "status report":
+                    reader.Speak("Server has been up for " + Math.Round(DateTime.UtcNow.Subtract(Server.StartTime).TotalHours, 1, MidpointRounding.AwayFromZero) + " hours.");
+                    Player.Console.ParseMessage("/sinfo", true, false);
+                    bVoice.ForeColor = System.Drawing.Color.Black;
+                    break;
+                case "players":
+                    foreach (Player p in Server.Players)
+                    {
+                        message += p.Name;
+                    }
+                    reader.Speak(message);
+                    Player.Console.ParseMessage("/players", true, false);
+                    bVoice.ForeColor = System.Drawing.Color.Black;
+                    break;
+                default:
+                    bVoice.ForeColor = System.Drawing.Color.Black;
+                    break;
+            }
+        }
+
+        #endregion
 
     }
 }
