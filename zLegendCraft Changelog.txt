@@ -1,4 +1,5 @@
 LegendCraft Changelog v2.2.0
+Add: /jump
 Add: /edit
 Change: /Econ and /Pay bug fixes
 

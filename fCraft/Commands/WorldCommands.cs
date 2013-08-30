@@ -63,6 +63,7 @@ namespace fCraft {
             CommandManager.RegisterCommand(CdRejoin);
             //CommandManager.RegisterCommand(CdWorldChat);
             CommandManager.RegisterCommand(CdBack);
+            CommandManager.RegisterCommand(CdJump);
         }
 
         #region LegendCraft
@@ -84,8 +85,46 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
+
+        static readonly CommandDescriptor CdJump = new CommandDescriptor
+        {
+            Name = "Jump",
+            Category = CommandCategory.World,
+            Permissions = new Permission[] { Permission.Teleport },
+            IsConsoleSafe = false,
+            Usage = "/Jump [blocks]",
+            Help = "Moves the player up a certain amount of blocks.",
+            Handler = JumpHandler,
+        };
+
+        static void JumpHandler(Player player, Command cmd)
+        {
+            String blocks = cmd.Next();
+            short count = 0;
+
+            if (String.IsNullOrWhiteSpace(blocks))
+            {
+                CdJump.PrintUsage(player);
+                return;
+            }
+            if(blocks.Contains("-"))
+            {
+                player.Message("Jumping a negative distance is really hard!");
+                return;
+            }
+           
+            if( short.TryParse( blocks, out count ))
+            {
+                Position target = new Position(player.Position.X, player.Position.Y, player.Position.Z + (count * 32));
+                player.TeleportTo(target);
+                player.Message("You have jumped {0} blocks.", count.ToString());
+                return;
+            }
+            player.Message("Please use a whole number.");
+            return;           
+        }
         static readonly CommandDescriptor CdBack = new CommandDescriptor
-           {
+        {
             Name = "Back",
             Category = CommandCategory.World,
             Permissions = new Permission[] { Permission.Teleport },

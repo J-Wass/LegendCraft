@@ -375,28 +375,33 @@ THE SOFTWARE.*/
 
         static void Place(Player player, Command cmd)
         {
-            if (player.LastUsedBlockType != Block.Undefined)
+            Block block;
+            if (player.LastUsedBlockType == Block.Undefined)
             {
-                Vector3I Pos = new Vector3I(player.Position.X / 32, player.Position.Y / 32, (player.Position.Z / 32) - 2);
-
-                if (player.CanPlace(player.World.Map, Pos, player.GetBind(player.LastUsedBlockType), BlockChangeContext.Manual) != CanPlaceResult.Allowed)
-                {
-                    player.Message("&WYou are not allowed to build here");
-                    return;
-                }
-
-                Player.RaisePlayerPlacedBlockEvent(player, player.WorldMap, Pos, player.WorldMap.GetBlock(Pos), player.LastUsedBlockType, BlockChangeContext.Manual);
-                BlockUpdate blockUpdate = new BlockUpdate(null, Pos, player.LastUsedBlockType);
-                player.World.Map.QueueUpdate(blockUpdate);
-                player.Message("Block placed below your feet");
+                block = Block.Stone;
             }
-            else player.Message("&WError: No last used blocktype was found");
+            else
+            {
+                block = player.LastUsedBlockType;
+            }
+            Vector3I Pos = new Vector3I(player.Position.X / 32, player.Position.Y / 32, (player.Position.Z / 32) - 2);
+
+            if (player.CanPlace(player.World.Map, Pos, player.GetBind(block), BlockChangeContext.Manual) != CanPlaceResult.Allowed)
+            {
+                player.Message("&WYou are not allowed to build here");
+                return;
+            }
+
+            Player.RaisePlayerPlacedBlockEvent(player, player.WorldMap, Pos, player.WorldMap.GetBlock(Pos), block, BlockChangeContext.Manual);
+            BlockUpdate blockUpdate = new BlockUpdate(null, Pos, block);
+            player.World.Map.QueueUpdate(blockUpdate);
+            player.Message("Block placed below your feet");
         }
 
         static readonly CommandDescriptor CdCenter = new CommandDescriptor
         {
             Name = "Center",
-            Aliases = new[] {"Centre"},
+            Aliases = new[] {"Centre", "Middle", "Mid"},
             Category = CommandCategory.Building,
             Permissions = new[] { Permission.Build },
             IsConsoleSafe = false,

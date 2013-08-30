@@ -1,5 +1,6 @@
 LegendCraft v2.2.0 Roadmap
 
+[]Add text to speech (the server software talks to the owner via audio)
 [x]Edit Rules, Swears, Announcements, and Greeting ingame
 []Work on a generator to create autorank.xml's
 [x]Seduce Women, Obtain Currency

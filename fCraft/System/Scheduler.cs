@@ -232,11 +232,30 @@ namespace fCraft {
                             return;
                         }
 
-                        //start the heartbeat saver
-                        Process HeartbeatSaver = new Process();
-                        Logger.Log(LogType.SystemActivity, "Starting the HeartBeat Saver");
-                        HeartbeatSaver.StartInfo.FileName = "heartbeatsaver.exe";
-                        HeartbeatSaver.Start();
+                        //start the heartbeat saver in win
+                        if (!MonoCompat.IsMono)
+                        {
+                            Process HeartbeatSaver = new Process();
+                            Logger.Log(LogType.SystemActivity, "Starting the HeartBeat Saver");
+                            HeartbeatSaver.StartInfo.FileName = "heartbeatsaver.exe";
+                            HeartbeatSaver.Start();
+                        }
+                        //Start a heartbeat shell program to run the heartbeat saver
+                        else
+                        {
+                            string command = "sh";
+                            string argss = "heartbeat.sh";
+                            string verb = " ";
+
+                            ProcessStartInfo procInfo = new ProcessStartInfo();
+                            procInfo.WindowStyle = ProcessWindowStyle.Normal;
+                            procInfo.UseShellExecute = false;
+                            procInfo.FileName = command;   // 'sh' for bash 
+                            procInfo.Arguments = argss;        // The Script name 
+                            procInfo.Verb = verb;                 // ------------ 
+                            Process.Start(procInfo);              // Start that process.
+                        }
+
                     }
                     catch (Exception ex)
                     {
