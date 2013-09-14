@@ -1,4 +1,7 @@
 LegendCraft Changelog v2.2.0
+Add: Major improvements for mono
+Add: /temprank
+Add: Voice commands for ServerGUI + audio responses
 Add: /jump
 Add: /edit
 Change: /Econ and /Pay bug fixes

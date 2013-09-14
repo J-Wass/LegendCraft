@@ -52,7 +52,6 @@ namespace fCraft.ServerGUI
             startupThread = new Thread(StartupThread);
             startupThread.Name = "LegendCraft ServerGUI Startup";
             startupThread.Start();
-            reader.Speak("Starting up the Legend Craft server. This may take a few minutes.");
         }
 
 
@@ -699,6 +698,8 @@ namespace fCraft.ServerGUI
         void engine_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
         {
             engine.RecognizeAsyncStop();
+            engine.Dispose();
+            engine = new SpeechRecognitionEngine();
             String message = "";
             switch (e.Result.Text)
             {

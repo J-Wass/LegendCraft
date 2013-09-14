@@ -226,7 +226,7 @@ namespace fCraft {
                 {
                     try
                     {
-                        if (!File.Exists("heartbeatsaver.exe"))
+                        if (!File.Exists("HeartbeatSaver.exe"))
                         {
                             Logger.Log(LogType.Warning, "heartbeatsaver.exe does not exist and failed to launch");
                             return;
@@ -240,20 +240,27 @@ namespace fCraft {
                             HeartbeatSaver.StartInfo.FileName = "heartbeatsaver.exe";
                             HeartbeatSaver.Start();
                         }
-                        //Start a heartbeat shell program to run the heartbeat saver
+                        //Create and start a heartbeat shell program to run the heartbeat saver
                         else
                         {
-                            string command = "sh";
-                            string argss = "heartbeat.sh";
-                            string verb = " ";
+                            try
+                            {
+                                string command = "sh";
+                                string argss = "heartbeat.sh";
+                                string verb = " ";
 
-                            ProcessStartInfo procInfo = new ProcessStartInfo();
-                            procInfo.WindowStyle = ProcessWindowStyle.Normal;
-                            procInfo.UseShellExecute = false;
-                            procInfo.FileName = command;   // 'sh' for bash 
-                            procInfo.Arguments = argss;        // The Script name 
-                            procInfo.Verb = verb;                 // ------------ 
-                            Process.Start(procInfo);              // Start that process.
+                                ProcessStartInfo procInfo = new ProcessStartInfo();
+                                procInfo.WindowStyle = ProcessWindowStyle.Normal;
+                                procInfo.UseShellExecute = false;
+                                procInfo.FileName = command;  
+                                procInfo.Arguments = argss;     
+                                procInfo.Verb = verb;                
+                                Process.Start(procInfo);           
+                            }
+                            catch(Exception e)
+                            {
+                                Logger.Log(LogType.Warning, e.ToString());
+                            }
                         }
 
                     }
@@ -271,6 +278,15 @@ namespace fCraft {
                 }
                 Tasks.Clear();
                 taskCache = new SchedulerTask[0];
+            }
+
+            //reset all tempranks
+            foreach (PlayerInfo p in PlayerDB.PlayerInfoList)
+            {
+                if (p.isTempRanked)
+                {
+                    p.ChangeRank(Player.Console, p.PreviousRank, "Temprank interrupted by server shutdown.", false, true, false);
+                }
             }
         }
 

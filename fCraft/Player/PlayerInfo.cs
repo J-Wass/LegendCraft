@@ -70,6 +70,10 @@ namespace fCraft
         public bool ArrivedLate = false;
         public bool InGame = false;
 
+        //TempRank
+        public bool isTempRanked = false;
+        public TimeSpan tempRankTime = TimeSpan.FromSeconds(0); 
+
         //For CoolDown Timers 
         public DateTime LastUsedSlap;
         public DateTime LastUsedKill;

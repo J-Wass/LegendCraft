@@ -283,7 +283,7 @@ namespace fCraft {
                 return false;
             }
 #if DEBUG
-                ParseMessage( message, false );
+                ParseMessage( message, false, true );
 #else
             try {
                 ParseMessage( message, false, true );

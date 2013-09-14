@@ -79,6 +79,7 @@ namespace fCraft {
             CommandManager.RegisterCommand(CdBeatDown);
             CommandManager.RegisterCommand(CdLastCommand);
             CommandManager.RegisterCommand(CdFreezeBring);
+            CommandManager.RegisterCommand(CdTempRank);
             //CommandManager.RegisterCommand(CdTPA);
 
         }
@@ -101,7 +102,56 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
+      
+        static readonly CommandDescriptor CdTempRank = new CommandDescriptor
+        {
+            Name = "TempRank",
+            Aliases = new[] { "tRank"},
+            IsConsoleSafe = true,
+            Category = CommandCategory.Moderation,
+            Permissions = new[] { Permission.Promote },
+            Help = "&SRanks a player for a limited amount of time. Tempranks are reset upon server restart or shutdown.",
+            Usage = "&S/TempRank [player] [rank] [duration] [reason]",
+            Handler = TempRankHandler
+        };
 
+        static void TempRankHandler(Player player, Command cmd)
+        {
+            string target = cmd.Next();
+            string rank = cmd.Next();
+            string rankTime = cmd.Next();
+            TimeSpan rankDuration;
+            string reason = cmd.Next();
+
+            if(String.IsNullOrEmpty(target) || String.IsNullOrEmpty(rankTime) || String.IsNullOrEmpty(reason))
+            {
+                CdTempRank.PrintUsage(player);
+                return;
+            }
+
+            if (!rankTime.TryParseMiniTimespan(out rankDuration) || rankDuration <= TimeSpan.Zero)
+            {
+                player.Message("&SThe time must be an integer greater than 0!");
+                return;
+            }
+
+            Rank targetRank = RankManager.FindRank(rank);
+            if (targetRank == null)
+            {
+                player.MessageNoRank(rank);
+                return;
+            }
+            
+            PlayerInfo targetInfo = PlayerDB.FindPlayerInfoExact(target);
+            if (targetInfo == null)
+            {
+                player.Message("&SThe player, {0}&S could not be found. Please check the spelling of the player.", target);
+            }
+
+            targetInfo.ChangeRank(player, targetRank, "TempRank(" + rankTime + "): " + reason , true, true, false);
+            targetInfo.isTempRanked = true;
+            targetInfo.tempRankTime = rankDuration;
+        }
         static readonly CommandDescriptor CdTPA = new CommandDescriptor
         {
             Name = "TPA",
@@ -2797,9 +2847,17 @@ THE SOFTWARE.*/
                 PlayerInfo lastSpec = player.LastSpectatedPlayer;
                 if( lastSpec != null ) {
                     Player spec = player.SpectatedPlayer;
-                    if( spec != null ) {
+                    if( spec != null ) 
+                    {
+                        if (spec.World.Name != player.World.Name)
+                        {
+                            player.JoinWorld(spec.World, WorldChangeReason.SpectateTargetJoined);
+                            player.Message("Joined " + spec.World.Name + " to continue spectating " + spec.ClassyName);
+                        }
                         player.Message( "Now spectating {0}", spec.ClassyName );
-                    } else {
+                    } 
+                    else 
+                    {
                         player.Message( "Last spectated {0}", lastSpec.ClassyName );
                     }
                 } else {

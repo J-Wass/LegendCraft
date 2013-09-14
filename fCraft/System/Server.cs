@@ -431,6 +431,9 @@ namespace fCraft {
             // Check for idles (every 30s)
             checkIdlesTask = Scheduler.NewTask( CheckIdles ).RunForever( CheckIdlesInterval );
 
+            //Check for tempranks (every 20s)
+            checkTempRanksTask = Scheduler.NewTask(CheckTempRanks).RunForever(CheckTempRanksInterval);
+
             // Monitor CPU usage (every 30s)
             try {
                 MonitorProcessorUsage( null );
@@ -744,6 +747,34 @@ namespace fCraft {
             }
         }
 
+        //checks to re-rank tempranked players
+        static SchedulerTask checkTempRanksTask;
+        static TimeSpan checkTempRanksInterval = TimeSpan.FromSeconds(20);
+        public static TimeSpan CheckTempRanksInterval
+        {
+            get { return checkTempRanksInterval; }
+            set
+            {
+                if (value.Ticks < 0) throw new ArgumentException("CheckTempRanksInterval may not be negative.");
+                checkTempRanksInterval = value;
+                if (checkTempRanksTask != null) checkTempRanksTask.Interval = checkTempRanksInterval;
+            }
+        }
+        static void CheckTempRanks(SchedulerTask task)
+        {
+            foreach(PlayerInfo p in PlayerDB.PlayerInfoList)
+            {
+                if (p.isTempRanked)
+                {
+                    if (Convert.ToInt32((p.tempRankTime - p.TimeSinceRankChange).TotalSeconds) <= 0)
+                    {
+                        p.ChangeRank(Player.Console, p.PreviousRank, "TempRank Expired", true, true, false);
+                        p.isTempRanked = false;
+                        p.tempRankTime = TimeSpan.FromSeconds(0);//set timespan back to 0 for simplicity
+                    }
+                }
+            }
+        }
 
         // collects garbage (forced collection is necessary under Mono)
         static SchedulerTask gcTask;
