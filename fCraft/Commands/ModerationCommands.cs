@@ -84,7 +84,7 @@ namespace fCraft {
 
         }
         #region LegendCraft
-        /* Copyright (c) <2012-2013> <LeChosenOne, DingusBungus, Eeyle>
+        /* Copyright (c) <2012-2013> <LeChosenOne, DingusBungus>
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -123,9 +123,24 @@ THE SOFTWARE.*/
             TimeSpan rankDuration;
             string reason = cmd.Next();
 
-            if(String.IsNullOrEmpty(target) || String.IsNullOrEmpty(rankTime) || String.IsNullOrEmpty(reason))
+            if(String.IsNullOrEmpty(target))
             {
-                CdTempRank.PrintUsage(player);
+                player.Message("&SPlease input a player's name to temprank.");
+                return;
+            }
+            if (String.IsNullOrEmpty(rank))
+            {
+                player.Message("&SPlease input your desired rank.");
+                return;
+            }
+            if (String.IsNullOrEmpty(rankTime))
+            {
+                player.Message("&SPlease input the duration of the temprank.");
+                return;
+            }
+            if (String.IsNullOrEmpty(reason))
+            {
+                player.Message("&SPlease input the reason for the temprank.");
                 return;
             }
 
@@ -2054,6 +2069,13 @@ THE SOFTWARE.*/
 
             try {
                 player.LastUsedPlayerName = targetInfo.Name;
+                
+                //reset temprank values
+                if (targetInfo.isTempRanked)
+                {
+                    targetInfo.isTempRanked = false;
+                    targetInfo.tempRankTime = TimeSpan.FromSeconds(0);
+                }
                 targetInfo.ChangeRank( player, newRank, cmd.NextAll(), true, true, false );
             } catch( PlayerOpException ex ) {
                 player.Message( ex.MessageColored );

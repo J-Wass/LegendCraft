@@ -237,25 +237,20 @@ namespace fCraft {
                         {
                             Process HeartbeatSaver = new Process();
                             Logger.Log(LogType.SystemActivity, "Starting the HeartBeat Saver");
-                            HeartbeatSaver.StartInfo.FileName = "heartbeatsaver.exe";
+                            HeartbeatSaver.StartInfo.FileName = "HeartbeatSaver.exe";
                             HeartbeatSaver.Start();
                         }
-                        //Create and start a heartbeat shell program to run the heartbeat saver
+                        //run heartbeat saver in mono environment
                         else
                         {
                             try
                             {
-                                string command = "sh";
-                                string argss = "heartbeat.sh";
-                                string verb = " ";
-
-                                ProcessStartInfo procInfo = new ProcessStartInfo();
-                                procInfo.WindowStyle = ProcessWindowStyle.Normal;
-                                procInfo.UseShellExecute = false;
-                                procInfo.FileName = command;  
-                                procInfo.Arguments = argss;     
-                                procInfo.Verb = verb;                
-                                Process.Start(procInfo);           
+                                Logger.Log(LogType.SystemActivity, "Starting the HeartBeat Saver");
+                                ProcessStartInfo proc = new ProcessStartInfo("mono");
+                                proc.Arguments = "HeartbeatSaver.exe";
+                                proc.UseShellExecute = true;
+                                proc.CreateNoWindow = true;
+                                Process.Start(proc);
                             }
                             catch(Exception e)
                             {

@@ -1,17 +1,4 @@
-﻿#Notice
 ﻿
-All LegendCraft Software production has been put to a halt while we focus all of our
-energy towards saving minecraft classic.
-Mojang has removed the link to minecraft classic on the homepage, meaning that there will be
-no new guests on any server. This will cause classic to die within a month or so.
-
-You can help by signing this petition: http://twitition.com/p66zh
-Go ahead and tell mollstam (mojang web dev)why you dissaprove of his actions: @mollstam
-
-Remember to tweet and spread the word. This is important: (hashtag) SaveClassic
-
-
-
 #LegendCraft
 ![LegendCraft](http://i.imgur.com/YNPR6p0.png "Ya it's a logo deal with it")<br />
 
@@ -47,7 +34,9 @@ Mono 2.8+:  "mono --gc=sgen SomeFile.exe"
 
 If you're intending to run a public server that appears on minecraft.net's server list, 	
 you need to import https certificates to tell mono you trust them, this can be done by 
-running mozroots --import --ask-remove as the 800Craft user on your system.
+running "sudo mozroots --import --ask-remove" as the LegendCraft user on your system.
+
+You may also have to run "sudo certmgr -ssl -m https://minecraft.net" in order for heartbeats to work properly.
 
 ##Licensing 
 

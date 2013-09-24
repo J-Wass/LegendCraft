@@ -4,12 +4,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
-using System.Speech;
-using System.Speech.Synthesis;
-using System.Speech.Synthesis.TtsEngine;
-using System.Speech.Recognition;
-using System.Speech.Recognition.SrgsGrammar;
-using System.Speech.AudioFormat;
 using System.Threading;
 using fCraft.Events;
 using fCraft.GUI;
@@ -23,8 +17,7 @@ namespace fCraft.ServerGUI
         volatile bool shutdownPending, startupComplete, shutdownComplete;
         const int MaxLinesInLog = 2000,
                   LinesToTrimWhenExceeded = 50;
-        SpeechSynthesizer reader = new SpeechSynthesizer();
-        SpeechRecognitionEngine engine = new SpeechRecognitionEngine();
+        bool MONO = fCraft.MonoCompat.IsMono;
 
         public MainForm()
         {
@@ -54,13 +47,13 @@ namespace fCraft.ServerGUI
             startupThread.Start();
         }
 
-
         void StartupThread()
         {
 #if !DEBUG
             try
             {
 #endif
+                
                 Server.InitLibrary(Environment.GetCommandLineArgs());
                 if (shutdownPending) return;
 
@@ -120,7 +113,11 @@ namespace fCraft.ServerGUI
             }
             console.Enabled = true;
             console.Text = "";
-            reader.Speak("The Legend Craft server is now up and ready to run.");
+#if MONO
+            {
+                reader.Speak("The Legend Craft server is now up and ready to run.");
+            }
+#endif
         }
 
 
@@ -673,33 +670,47 @@ namespace fCraft.ServerGUI
         #endregion
 
         #region VoiceCommands
+
         private void bVoice_Click(object sender, EventArgs e)
         {
-            bVoice.ForeColor = System.Drawing.Color.Aqua;
-            Choices commands = new Choices();
-            commands.Add(new string[] { "restart", "shutdown", "status report", "players" });
-            Grammar gr = new Grammar(new GrammarBuilder(commands));
-            try
+            if (MonoCompat.IsMono)
             {
-                engine.RequestRecognizerUpdate();
-                engine.LoadGrammar(gr);
-                engine.SpeechRecognized += engine_SpeechRecognized;
-                engine.SetInputToDefaultAudioDevice();
-                engine.RecognizeAsync(RecognizeMode.Multiple);
-                engine.Recognize();
-            }
-
-            catch
-            {
+                Logger.Log(LogType.Warning, "Voice commands are for windows operating systems only");
                 return;
             }
-        }
+            else
+            {
 
-        void engine_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
+                System.Speech.Recognition.SpeechRecognitionEngine engine = new System.Speech.Recognition.SpeechRecognitionEngine();
+
+                bVoice.ForeColor = System.Drawing.Color.Aqua;
+                System.Speech.Recognition.Choices commands = new System.Speech.Recognition.Choices();
+                commands.Add(new string[] { "restart", "shutdown", "status report", "players" });
+                System.Speech.Recognition.Grammar gr = new System.Speech.Recognition.Grammar(new System.Speech.Recognition.GrammarBuilder(commands));
+                try
+                {
+                    engine.RequestRecognizerUpdate();
+                    engine.LoadGrammar(gr);
+                    engine.SpeechRecognized += engine_SpeechRecognized;
+                    engine.SetInputToDefaultAudioDevice();
+                    engine.RecognizeAsync(System.Speech.Recognition.RecognizeMode.Multiple);
+                    engine.Recognize();
+                }
+
+                catch
+                {
+                    return;
+                }
+            }
+        }
+        void engine_SpeechRecognized(object sender, System.Speech.Recognition.SpeechRecognizedEventArgs e)
         {
+            System.Speech.Recognition.SpeechRecognitionEngine engine = new System.Speech.Recognition.SpeechRecognitionEngine();
+            System.Speech.Synthesis.SpeechSynthesizer reader = new System.Speech.Synthesis.SpeechSynthesizer();
+
             engine.RecognizeAsyncStop();
             engine.Dispose();
-            engine = new SpeechRecognitionEngine();
+            engine = new System.Speech.Recognition.SpeechRecognitionEngine();
             String message = "";
             switch (e.Result.Text)
             {

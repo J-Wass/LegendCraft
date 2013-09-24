@@ -1,6 +1,6 @@
 LegendCraft v2.2.0 Roadmap
-
-[(partial)]Add voice commands (the server software talks to the owner via audio)
+[]Create full mono support
+[x]Add voice commands (the server software talks to the owner via audio)-not for mono
 [x]Edit Rules, Swears, Announcements, and Greeting ingame
 []Work on a generator to create autorank.xml's
 [x]Seduce Women, Obtain Currency

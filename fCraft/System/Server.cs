@@ -632,17 +632,39 @@ namespace fCraft {
             string assemblyExecutable = Assembly.GetEntryAssembly().Location;
 
             if( Updater.RunAtShutdown && doRestart ) {
-                string args = String.Format( "--restart=\"{0}\" {1}",
-                                             MonoCompat.PrependMono( assemblyExecutable ),
-                                             GetArgString() );
+                if (MonoCompat.IsMono)
+                {
+                    ProcessStartInfo proc = new ProcessStartInfo("mono");
+                    proc.Arguments = assemblyExecutable;
+                    proc.UseShellExecute = false;
+                    proc.CreateNoWindow = true;
+                    Process.Start(proc);
+                }
+                else
+                {
+                    string args = String.Format("--restart=\"{0}\" {1}",
+                                                 MonoCompat.PrependMono(assemblyExecutable),
+                                                 GetArgString());
 
-                MonoCompat.StartDotNetProcess( Paths.UpdaterFileName, args, true );
-
+                    MonoCompat.StartDotNetProcess(Paths.UpdaterFileName, args, true);
+                }
             } else if( Updater.RunAtShutdown ) {
                 MonoCompat.StartDotNetProcess( Paths.UpdaterFileName, GetArgString(), true );
 
             } else if( doRestart ) {
-                MonoCompat.StartDotNetProcess( assemblyExecutable, GetArgString(), true );
+
+                if (MonoCompat.IsMono)
+                {
+                    ProcessStartInfo proc = new ProcessStartInfo("mono");
+                    proc.Arguments = assemblyExecutable;
+                    proc.UseShellExecute = false;
+                    proc.CreateNoWindow = true;
+                    Process.Start(proc);
+                }
+                else
+                {
+                    MonoCompat.StartDotNetProcess(assemblyExecutable, GetArgString(), true);
+                }
             }
 
             if( param.KillProcess ) {
