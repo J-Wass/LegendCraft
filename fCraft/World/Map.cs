@@ -11,7 +11,8 @@ using JetBrains.Annotations;
 using System.Collections.Concurrent;
 
 namespace fCraft {
-    public unsafe sealed class Map {
+
+    public sealed partial class Map {
         public const MapFormat SaveFormat = MapFormat.FCMv3;
 
         /// <summary> The world associated with this map, if any. May be null. </summary>
@@ -572,7 +573,7 @@ namespace fCraft {
         /// <summary> Converts nonstandard (50-255) blocks using the given mapping. </summary>
         /// <param name="mapping"> Byte array of length 256. </param>
         /// <returns> True if any blocks needed conversion/mapping. </returns>
-        public bool ConvertBlockTypes( [NotNull] byte[] mapping ) {
+        public unsafe bool ConvertBlockTypes( [NotNull] byte[] mapping ) {
             if( mapping == null ) throw new ArgumentNullException( "mapping" );
             if( mapping.Length != 256 ) throw new ArgumentException( "Mapping must list all 256 blocks", "mapping" );
 
@@ -767,6 +768,22 @@ namespace fCraft {
             BlockNames["mossycobblestone"] = Block.MossyRocks;
             BlockNames["mossy_cobblestone"] = Block.MossyRocks;
             BlockNames["blockthathasgreypixelsonitmostlybutsomeareactuallygreen"] = Block.MossyRocks;
+
+            BlockNames["cobblestoneslab"] = Block.CobbleSlab;
+
+            BlockNames["lightpinkwool"] = Block.LightPink;
+
+            BlockNames["darkgreenwool"] = Block.DarkGreen;
+            BlockNames["forestgreen"] = Block.DarkGreen;
+            BlockNames["forestgreenwool"] = Block.DarkGreen;
+
+            BlockNames["brownwool"] = Block.Brown;
+
+            BlockNames["deepblue"] = Block.DarkBlue;
+            BlockNames["deepbluewool"] = Block.DarkBlue;
+            BlockNames["darkbluewool"] = Block.DarkBlue;
+
+            BlockNames["turqoisewool"] = Block.Turquoise;
 
             BlockNames["onyx"] = Block.Obsidian;
 

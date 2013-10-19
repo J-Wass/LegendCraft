@@ -31,8 +31,8 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabs = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -308,6 +308,8 @@
             this.bApply = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.HeartBeatUrlComboBox = new System.Windows.Forms.ComboBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.tabs.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -419,7 +421,7 @@
             this.groupBox4.Controls.Add(this.bSoft);
             this.groupBox4.Controls.Add(this.bWiki);
             this.groupBox4.Controls.Add(this.bWeb);
-            this.groupBox4.Location = new System.Drawing.Point(468, 270);
+            this.groupBox4.Location = new System.Drawing.Point(468, 306);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(126, 135);
             this.groupBox4.TabIndex = 5;
@@ -457,9 +459,9 @@
             // pictureBox1
             // 
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(212, 270);
+            this.pictureBox1.Location = new System.Drawing.Point(212, 294);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(224, 184);
+            this.pictureBox1.Size = new System.Drawing.Size(213, 175);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 5;
             this.pictureBox1.TabStop = false;
@@ -470,7 +472,7 @@
             this.groupBox2.Controls.Add(this.bChangelog);
             this.groupBox2.Controls.Add(this.bCredits);
             this.groupBox2.Controls.Add(this.bReadme);
-            this.groupBox2.Location = new System.Drawing.Point(53, 270);
+            this.groupBox2.Location = new System.Drawing.Point(51, 306);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(123, 135);
             this.groupBox2.TabIndex = 4;
@@ -515,7 +517,7 @@
             this.gInformation.Controls.Add(this.xAnnouncements);
             this.gInformation.Controls.Add(this.bRules);
             this.gInformation.Controls.Add(this.bAnnouncements);
-            this.gInformation.Location = new System.Drawing.Point(8, 184);
+            this.gInformation.Location = new System.Drawing.Point(8, 219);
             this.gInformation.Name = "gInformation";
             this.gInformation.Size = new System.Drawing.Size(636, 57);
             this.gInformation.TabIndex = 1;
@@ -604,6 +606,8 @@
             // 
             // gBasic
             // 
+            this.gBasic.Controls.Add(this.label6);
+            this.gBasic.Controls.Add(this.HeartBeatUrlComboBox);
             this.gBasic.Controls.Add(this.nMaxPlayersPerWorld);
             this.gBasic.Controls.Add(this.lMaxPlayersPerWorld);
             this.gBasic.Controls.Add(this.bPortCheck);
@@ -625,7 +629,7 @@
             this.gBasic.Controls.Add(this.lMaxPlayers);
             this.gBasic.Location = new System.Drawing.Point(8, 13);
             this.gBasic.Name = "gBasic";
-            this.gBasic.Size = new System.Drawing.Size(636, 165);
+            this.gBasic.Size = new System.Drawing.Size(636, 190);
             this.gBasic.TabIndex = 0;
             this.gBasic.TabStop = false;
             this.gBasic.Text = "Basic Settings";
@@ -1286,8 +1290,8 @@
             this.dgvWorlds.MultiSelect = false;
             this.dgvWorlds.Name = "dgvWorlds";
             this.dgvWorlds.RowHeadersVisible = false;
-            dataGridViewCellStyle4.Padding = new System.Windows.Forms.Padding(0, 1, 0, 1);
-            this.dgvWorlds.RowsDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Padding = new System.Windows.Forms.Padding(0, 1, 0, 1);
+            this.dgvWorlds.RowsDefaultCellStyle = dataGridViewCellStyle2;
             this.dgvWorlds.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvWorlds.Size = new System.Drawing.Size(636, 325);
             this.dgvWorlds.TabIndex = 0;
@@ -1345,8 +1349,8 @@
             // dgvcBlockDB
             // 
             this.dgvcBlockDB.DataPropertyName = "BlockDBEnabled";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.dgvcBlockDB.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.dgvcBlockDB.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgvcBlockDB.HeaderText = "BlockDB";
             this.dgvcBlockDB.Name = "dgvcBlockDB";
             this.dgvcBlockDB.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
@@ -3603,6 +3607,28 @@
             this.toolTip.IsBalloon = true;
             this.toolTip.ReshowDelay = 100;
             // 
+            // HeartBeatUrlComboBox
+            // 
+            this.HeartBeatUrlComboBox.FormattingEnabled = true;
+            this.HeartBeatUrlComboBox.Items.AddRange(new object[] {
+            "Minecraft.net",
+            "ClassiCube.net"});
+            this.HeartBeatUrlComboBox.Location = new System.Drawing.Point(123, 157);
+            this.HeartBeatUrlComboBox.Name = "HeartBeatUrlComboBox";
+            this.HeartBeatUrlComboBox.Size = new System.Drawing.Size(194, 23);
+            this.HeartBeatUrlComboBox.TabIndex = 19;
+            this.HeartBeatUrlComboBox.SelectedIndexChanged += new System.EventHandler(this.HeartBeatUrlComboBox_SelectedIndexChanged);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(10, 160);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(112, 15);
+            this.label6.TabIndex = 20;
+            this.label6.Text = "HeartBeat Location";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -3991,5 +4017,7 @@
         private System.Windows.Forms.Button bWiki;
         private System.Windows.Forms.Button bWeb;
         private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.ComboBox HeartBeatUrlComboBox;
+        private System.Windows.Forms.Label label6;
     }
 }

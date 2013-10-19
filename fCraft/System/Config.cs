@@ -179,6 +179,7 @@ namespace fCraft {
         const string ConfigXmlRootName = "fCraftConfig";
 
         // Mapping of keys to their values
+        public static bool ProtocolExtension = true;
         static readonly string[] Settings;
         static readonly bool[] SettingsEnabledCache; // cached .Enabled() calls
         static readonly bool[] SettingsUseEnabledCache; // cached .Enabled() calls

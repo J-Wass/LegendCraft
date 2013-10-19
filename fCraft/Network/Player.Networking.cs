@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -607,7 +608,7 @@ namespace fCraft {
             }
 
             string verificationCode = ReadString();
-            reader.ReadByte(); // unused
+            byte magicNum = reader.ReadByte(); //for ClassiCube protocol check (previously unused)
             BytesReceived += 131;
 
             // ReSharper disable PossibleNullReferenceException
@@ -747,6 +748,11 @@ namespace fCraft {
                 return false;
             }
 
+            // negotiate protocol extensions, if applicable  (FROM FEMTOCRAFT: http://svn.fcraft.net:8080/svn/femtocraft/ - to be compatible with CPE)
+            if (Config.ProtocolExtension && magicNum == 0x42)
+            {
+                if (!NegotiateProtocolExtension()) return false;
+            }
 
             // Check if max number of connections is reached for IP
             if( !Server.RegisterSession( this ) ) {

@@ -150,6 +150,7 @@ namespace fCraft.ConfigGUI
             CustomAliases.Text = ConfigKey.CustomAliasName.GetString();
             tMOTD.Text = ConfigKey.MOTD.GetString();
             websiteURL.Text = ConfigKey.WebsiteURL.GetString();
+            HeartBeatUrlComboBox.SelectedItem = ConfigKey.HeartbeatUrl.GetString();
 
             nMaxPlayers.Value = ConfigKey.MaxPlayers.GetInt();
             CheckMaxPlayersPerWorldValue();
@@ -531,6 +532,7 @@ namespace fCraft.ConfigGUI
             ConfigKey.CustomChatName.TrySetValue(CustomName.Text);
             ConfigKey.SwearName.TrySetValue(SwearBox.Text);
             ConfigKey.WebsiteURL.TrySetValue(websiteURL.Text);
+            ConfigKey.HeartbeatUrl.TrySetValue(HeartBeatUrlComboBox.SelectedItem);
             ConfigKey.CustomAliasName.TrySetValue(CustomAliases.Text);
             ConfigKey.MOTD.TrySetValue(tMOTD.Text);
             ConfigKey.MaxPlayers.TrySetValue(nMaxPlayers.Value);

@@ -2,7 +2,10 @@
 #LegendCraft
 ![LegendCraft](http://i.imgur.com/YNPR6p0.png "Ya it's a logo deal with it")<br />
 
-Download LegendCraft here: http://tinyurl.com/n4cnm3p
+Download the latest LegendCraft Beta release here: http://www.mediafire.com/download/jn7s4ythmflaaib/LegendCraft_Template_v2.2.0_BETA.zip
+
+Dowload the latest LegendCraft stable release here: 
+http://tinyurl.com/n4cnm3p
 
 Thank you for downloading LegendCraft, a custom Minecraft server based on fCraft and 800craft.
 

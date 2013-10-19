@@ -685,14 +685,13 @@ namespace fCraft.ServerGUI
             System.Speech.Recognition.Grammar gr = new System.Speech.Recognition.Grammar(new System.Speech.Recognition.GrammarBuilder(commands));
             try
             {
-
+                listening = true;
                 engine.RequestRecognizerUpdate();
                 engine.LoadGrammar(gr);
                 engine.SpeechRecognized += engine_SpeechRecognized;
                 engine.SetInputToDefaultAudioDevice();
                 engine.RecognizeAsync(System.Speech.Recognition.RecognizeMode.Multiple);
                 engine.Recognize();
-                listening = true;
             }
 
             catch
@@ -716,6 +715,7 @@ namespace fCraft.ServerGUI
             {
                 case "help":
                     reader.Speak("The available commands are restart, shutdown, status report, and a players.");
+                    Logger.Log(LogType.ConsoleOutput, "The available commands are restart, shutdown, status report, and a players.");
                     bVoice.ForeColor = System.Drawing.Color.Black;
                     results = "";
                     engine.RecognizeAsyncStop();

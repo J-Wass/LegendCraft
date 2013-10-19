@@ -44,13 +44,14 @@ namespace fCraft {
 
         public static List<Player> TempBans = new List<Player>();
 
-
         // networking
         static TcpListener listener;
         public static IPAddress InternalIP { get; private set; }
         public static IPAddress ExternalIP { get; private set; }
 
         public static int Port { get; private set; }
+
+        
 
         public static Uri Uri { get; internal set; }
 
@@ -398,8 +399,13 @@ namespace fCraft {
                             string version = streamReader.ReadLine();
                             if (version != null && version != fCraft.Updater.LatestStable)
                             {
-                                Logger.Log(LogType.Warning, "Server.Run: Your LegendCraft version is out of date. A LegendCraft Update is available!");
-                                Logger.Log(LogType.Warning, "Download the latest LegendCraft at: http://www.mediafire.com/folder/oy3rdjfanvdt7/LegendCraft_Releases");
+                                if (version != "2.1.1")//since this is a beta build, do not prompt beta hosts when latest release is 1.2.1
+                                {
+                                    Logger.Log(LogType.Warning, "Server.Run: Your LegendCraft version is out of date. A LegendCraft Update is available!");
+                                    Logger.Log(LogType.Warning, "Download the latest LegendCraft at: http://www.mediafire.com/folder/oy3rdjfanvdt7/LegendCraft_Releases");
+                                }
+                                
+                                
                             }
                         }
                     }

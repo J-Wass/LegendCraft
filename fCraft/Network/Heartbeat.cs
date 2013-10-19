@@ -14,6 +14,15 @@ namespace fCraft
     public static class Heartbeat
     {
         static readonly Uri MinecraftNetUri;
+        static readonly Uri ClassiCubeNetUri;
+
+        public static bool ClassiCube()
+        {
+            if (ConfigKey.HeartbeatUrl.GetString() == "ClassiCube.net")
+                return true;
+            else
+                return false;
+        }
 
         /// <summary> Delay between sending heartbeats. Default: 25s </summary>
         public static TimeSpan Delay { get; set; }
@@ -29,7 +38,9 @@ namespace fCraft
 
         static Heartbeat()
         {
+
             MinecraftNetUri = new Uri("https://minecraft.net/heartbeat.jsp");
+            ClassiCubeNetUri = new Uri("http://www.classicube.net/heartbeat.jsp");
             Delay = TimeSpan.FromSeconds(25);
             Timeout = TimeSpan.FromSeconds(10);
             Salt = Server.GetRandomString(32);
@@ -57,7 +68,10 @@ namespace fCraft
 
             if (ConfigKey.HeartbeatEnabled.Enabled())
             {
-                SendMinecraftNetBeat();
+                if (ClassiCube())
+                    SendClassiCubeBeat();
+                else
+                    SendMinecraftNetBeat();
                 SendLegendCraftNetBeat();
                 HbSave();
             }
@@ -81,6 +95,18 @@ namespace fCraft
         }
 
         static HttpWebRequest minecraftNetRequest;
+
+        static void SendClassiCubeBeat()
+        {
+            HeartbeatData data = new HeartbeatData(ClassiCubeNetUri);
+            if (!RaiseHeartbeatSendingEvent(data, ClassiCubeNetUri, true))
+            {
+                return;
+            }
+            minecraftNetRequest = CreateRequest(data.CreateUri());
+            var state = new HeartbeatRequestState(minecraftNetRequest, data, true);
+            minecraftNetRequest.BeginGetResponse(ResponseCallback, state);
+        }
 
         static void SendMinecraftNetBeat()
         {
@@ -133,8 +159,9 @@ namespace fCraft
                      Logger.LogToConsole("" + ex);
                  }*/
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                e.GetType();
                 //do nothing, server is probably down and host doesnt care
             }
         }
