@@ -5,7 +5,10 @@
 Download the latest LegendCraft Beta release here: http://www.mediafire.com/download/jn7s4ythmflaaib/LegendCraft_Template_v2.2.0_BETA.zip
 
 Dowload the latest LegendCraft stable release here: 
-http://tinyurl.com/n4cnm3p
+http://www.mediafire.com/download/wwgr4cxb6aryc1c/LegendCraft_Template_v2.1.1.zip
+
+View all LegendCraft releases:
+http://www.mediafire.com/folder/7117663ogssod/LegendCraft_Releases
 
 Thank you for downloading LegendCraft, a custom Minecraft server based on fCraft and 800craft.
 
