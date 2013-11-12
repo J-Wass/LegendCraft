@@ -158,6 +158,7 @@
     <Compile Include="Drawing\nbt\Tags\NbtString.cs" />
     <Compile Include="Drawing\nbt\Tags\NbtTag.cs" />
     <Compile Include="Drawing\nbt\Tags\NbtTagType.cs" />
+    <Compile Include="Games\FFA.cs" />
     <Compile Include="Games\Football.cs" />
     <Compile Include="Games\GameMode.cs" />
     <Compile Include="Games\MineChallenge.cs" />

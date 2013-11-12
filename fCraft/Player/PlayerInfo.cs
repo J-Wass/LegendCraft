@@ -83,6 +83,7 @@ namespace fCraft
         public DateTime LastUsedDingusInfo;
         public DateTime LastUsedHug;
         public DateTime LastUsedBeatDown;
+        public DateTime LastUsedBarf;
         public bool KillWait = false;
 
         //bromode
@@ -99,8 +100,13 @@ namespace fCraft
         public int totalDeathsTDM = 0;
         public int gameKills = 0;
         public int gameDeaths = 0;
-        public bool needsReversion = false;
-        public string tdmOldName;
+
+        //FFA
+        public bool isPlayingFFA = false;
+        public int totalKillsFFA = 0;
+        public int totalDeathsFFA = 0;
+        public int gameKillsFFA = 0;
+        public int gameDeathsFFA = 0;
 
         //Infection
         public bool isPlayingInfection = false;

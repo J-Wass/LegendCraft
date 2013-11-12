@@ -20,7 +20,7 @@ namespace fCraft
         const int SelectionBoxExtVersion = 1;
 
         // Note: if more levels are added, change UsesCustomBlocks from bool to int
-        bool UsesCustomBlocks { get; set; }
+        public bool UsesCustomBlocks { get; set; }
         public bool SupportsBlockPermissions { get; set; }
         public bool SelectionBoxExt { get; set; }
         string ClientName { get; set; }
@@ -33,14 +33,11 @@ namespace fCraft
             writer.Write(Packet.MakeExtEntry(CustomBlocksExtName, CustomBlocksExtVersion).Data);
             writer.Write(Packet.MakeExtEntry(BlockPermissionsExtName, BlockPermissionsExtVersion).Data);
 
-#if DEBUG
             Logger.Log(LogType.SystemActivity, "Sent ExtInfo and entry packets");
-#endif
+
             // Expect ExtInfo reply from the client
             OpCode extInfoReply = (OpCode)reader.ReadByte();
-#if DEBUG
             Logger.Log(LogType.SystemActivity, "Expected: {0} / Received: {1}", OpCode.ExtInfo, extInfoReply);
-#endif
             if (extInfoReply != OpCode.ExtInfo)
             {
                 Logger.Log(LogType.Warning, "Player {0} from {1}: Unexpected ExtInfo reply ({2})", Name, IP, extInfoReply);
@@ -57,9 +54,7 @@ namespace fCraft
             {
                 // Expect ExtEntry replies (0 or more)
                 OpCode extEntryReply = (OpCode)reader.ReadByte();
-#if DEBUG
                 Logger.Log(LogType.SystemActivity, "Expected: {0} / Received: {1}", OpCode.ExtEntry, extEntryReply);
-#endif
                 if (extEntryReply != OpCode.ExtEntry)
                 {
                     Logger.Log(LogType.Warning, "Player {0} from {1}: Unexpected ExtEntry reply ({2})", Name, IP, extEntryReply);
@@ -102,9 +97,7 @@ namespace fCraft
 
                 // Expect CustomBlockSupportLevel reply
                 OpCode customBlockSupportLevelReply = (OpCode)reader.ReadByte();
-#if DEBUG
                 Logger.Log(LogType.SystemActivity, "Expected: {0} / Received: {1}", OpCode.CustomBlocks, customBlockSupportLevelReply);
-#endif
                 if (customBlockSupportLevelReply != OpCode.CustomBlocks)
                 {
                     Logger.Log(LogType.Warning, "Player {0} from {1}: Unexpected CustomBlockSupportLevel reply ({2})",
@@ -121,7 +114,7 @@ namespace fCraft
         }
 
         // For non-extended players, use appropriate substitution
-        void ProcessOutgoingSetBlock(ref Packet packet)
+        public void ProcessOutgoingSetBlock(ref Packet packet)
         {
             if (packet.Data[7] > (byte)Map.MaxLegalBlockType && !UsesCustomBlocks)
             {
@@ -146,10 +139,8 @@ namespace fCraft
     {
         public static Packet MakeExtInfo(short extCount)
         {
-            String VersionString = "LegendCraft " + Updater.LatestStable;
-#if DEBUG
-            Logger.Log(LogType.SystemActivity, "Send: ExtInfo({0},{1})", VersionString, extCount);
-#endif
+            String VersionString = "LegendCraft " + Updater.CurrentRelease.VersionString;
+            Logger.Log(LogType.Debug, "Send: ExtInfo({0},{1})", VersionString, extCount);
 
             Packet packet = new Packet(OpCode.ExtInfo);
             Encoding.ASCII.GetBytes(VersionString.PadRight(64), 0, 64, packet.Data, 1);
@@ -159,9 +150,7 @@ namespace fCraft
 
         public static Packet MakeExtEntry(string name, int version)
         {
-#if DEBUG
-            Logger.Log(LogType.SystemActivity, "Send: ExtEntry({0},{1})", name, version);
-#endif
+            Logger.Log(LogType.Debug, "Send: ExtEntry({0},{1})", name, version);
             Packet packet = new Packet(OpCode.ExtEntry);
             Encoding.ASCII.GetBytes(name.PadRight(64), 0, 64, packet.Data, 1);
             ToNetOrder(version, packet.Data, 65);
@@ -170,10 +159,8 @@ namespace fCraft
 
         public static Packet MakeAddSelectionBox(byte ID, string Label, short StartX, short StartY, short StartZ, short EndX, short EndY, short EndZ, short R, short G, short B, short A)
         {
-#if DEBUG
-            Logger.Log(LogType.SystemActivity, "Send: MakeAddSelectionBox({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11})",
+            Logger.Log(LogType.Debug, "Send: MakeAddSelectionBox({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11})",
                 ID, Label, StartX, StartY, StartZ, EndX, EndY, EndZ, R, G, B, A);
-#endif
             Packet packet = new Packet(OpCode.SelectionCuboid);
             packet.Data[1] = ID;
             Encoding.ASCII.GetBytes(Label.PadRight(64), 0, 64, packet.Data, 2);
@@ -192,9 +179,7 @@ namespace fCraft
 
         public static Packet MakeCustomBlockSupportLevel(byte level)
         {
-#if DEBUG
-            Logger.Log(LogType.SystemActivity, "Send: CustomBlockSupportLevel({0})", level);
-#endif
+            Logger.Log(LogType.Debug, "Send: CustomBlockSupportLevel({0})", level);
             Packet packet = new Packet(OpCode.CustomBlocks);
             packet.Data[1] = level;
             return packet;

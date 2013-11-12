@@ -1,10 +1,18 @@
-LegendCraft Changelog v2.2.0
+LegendCraft Changelog v2.2.0 (unreleased)
 Add: Major improvements for mono
 Add: /temprank
 Add: Voice commands for ServerGUI + audio responses
 Add: /jump
 Add: /edit
+Add: /barf 
+Add: FFA gamemode
+Add: CPE Support
+Add: Option to run server on classicube
+Add: /troll
 Change: /Econ and /Pay bug fixes
+Change: /place has a better failsafe (places stone block)
+Change: /lastcmd bug fix
+Change: TDM updates and code cleaning
 
 LegendCraft Changelog v2.1.1 (Bug Fix Update)
 Add: /name

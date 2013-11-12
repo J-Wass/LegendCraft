@@ -714,7 +714,7 @@ namespace fCraft.ServerGUI
             switch (results)
             {
                 case "help":
-                    reader.Speak("The available commands are restart, shutdown, status report, and a players.");
+                    reader.Speak("The available commands are restart, shutdown, status report, and players.");
                     Logger.Log(LogType.ConsoleOutput, "The available commands are restart, shutdown, status report, and a players.");
                     bVoice.ForeColor = System.Drawing.Color.Black;
                     results = "";

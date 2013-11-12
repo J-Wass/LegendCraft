@@ -106,7 +106,7 @@ THE SOFTWARE.*/
 	static readonly CommandDescriptor CdTroll = new CommandDescriptor //Troll is an old command from 800craft that i have rehashed because of its popularity
         {                                                                 //The original command and the idea for the command were done by Jonty800.
             Name = "Troll",
-            Category = CommandCategory.Chat | CommandCategory.Fun | CommandCategory.Donator,
+            Category = CommandCategory.Chat | CommandCategory.Fun ,
             IsConsoleSafe = true,
             Usage = "/Troll (playername) (message-type) (message)",
             Help = "Allows you impersonate others in the chat. Available chat types are msg, st, ac, pm, rq, and leave.",

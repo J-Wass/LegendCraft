@@ -84,7 +84,7 @@ THE SOFTWARE.*/
         {
             Name = "Barf",
             Aliases = new[] { "puke", "blowchunks" },
-            Category = CommandCategory.Chat | CommandCategory.Fun | CommandCategory.RisingEmbers,
+            Category = CommandCategory.Chat | CommandCategory.Fun ,
             Usage = "Barf (Player) (option)",
             Help = "&SBarfs on a player. Can leave option blank to just barf.",
             NotRepeatable = true,

@@ -1,4 +1,4 @@
-
+﻿
 #LegendCraft
 ![LegendCraft](http://i.imgur.com/YNPR6p0.png "Ya it's a logo deal with it")<br />
 
@@ -168,7 +168,7 @@ Thanks to the debuggers and general helpers for LegendCraft:<br />
 
 Community, Jonty800, and Rising Embers Community
 
-Special Thanks to Pure2K12 for catching for inspiration and getting me started in this mess!<br />
+Special Thanks to Pure2K12 for inspiration and getting me started in this mess!<br />
 Special Thanks to Jonty800 being exceptionally awesome!
 
 And thank You for using LegendCraft!

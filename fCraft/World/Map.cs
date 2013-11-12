@@ -580,7 +580,7 @@ namespace fCraft {
             bool mapped = false;
             fixed( byte* ptr = Blocks ) {
                 for( int j = 0; j < Blocks.Length; j++ ) {
-                    if( ptr[j] > 49 ) {
+                    if( ptr[j] > 65 ) {
                         ptr[j] = mapping[ptr[j]];
                         mapped = true;
                     }
@@ -644,7 +644,6 @@ namespace fCraft {
             BlockNames["bedrock"] = Block.Admincrete;
             BlockNames["w"] = Block.Water;
             BlockNames["l"] = Block.Lava;
-            BlockNames["magma"] = Block.Lava;
             BlockNames["gold_ore"] = Block.GoldOre;
             BlockNames["iron_ore"] = Block.IronOre;
             BlockNames["copper"] = Block.IronOre;
@@ -899,6 +898,25 @@ namespace fCraft {
             }
         }
 
+        /// <summary> Writes a copy of the current map to a given stream, compressed with GZipStream. </summary>
+        /// <param name="stream"> Stream to write the compressed data to. </param>
+        /// <param name="prependBlockCount"> If true, prepends block data with signed, 32bit, big-endian block count. </param>
+        public void GetCompressedCopy([NotNull] Stream stream, bool prependBlockCount, Player p)
+        {
+            if (stream == null) throw new ArgumentNullException("stream");
+            using (GZipStream compressor = new GZipStream(stream, CompressionMode.Compress))
+            {
+                if (prependBlockCount)
+                {
+                    // convert block count to big-endian
+                    int convertedBlockCount = IPAddress.HostToNetworkOrder(Blocks.Length);
+                    // write block count to gzip stream
+                    compressor.Write(BitConverter.GetBytes(convertedBlockCount), 0, 4);
+                    byte[] rawData = (p.UsesCustomBlocks ? Blocks : GetFallbackMap());
+                    compressor.Write(rawData, 0, rawData.Length);
+                }
+            }
+        }
 
         /// <summary> Makes an admincrete barrier, 1 block thick, around the lower half of the map. </summary>
         public void MakeFloodBarrier() {
