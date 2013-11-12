@@ -1292,6 +1292,11 @@ namespace fCraft
                 // stair stacking
                 canPlaceResult = CanPlace(map, coordBelow, Block.DoubleStair, context);
             }
+            else if (type == Block.CobbleSlab && coord.Z > 0 && map.GetBlock(coordBelow) == Block.CobbleSlab)
+            {
+                //cobbleslab stacking
+                canPlaceResult = CanPlace(map, coordBelow, Block.Cobblestone, context);
+            }
             else
             {
                 // normal placement
@@ -1313,7 +1318,17 @@ namespace fCraft
                         SendNow(PacketWriter.MakeSetBlock(coordBelow, Block.DoubleStair));
                         RevertBlockNow(coord);
                         break;
-
+                    }
+                    else if (type == Block.CobbleSlab && coord.Z > 0 && map.GetBlock(coordBelow) == Block.CobbleSlab)
+                    {
+                        // cobbleslab stacking
+                        blockUpdate = new BlockUpdate(this, coordBelow, Block.Cobblestone);
+                        Info.ProcessBlockPlaced((byte)Block.Cobblestone);
+                        map.QueueUpdate(blockUpdate);
+                        RaisePlayerPlacedBlockEvent(this, World.Map, coordBelow, Block.CobbleSlab, Block.Cobblestone, context);
+                        SendNow(PacketWriter.MakeSetBlock(coordBelow, Block.Cobblestone));
+                        RevertBlockNow(coord);
+                        break;
                     }
                     else
                     {
