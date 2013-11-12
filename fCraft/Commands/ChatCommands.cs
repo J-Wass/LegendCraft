@@ -55,6 +55,7 @@ namespace fCraft
             CommandManager.RegisterCommand(CdStopWatch); 
             CommandManager.RegisterCommand(CdGlobal);
             CommandManager.RegisterCommand(CdPlugin);
+            CommandManager.RegisterCommand(CdBarf);
 
 
             Player.Moved += new EventHandler<Events.PlayerMovedEventArgs>(Player_IsBack);
@@ -79,6 +80,76 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
       
+        static readonly CommandDescriptor CdBarf = new CommandDescriptor    //an old plugin I made, finally fully functional
+        {
+            Name = "Barf",
+            Aliases = new[] { "puke", "blowchunks" },
+            Category = CommandCategory.Chat | CommandCategory.Fun | CommandCategory.RisingEmbers,
+            Usage = "Barf (Player) (option)",
+            Help = "&SBarfs on a player. Can leave option blank to just barf.",
+            NotRepeatable = true,
+            Handler = BarfHandler
+        };
+
+        internal static void BarfHandler(Player player, Command cmd)
+        {
+            string name = cmd.Next();                               // /barf playername
+            if (string.IsNullOrEmpty(name))
+            {
+                Server.Players.CanSee(player).Except(player).Message("{0} &6Barfed&s.", player.ClassyName);
+                player.Message("&sYou &6Barfed&s.");
+                return;                                                 //stop the command here with return;
+            }
+            //if the name does exists
+            Player target = Server.FindPlayerOrPrintMatches(player, name, false, true); //try to find the player
+            if (target == null)
+            {
+                return; //if the player cannot be found, return;. A message is shown to the player in Server.FindPlayersOr....
+            }
+            if (target == player) //if the player name was found, check if it was the player or not
+            {
+                Server.Players.CanSee(target).Except(target).Message("{1}&S just &6Barfed &sall over themsleves...", target.ClassyName, player.ClassyName);
+                IRC.PlayerSomethingMessage(player, "barfed on", target, null);
+                player.Message("&sYou &6Barfed &sall over yourself...");
+                return; //return to stop the code
+            }
+            string item = cmd.Next();                               // /barf playername [item]
+            string aMessage;
+            double time = (DateTime.Now - player.Info.LastUsedBarf).TotalSeconds;
+            if (player.Can(Permission.HighFive) && time < 20)
+            {
+                if (string.IsNullOrEmpty(item))
+                {
+                    Server.Players.CanSee(target).Union(target).Message("{0} &Swas &6Barfed &son by {1}&s.", target.ClassyName, player.ClassyName);
+                    IRC.PlayerSomethingMessage(player, "barfed on", target, null);
+                    player.Info.LastUsedSlap = DateTime.Now;
+                    return;
+                }
+                else if (item.ToLower() == "throwup")
+                    aMessage = String.Format("{0}&s was &6Thrown Up &Son by {1}&s.", target.ClassyName, player.ClassyName);
+                else if (item.ToLower() == "puke")
+                    aMessage = String.Format("{0}&s was &6Puked &Son by {1}&s.", target.ClassyName, player.ClassyName);
+                else if (item.ToLower() == "blowchunks")
+                    aMessage = String.Format("{1} &6Blew Chunks &son {0}&s.", target.ClassyName, player.ClassyName);
+                else
+                {
+                    Server.Players.CanSee(target).Union(target).Message("{0} &Swas &6Barfed &son by {1}&s.", target.ClassyName, player.ClassyName);
+                    IRC.PlayerSomethingMessage(player, "barfed on", target, null);
+                    player.Info.LastUsedBarf = DateTime.Now;
+                    return;
+                }
+                Server.Players.CanSee(target).Union(target).Message(aMessage);
+                IRC.PlayerSomethingMessage(player, "barfed on", target, null);
+                player.Info.LastUsedBarf = DateTime.Now;
+                return;
+            }
+            else
+            {
+                player.Message("You cannot use barf for another &W{0}&s seconds", Math.Round(20 - time));
+                return;
+            }
+        }
+        
         static readonly CommandDescriptor CdPlugin = new CommandDescriptor
         {
             Name = "Plugins",
