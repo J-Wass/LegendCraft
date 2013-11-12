@@ -102,6 +102,93 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
+
+	static readonly CommandDescriptor CdTroll = new CommandDescriptor //Troll is an old command from 800craft that i have rehashed because of its popularity
+        {                                                                 //The original command and the idea for the command were done by Jonty800.
+            Name = "Troll",
+            Category = CommandCategory.Chat | CommandCategory.Fun | CommandCategory.Donator,
+            IsConsoleSafe = true,
+            Usage = "/Troll (playername) (message-type) (message)",
+            Help = "Allows you impersonate others in the chat. Available chat types are msg, st, ac, pm, rq, and leave.",
+            NotRepeatable = true,
+            Handler = Troll,
+        };
+
+        static void Troll(Player p, Command c)
+        {
+            string name = c.Next();
+            string chatType = c.Next();
+            string msg = c.NextAll();
+
+            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(chatType))
+            {
+                p.Message("Use like : /Troll (playername) (chat-type) (message)");
+                return;
+            }
+            Player tgt = Server.FindPlayerOrPrintMatches(p, name, false, true);
+            if (tgt == null) { return; }
+            switch (chatType)
+            {
+                default:
+                    p.Message("The available chat types are: st, ac, pm, msg, rq and leave");
+                    break;
+                case "leave":
+                    Server.Message("&SPlayer {0}&S left the server.", tgt.ClassyName);
+                    break;
+                case "ragequit": 
+                case "rq":
+                    string quitMsg = "";
+                    if (msg.Length > 1) { quitMsg = ": &C" + msg; }
+                    Server.Message("{0}&4 Ragequit from the server{1}", tgt.ClassyName, quitMsg);
+                    Server.Message("&SPlayer {0}&S left the server.", tgt.ClassyName);
+                    break;
+                case "st":
+                case "staffchat":
+                case "staff":
+                    if (string.IsNullOrEmpty(msg))
+                    {
+                        p.Message("The st option requires a message: /troll (player) st (message)");
+                        return;
+                    }
+                    Server.Message("&P(staff){0}&P: {1}", tgt.ClassyName, msg);
+                    break;
+                case "pm":
+                case "privatemessage":
+                case "private":
+                case "whisper":
+                    if (string.IsNullOrEmpty(msg))
+                    {
+                        p.Message("The pm option requires a message: /troll (player) pm (message)");
+                        return;
+                    }
+                    Server.Message("&Pfrom {0}: {1}", tgt.Name, msg);
+                    break;
+                case "ac":
+                case "adminchat":
+                case "admin":
+                    if (string.IsNullOrEmpty(msg))
+                    {
+                        p.Message("The ac option requires a message: /troll (player) ac (message)");
+                        return;
+                    }
+                    Server.Message("&9(Admin){0}&P: {1}", tgt.ClassyName, msg);
+                    break;
+                case "msg":
+                case "message":
+                case "global":
+                case "server":
+                    if (string.IsNullOrEmpty(msg))
+                    {
+                        p.Message("The msg option requires a message: /troll (player) msg (message)");
+                        return;
+                    }
+                    Server.Message("{0}&f: {1}", tgt.ClassyName, msg);
+                    break;
+            }
+            return;
+    	}
+        
+        
         static readonly CommandDescriptor CdInfection = new CommandDescriptor
         {
             Name = "Infection",            
