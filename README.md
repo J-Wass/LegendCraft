@@ -1,8 +1,10 @@
-﻿
+
 #LegendCraft
 ![LegendCraft](http://i.imgur.com/YNPR6p0.png "Ya it's a logo deal with it")<br />
 
-Download the latest LegendCraft Beta release here: http://www.mediafire.com/download/jn7s4ythmflaaib/LegendCraft_Template_v2.2.0_BETA.zip
+Download the latest LegendCraft Beta release here: 
+
+http://www.mediafire.com/download/jn7s4ythmflaaib/LegendCraft_Template_v2.2.0_BETA.zip
 
 Dowload the latest LegendCraft stable release here: 
 http://www.mediafire.com/download/wwgr4cxb6aryc1c/LegendCraft_Template_v2.1.1.zip
@@ -12,7 +14,9 @@ http://www.mediafire.com/folder/7117663ogssod/LegendCraft_Releases
 
 Thank you for downloading LegendCraft, a custom Minecraft server based on fCraft and 800craft.
 
-Special thanks to fragmer, for creating fCraft! Special thanks to Jonty800, GlennMR and LaoTszy for their hard work with
+Special thanks to fragmer, for creating fCraft! Special thanks to Jonty800, GlennMR and LaoTszy for their hard 
+
+work with
 800Craft! LegendCraft is a modified version of 800Craft. 
 
 
@@ -42,7 +46,9 @@ If you're intending to run a public server that appears on minecraft.net's serve
 you need to import https certificates to tell mono you trust them, this can be done by 
 running "sudo mozroots --import --ask-remove" as the LegendCraft user on your system.
 
-You may also have to run "sudo certmgr -ssl -m https://minecraft.net" in order for heartbeats to work properly.
+You may also have to run "sudo certmgr -ssl -m https://minecraft.net" in order for heartbeats to work 
+
+properly.
 
 ##Licensing 
 
@@ -133,24 +139,34 @@ Thanks to 800Craft code contributers:<br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rebelliousdude, boblol0909, WaterGod469 and Maicke98 for trying. 
 
 Thanks to fCraft code contributors and modders:<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Asiekierka, Dag10, Destroyer, FontPeg, M1_Abrams, Optical-Lza, Redshift, SystemX17, TkTech, Wootalyzer
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Asiekierka, Dag10, Destroyer, FontPeg, M1_Abrams, Optical-Lza, Redshift, 
+
+SystemX17, TkTech, Wootalyzer
 
 Thanks to people who supported fCraft development through donations:<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;800Craft.net community, Astelyn, D3M0N, Destoned, DreamPhreak, Pandorum, Redshift, TkTech, ven000m,  wtfmejt, Team9000 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;800Craft.net community, Astelyn, D3M0N, Destoned, DreamPhreak, Pandorum, 
+
+Redshift, TkTech, ven000m,  wtfmejt, Team9000 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and SpecialAttack.net communities, and others who donated anonymously
 
 Thanks to people whose code has been ported to fCraft:<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dudecon (Forester), Osici (Omen), vLK (MinerCPP), Tim Van Wassenhove, Paul Bourke
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dudecon (Forester), Osici (Omen), vLK (MinerCPP), Tim Van Wassenhove, Paul 
+
+Bourke
 
 Thanks to Minecraft servers that helped test and improve 800Craft:<br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Au70 Galaxy, Project Vanilla.
 
 Thanks to Minecraft servers that helped test and improve fCraft:<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TheOne's Zombie Survival, SpecialAttack.net Freebuild, Team9000 Freebuild, D3M0Ns FreeBuild, ~The Best Freebuild 24/7~,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TheOne's Zombie Survival, SpecialAttack.net Freebuild, Team9000 Freebuild, 
+
+D3M0Ns FreeBuild, ~The Best Freebuild 24/7~,
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;800Craft Freebuild Official
 
 Thanks to the debuggers and general helpers for LegendCraft:<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ascending Blackout Server Community, Pure2k12, ThunderCraft Server Community, Jonty800, and Rising Embers Community
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ascending Blackout Server Community, Pure2k12, ThunderCraft Server 
+
+Community, Jonty800, and Rising Embers Community
 
 Special Thanks to Pure2K12 for catching for inspiration and getting me started in this mess!<br />
 Special Thanks to Jonty800 being exceptionally awesome!
