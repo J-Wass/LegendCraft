@@ -47,7 +47,7 @@ namespace fCraft
                               "TimesBannedOthers,ID,RankChangeType,LastKickDate,LastSeen,BlocksDrawn," +
                               "LastKickBy,LastKickReason,BannedUntil,IsFrozen,FrozenBy,FrozenOn,MutedUntil,MutedBy," +
                               "Password,IsOnline,BandwidthUseMode,IsHidden,LastModified,DisplayedName,TotalTDMKills," +
-                              "TotalTDMDeaths";
+                              "TotalTDMDeaths, TotalFFAKills, TotalFFADeaths";
 
 
         // used to ensure PlayerDB consistency when adding/removing PlayerDB entries
@@ -876,9 +876,9 @@ namespace fCraft
                     }
                     Swap(ref p1.BanDate, ref p2.BanDate);
                     Swap(ref p1.BandwidthUseMode, ref p2.BandwidthUseMode);
-                    Swap(ref p1.BanStatus, ref p2.BanStatus);
                     Swap(ref p1.BannedBy, ref p2.BannedBy);
-                    Swap(ref p1.BannedUntil, ref p2.BannedUntil);
+                    Swap(ref p1.BannedUntil, ref p2.BannedUntil); 
+                    Swap(ref p1.BanStatus, ref p2.BanStatus);
                     Swap(ref p1.BanReason, ref p2.BanReason);
                     Swap(ref p1.BlocksBuilt, ref p2.BlocksBuilt);
                     Swap(ref p1.BlocksDeleted, ref p2.BlocksDeleted);
@@ -888,9 +888,10 @@ namespace fCraft
                     Swap(ref p1.FrozenBy, ref p2.FrozenBy);
                     Swap(ref p1.FrozenOn, ref p2.FrozenOn);
                     Swap(ref p1.ID, ref p2.ID);
+                    Swap(ref p1.IsDonator, ref p2.IsDonator);
                     Swap(ref p1.IsFrozen, ref p2.IsFrozen);
-                    //Swap( ref p1.IsHidden, ref p2.IsHidden );
-                    Swap(ref p1.LastFailedLoginDate, ref p2.LastFailedLoginDate);
+                    //Swap( ref p1.IsHidden, ref p2.IsHidden ); 
+                    Swap(ref p1.LastFailedLoginDate, ref p2.LastFailedLoginDate); 
                     Swap(ref p1.LastFailedLoginIP, ref p2.LastFailedLoginIP);
                     //Swap( ref p1.LastIP, ref p2.LastIP );
                     Swap(ref p1.LastKickBy, ref p2.LastKickBy);
@@ -900,6 +901,7 @@ namespace fCraft
                     //Swap( ref p1.LastSeen, ref p2.LastSeen );
                     //Swap( ref p1.LeaveReason, ref p2.LeaveReason );
                     Swap(ref p1.MessagesWritten, ref p2.MessagesWritten);
+                    Swap(ref p1.Money, ref p2.Money);
                     Swap(ref p1.MutedBy, ref p2.MutedBy);
                     Swap(ref p1.MutedUntil, ref p2.MutedUntil);
                     //Swap( ref p1.Name, ref p2.Name );
@@ -907,6 +909,7 @@ namespace fCraft
                     Swap(ref p1.Password, ref p2.Password);
                     //Swap( ref p1.PlayerObject, ref p2.PlayerObject );
                     Swap(ref p1.PreviousRank, ref p2.PreviousRank);
+                    Swap(ref p1.PromoCount, ref p2.PromoCount);
 
                     Rank p1Rank = p1.Rank;
                     p1.Rank = p2.Rank;
@@ -920,6 +923,10 @@ namespace fCraft
                     Swap(ref p1.TimesKicked, ref p2.TimesKicked);
                     Swap(ref p1.TimesKickedOthers, ref p2.TimesKickedOthers);
                     Swap(ref p1.TimesVisited, ref p2.TimesVisited);
+                    Swap(ref p1.totalDeathsTDM, ref p2.totalDeathsTDM);
+                    Swap(ref p1.totalKillsTDM, ref p2.totalKillsTDM);
+                    Swap(ref p1.totalDeathsFFA, ref p2.totalDeathsFFA);
+                    Swap(ref p1.totalKillsFFA, ref p2.totalKillsFFA);
                     Swap(ref p1.TotalTime, ref p2.TotalTime);
                     Swap(ref p1.UnbanDate, ref p2.UnbanDate);
                     Swap(ref p1.UnbannedBy, ref p2.UnbannedBy);
