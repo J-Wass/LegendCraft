@@ -632,6 +632,11 @@ namespace fCraft
                 if (fields[48].Length > 0) Int32.TryParse(fields[48], out info.totalKillsTDM);
                 if (fields[49].Length > 0) Int32.TryParse(fields[49], out info.totalDeathsTDM);
             }
+            if (fields.Length > 50)
+            {
+                if (fields[50].Length > 0) Int32.TryParse(fields[50], out info.totalKillsFFA);
+                if (fields[51].Length > 0) Int32.TryParse(fields[51], out info.totalDeathsFFA);
+            }
 
             return info;
         }
@@ -774,6 +779,18 @@ namespace fCraft
             if (info.LastLoginDate < info.FirstLoginDate)
             {
                 info.LastLoginDate = info.FirstLoginDate;
+            }
+            
+            if (fields.Length > 48)
+            {
+                if (fields[48].Length > 0) Int32.TryParse(fields[48], out info.totalKillsTDM);
+                if (fields[49].Length > 0) Int32.TryParse(fields[49], out info.totalDeathsTDM);
+            }
+
+            if (fields.Length > 50)
+            {
+                if (fields[50].Length > 0) Int32.TryParse(fields[50], out info.totalKillsFFA);
+                if (fields[51].Length > 0) Int32.TryParse(fields[51], out info.totalDeathsFFA);
             }
 
             return info;
@@ -926,6 +943,18 @@ namespace fCraft
             if (info.LastLoginDate < info.FirstLoginDate)
             {
                 info.LastLoginDate = info.FirstLoginDate;
+            }
+            
+            if (fields.Length > 48)
+            {
+                if (fields[48].Length > 0) Int32.TryParse(fields[48], out info.totalKillsTDM);
+                if (fields[49].Length > 0) Int32.TryParse(fields[49], out info.totalDeathsTDM);
+            }
+
+            if (fields.Length > 50)
+            {
+                if (fields[50].Length > 0) Int32.TryParse(fields[50], out info.totalKillsFFA);
+                if (fields[51].Length > 0) Int32.TryParse(fields[51], out info.totalDeathsFFA);
             }
 
             if (convertDatesToUtc)
@@ -1277,6 +1306,12 @@ namespace fCraft
             sb.Append(',');
 
             if (totalDeathsTDM > 0) sb.Digits(totalDeathsTDM); // 49
+            sb.Append(',');
+            
+            if (totalKillsFFA > 0) sb.Digits(totalKillsFFA); // 50
+            sb.Append(',');
+
+            if (totalDeathsFFA > 0) sb.Digits(totalDeathsFFA); // 51
         }
 
 
@@ -1389,6 +1424,10 @@ namespace fCraft
             //TDM Stats            
             Write7BitEncodedInt(writer, totalKillsTDM); // 48
             Write7BitEncodedInt(writer, totalDeathsTDM); // 49
+            
+            //FFA Stats            
+            Write7BitEncodedInt(writer, totalKillsFFA); // 50
+            Write7BitEncodedInt(writer, totalDeathsFFA); // 51
         }
 
 
@@ -1468,14 +1507,15 @@ namespace fCraft
             PlayerObject = null;
             LeaveReason = player.LeaveReason;
             LastModified = DateTime.UtcNow;
-            //fix names if they leav during a TDM game
-            if (player.Info.isPlayingTD)
+            //fix names if they leave during a TDM/FFA game
+            if (player.Info.isPlayingTD || player.Info.isPlayingFFA)
             {
                 player.iName = null;
                 DisplayedName = oldname;
                 isOnRedTeam = false;
                 isOnBlueTeam = false;
                 isPlayingTD = false;
+                isPlayingFFA = false;
                 player.entityChanged = true;
             }
         }
