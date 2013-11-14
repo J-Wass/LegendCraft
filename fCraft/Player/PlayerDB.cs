@@ -888,7 +888,6 @@ namespace fCraft
                     Swap(ref p1.FrozenBy, ref p2.FrozenBy);
                     Swap(ref p1.FrozenOn, ref p2.FrozenOn);
                     Swap(ref p1.ID, ref p2.ID);
-                    Swap(ref p1.IsDonator, ref p2.IsDonator);
                     Swap(ref p1.IsFrozen, ref p2.IsFrozen);
                     //Swap( ref p1.IsHidden, ref p2.IsHidden ); 
                     Swap(ref p1.LastFailedLoginDate, ref p2.LastFailedLoginDate); 
