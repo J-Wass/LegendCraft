@@ -166,6 +166,7 @@ THE SOFTWARE.*/
             targetInfo.ChangeRank(player, targetRank, "TempRank(" + rankTime + "): " + reason , true, true, false);
             targetInfo.isTempRanked = true;
             targetInfo.tempRankTime = rankDuration;
+
         }
         static readonly CommandDescriptor CdTPA = new CommandDescriptor
         {

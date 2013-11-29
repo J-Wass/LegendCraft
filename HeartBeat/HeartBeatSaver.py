@@ -18,9 +18,6 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #THE SOFTWARE.
 
-#DISCLAIMER: This standalone script was written as an excercise. It was never intendeded to be used as a full fledged Heartbeat saver, however it does work. 
-#It was not implemented into LegendCraft simply because there were no suitable converters for wrapping a .py into a standalone .exe that matched LegendCraft's needs.
-
 import time;
 from time import strftime;
 import urllib2;
@@ -33,9 +30,10 @@ print(".::.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.::.\n");
 
 
 #variables
-rawData = [];
-finalData = "";
-count = 1;
+rawData = []
+finalData = ""
+count = 1
+
 
 #send the request (called from checkData() )
 def sendHeartBeat(rawData, count):
@@ -43,7 +41,7 @@ def sendHeartBeat(rawData, count):
     response = urllib2.urlopen(finalData.replace(" ","%20"));#grab the response
     responseData = response.read();
     print str(strftime("%I:%M")) + " - Sending Heartbeat... Count: " + str(count);
-    if(responseData.startswith("http://minecraft.net/classic/play")):#check that the response does not contain errors
+    if(responseData.startswith("https://minecraft.net/classic/play")):#check that the response does not contain errors
        print "Heartbeat sent!\n";
        try:
           with open("externalurl.txt"): pass
@@ -60,23 +58,23 @@ def sendHeartBeat(rawData, count):
 
 #check info from heartbeat, start the sending loop (called from main while loop)
 def checkData(): 
+    lineNum = 0
     try:
-        with open("heartbeatdata.txt"): pass
+        file = open("heartbeatdata.txt")
     except IOError:
         print "WARNING: Heartbeatdata.txt not found. HeartBeat Saver will now close..."
-        time.sleep(5);
-        sys.exit(0);
-    file = open("heartbeatdata.txt");   
-    while(1==1):    
-        line = file.readline()
-        if(line == ""):
-            break;
-        else:
-            rawData.append(line);
-    sendHeartBeat(rawData, count);
+        time.sleep(5)
+        sys.exit(0)
+    for line in file:
+        rawData.append(line)
+        lineNum += 1
+    if(lineNum != 7):
+        print "WARNING: Heartbeatdata.txt has been damaged or corrupted."
+        sys.exit(0)       
+    sendHeartBeat(rawData, count)
 
 #gather data, main loop
-while(1==1):
+while(True):
     checkData();
     time.sleep(10);
     count += 1;
