@@ -2062,6 +2062,12 @@ THE SOFTWARE.*/
 
         static void EnvHandler(Player player, Command cmd)
         {
+            //WoM dropped env, so no point in leaving this for minecraft
+            if (ConfigKey.HeartbeatUrl.GetString() == "https://minecraft.net/heartbeat.jsp")
+            {
+                player.Message("/Env only works for ClassiCube, not MineCraft!");
+                return;
+            }
             string worldName = cmd.Next();
             string option = cmd.Next();
             string setting = cmd.Next();
@@ -2093,10 +2099,10 @@ THE SOFTWARE.*/
                 case "normal":
                     world.sideBlock = 7;
                     world.edgeBlock = 8;
-                    world.sideLevel = 0;
-                    world.skyColor = "(135,206,235)";
-                    world.fogColor = "(255,255,255)";
-                    world.cloudColor = "(255,255,255)";
+                    world.sideLevel = (short)(world.Map.Height / 2);
+                    world.skyColor = "153,204,255";
+                    world.fogColor = "255,255,255";
+                    world.cloudColor = "255,255,255";
                     //send packet of everything
                     break;
 
@@ -2105,6 +2111,13 @@ THE SOFTWARE.*/
                     {
                         player.Message("Please specify a setting for your variable.");
                         break;
+                    }
+                    if (setting == "normal")
+                    {
+                        player.Message("Reset edge block to water.");
+                        world.edgeBlock = 8;
+                        //send packet of edgeBlock
+                        return;
                     }
 
                     //if the setting param is actually a block 
@@ -2126,6 +2139,13 @@ THE SOFTWARE.*/
                         player.Message("Please specify a setting for your variable.");
                         break;
                     }
+                    if (setting == "normal")
+                    {
+                        player.Message("Reset side block to admincrete.");
+                        world.edgeBlock = 7;
+                        //send packet of sideBlock
+                        return;
+                    }
 
                     //if the setting param is actually a block
                     if (Enum.IsDefined(typeof(Block), setting))
@@ -2145,6 +2165,13 @@ THE SOFTWARE.*/
                     {
                         player.Message("Please specify a setting for your variable.");
                         break;
+                    }
+                    if (setting == "normal")
+                    {
+                        player.Message("Reset map level to half of the map's height.");
+                        world.sideLevel = (short)(world.Map.Height / 2);
+                        //send packet of sideLevel
+                        return;
                     }
 
                     int level;
@@ -2171,13 +2198,21 @@ THE SOFTWARE.*/
                         player.Message("Please specify a setting for your variable.");
                         break;
                     }
-                    if (setting.Length != 7)
+                    if (setting == "normal")
+                    {
+                        player.Message("Reset cloud color.");
+                        world.cloudColor = "255,255,255";
+                        //send packet of cloud color
+                        return;
+                    }
+
+                    if (setting.Length != 7 || !setting.StartsWith("#"))
                     {
                         player.Message("Please use a valid hexcode color. Example: #ffffff for white.");
                         break;
                     }
                     System.Drawing.Color cloudColor = (System.Drawing.Color)System.Drawing.ColorTranslator.FromHtml(setting);
-                    string rgbCloud = "(" + cloudColor.R.ToString() + cloudColor.G.ToString() + cloudColor.B.ToString() + ")";
+                    string rgbCloud = cloudColor.R.ToString() + cloudColor.G.ToString() + cloudColor.B.ToString();
                     world.fogColor = rgbCloud;
 
                     //send packet of clouds
@@ -2189,13 +2224,21 @@ THE SOFTWARE.*/
                         player.Message("Please specify a setting for your variable.");
                         break;
                     }
-                    if (setting.Length != 7)
+                    if (setting == "normal")
+                    {
+                        player.Message("Reset fog color.");
+                        world.fogColor = "255,255,255";
+                        //send packet of fogColor
+                        return;
+                    }
+
+                    if (setting.Length != 7 || !setting.StartsWith("#"))
                     {
                         player.Message("Please use a valid hexcode color. Example: #ffffff for white.");
                         break;
                     }
                     System.Drawing.Color fogColor = (System.Drawing.Color)System.Drawing.ColorTranslator.FromHtml(setting);
-                    string rgbFog = "(" + fogColor.R.ToString() + fogColor.G.ToString() + fogColor.B.ToString() + ")";
+                    string rgbFog = fogColor.R.ToString() + fogColor.G.ToString() + fogColor.B.ToString();
                     world.fogColor = rgbFog;
                     //send packet of fog
                     break;
@@ -2206,14 +2249,22 @@ THE SOFTWARE.*/
                         player.Message("Please specify a setting for your variable.");
                         break;
                     }
-                    if (setting.Length != 7)
+                    if (setting == "normal")
+                    {
+                        player.Message("Reset sky color.");
+                        world.skyColor = "153,204,255";
+                        //send packet of skyColor
+                        return;
+                    }
+
+                    if (setting.Length != 7 || !setting.StartsWith("#"))
                     {
                         player.Message("Please use a valid hexcode color. Example: #ffffff for white.");
                         break;
                     }
 
                     System.Drawing.Color skyColor = (System.Drawing.Color)System.Drawing.ColorTranslator.FromHtml(setting);
-                    string rgbSky = "(" + skyColor.R.ToString() + skyColor.G.ToString() + skyColor.B.ToString() + ")";
+                    string rgbSky = skyColor.R.ToString() + skyColor.G.ToString() + skyColor.B.ToString();
                     world.skyColor = rgbSky;
                     //send packet of sky
                     break;

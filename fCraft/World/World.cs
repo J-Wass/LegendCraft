@@ -964,9 +964,9 @@ namespace fCraft {
   
         //set to defaults (i guessed the sky color) 
 
-        public string skyColor = "(135,206,235)";
-        public string cloudColor = "(255,255,255)";
-        public string fogColor= "(255,255,255)";
+        public string skyColor = "153,204,255";
+        public string cloudColor = "255,255,255";
+        public string fogColor= "255,255,255";
         public short sideLevel = 0;
         public byte sideBlock = 7;
         public byte edgeBlock = 8;
