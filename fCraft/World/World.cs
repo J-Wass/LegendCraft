@@ -498,7 +498,6 @@ namespace fCraft {
                     IsHidden = IsHidden,
                     IsRealm = IsRealm,
                     BlockDB = BlockDB,
-                    Terrain = Terrain,
                     lastBackup = lastBackup,
                     BackupInterval = BackupInterval,
                     IsLocked = IsLocked,
@@ -510,12 +509,12 @@ namespace fCraft {
                     LoadedOn = LoadedOn,
                     MapChangedBy = MapChangedBy,
                     MapChangedOn = MapChangedOn,
-                    FogColor = FogColor,
-                    CloudColor = CloudColor,
-                    SkyColor = SkyColor,
-                    EdgeLevel = EdgeLevel,
-                    SideBlock = SideBlock,
-                    EdgeBlock = EdgeBlock
+                    fogColor = fogColor,
+                    cloudColor = cloudColor,
+                    skyColor = skyColor,
+                    sideLevel = sideLevel,
+                    sideBlock = sideBlock,
+                    edgeBlock = edgeBlock
                 };
                 newWorld.Map = newMap;
                 newWorld.NeverUnload = neverUnload;
@@ -961,48 +960,16 @@ namespace fCraft {
         #endregion
 
 
-        #region WoM Extensions
+        #region WoM Extensions    
+  
+        //set to defaults (i guessed the sky color) 
 
-        public int CloudColor = -1,
-                   FogColor = -1,
-                   SkyColor = -1,
-                   EdgeLevel = -1;
-        public string Terrain { get; set; }
-
-        public Block EdgeBlock = Block.Water;
-        public Block SideBlock = Block.Admincrete;
-
-        public string GenerateWoMConfig( bool sendMotd ) {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine( "server.name = " + ConfigKey.ServerName.GetString() );
-            if( sendMotd ) {
-                sb.AppendLine( "server.detail = " + ConfigKey.MOTD.GetString() );
-            } else {
-                sb.AppendLine( "server.detail = " + ClassyName );
-            }
-            sb.AppendLine( "user.detail = World " + ClassyName );
-            if( CloudColor > -1 ) sb.AppendLine( "environment.cloud = " + CloudColor );
-            if( FogColor > -1 ) sb.AppendLine( "environment.fog = " + FogColor );
-            if( SkyColor > -1 ) sb.AppendLine( "environment.sky = " + SkyColor );
-            if( EdgeLevel > -1 ) sb.AppendLine( "environment.level = " + EdgeLevel );
-            if (Terrain != null) sb.AppendLine("environment.terrain = " + Terrain);
-            if( EdgeBlock != Block.Water ) {
-                string edgeTexture = Map.GetEdgeTexture( EdgeBlock );
-                if( edgeTexture != null ) {
-                    sb.AppendLine( "environment.edge = " + edgeTexture );
-                }
-            }
-            if (SideBlock != Block.Admincrete)
-            {
-                string sideTexture = Map.GetEdgeTexture(SideBlock);
-                if (sideTexture != null)
-                {
-                    sb.AppendLine("environment.side = "+sideTexture);
-                }
-            }
-            sb.AppendLine( "server.sendwomid = true" );
-            return sb.ToString();
-        }
+        public string skyColor = "(135,206,235)";
+        public string cloudColor = "(255,255,255)";
+        public string fogColor= "(255,255,255)";
+        public short sideLevel = 0;
+        public byte sideBlock = 7;
+        public byte edgeBlock = 8;
 
         #endregion
 

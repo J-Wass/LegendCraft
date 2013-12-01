@@ -554,6 +554,10 @@ If disabled, heartbeat data is written to heartbeatdata.txt." )]
 @"If enabled, allows changing worlds' environment settings for WoM clients via /Env" )]
         WoMEnableEnvExtensions,
 
+        [BoolKey(ConfigSection.Advanced, false,
+@"If enabled, allows changing worlds' environment settings for ClassiCube clients via /Env")]
+        CCEnableEnvExtensions,
+
         [IPKey( ConfigSection.Advanced, IPKeyAttribute.BlankValueMeaning.Any,
 @"If the machine has more than one available IP address (for example
 if you have more than one NIC) you can use this setting to make
