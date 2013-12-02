@@ -214,6 +214,16 @@ namespace fCraft {
             return packet;
         }
 
+        internal static Packet MakeSetEnvColor(byte b, short red, short green, short blue)
+        {
+            Packet packet = new Packet(OpCode.EnvSetColor);
+            packet.Data[1] = b;
+            packet.Data[2] = (byte)red;
+            packet.Data[3] = (byte)green;
+            packet.Data[4] = (byte)blue;
+            return packet;
+        }
+
 
         internal static Packet MakeSetPermission( [NotNull] Player player ) {
             if( player == null ) throw new ArgumentNullException( "player" );

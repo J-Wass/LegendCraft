@@ -518,7 +518,7 @@ namespace fCraft {
                     return false;
 
                 case (byte)'G':
-                    ServeCfg();
+                    //ServeCfg(); WoM ENV
                     return false;
 
                 default:
@@ -963,7 +963,7 @@ namespace fCraft {
         }
 
 
-        static readonly Regex HttpFirstLine = new Regex( "GET /([a-zA-Z0-9_]{1,16})(~motd)? .+", RegexOptions.Compiled );
+       /* static readonly Regex HttpFirstLine = new Regex( "GET /([a-zA-Z0-9_]{1,16})(~motd)? .+", RegexOptions.Compiled );
         void ServeCfg() {
             using( StreamReader textReader = new StreamReader( stream ) ) {
                 using( StreamWriter textWriter = new StreamWriter( stream ) ) {
@@ -990,7 +990,7 @@ namespace fCraft {
                     }
                 }
             }
-        }
+        }*/
 
 
         #region Joining Worlds

@@ -509,9 +509,14 @@ namespace fCraft {
                     LoadedOn = LoadedOn,
                     MapChangedBy = MapChangedBy,
                     MapChangedOn = MapChangedOn,
-                    fogColor = fogColor,
-                    cloudColor = cloudColor,
-                    skyColor = skyColor,
+                    skyColorR = skyColorR,
+                    skyColorG = skyColorG,
+                    skyColorB = skyColorB,
+                    cloudColorR = cloudColorR,
+                    cloudColorG = cloudColorG,
+                    cloudColorB = cloudColorB,
+                    fogColorR = fogColorR,
+                    fogColorG = fogColorG,
                     sideLevel = sideLevel,
                     sideBlock = sideBlock,
                     edgeBlock = edgeBlock
@@ -960,13 +965,19 @@ namespace fCraft {
         #endregion
 
 
-        #region WoM Extensions    
+        #region Env 
   
-        //set to defaults (i guessed the sky color) 
+        //set to defaults 
 
-        public string skyColor = "153,204,255";
-        public string cloudColor = "255,255,255";
-        public string fogColor= "255,255,255";
+        public string skyColorR = "153";
+        public string skyColorG = "204";
+        public string skyColorB = "255";
+        public string cloudColorR = "255";
+        public string cloudColorG = "255";
+        public string cloudColorB = "255";
+        public string fogColorR = "255";
+        public string fogColorG = "255";
+        public string fogColorB = "255";
         public short sideLevel = 0;
         public byte sideBlock = 7;
         public byte edgeBlock = 8;

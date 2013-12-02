@@ -2068,6 +2068,7 @@ THE SOFTWARE.*/
                 player.Message("/Env only works for ClassiCube, not MineCraft!");
                 return;
             }
+
             string worldName = cmd.Next();
             string option = cmd.Next();
             string setting = cmd.Next();
@@ -2100,9 +2101,15 @@ THE SOFTWARE.*/
                     world.sideBlock = 7;
                     world.edgeBlock = 8;
                     world.sideLevel = (short)(world.Map.Height / 2);
-                    world.skyColor = "153,204,255";
-                    world.fogColor = "255,255,255";
-                    world.cloudColor = "255,255,255";
+                    world.cloudColorR = "255";
+                    world.cloudColorG = "255";
+                    world.cloudColorB = "255";
+                    world.fogColorR = "255";
+                    world.fogColorG = "255";
+                    world.fogColorB = "255";
+                    world.skyColorR = "153";
+                    world.skyColorG = "204";
+                    world.skyColorB = "255";
                     //send packet of everything
                     break;
 
@@ -2201,7 +2208,9 @@ THE SOFTWARE.*/
                     if (setting == "normal")
                     {
                         player.Message("Reset cloud color.");
-                        world.cloudColor = "255,255,255";
+                        world.cloudColorR = "255";
+                        world.cloudColorG = "255";
+                        world.cloudColorB = "255";
                         //send packet of cloud color
                         return;
                     }
@@ -2211,11 +2220,21 @@ THE SOFTWARE.*/
                         player.Message("Please use a valid hexcode color. Example: #ffffff for white.");
                         break;
                     }
+                    foreach (Char c in setting)
+                    {
+                        if (c < 'f')
+                        {
+                            player.Message("Please use a valid hexcode color. Example: #ffffff for white.");
+                            break;
+                        }
+                    }
                     System.Drawing.Color cloudColor = (System.Drawing.Color)System.Drawing.ColorTranslator.FromHtml(setting);
-                    string rgbCloud = cloudColor.R.ToString() + cloudColor.G.ToString() + cloudColor.B.ToString();
-                    world.fogColor = rgbCloud;
+                    world.cloudColorR = cloudColor.R.ToString();
+                    world.cloudColorG = cloudColor.G.ToString();
+                    world.cloudColorB = cloudColor.B.ToString();
 
-                    //send packet of clouds
+                    Packet cloudPacket = PacketWriter.MakeSetEnvColor((byte)1, Convert.ToInt16(world.cloudColorR), Convert.ToInt16(world.cloudColorG), Convert.ToInt16(world.cloudColorB));
+                    player.Send(cloudPacket);
                     break;
 
                 case "fog":
@@ -2227,7 +2246,10 @@ THE SOFTWARE.*/
                     if (setting == "normal")
                     {
                         player.Message("Reset fog color.");
-                        world.fogColor = "255,255,255";
+                        world.fogColorR = "255";
+                        world.fogColorG = "255";
+                        world.fogColorB = "255";
+
                         //send packet of fogColor
                         return;
                     }
@@ -2237,9 +2259,19 @@ THE SOFTWARE.*/
                         player.Message("Please use a valid hexcode color. Example: #ffffff for white.");
                         break;
                     }
+                    foreach (Char c in setting)
+                    {
+                        if (c < 'f')
+                        {
+                            player.Message("Please use a valid hexcode color. Example: #ffffff for white.");
+                            break;
+                        }
+                    }
                     System.Drawing.Color fogColor = (System.Drawing.Color)System.Drawing.ColorTranslator.FromHtml(setting);
-                    string rgbFog = fogColor.R.ToString() + fogColor.G.ToString() + fogColor.B.ToString();
-                    world.fogColor = rgbFog;
+                    world.fogColorR = fogColor.R.ToString();
+                    world.fogColorG = fogColor.G.ToString();
+                    world.fogColorB = fogColor.B.ToString();
+
                     //send packet of fog
                     break;
 
@@ -2252,7 +2284,10 @@ THE SOFTWARE.*/
                     if (setting == "normal")
                     {
                         player.Message("Reset sky color.");
-                        world.skyColor = "153,204,255";
+                        world.skyColorR = "153";
+                        world.skyColorG = "204";
+                        world.skyColorB = "255";
+
                         //send packet of skyColor
                         return;
                     }
@@ -2262,10 +2297,20 @@ THE SOFTWARE.*/
                         player.Message("Please use a valid hexcode color. Example: #ffffff for white.");
                         break;
                     }
+                    foreach (Char c in setting)
+                    {
+                        if (c < 'f')
+                        {
+                            player.Message("Please use a valid hexcode color. Example: #ffffff for white.");
+                            break;
+                        }
+                    }
 
                     System.Drawing.Color skyColor = (System.Drawing.Color)System.Drawing.ColorTranslator.FromHtml(setting);
-                    string rgbSky = skyColor.R.ToString() + skyColor.G.ToString() + skyColor.B.ToString();
-                    world.skyColor = rgbSky;
+                    world.skyColorR = skyColor.R.ToString();
+                    world.skyColorG = skyColor.G.ToString();
+                    world.skyColorB = skyColor.B.ToString();
+
                     //send packet of sky
                     break;
 
