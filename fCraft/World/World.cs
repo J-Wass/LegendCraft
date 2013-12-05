@@ -488,11 +488,14 @@ namespace fCraft {
         }
 
 
-        public void ChangeMap( [NotNull] Map newMap ) {
-            if( newMap == null ) throw new ArgumentNullException( "newMap" );
+        public void ChangeMap([NotNull] Map newMap)
+        {
+            if (newMap == null) throw new ArgumentNullException("newMap");
             MapChangedOn = DateTime.UtcNow;
-            lock( SyncRoot ) {
-                World newWorld = new World( Name ) {
+            lock (SyncRoot)
+            {
+                World newWorld = new World(Name)
+                {
                     AccessSecurity = (SecurityController)AccessSecurity.Clone(),
                     BuildSecurity = (SecurityController)BuildSecurity.Clone(),
                     IsHidden = IsHidden,
@@ -509,14 +512,15 @@ namespace fCraft {
                     LoadedOn = LoadedOn,
                     MapChangedBy = MapChangedBy,
                     MapChangedOn = MapChangedOn,
-                    skyColorR = skyColorR,
-                    skyColorG = skyColorG,
-                    skyColorB = skyColorB,
-                    cloudColorR = cloudColorR,
-                    cloudColorG = cloudColorG,
-                    cloudColorB = cloudColorB,
-                    fogColorR = fogColorR,
-                    fogColorG = fogColorG,
+                    FogColor = FogColor,
+                    CloudColor = CloudColor,
+                    SkyColor = SkyColor,
+                    EdgeLevel = EdgeLevel,
+                    SideBlock = SideBlock,
+                    EdgeBlock = EdgeBlock,
+                    CloudColorCC = CloudColorCC,
+                    SkyColorCC = SkyColorCC,
+                    FogColorCC = FogColorCC,
                     sideLevel = sideLevel,
                     sideBlock = sideBlock,
                     edgeBlock = edgeBlock
@@ -967,17 +971,59 @@ namespace fCraft {
 
         #region Env 
   
-        //set to defaults 
+        //Minecraft
+        public int CloudColor = -1,
+           FogColor = -1,
+           SkyColor = -1,
+           EdgeLevel = -1;
+        public string Terrain { get; set; }
 
-        public string skyColorR = "153";
-        public string skyColorG = "204";
-        public string skyColorB = "255";
-        public string cloudColorR = "255";
-        public string cloudColorG = "255";
-        public string cloudColorB = "255";
-        public string fogColorR = "255";
-        public string fogColorG = "255";
-        public string fogColorB = "255";
+        public Block EdgeBlock = Block.Water;
+        public Block SideBlock = Block.Admincrete;
+
+        public string GenerateWoMConfig(bool sendMotd)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("server.name = " + ConfigKey.ServerName.GetString());
+            if (sendMotd)
+            {
+                sb.AppendLine("server.detail = " + ConfigKey.MOTD.GetString());
+            }
+            else
+            {
+                sb.AppendLine("server.detail = " + ClassyName);
+            }
+            sb.AppendLine("user.detail = World " + ClassyName);
+            if (CloudColor > -1) sb.AppendLine("environment.cloud = " + CloudColor);
+            if (FogColor > -1) sb.AppendLine("environment.fog = " + FogColor);
+            if (SkyColor > -1) sb.AppendLine("environment.sky = " + SkyColor);
+            if (EdgeLevel > -1) sb.AppendLine("environment.level = " + EdgeLevel);
+            if (Terrain != null) sb.AppendLine("environment.terrain = " + Terrain);
+            if (EdgeBlock != Block.Water)
+            {
+                string edgeTexture = Map.GetEdgeTexture(EdgeBlock);
+                if (edgeTexture != null)
+                {
+                    sb.AppendLine("environment.edge = " + edgeTexture);
+                }
+            }
+            if (SideBlock != Block.Admincrete)
+            {
+                string sideTexture = Map.GetEdgeTexture(SideBlock);
+                if (sideTexture != null)
+                {
+                    sb.AppendLine("environment.side = " + sideTexture);
+                }
+            }
+            sb.AppendLine("server.sendwomid = true");
+            return sb.ToString();
+        }
+
+
+        //ClassiCube
+        public string CloudColorCC = "#ffffff";
+        public string SkyColorCC = "#99CCFF";
+        public string FogColorCC = "#ffffff";
         public short sideLevel = 0;
         public byte sideBlock = 7;
         public byte edgeBlock = 8;

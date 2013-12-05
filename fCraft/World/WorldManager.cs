@@ -225,7 +225,7 @@ namespace fCraft {
                 world.BlockDB.LoadSettings( blockEl );
             }
 
-            XElement envEl = el.Element( EnvironmentXmlTagName );
+            /*XElement envEl = el.Element( EnvironmentXmlTagName );
             if( envEl != null ) {
                 if( (tempAttr = envEl.Attribute( "cloud" )) != null ) {
                     if( !Int32.TryParse( tempAttr.Value, out world.CloudColor ) ) {
@@ -283,7 +283,7 @@ namespace fCraft {
                         }
                     }
                 }
-            }
+            }*/
 
             foreach( XElement mainedRankEl in el.Elements( RankMainXmlTagName ) ) {
                 Rank rank = Rank.Parse( mainedRankEl.Value );

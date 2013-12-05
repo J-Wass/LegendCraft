@@ -54,7 +54,7 @@ namespace fCraft
             2,      // RemoveEntity
             66,     // Message
             65,     // Kick
-            2,       // SetPermission
+            2,      // SetPermission
 
 
 // This entire section was taken from the FemtoCraft source Copyright 2012-2013 Matvei Stefarov
@@ -64,7 +64,10 @@ namespace fCraft
             69,     // ExtEntry
             0,
             2,      // CustomBlockSupportLevel
-            0,0,0,0,0,0,0,0,
+            0,0,0,0,0,
+            8,      //EnvSetColor, (this is 25 right?)
+            0,
+            0,
             4       // SetBlockPermission
         };
     }

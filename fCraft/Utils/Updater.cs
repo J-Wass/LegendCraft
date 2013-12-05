@@ -49,7 +49,7 @@ namespace fCraft {
             string url = String.Format( UpdateUrl, CurrentRelease.Revision );
             if( RaiseCheckingForUpdatesEvent( ref url ) ) return UpdaterResult.NoUpdate;
 
-            Logger.Log( LogType.SystemActivity, "Checking for LegendCraft updates..." );
+            Logger.Log( LogType.SystemActivity, "Checking for LegendCraft updates..." );//outdated, new, easier update methon in server.cs
             try {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create( url );
 

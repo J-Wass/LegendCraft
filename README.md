@@ -3,13 +3,13 @@
 ![LegendCraft](http://i.imgur.com/YNPR6p0.png "Ya it's a logo deal with it")<br />
 
 Download the latest LegendCraft Beta release here: 
-http://www.mediafire.com/download/jn7s4ythmflaaib/LegendCraft_Template_v2.2.0_BETA.zip
+http://www.mediafire.com/download/bldmn06tnim5z7i/LegendCraft%20Template%20v2.2.0%20BETA.zip
 
 Dowload the latest LegendCraft stable release here: 
-http://www.mediafire.com/download/wwgr4cxb6aryc1c/LegendCraft_Template_v2.1.1.zip
+http://www.mediafire.com/download/t0v616d969owfek/LegendCraft%20Template%20v2.1.1.zip
 
 View all LegendCraft releases:
-http://www.mediafire.com/folder/7117663ogssod/LegendCraft_Releases
+https://www.mediafire.com/folder/oy3rdjfanvdt7/LegendCraft%20Releases
 
 Thank you for downloading LegendCraft, a custom Minecraft server based on fCraft and 800craft.
 

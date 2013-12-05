@@ -214,13 +214,14 @@ namespace fCraft {
             return packet;
         }
 
-        internal static Packet MakeSetEnvColor(byte b, short red, short green, short blue)
+        public static Packet MakeEnvSetColor(byte selection, string colorcode)
         {
+            int value = int.Parse(colorcode.Replace("#", ""), System.Globalization.NumberStyles.HexNumber); //parser only takes html color code without # 
             Packet packet = new Packet(OpCode.EnvSetColor);
-            packet.Data[1] = b;
-            packet.Data[2] = (byte)red;
-            packet.Data[3] = (byte)green;
-            packet.Data[4] = (byte)blue;
+            packet.Data[1] = selection;
+            ToNetOrder((short)((value >> 16) & 0xFF), packet.Data, 2);
+            ToNetOrder((short)((value >> 8) & 0xFF), packet.Data, 4);
+            ToNetOrder((short)(value & 0xFF), packet.Data, 6);
             return packet;
         }
 
