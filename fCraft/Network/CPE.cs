@@ -37,7 +37,7 @@ namespace fCraft
 
             // Expect ExtInfo reply from the client
             OpCode extInfoReply = (OpCode)reader.ReadByte();
-            Logger.Log(LogType.SystemActivity, "Expected: {0} / Received: {1}", OpCode.ExtInfo, extInfoReply);
+            Logger.Log(LogType.Debug, "Expected: {0} / Received: {1}", OpCode.ExtInfo, extInfoReply);
             if (extInfoReply != OpCode.ExtInfo)
             {
                 Logger.Log(LogType.Warning, "Player {0} from {1}: Unexpected ExtInfo reply ({2})", Name, IP, extInfoReply);
@@ -54,7 +54,7 @@ namespace fCraft
             {
                 // Expect ExtEntry replies (0 or more)
                 OpCode extEntryReply = (OpCode)reader.ReadByte();
-                Logger.Log(LogType.SystemActivity, "Expected: {0} / Received: {1}", OpCode.ExtEntry, extEntryReply);
+                Logger.Log(LogType.Debug, "Expected: {0} / Received: {1}", OpCode.ExtEntry, extEntryReply);
                 if (extEntryReply != OpCode.ExtEntry)
                 {
                     Logger.Log(LogType.Warning, "Player {0} from {1}: Unexpected ExtEntry reply ({2})", Name, IP, extEntryReply);
@@ -97,7 +97,7 @@ namespace fCraft
 
                 // Expect CustomBlockSupportLevel reply
                 OpCode customBlockSupportLevelReply = (OpCode)reader.ReadByte();
-                Logger.Log(LogType.SystemActivity, "Expected: {0} / Received: {1}", OpCode.CustomBlocks, customBlockSupportLevelReply);
+                Logger.Log(LogType.Debug, "Expected: {0} / Received: {1}", OpCode.CustomBlocks, customBlockSupportLevelReply);
                 if (customBlockSupportLevelReply != OpCode.CustomBlocks)
                 {
                     Logger.Log(LogType.Warning, "Player {0} from {1}: Unexpected CustomBlockSupportLevel reply ({2})",

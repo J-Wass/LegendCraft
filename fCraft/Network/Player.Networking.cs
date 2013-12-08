@@ -943,7 +943,7 @@ namespace fCraft {
 
                 Logger.Log( LogType.Warning,
                             "Player.LoginSequence: Player \"{0}\" tried connecting with Minecraft Beta client from {1}. " +
-                            "800Craft does not support Minecraft Beta.", 
+                            "LegendCraft does not support Minecraft Beta.", 
                             smpPlayerName, IP );
 
                 // send SMP KICK packet
@@ -1069,6 +1069,7 @@ namespace fCraft {
                 }
             }
 
+
             ResetVisibleEntities();
 
             ClearLowPriotityOutputQueue();
@@ -1171,6 +1172,16 @@ namespace fCraft {
                 }
             }
             RaisePlayerJoinedWorldEvent( this, oldWorld, reason );
+
+            //send mapedit env packet values
+            Packet envSetMapAppearance = PacketWriter.MakeEnvSetMapAppearance(World.textureURL, World.sideBlock, World.edgeBlock, World.sideLevel);
+            Packet sky = PacketWriter.MakeEnvSetColor((byte)0, World.SkyColorCC);
+            Packet cloud = PacketWriter.MakeEnvSetColor((byte)1, World.CloudColorCC);
+            Packet fog = PacketWriter.MakeEnvSetColor((byte)2, World.FogColorCC);
+            Info.PlayerObject.Send(envSetMapAppearance); 
+            Info.PlayerObject.Send(sky);
+            Info.PlayerObject.Send(cloud);
+            Info.PlayerObject.Send(fog); 
 
             // Done.
             Server.RequestGC();

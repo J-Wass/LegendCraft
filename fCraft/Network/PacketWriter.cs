@@ -216,12 +216,22 @@ namespace fCraft {
 
         public static Packet MakeEnvSetColor(byte selection, string colorcode)
         {
-            int value = int.Parse(colorcode.Replace("#", ""), System.Globalization.NumberStyles.HexNumber); //parser only takes html color code without # 
+            System.Drawing.Color col = System.Drawing.ColorTranslator.FromHtml(colorcode.ToUpper());
             Packet packet = new Packet(OpCode.EnvSetColor);
             packet.Data[1] = selection;
-            ToNetOrder((short)((value >> 16) & 0xFF), packet.Data, 2);
-            ToNetOrder((short)((value >> 8) & 0xFF), packet.Data, 4);
-            ToNetOrder((short)(value & 0xFF), packet.Data, 6);
+            ToNetOrder((short)(col.R), packet.Data, 2);
+            ToNetOrder((short)(col.G), packet.Data, 4);
+            ToNetOrder((short)(col.B), packet.Data, 6);
+            return packet;
+        }
+
+        public static Packet MakeEnvSetMapAppearance(string textureURL, byte sideBlock, byte edgeBlock, short sideLevel)
+        {
+            Packet packet = new Packet(OpCode.EnvSetMapAppearance);
+            Encoding.ASCII.GetBytes(textureURL.PadRight(64), 0, 64, packet.Data, 1);
+            packet.Data[65] = sideBlock;
+            packet.Data[66] = edgeBlock;
+            ToNetOrder((short)sideLevel, packet.Data, 67);
             return packet;
         }
 

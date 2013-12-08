@@ -100,9 +100,9 @@ THE SOFTWARE.*/
             Permissions = new[] { Permission.ManageWorlds },
             Help = "&SPrints or changes the environmental variables for a given world. " +
                    "Variables are: clouds, fog, sky, level, and edge" +
-                   "See &H/Help mapedit <Variable>&S for details about each variable. " +
+                   "See &H/Help MapEdit <Variable>&S for details about each variable. " +
                    "Type &H/MapEdit <WorldName> normal&S to reset everything for a world. " +
-                   "All Color formats should be in hexcode. \r\n Ex: #ffffff",
+                   "All Color formats should be in hexcode. \n Ex: #ffffff",
             HelpSections = new Dictionary<string, string>{
                 { "normal",     "&H/MapEdit <WorldName> normal\n&S" +
                                 "Resets all environment settings to their defaults for the given world." },
@@ -122,9 +122,12 @@ THE SOFTWARE.*/
                                 "Use \"normal\" instead of a number to reset to default (water)." },
                 { "side",       "&H/MapEdit <WorldName> side <BlockType>\n&S" +
                                 "Changes the type of block that is visible on the boundary of the map. "+
-                                "Use \"normal\" instead of a number to reset to default (admincrete)." }
+                                "Use \"normal\" instead of a number to reset to default (admincrete)." },
+                { "texture",       "&H/MapEdit <WorldName> texture url\n&S" +
+                                "Retextures the blocks of the map to a specific texture pack. "+
+                                "Use \"normal\" instead of a url to reset to default." }
             },
-            Usage = "/MapEdit <WorldName> <Variable>",
+            Usage = "/MapEdit <WorldName> <Variable> <Setting>",
             IsConsoleSafe = true,
             Handler = MEditHandler
         };
@@ -136,10 +139,13 @@ THE SOFTWARE.*/
                  player.Message("/MapEdit only works for ClassiCube, not MineCraft! If you are playing on Minecraft.net, please use /Env.");
                  return;
              }
+             if (!ConfigKey.WoMEnableEnvExtensions.Enabled())
+             {
+                 player.Message("This command has been disabled for the server!");
+                 return;
+             }
 
              string worldName = cmd.Next();
-             string option = cmd.Next();
-             string setting = cmd.Next();
              World world;
 
              if (string.IsNullOrEmpty(worldName))
@@ -158,11 +164,15 @@ THE SOFTWARE.*/
                  return;
              }
 
+             string option = cmd.Next();
+
              if (string.IsNullOrEmpty(option))
              {
                  player.Message("Please specify an option for mapedit. To reset the mapedit settings for this world, type /mapedit [world] normal.");
                  return;
              }
+
+             string setting = cmd.Next();
 
              switch (option)
              {
@@ -174,14 +184,53 @@ THE SOFTWARE.*/
                      world.CloudColorCC = "#ffffff";
                      world.FogColorCC = "#ffffff";
 
-                     Packet fog = PacketWriter.MakeEnvSetColor((byte)2, (world.FogColorCC));
-                     player.Send(fog);
-
-                     Packet cloud = PacketWriter.MakeEnvSetColor((byte)1, (world.CloudColorCC));
-                     player.Send(cloud);
-
+                     Packet fog = PacketWriter.MakeEnvSetColor((byte)2, (world.FogColorCC));                    
+                     Packet cloud = PacketWriter.MakeEnvSetColor((byte)1, (world.CloudColorCC));                     
                      Packet sky = PacketWriter.MakeEnvSetColor((byte)0, (world.SkyColorCC));
-                     player.Send(sky);
+                     Packet appearence = PacketWriter.MakeEnvSetMapAppearance("", world.sideBlock, world.edgeBlock, world.sideLevel);
+                     
+                     foreach (Player p in world.Players)
+                     {
+                         player.Send(sky);
+                         player.Send(cloud);
+                         player.Send(fog);
+                         player.Send(appearence);
+                     }
+                     break;
+                 case "texture":
+                     if (string.IsNullOrEmpty(setting))
+                     {
+                         player.Message("Please specify the url of the texture pack.");
+                         break;
+                     }
+                     if (setting == "normal")
+                     {
+                         player.Message("Reset texture pack to defaul minecraft.");
+                         world.textureURL = "";
+
+                         Packet textNormal = PacketWriter.MakeEnvSetMapAppearance(world.textureURL, world.sideBlock, world.edgeBlock, world.sideLevel);
+                         foreach (Player p in world.Players)
+                         {
+                             p.Send(textNormal);
+                         }
+                         player.Message("Map settings have been updated.");
+                         return;
+                     }
+
+                     try
+                     {
+                         world.textureURL = setting;
+                         Packet texture = PacketWriter.MakeEnvSetMapAppearance(world.textureURL, world.sideBlock, world.edgeBlock, world.sideLevel);
+                         foreach (Player p in world.Players)
+                         {
+                             p.Send(texture);
+                         }
+                         player.Message("Map settings have been updated.");
+                     }
+                     catch
+                     {
+                         player.Message("Please use a valid HTTP URL! Make sure the url starts with 'http' and ends in a '.png'.");
+                     }
                      break;
 
                  case "edge":
@@ -194,16 +243,28 @@ THE SOFTWARE.*/
                      {
                          player.Message("Reset edge block to water.");
                          world.edgeBlock = 8;
-                         //send packet of edgeBlock
+
+                         Packet edgeNormal = PacketWriter.MakeEnvSetMapAppearance(world.textureURL, world.sideBlock, world.edgeBlock, world.sideLevel);
+                         foreach (Player p in world.Players)
+                         {
+                             p.Send(edgeNormal);
+                         }
+                         player.Message("Map settings have been updated.");
                          return;
                      }
 
                      //if the setting param is actually a block 
                      if (Enum.IsDefined(typeof(Block), setting))
                      {
-                         Block eBlock = (fCraft.Block)System.Enum.Parse(typeof(Block), setting);
+                         Block eBlock = (fCraft.Block)System.Enum.Parse(typeof(Block), setting.Substring(0,1).ToUpper() + setting.Substring(1));//modifies the input to be "Stone" and not stone, STONE, etc
                          world.edgeBlock = (byte)eBlock;
-                         //send packet of edgeBlock
+
+                         Packet edge = PacketWriter.MakeEnvSetMapAppearance(world.textureURL, world.sideBlock, world.edgeBlock, world.sideLevel);
+                         foreach (Player p in world.Players)
+                         {
+                             p.Send(edge);
+                         }
+                         player.Message("Map settings have been updated.");
                      }
                      else
                      {
@@ -220,17 +281,29 @@ THE SOFTWARE.*/
                      if (setting == "normal")
                      {
                          player.Message("Reset side block to admincrete.");
-                         world.edgeBlock = 7;
-                         //send packet of sideBlock
+                         world.sideBlock = 7;
+
+                         Packet sideNormal = PacketWriter.MakeEnvSetMapAppearance(world.textureURL, world.sideBlock, world.edgeBlock, world.sideLevel);
+                         foreach (Player p in world.Players)
+                         {
+                             p.Send(sideNormal);
+                         }
+                         player.Message("Map settings have been updated.");
                          return;
                      }
 
                      //if the setting param is actually a block
-                     if (Enum.IsDefined(typeof(Block), setting))
+                     if (Enum.IsDefined(typeof(Block), setting.Substring(0, 1).ToUpper() + setting.Substring(1)))
                      {
                          Block sBlock = (fCraft.Block)System.Enum.Parse(typeof(Block), setting);
                          world.sideBlock = (byte)sBlock;
-                         //send packet of sideBlock
+
+                         Packet side = PacketWriter.MakeEnvSetMapAppearance(world.textureURL, world.sideBlock, world.edgeBlock, world.sideLevel);
+                         foreach (Player p in world.Players)
+                         {
+                             p.Send(side);
+                         }
+                         player.Message("Map settings have been updated.");
                      }
                      else
                      {
@@ -248,7 +321,13 @@ THE SOFTWARE.*/
                      {
                          player.Message("Reset map level to half of the map's height.");
                          world.sideLevel = (short)(world.Map.Height / 2);
-                         //send packet of sideLevel
+
+                         Packet levelNormal = PacketWriter.MakeEnvSetMapAppearance(world.textureURL, world.sideBlock, world.edgeBlock, world.sideLevel);
+                         foreach (Player p in world.Players)
+                         {
+                             p.Send(levelNormal);
+                         }
+                         player.Message("Map settings have been updated.");
                          return;
                      }
 
@@ -261,7 +340,13 @@ THE SOFTWARE.*/
                      if (level < world.Map.Height && level > 0)
                      {
                          world.sideLevel = (short)level;
-                         //send packet of sideLevel
+
+                         Packet levelP = PacketWriter.MakeEnvSetMapAppearance(world.textureURL, world.sideBlock, world.edgeBlock, world.sideLevel);
+                         foreach (Player p in world.Players)
+                         {
+                             p.Send(levelP);
+                         }
+                         player.Message("Map settings have been updated.");
                          break;
                      }
                      else
@@ -373,6 +458,7 @@ THE SOFTWARE.*/
              }
 
          }
+
         static readonly CommandDescriptor CdJump = new CommandDescriptor
         {
             Name = "Jump",

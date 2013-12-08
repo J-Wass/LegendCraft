@@ -13,6 +13,7 @@ namespace fCraft {
         public const string BuildSecurityXmlTagName = "BuildSecurity",
                             AccessSecurityXmlTagName = "AccessSecurity",
                             EnvironmentXmlTagName = "Environment",
+                            MapeditXMLTagName = "MapEdit",
                             RankMainXmlTagName = "RankMainWorld";
 
         public static World[] Worlds { get; private set; }
@@ -225,7 +226,38 @@ namespace fCraft {
                 world.BlockDB.LoadSettings( blockEl );
             }
 
-            /*XElement envEl = el.Element( EnvironmentXmlTagName );
+            XElement mapEl = el.Element(MapeditXMLTagName);
+            if ((tempAttr = mapEl.Attribute("clouds")) != null)
+            {
+                world.CloudColorCC = mapEl.Attribute("clouds").Value;
+            }
+            if ((tempAttr = mapEl.Attribute("fog")) != null)
+            {
+                world.FogColorCC = mapEl.Attribute("fog").Value;
+            }
+            if ((tempAttr = mapEl.Attribute("sky")) != null)
+            {
+                world.SkyColorCC = mapEl.Attribute("sky").Value;
+            }
+            if ((tempAttr = mapEl.Attribute("level")) != null)
+            {
+                world.sideLevel = Convert.ToInt16(mapEl.Attribute("level").Value);
+            }
+            if ((tempAttr = mapEl.Attribute("edge")) != null)
+            {
+                world.edgeBlock = (byte)Convert.ToInt32(mapEl.Attribute("edge").Value);
+            }
+            if ((tempAttr = mapEl.Attribute("side")) != null)
+            {
+                world.sideBlock = (byte)Convert.ToInt32(mapEl.Attribute("clouds").Value);
+            }
+            if ((tempAttr = mapEl.Attribute("texture")) != null)
+            {
+                world.textureURL = mapEl.Attribute("texture").Value;
+            }
+
+
+            XElement envEl = el.Element( EnvironmentXmlTagName );
             if( envEl != null ) {
                 if( (tempAttr = envEl.Attribute( "cloud" )) != null ) {
                     if( !Int32.TryParse( tempAttr.Value, out world.CloudColor ) ) {
@@ -283,7 +315,7 @@ namespace fCraft {
                         }
                     }
                 }
-            }*/
+            }
 
             foreach( XElement mainedRankEl in el.Elements( RankMainXmlTagName ) ) {
                 Rank rank = Rank.Parse( mainedRankEl.Value );
@@ -419,6 +451,16 @@ namespace fCraft {
                     if( elEnv.HasAttributes ) {
                         temp.Add( elEnv );
                     }
+
+                    XElement elMap = new XElement(MapeditXMLTagName);
+                    elMap.Add(new XAttribute("cloud", world.CloudColorCC));
+                    elMap.Add(new XAttribute("fog", world.FogColorCC));
+                    elMap.Add(new XAttribute("sky", world.SkyColorCC));
+                    elMap.Add(new XAttribute("level", world.sideLevel));
+                    elMap.Add(new XAttribute("edge", world.edgeBlock));
+                    elMap.Add(new XAttribute("side", world.sideBlock));
+                    elMap.Add(new XAttribute("texture", world.textureURL));
+                    temp.Add(elMap);
 
                     root.Add( temp );
                 }

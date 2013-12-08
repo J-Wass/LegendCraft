@@ -52,6 +52,8 @@
             this.bRules = new System.Windows.Forms.Button();
             this.bAnnouncements = new System.Windows.Forms.Button();
             this.gBasic = new System.Windows.Forms.GroupBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.HeartBeatUrlComboBox = new System.Windows.Forms.ComboBox();
             this.nMaxPlayersPerWorld = new System.Windows.Forms.NumericUpDown();
             this.lMaxPlayersPerWorld = new System.Windows.Forms.Label();
             this.bPortCheck = new System.Windows.Forms.Button();
@@ -308,8 +310,6 @@
             this.bApply = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.HeartBeatUrlComboBox = new System.Windows.Forms.ComboBox();
-            this.label6 = new System.Windows.Forms.Label();
             this.tabs.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -633,6 +633,28 @@
             this.gBasic.TabIndex = 0;
             this.gBasic.TabStop = false;
             this.gBasic.Text = "Basic Settings";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(10, 160);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(112, 15);
+            this.label6.TabIndex = 20;
+            this.label6.Text = "HeartBeat Location";
+            // 
+            // HeartBeatUrlComboBox
+            // 
+            this.HeartBeatUrlComboBox.FormattingEnabled = true;
+            this.HeartBeatUrlComboBox.Items.AddRange(new object[] {
+            "Minecraft.net",
+            "ClassiCube.net"});
+            this.HeartBeatUrlComboBox.Location = new System.Drawing.Point(123, 157);
+            this.HeartBeatUrlComboBox.Name = "HeartBeatUrlComboBox";
+            this.HeartBeatUrlComboBox.Size = new System.Drawing.Size(194, 23);
+            this.HeartBeatUrlComboBox.TabIndex = 19;
+            this.HeartBeatUrlComboBox.SelectedIndexChanged += new System.EventHandler(this.HeartBeatUrlComboBox_SelectedIndexChanged);
             // 
             // nMaxPlayersPerWorld
             // 
@@ -1156,9 +1178,9 @@
             this.xWoMEnableEnvExtensions.AutoSize = true;
             this.xWoMEnableEnvExtensions.Location = new System.Drawing.Point(8, 436);
             this.xWoMEnableEnvExtensions.Name = "xWoMEnableEnvExtensions";
-            this.xWoMEnableEnvExtensions.Size = new System.Drawing.Size(267, 19);
+            this.xWoMEnableEnvExtensions.Size = new System.Drawing.Size(251, 19);
             this.xWoMEnableEnvExtensions.TabIndex = 22;
-            this.xWoMEnableEnvExtensions.Text = "Enable WoM environment extensions (/Env).";
+            this.xWoMEnableEnvExtensions.Text = "Enable Env Extensions (/MapEdit or /Env)";
             this.xWoMEnableEnvExtensions.UseVisualStyleBackColor = true;
             // 
             // bMapPath
@@ -3606,28 +3628,6 @@
             this.toolTip.InitialDelay = 500;
             this.toolTip.IsBalloon = true;
             this.toolTip.ReshowDelay = 100;
-            // 
-            // HeartBeatUrlComboBox
-            // 
-            this.HeartBeatUrlComboBox.FormattingEnabled = true;
-            this.HeartBeatUrlComboBox.Items.AddRange(new object[] {
-            "Minecraft.net",
-            "ClassiCube.net"});
-            this.HeartBeatUrlComboBox.Location = new System.Drawing.Point(123, 157);
-            this.HeartBeatUrlComboBox.Name = "HeartBeatUrlComboBox";
-            this.HeartBeatUrlComboBox.Size = new System.Drawing.Size(194, 23);
-            this.HeartBeatUrlComboBox.TabIndex = 19;
-            this.HeartBeatUrlComboBox.SelectedIndexChanged += new System.EventHandler(this.HeartBeatUrlComboBox_SelectedIndexChanged);
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(10, 160);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(112, 15);
-            this.label6.TabIndex = 20;
-            this.label6.Text = "HeartBeat Location";
             // 
             // MainForm
             // 

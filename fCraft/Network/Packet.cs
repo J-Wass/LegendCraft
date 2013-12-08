@@ -57,18 +57,19 @@ namespace fCraft
             2,      // SetPermission
 
 
-// This entire section was taken from the FemtoCraft source Copyright 2012-2013 Matvei Stefarov
-// The source can be found here: http://svn.fcraft.net:8080/svn/femtocraft/
+//Classicube packets past this point
             
             67,     // ExtInfo
             69,     // ExtEntry
             0,
             2,      // CustomBlockSupportLevel
             0,0,0,0,0,
-            8,      //EnvSetColor, (this is 25 right?)
+            8,      //EnvSetColor
             0,
             0,
-            4       // SetBlockPermission
+            4,      // SetBlockPermission
+            0,
+            69      //EnvSetMapAppearance
         };
     }
 }

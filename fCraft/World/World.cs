@@ -523,7 +523,8 @@ namespace fCraft {
                     FogColorCC = FogColorCC,
                     sideLevel = sideLevel,
                     sideBlock = sideBlock,
-                    edgeBlock = edgeBlock
+                    edgeBlock = edgeBlock,
+                    textureURL = textureURL
                 };
                 newWorld.Map = newMap;
                 newWorld.NeverUnload = neverUnload;
@@ -1027,6 +1028,7 @@ namespace fCraft {
         public short sideLevel = 0;
         public byte sideBlock = 7;
         public byte edgeBlock = 8;
+        public string textureURL = "";
 
         #endregion
 
