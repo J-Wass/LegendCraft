@@ -11,7 +11,7 @@ http://www.mediafire.com/download/t0v616d969owfek/LegendCraft%20Template%20v2.1.
 View all LegendCraft releases:
 https://www.mediafire.com/folder/oy3rdjfanvdt7/LegendCraft%20Releases
 
-Thank you for downloading LegendCraft, a custom Minecraft server based on fCraft and 800craft.
+Thank you for downloading LegendCraft, a custom Minecraft/ClassiCube server based on fCraft and 800craft.
 
 Special thanks to fragmer, for creating fCraft! Special thanks to Jonty800, GlennMR and LaoTszy for their hard 
 

@@ -4,6 +4,8 @@ Add: /temprank
 Add: Voice commands for ServerGUI + audio responses
 Add: /jump
 Add: /edit
+Add: /MapEdit
+Add: /spawn (bots are back!)
 Add: /barf 
 Add: FFA gamemode
 Add: CPE Support

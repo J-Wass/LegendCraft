@@ -214,6 +214,15 @@ namespace fCraft {
             return packet;
         }
 
+        public static Packet MakeExtAddEntity(byte EntityID, string entityName, string skinName)
+        {
+            Packet packet = new Packet(OpCode.ChangeModel);
+            packet.Data[1] = EntityID;
+            Encoding.ASCII.GetBytes(entityName.PadRight(64), 0, 64, packet.Data, 2);
+            Encoding.ASCII.GetBytes(skinName.PadRight(64), 0, 64, packet.Data, 66);
+            return packet;
+        }
+
         public static Packet MakeEnvSetColor(byte selection, string colorcode)
         {
             System.Drawing.Color col = System.Drawing.ColorTranslator.FromHtml(colorcode.ToUpper());
@@ -225,6 +234,22 @@ namespace fCraft {
             return packet;
         }
 
+        internal static Packet MakeSetPermission( [NotNull] Player player ) {
+            if( player == null ) throw new ArgumentNullException( "player" );
+
+            Packet packet = new Packet( OpCode.SetPermission );
+            packet.Data[1] = (byte)(player.Can( Permission.DeleteAdmincrete ) ? 100 : 0);
+            return packet;
+        }
+
+        public static Packet MakeChangeModel(byte EntityID, string modelName)
+        {
+            Packet packet = new Packet(OpCode.ChangeModel);
+            packet.Data[1] = EntityID;
+            Encoding.ASCII.GetBytes(modelName.PadRight(64), 0, 64, packet.Data, 2);
+            return packet;
+        }
+
         public static Packet MakeEnvSetMapAppearance(string textureURL, byte sideBlock, byte edgeBlock, short sideLevel)
         {
             Packet packet = new Packet(OpCode.EnvSetMapAppearance);
@@ -232,15 +257,6 @@ namespace fCraft {
             packet.Data[65] = sideBlock;
             packet.Data[66] = edgeBlock;
             ToNetOrder((short)sideLevel, packet.Data, 67);
-            return packet;
-        }
-
-
-        internal static Packet MakeSetPermission( [NotNull] Player player ) {
-            if( player == null ) throw new ArgumentNullException( "player" );
-
-            Packet packet = new Packet( OpCode.SetPermission );
-            packet.Data[1] = (byte)(player.Can( Permission.DeleteAdmincrete ) ? 100 : 0);
             return packet;
         }
 

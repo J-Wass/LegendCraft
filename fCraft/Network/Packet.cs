@@ -63,12 +63,14 @@ namespace fCraft
             69,     // ExtEntry
             0,
             2,      // CustomBlockSupportLevel
-            0,0,0,0,0,
+            0,0,0,
+            130,     //ExtAddEntity
+            0,
             8,      //EnvSetColor
             0,
             0,
             4,      // SetBlockPermission
-            0,
+            66,     //Change Model
             69      //EnvSetMapAppearance
         };
     }

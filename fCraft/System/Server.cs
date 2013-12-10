@@ -44,6 +44,8 @@ namespace fCraft {
 
         public static List<Player> TempBans = new List<Player>();
 
+        public static List<string> Entites = new List<string>();
+
         // networking
         static TcpListener listener;
         public static IPAddress InternalIP { get; private set; }

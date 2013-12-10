@@ -45,6 +45,8 @@ namespace fCraft
             CommandManager.RegisterCommand(CdTeamDeathMatch);
             //Infection
             CommandManager.RegisterCommand(CdInfection);
+            //Spawning
+            CommandManager.RegisterCommand(CdSpawn);
             Player.Moving += PlayerMoved;
         }
 
@@ -84,7 +86,7 @@ namespace fCraft
             }
         }
         #region LegendCraft
-        /* Copyright (c) <2012-2013> <LeChosenOne, DingusBungus, Eeyle>
+        /* Copyright (c) <2012-2013> <LeChosenOne, DingusBungus>
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -103,9 +105,125 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
 
-	static readonly CommandDescriptor CdTroll = new CommandDescriptor //Troll is an old command from 800craft that i have rehashed because of its popularity
-        {                                                                 //The original command and the idea for the command were done by Jonty800.
+
+        static readonly CommandDescriptor CdSpawn = new CommandDescriptor 
+        {                                                                 
+            Name = "Spawn",
+            Permissions = new Permission[] {Permission.ManageWorlds},
+            Category = CommandCategory.Fun ,
+            IsConsoleSafe = false,
+            Usage = "/Spawn [Create/Delete] [EntityName] [Type]",
+            Help = "Allows you to create or delete entities. Example for create: /spawn create Mr.Pig pig. Example for delete: /spawn delete Mr.Pig. Valid entities are as following: " +
+            "chicken, creeper, croc, humanoid, pig, printer, sheep, skeleton, spider, zombie, or a block.",
+            Handler = spawnH,
+        };
+
+        static void spawnH(Player player, Command cmd)
+        {
+            string[] validEntities = 
+            {
+                "chicken",
+                "creeper",
+                "croc",
+                "humanoid",
+                "pig",
+                "printer",
+                "sheep",
+                "skeleton",
+                "spider",
+                "zombie"
+                                     };
+
+            string option = cmd.Next();
+            if (string.IsNullOrEmpty(option))
+            {
+                player.Message("Please specify 'create' or 'delete' for spawning your entity!");
+                return;
+            }
+            if (option == "create")
+            {
+                string entityName = cmd.Next();
+                if (string.IsNullOrEmpty(entityName))
+                {
+                    player.Message("Please specify a name for your entity!");
+                    return;
+                }
+                string entityType = cmd.Next();
+                if(string.IsNullOrEmpty(entityType))
+                {
+                    player.Message("Please specifiy the type of entity you wish to create!");
+                    return;
+                }
+
+                byte[] entityBytes = Encoding.ASCII.GetBytes(entityName);
+                byte entityByteValue = (byte)0;
+                foreach (Byte b in entityBytes)
+                {
+                    entityByteValue = (byte)(entityByteValue + b);
+                }
+
+                if (Server.Entites.Contains(entityByteValue.ToString()))
+                {
+                    player.Message("Please choose a different name for your entity!");
+                    return;
+                }
+
+                Server.Entites.Add(entityByteValue.ToString());
+
+                if (validEntities.Contains(entityType))
+                {
+
+                    PlayerInfo skin = PlayerDB.FindPlayerInfoOrPrintMatches(player, entityName);
+                    if (skin != null)
+                    {
+
+                        Packet addEntity = PacketWriter.MakeExtAddEntity(entityByteValue, entityName, skin.PlayerObject.Name);
+                        player.Send(addEntity);
+                        Packet changeEntity = PacketWriter.MakeChangeModel(entityByteValue, entityType);
+                        player.Send(changeEntity);
+                        return;
+                    }
+
+                    Packet addEntityNoSkin = PacketWriter.MakeExtAddEntity(entityByteValue, entityName, player.Name);
+                    player.Send(addEntityNoSkin);
+                    Packet changeEntityNoSkin = PacketWriter.MakeChangeModel(entityByteValue, entityType);
+                    player.Send(changeEntityNoSkin);
+                    return;
+                }
+
+                else if (Enum.IsDefined(typeof(Block), entityType.Substring(0, 1).ToUpper() + entityType.Substring(1).ToLower())) //if entity was actually a blockname (make sure to format correctly)
+                {
+
+                    Block entityBlock = (fCraft.Block)System.Enum.Parse(typeof(Block), entityType.Substring(0, 1).ToUpper() + entityType.Substring(1));
+                    string blockID = ((byte)entityBlock).ToString();
+
+                    Packet addEntityBlock = PacketWriter.MakeExtAddEntity(entityByteValue, entityName, player.Name);
+                    player.Send(addEntityBlock);
+                    Packet changeEntityBlock = PacketWriter.MakeChangeModel(entityByteValue, blockID);
+                    player.Send(changeEntityBlock);
+                    return;
+                }
+                else
+                {
+                    player.Message("Please choose a valid entity type or block name!");
+                    return;
+                }
+            }
+            else if (option == "delete")
+            {
+                //can't seem to find ExtRemoveEntity Packet, will complete once found
+            }
+            else
+            {
+                player.Message("Please specify if you want to 'create' or 'delete' an entity.");
+                return;
+            }
+        }
+
+	    static readonly CommandDescriptor CdTroll = new CommandDescriptor //Troll is an old command from 800craft that i have rehashed because of its popularity
+        {                                                                 //The original command and the idea for the command were done by Jonty800 and Rebelliousdude.
             Name = "Troll",
+            Permissions = new Permission[] {Permission.Moderation},
             Category = CommandCategory.Chat | CommandCategory.Fun ,
             IsConsoleSafe = true,
             Usage = "/Troll (playername) (message-type) (message)",

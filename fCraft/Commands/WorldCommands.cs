@@ -69,7 +69,7 @@ namespace fCraft
             //CommandManager.RegisterCommand(CdWorldChat);
             CommandManager.RegisterCommand(CdBack);
             CommandManager.RegisterCommand(CdJump);
-            CommandManager.RegisterCommand(CdMapedit);
+            CommandManager.RegisterCommand(CdMapEdit);
         }
 
         #region LegendCraft
@@ -92,7 +92,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
 
-         static readonly CommandDescriptor CdMapedit = new CommandDescriptor
+         static readonly CommandDescriptor CdMapEdit = new CommandDescriptor
         {
             Name = "MapEdit",
             Aliases = new[] { "WorldEdit", "MEdit", "WEdit", "MapSet" },
@@ -453,7 +453,7 @@ THE SOFTWARE.*/
                     break;
 
                 default:
-                    CdMapedit.PrintUsage(player);
+                    CdMapEdit.PrintUsage(player);
                     break;
             }
 
