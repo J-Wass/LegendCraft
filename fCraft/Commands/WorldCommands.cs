@@ -295,7 +295,7 @@ THE SOFTWARE.*/
                     //if the setting param is actually a block
                     try
                     {
-                        Block sBlock = (Block)Enum.Parse(typeof(Block), setting);
+                        Block sBlock = (Block)Enum.Parse(typeof(Block), setting.Substring(0, 1).ToUpper() + setting.Substring(1));
                         world.sideBlock = (byte)sBlock;
 
                         Packet side = PacketWriter.MakeEnvSetMapAppearance(world.textureURL, world.sideBlock, world.edgeBlock, world.sideLevel);
