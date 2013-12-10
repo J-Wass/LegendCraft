@@ -37,6 +37,9 @@ namespace fCraft {
         public bool RealisticEnv = false; //previously getset
 
         public bool ZombieGame = false;
+        
+        /// <summary> Whether hax are allowed on a world. True means hax allowed. </summary>
+        public bool Hax = true; 
 
         public int FireworkCount = 0;
         public ArrayList Portals;
