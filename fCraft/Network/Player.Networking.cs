@@ -1041,14 +1041,23 @@ namespace fCraft {
             string textLine1 = ConfigKey.ServerName.GetString();
             string textLine2;
 
-            if( IsUsingWoM && ConfigKey.WoMEnableEnvExtensions.Enabled() ) {
+            if( IsUsingWoM && ConfigKey.WoMEnableEnvExtensions.Enabled() && !Heartbeat.ClassiCube()) {
                 if( IP.Equals( IPAddress.Loopback ) ) {
                     textLine2 = "cfg=localhost:" + Server.Port + "/" + newWorld.Name;
                 } else {
                     textLine2 = "cfg=" + Server.ExternalIP + ":" + Server.Port + "/" + newWorld.Name;
                 }
-            } else {
-                textLine2 = "Loading world " + newWorld.ClassyName;
+            } 
+            else if (IsUsingWoM && ConfigKey.WoMEnableEnvExtensions.Enabled() && Heartbeat.ClassiCube())
+            {
+                if( !newWorld.Hax ) 
+            	{
+                	textLine2 = "Loading world " + newWorld.ClassyName + "-hax";
+            	} 
+            	else 
+            	{
+                	textLine2 = "Loading world " + newWorld.ClassyName;
+            	}
             }
 
             if( RaisePlayerJoiningWorldEvent( this, newWorld, reason, textLine1, textLine2 ) ) {
