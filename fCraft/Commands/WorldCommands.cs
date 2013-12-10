@@ -70,6 +70,7 @@ namespace fCraft
             CommandManager.RegisterCommand(CdBack);
             CommandManager.RegisterCommand(CdJump);
             CommandManager.RegisterCommand(CdMapEdit);
+            CommandManager.RegisterCommand(CdHax);
         }
 
         #region LegendCraft
@@ -91,7 +92,73 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
+        
+        
+        static readonly CommandDescriptor CdHax = new CommandDescriptor
+        {
+            Name = "Hax",
+            Aliases = new[] { "htoggle", "haxtoggle", "hacks", "hackstoggle" },
+            Category = CommandCategory.World,
+            IsConsoleSafe = false,
+            Permissions = new[] { Permission.ManageWorlds },
+            Usage = "/Hax (World) (On/Off)",
+            Help = "Sets if you want to enable or disable hax on a specific world.",
+            Handler = HaxHandler
+        };
 
+        private static void HaxHandler(Player player, Command cmd)
+        {
+            string worldName = cmd.Next();
+            if (string.IsNullOrEmpty(worldName) || worldName.Length < 1)
+            {
+                CdHax.PrintUsage(player);
+                return;
+            }
+            World world = WorldManager.FindWorldOrPrintMatches(player, worldName);
+            if (world == null)
+            {
+                player.MessageNoWorld(worldName);
+                return;
+            }
+            string hax = cmd.Next();
+            if (string.IsNullOrEmpty(hax) || hax.Length < 1)
+            {
+                CdHax.PrintUsage(player);
+                return;
+            }
+            if (hax.ToLower() == "on" || hax.ToLower() == "true")
+            {
+                if (world.Hax == true)
+                {
+                    player.Message("&sHax are already enabled on {0}", world.ClassyName);
+                    return;
+                }
+                world.Hax = true;
+                Server.Message("&sHax have been enabled on {0}", world.ClassyName);
+                foreach (Player p in world.Players)
+                {
+                    p.JoinWorld(player.World, WorldChangeReason.Rejoin);
+                }
+                return;
+            }
+            if (hax.ToLower() == "off" || hax.ToLower() == "false")
+            {
+                if (world.Hax == false)
+                {
+                    player.Message("&sHax are already disabled on {0}", world.ClassyName);
+                    return;
+                }
+                world.Hax = false;
+                Server.Message("&sHax have been disabled on {0}", world.ClassyName);
+                foreach (Player p in world.Players) //make all players rejoin to force changes
+                {
+                    p.JoinWorld(player.World, WorldChangeReason.Rejoin);
+                }
+                return;
+            }
+        }   
+        
+        
          static readonly CommandDescriptor CdMapEdit = new CommandDescriptor
         {
             Name = "MapEdit",
