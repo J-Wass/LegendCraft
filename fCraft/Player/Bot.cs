@@ -25,7 +25,7 @@ namespace fCraft
             world = world_;
             _isMoving = true;
             SetBot();
-            Scheduler.NewBackgroundTask(t => StartNewAIMovement()).RunForever(TimeSpan.FromMilliseconds(500));
+            //Scheduler.NewBackgroundTask(t => StartNewAIMovement()).RunForever(TimeSpan.FromMilliseconds(500));
         }
 
         public Map WorldMap
@@ -48,9 +48,15 @@ namespace fCraft
             world.Players.Send(PacketWriter.MakeChangeModel(entityID ,model));
         }
 
-        public void RemoveBot(byte entityID)
+        public static void RemoveBot(byte entityID, World world)
         {
             world.Players.Send(PacketWriter.MakeRemoveEntity(entityID));
+        }
+
+        public static void TeleportBot(int ID, Position pos, World world)
+        {
+            Packet packet = PacketWriter.MakeTeleport(ID, new Position { X = pos.X, Y = pos.Y, Z = pos.Z });
+            world.Players.Send(packet);
         }
 
         public void MoveBot()

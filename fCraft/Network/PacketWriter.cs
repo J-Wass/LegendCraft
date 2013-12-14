@@ -216,7 +216,7 @@ namespace fCraft {
 
         public static Packet MakeExtAddEntity(byte EntityID, string entityName, string skinName)
         {
-            Packet packet = new Packet(OpCode.ChangeModel);
+            Packet packet = new Packet(OpCode.ExtAddEntity);
             packet.Data[1] = EntityID;
             Encoding.ASCII.GetBytes(entityName.PadRight(64), 0, 64, packet.Data, 2);
             Encoding.ASCII.GetBytes(skinName.PadRight(64), 0, 64, packet.Data, 66);

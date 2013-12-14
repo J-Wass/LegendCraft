@@ -47,8 +47,23 @@ namespace fCraft
             CommandManager.RegisterCommand(CdInfection);
             //Bot
             CommandManager.RegisterCommand(CdBot);
+            CommandManager.RegisterCommand(CdBotEdit);
             Player.Moving += PlayerMoved;
         }
+
+        static string[] validEntities = 
+            {
+                "chicken",
+                "creeper",
+                "croc",
+                "humanoid",
+                "pig",
+                "printer",
+                "sheep",
+                "skeleton",
+                "spider",
+                "zombie"
+                                     };
 
         public static void PlayerMoved(object sender, fCraft.Events.PlayerMovingEventArgs e)
         {
@@ -104,7 +119,62 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
+         
+        static readonly CommandDescriptor CdBotEdit = new CommandDescriptor 
+        {                                                                 
+            Name = "BotEdit",
+            Permissions = new Permission[] {Permission.ManageWorlds},
+            Category = CommandCategory.Fun ,
+            IsConsoleSafe = false,
+            Usage = "/BotEdit [List/Summon] [Bot Name]",
+            Help = "Used to edit a bot's behavoir. Use /bot to create a bot. ",
+            Handler = botEditHandler,
+        };
 
+        static void botEditHandler(Player player, Command cmd)
+        {
+            string option = cmd.Next();
+            if (string.IsNullOrEmpty(option))
+            {
+                CdBotEdit.PrintUsage(player);
+                return;
+            }
+
+            if (option.ToLower() == "list")
+            {
+                player.Message("--Bot List--");
+                foreach (string s in Server.Entities)
+                {
+                    player.Message(s + ", ID: " + LegendCraft.toByteValue(s).ToString());
+                }
+                player.Message("-----------");
+                return;
+            }
+            else if (option.ToLower() == "summon")
+            {
+                string name = cmd.Next();
+                if (string.IsNullOrEmpty(name))
+                {
+                    player.Message("Please specify the name of the bot you wish to summon.");
+                    return;
+                }
+
+                if (!Server.Entities.Contains(name))
+                {
+                    player.Message("That bot doesn't exist!");
+                    return;
+                }
+
+                Bot.TeleportBot(LegendCraft.toByteValue(name), player.Position, player.World);
+                return;
+            }
+            else
+            {
+                CdBotEdit.PrintUsage(player);
+                return;
+            }
+
+        }
 
         static readonly CommandDescriptor CdBot = new CommandDescriptor 
         {                                                                 
@@ -112,9 +182,10 @@ THE SOFTWARE.*/
             Permissions = new Permission[] {Permission.ManageWorlds},
             Category = CommandCategory.Fun ,
             IsConsoleSafe = false,
-            Usage = "/Bot [Create/Delete/List] [Bot Name] [Bot Type]",
+            Usage = "/Bot [Create/Delete/DeleteAll] [Bot Name] [Bot Type]",
             Help = "Allows you to create or delete entities. Example for create: /bot create Mr.Pig pig. Example for delete: /bot delete Mr.Pig. Valid bot types are as following: " +
-            "chicken, creeper, croc, humanoid, pig, printer, sheep, skeleton, spider, or zombie.",
+            "chicken, creeper, croc, humanoid, pig, printer, sheep, skeleton, spider, or zombie. " +
+            "Use /BotEdit to modify your bot.",
             Handler = botHandler,
         };
 
@@ -127,37 +198,16 @@ THE SOFTWARE.*/
             }
             Bot bot;
             Position pos = new Position(player.Position.X, player.Position.Y, player.Position.Z, player.Position.R, player.Position.L);
-            string[] validEntities = 
-            {
-                "chicken",
-                "creeper",
-                "croc",
-                "humanoid",
-                "pig",
-                "printer",
-                "sheep",
-                "skeleton",
-                "spider",
-                "zombie"
-                                     };
 
-            string option = cmd.Next();
+            string option = cmd.Next();        
+
             if (string.IsNullOrEmpty(option))
             {
                 player.Message("Please specify 'create' or 'delete' for spawning your bot!");
                 return;
             }
-            if (option == "list")
-            {
-                player.Message("--Bot List--");
-                foreach(string s in Server.Entities)
-                {
-                    player.Message(s + ", ID: " + LegendCraft.toByteValue(s).ToString());
-                }
-                player.Message("-----------");
-                return;
-            }
-            if (option == "create")
+
+            else if(option.ToLower() == "create")
             {
                 string entityName = cmd.Next();
                 if (string.IsNullOrEmpty(entityName))
@@ -216,36 +266,33 @@ THE SOFTWARE.*/
                     return;
                 }
             }
-            else if (option == "delete")
+            else if (option.ToLower() == "delete" || option.ToLower() == "remove")
             {
                 string target = cmd.Next();
                 if (string.IsNullOrEmpty(target))
                 {
-                    player.Message("Please insert the name or ID of the entity you wish to remove.");
+                    player.Message("Please insert the name bot you wish to remove.");
                     return;
                 }
                 if (!Server.Entities.Contains(target))
                 {
-                    if (!Server.Entities.Contains(LegendCraft.toByteValue(target).ToString()))
-                    {
-                        player.Message("Please insert the name or ID of the entity you wish to remove.");
-                        return;
-                    }
+                    player.Message("Please insert the name of the bot you wish to remove.");
                 }
 
-                int targetID;
-                if(Int32.TryParse(target, out targetID))
-                {
-                    //player sent as byte ID
-                    player.World.Players.Send(PacketWriter.MakeRemoveEntity(Convert.ToInt32(target)));
-                    return;
-                }
-
-                //player sent as string name
-                player.World.Players.Send(PacketWriter.MakeRemoveEntity((int)LegendCraft.toByteValue(target)));
+                Bot.RemoveBot(LegendCraft.toByteValue(target), player.World);
 
                 player.Message("Bot removed.");
                 Server.Entities.Remove(target);
+                return;
+            }
+            else if (option.ToLower() == "removeall" || option.ToLower() == "deleteall")
+            {
+                foreach (string s in Server.Entities.ToList())
+                {
+                    Bot.RemoveBot(LegendCraft.toByteValue(s), player.World);
+                    Server.Entities.Remove(s);
+                }
+                player.Message("All bots removed.");
                 return;
             }
             else
