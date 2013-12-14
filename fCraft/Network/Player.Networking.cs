@@ -1047,17 +1047,21 @@ namespace fCraft {
                 } else {
                     textLine2 = "cfg=" + Server.ExternalIP + ":" + Server.Port + "/" + newWorld.Name;
                 }
-            } 
+            }
             else if (IsUsingWoM && ConfigKey.WoMEnableEnvExtensions.Enabled() && Heartbeat.ClassiCube())
             {
-                if( !newWorld.Hax ) 
-            	{
-                	textLine2 = "Loading world " + newWorld.ClassyName + "-hax";
-            	} 
-            	else 
-            	{
-                	textLine2 = "Loading world " + newWorld.ClassyName;
-            	}
+                if (!newWorld.Hax)
+                {
+                    textLine2 = "Loading world " + newWorld.ClassyName + "-hax";
+                }
+                else
+                {
+                    textLine2 = "Loading world " + newWorld.ClassyName;
+                }
+            }
+            else
+            {
+                textLine2 = "Loading world " + newWorld.ClassyName;
             }
 
             if( RaisePlayerJoiningWorldEvent( this, newWorld, reason, textLine1, textLine2 ) ) {

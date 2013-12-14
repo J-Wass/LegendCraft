@@ -44,7 +44,7 @@ namespace fCraft {
 
         public static List<Player> TempBans = new List<Player>();
 
-        public static List<string> Entites = new List<string>();
+        public static List<string> Entities = new List<string>();
 
         // networking
         static TcpListener listener;
@@ -386,6 +386,7 @@ namespace fCraft {
             }
 
             //check for updates
+            Logger.Log(LogType.ConsoleOutput, "Checking for LegendCraft updates...");
             try
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://legendcraft.webuda.com//CurrentVersion.html");

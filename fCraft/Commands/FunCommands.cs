@@ -45,8 +45,8 @@ namespace fCraft
             CommandManager.RegisterCommand(CdTeamDeathMatch);
             //Infection
             CommandManager.RegisterCommand(CdInfection);
-            //Spawning
-            CommandManager.RegisterCommand(CdSpawn);
+            //Bot
+            CommandManager.RegisterCommand(CdBot);
             Player.Moving += PlayerMoved;
         }
 
@@ -81,7 +81,7 @@ namespace fCraft
                     prevBlockPos = pos;
                 }
                 //teleport keeping the same orientation
-                Server.Players.Message("New: "+ acceleratedNewPos.ToString());
+                //Server.Players.Message("New: "+ acceleratedNewPos.ToString());
                 e.Player.Send(PacketWriter.MakeSelfTeleport(new Position((short)(acceleratedNewPos.X * 32), (short)(acceleratedNewPos.Y * 32), e.Player.Position.Z, e.NewPosition.R, e.NewPosition.L)));
             }
         }
@@ -106,20 +106,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
 
 
-        static readonly CommandDescriptor CdSpawn = new CommandDescriptor 
+        static readonly CommandDescriptor CdBot = new CommandDescriptor 
         {                                                                 
-            Name = "Spawn",
+            Name = "Bot",
             Permissions = new Permission[] {Permission.ManageWorlds},
             Category = CommandCategory.Fun ,
             IsConsoleSafe = false,
-            Usage = "/Spawn [Create/Delete] [EntityName] [Type]",
-            Help = "Allows you to create or delete entities. Example for create: /spawn create Mr.Pig pig. Example for delete: /spawn delete Mr.Pig. Valid entities are as following: " +
-            "chicken, creeper, croc, humanoid, pig, printer, sheep, skeleton, spider, zombie, or a block.",
-            Handler = spawnH,
+            Usage = "/Bot [Create/Delete/List] [Bot Name] [Bot Type]",
+            Help = "Allows you to create or delete entities. Example for create: /bot create Mr.Pig pig. Example for delete: /bot delete Mr.Pig. Valid bot types are as following: " +
+            "chicken, creeper, croc, humanoid, pig, printer, sheep, skeleton, spider, or zombie.",
+            Handler = botHandler,
         };
 
-        static void spawnH(Player player, Command cmd)
+        static void botHandler(Player player, Command cmd)
         {
+            if (!Heartbeat.ClassiCube())
+            {
+                player.Message("Sorry, this is a classicube only command.");
+                return;
+            }
+            Bot bot;
+            Position pos = new Position(player.Position.X, player.Position.Y, player.Position.Z, player.Position.R, player.Position.L);
             string[] validEntities = 
             {
                 "chicken",
@@ -137,7 +144,17 @@ THE SOFTWARE.*/
             string option = cmd.Next();
             if (string.IsNullOrEmpty(option))
             {
-                player.Message("Please specify 'create' or 'delete' for spawning your entity!");
+                player.Message("Please specify 'create' or 'delete' for spawning your bot!");
+                return;
+            }
+            if (option == "list")
+            {
+                player.Message("--Bot List--");
+                foreach(string s in Server.Entities)
+                {
+                    player.Message(s + ", ID: " + LegendCraft.toByteValue(s).ToString());
+                }
+                player.Message("-----------");
                 return;
             }
             if (option == "create")
@@ -145,49 +162,38 @@ THE SOFTWARE.*/
                 string entityName = cmd.Next();
                 if (string.IsNullOrEmpty(entityName))
                 {
-                    player.Message("Please specify a name for your entity!");
+                    player.Message("Please specify a name for your bot!");
                     return;
                 }
                 string entityType = cmd.Next();
                 if(string.IsNullOrEmpty(entityType))
                 {
-                    player.Message("Please specifiy the type of entity you wish to create!");
+                    player.Message("Please specifiy the type of bot you wish to create!");
                     return;
                 }
 
-                byte[] entityBytes = Encoding.ASCII.GetBytes(entityName);
-                byte entityByteValue = (byte)0;
-                foreach (Byte b in entityBytes)
+                byte entityByteValue = LegendCraft.toByteValue(entityName);
+
+                //check if Server.Entities has an entity with the desired ID
+                List<byte> check = new List<byte>();
+                foreach (string s in Server.Entities)
                 {
-                    entityByteValue = (byte)(entityByteValue + b);
+                    check.Add(LegendCraft.toByteValue(s));
                 }
 
-                if (Server.Entites.Contains(entityByteValue.ToString()))
+                if (check.Contains(entityByteValue))
                 {
-                    player.Message("Please choose a different name for your entity!");
+                    player.Message("Please choose a different name for your bot!");
                     return;
                 }
-
-                Server.Entites.Add(entityByteValue.ToString());
 
                 if (validEntities.Contains(entityType))
                 {
-
-                    PlayerInfo skin = PlayerDB.FindPlayerInfoOrPrintMatches(player, entityName);
-                    if (skin != null)
-                    {
-
-                        Packet addEntity = PacketWriter.MakeExtAddEntity(entityByteValue, entityName, skin.PlayerObject.Name);
-                        player.Send(addEntity);
-                        Packet changeEntity = PacketWriter.MakeChangeModel(entityByteValue, entityType);
-                        player.Send(changeEntity);
-                        return;
-                    }
-
-                    Packet addEntityNoSkin = PacketWriter.MakeExtAddEntity(entityByteValue, entityName, player.Name);
-                    player.Send(addEntityNoSkin);
-                    Packet changeEntityNoSkin = PacketWriter.MakeChangeModel(entityByteValue, entityType);
-                    player.Send(changeEntityNoSkin);
+                    player.Message("Bot created.");
+                    bot = new Bot(entityName, pos, (int)entityByteValue, player.World);
+                    bot.SetBot();
+                    bot.ChangeBot(entityByteValue, entityType);
+                    Server.Entities.Add(entityName);
                     return;
                 }
 
@@ -197,25 +203,54 @@ THE SOFTWARE.*/
                     Block entityBlock = (fCraft.Block)System.Enum.Parse(typeof(Block), entityType.Substring(0, 1).ToUpper() + entityType.Substring(1));
                     string blockID = ((byte)entityBlock).ToString();
 
-                    Packet addEntityBlock = PacketWriter.MakeExtAddEntity(entityByteValue, entityName, player.Name);
-                    player.Send(addEntityBlock);
-                    Packet changeEntityBlock = PacketWriter.MakeChangeModel(entityByteValue, blockID);
-                    player.Send(changeEntityBlock);
+                    bot = new Bot(entityName, pos, (int)entityByteValue, player.World);
+                    bot.SetBot();
+                    bot.ChangeBot(entityByteValue, entityType);
+                    Server.Entities.Add(entityName);
+
                     return;
                 }
                 else
                 {
-                    player.Message("Please choose a valid entity type or block name!");
+                    player.Message("Please choose a valid bot type!");
                     return;
                 }
             }
             else if (option == "delete")
             {
-                //can't seem to find ExtRemoveEntity Packet, will complete once found
+                string target = cmd.Next();
+                if (string.IsNullOrEmpty(target))
+                {
+                    player.Message("Please insert the name or ID of the entity you wish to remove.");
+                    return;
+                }
+                if (!Server.Entities.Contains(target))
+                {
+                    if (!Server.Entities.Contains(LegendCraft.toByteValue(target).ToString()))
+                    {
+                        player.Message("Please insert the name or ID of the entity you wish to remove.");
+                        return;
+                    }
+                }
+
+                int targetID;
+                if(Int32.TryParse(target, out targetID))
+                {
+                    //player sent as byte ID
+                    player.World.Players.Send(PacketWriter.MakeRemoveEntity(Convert.ToInt32(target)));
+                    return;
+                }
+
+                //player sent as string name
+                player.World.Players.Send(PacketWriter.MakeRemoveEntity((int)LegendCraft.toByteValue(target)));
+
+                player.Message("Bot removed.");
+                Server.Entities.Remove(target);
+                return;
             }
             else
             {
-                player.Message("Please specify if you want to 'create' or 'delete' an entity.");
+                player.Message("Please specify if you want to 'create' or 'delete' an bot.");
                 return;
             }
         }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using System.Xml.Linq;
 using fCraft.Events;
 using fCraft.MapConversion;
@@ -13,7 +14,6 @@ namespace fCraft {
         public const string BuildSecurityXmlTagName = "BuildSecurity",
                             AccessSecurityXmlTagName = "AccessSecurity",
                             EnvironmentXmlTagName = "Environment",
-                            MapeditXMLTagName = "MapEdit",
                             RankMainXmlTagName = "RankMainWorld";
 
         public static World[] Worlds { get; private set; }
@@ -72,7 +72,7 @@ namespace fCraft {
 #if !DEBUG
                             } catch( Exception ex ) {
                                 Logger.LogAndReportCrash( "An error occured while trying to parse one of the entries on the world list",
-                                                          "800Craft", ex, false );
+                                                          "LegendCraft", ex, false );
                             }
 #endif
                         }
@@ -133,24 +133,29 @@ namespace fCraft {
             return true;
         }
 
-        static void LoadWorldListEntry( [NotNull] XElement el ) {
-            if( el == null ) throw new ArgumentNullException( "el" );
+        static void LoadWorldListEntry([NotNull] XElement el)
+        {
+            if (el == null) throw new ArgumentNullException("el");
             XAttribute tempAttr;
-            if( (tempAttr = el.Attribute( "name" )) == null ) {
-                Logger.Log( LogType.Error, "WorldManager: World tag with no name skipped." );
+            if ((tempAttr = el.Attribute("name")) == null)
+            {
+                Logger.Log(LogType.Error, "WorldManager: World tag with no name skipped.");
                 return;
             }
             string worldName = tempAttr.Value;
 
-            bool neverUnload = (el.Attribute( "noUnload" ) != null);
+            bool neverUnload = (el.Attribute("noUnload") != null);
 
             World world;
-            try {
-                world = AddWorld( null, worldName, null, neverUnload );
-            } catch( WorldOpException ex ) {
-                Logger.Log( LogType.Error,
+            try
+            {
+                world = AddWorld(null, worldName, null, neverUnload);
+            }
+            catch (WorldOpException ex)
+            {
+                Logger.Log(LogType.Error,
                             "WorldManager: Error adding world \"{0}\": {1}",
-                            worldName, ex.Message );
+                            worldName, ex.Message);
                 return;
             }
             if ((tempAttr = el.Attribute("realm")) != null)
@@ -167,14 +172,18 @@ namespace fCraft {
                 }
             }
 
-            if( (tempAttr = el.Attribute( "hidden" )) != null ) {
+            if ((tempAttr = el.Attribute("hidden")) != null)
+            {
                 bool isHidden;
-                if( Boolean.TryParse( tempAttr.Value, out isHidden ) ) {
+                if (Boolean.TryParse(tempAttr.Value, out isHidden))
+                {
                     world.IsHidden = isHidden;
-                } else {
-                    Logger.Log( LogType.Warning,
+                }
+                else
+                {
+                    Logger.Log(LogType.Warning,
                                 "WorldManager: Could not parse \"hidden\" attribute of world \"{0}\", assuming NOT hidden.",
-                                worldName );
+                                worldName);
                 }
             }
 
@@ -192,145 +201,179 @@ namespace fCraft {
                                 worldName);
                 }
             }
-            if( firstWorld == null ) firstWorld = world;
+            if (firstWorld == null) firstWorld = world;
 
             XElement tempEl;
-            if( (tempEl = el.Element( AccessSecurityXmlTagName )) != null ) {
-                world.AccessSecurity = new SecurityController( tempEl, true );
-            } else if( (tempEl = el.Element( "accessSecurity" )) != null ) {
-                world.AccessSecurity = new SecurityController( tempEl, true );
+            if ((tempEl = el.Element(AccessSecurityXmlTagName)) != null)
+            {
+                world.AccessSecurity = new SecurityController(tempEl, true);
             }
-            if( (tempEl = el.Element( BuildSecurityXmlTagName )) != null ) {
-                world.BuildSecurity = new SecurityController( tempEl, true );
-            } else if( (tempEl = el.Element( "buildSecurity" )) != null ) {
-                world.BuildSecurity = new SecurityController( tempEl, true );
+            else if ((tempEl = el.Element("accessSecurity")) != null)
+            {
+                world.AccessSecurity = new SecurityController(tempEl, true);
+            }
+            if ((tempEl = el.Element(BuildSecurityXmlTagName)) != null)
+            {
+                world.BuildSecurity = new SecurityController(tempEl, true);
+            }
+            else if ((tempEl = el.Element("buildSecurity")) != null)
+            {
+                world.BuildSecurity = new SecurityController(tempEl, true);
             }
 
-            if( (tempAttr = el.Attribute( "backup" )) != null ) {
+            if ((tempAttr = el.Attribute("backup")) != null)
+            {
                 TimeSpan backupInterval;
-                if( tempAttr.Value.ToTimeSpan( out backupInterval ) ) {
+                if (tempAttr.Value.ToTimeSpan(out backupInterval))
+                {
                     world.BackupInterval = backupInterval;
-                } else {
+                }
+                else
+                {
                     world.BackupInterval = World.DefaultBackupInterval;
-                    Logger.Log( LogType.Warning,
+                    Logger.Log(LogType.Warning,
                                 "WorldManager: Could not parse \"backup\" attribute of world \"{0}\", assuming default ({1}).",
                                 worldName,
-                                world.BackupInterval.ToMiniString() );
+                                world.BackupInterval.ToMiniString());
                 }
-            } else {
+            }
+            else
+            {
                 world.BackupInterval = World.DefaultBackupInterval;
             }
 
-            XElement blockEl = el.Element( BlockDB.XmlRootName );
-            if( blockEl != null ) {
-                world.BlockDB.LoadSettings( blockEl );
-            }
-
-            XElement mapEl = el.Element(MapeditXMLTagName);
-            if ((tempAttr = mapEl.Attribute("clouds")) != null)
+            XElement blockEl = el.Element(BlockDB.XmlRootName);
+            if (blockEl != null)
             {
-                world.CloudColorCC = mapEl.Attribute("clouds").Value;
+                world.BlockDB.LoadSettings(blockEl);
             }
-            if ((tempAttr = mapEl.Attribute("fog")) != null)
+         
+            XElement envEl = el.Element(EnvironmentXmlTagName);
+            if (envEl != null)
             {
-                world.FogColorCC = mapEl.Attribute("fog").Value;
-            }
-            if ((tempAttr = mapEl.Attribute("sky")) != null)
-            {
-                world.SkyColorCC = mapEl.Attribute("sky").Value;
-            }
-            if ((tempAttr = mapEl.Attribute("level")) != null)
-            {
-                world.sideLevel = Convert.ToInt16(mapEl.Attribute("level").Value);
-            }
-            if ((tempAttr = mapEl.Attribute("edge")) != null)
-            {
-                world.edgeBlock = (byte)Convert.ToInt32(mapEl.Attribute("edge").Value);
-            }
-            if ((tempAttr = mapEl.Attribute("side")) != null)
-            {
-                world.sideBlock = (byte)Convert.ToInt32(mapEl.Attribute("clouds").Value);
-            }
-            if ((tempAttr = mapEl.Attribute("texture")) != null)
-            {
-                world.textureURL = mapEl.Attribute("texture").Value;
-            }
-
-
-            XElement envEl = el.Element( EnvironmentXmlTagName );
-            if( envEl != null ) {
-                if( (tempAttr = envEl.Attribute( "cloud" )) != null ) {
-                    if( !Int32.TryParse( tempAttr.Value, out world.CloudColor ) ) {
+                if ((tempAttr = envEl.Attribute("cloud")) != null)
+                {
+                    if (!Int32.TryParse(tempAttr.Value, out world.CloudColor))
+                    {
                         world.CloudColor = -1;
-                        Logger.Log( LogType.Warning,
+                        Logger.Log(LogType.Warning,
                                     "WorldManager: Could not parse \"cloud\" attribute of Environment settings for world \"{0}\", assuming default (normal).",
-                                    worldName );
+                                    worldName);
                     }
                 }
                 if ((tempAttr = envEl.Attribute("terrain")) != null)
                 {
                     world.Terrain = envEl.Attribute("terrain").Value;
                 }
-                
-                if( (tempAttr = envEl.Attribute( "fog" )) != null ) {
-                    if( !Int32.TryParse( tempAttr.Value, out world.FogColor ) ) {
+
+                if ((tempAttr = envEl.Attribute("fog")) != null)
+                {
+                    if (!Int32.TryParse(tempAttr.Value, out world.FogColor))
+                    {
                         world.FogColor = -1;
-                        Logger.Log( LogType.Warning,
+                        Logger.Log(LogType.Warning,
                                     "WorldManager: Could not parse \"fog\" attribute of Environment settings for world \"{0}\", assuming default (normal).",
-                                    worldName );
+                                    worldName);
                     }
                 }
-                if( (tempAttr = envEl.Attribute( "sky" )) != null ) {
-                    if( !Int32.TryParse( tempAttr.Value, out world.SkyColor ) ) {
+                if ((tempAttr = envEl.Attribute("sky")) != null)
+                {
+                    if (!Int32.TryParse(tempAttr.Value, out world.SkyColor))
+                    {
                         world.SkyColor = -1;
-                        Logger.Log( LogType.Warning,
+                        Logger.Log(LogType.Warning,
                                     "WorldManager: Could not parse \"sky\" attribute of Environment settings for world \"{0}\", assuming default (normal).",
-                                    worldName );
+                                    worldName);
                     }
                 }
-                if( (tempAttr = envEl.Attribute( "level" )) != null ) {
-                    if( !Int32.TryParse( tempAttr.Value, out world.EdgeLevel ) ) {
+                if ((tempAttr = envEl.Attribute("level")) != null)
+                {
+                    if (!Int32.TryParse(tempAttr.Value, out world.EdgeLevel))
+                    {
                         world.EdgeLevel = -1;
-                        Logger.Log( LogType.Warning,
+                        Logger.Log(LogType.Warning,
                                     "WorldManager: Could not parse \"level\" attribute of Environment settings for world \"{0}\", assuming default (normal).",
-                                    worldName );
+                                    worldName);
                     }
                 }
 
-                if( (tempAttr = envEl.Attribute( "edge" )) != null ) {
-                    Block block = Map.GetBlockByName( tempAttr.Value );
-                    if( block == Block.Undefined ) {
+                if ((tempAttr = envEl.Attribute("edge")) != null)
+                {
+                    Block block = Map.GetBlockByName(tempAttr.Value);
+                    if (block == Block.Undefined)
+                    {
                         world.EdgeBlock = Block.Water;
-                        Logger.Log( LogType.Warning,
+                        Logger.Log(LogType.Warning,
                                     "WorldManager: Could not parse \"edge\" attribute of Environment settings for world \"{0}\", assuming default (Water).",
-                                    worldName );
-                    } else {
-                        if( Map.GetEdgeTexture( block ) == null ) {
+                                    worldName);
+                    }
+                    else
+                    {
+                        if (Map.GetEdgeTexture(block) == null)
+                        {
                             world.EdgeBlock = Block.Water;
-                            Logger.Log( LogType.Warning,
+                            Logger.Log(LogType.Warning,
                                         "WorldManager: Unacceptable blocktype given for \"edge\" attribute of Environment settings for world \"{0}\", assuming default (Water).",
-                                        worldName );
-                        } else {
+                                        worldName);
+                        }
+                        else
+                        {
                             world.EdgeBlock = block;
                         }
                     }
                 }
+
+                if ((tempAttr = envEl.Attribute("cloudCC")) != null)
+                {
+                    world.CloudColorCC = tempAttr.Value;
+                }
+                if ((tempAttr = envEl.Attribute("fogCC")) != null)
+                {
+                    world.FogColorCC = tempAttr.Value;
+                }
+                if ((tempAttr = envEl.Attribute("skyCC")) != null)
+                {
+                    world.SkyColorCC = tempAttr.Value;
+                }
+                if ((tempAttr = envEl.Attribute("levelCC")) != null)
+                {
+                    world.sideLevel = Convert.ToInt16(tempAttr.Value);
+                }
+                if ((tempAttr = envEl.Attribute("edgeCC")) != null)
+                {
+                    world.edgeBlock = (byte)Convert.ToInt16(tempAttr.Value);
+                }
+                if ((tempAttr = envEl.Attribute("sideCC")) != null)
+                {
+                    world.sideBlock = (byte)Convert.ToInt16(tempAttr.Value);
+                }
+                if ((tempAttr = envEl.Attribute("textureCC")) != null)
+                {
+                    world.textureURL = tempAttr.Value;
+                }
+                if ((tempAttr = envEl.Attribute("hacks")) != null)
+                {
+                    world.Hax = Convert.ToBoolean(tempAttr.Value);
+                }               
             }
 
-            foreach( XElement mainedRankEl in el.Elements( RankMainXmlTagName ) ) {
-                Rank rank = Rank.Parse( mainedRankEl.Value );
-                if( rank != null ) {
-                    if( rank < world.AccessSecurity.MinRank ) {
+            foreach (XElement mainedRankEl in el.Elements(RankMainXmlTagName))
+            {
+                Rank rank = Rank.Parse(mainedRankEl.Value);
+                if (rank != null)
+                {
+                    if (rank < world.AccessSecurity.MinRank)
+                    {
                         world.AccessSecurity.MinRank = rank;
-                        Logger.Log( LogType.Warning,
+                        Logger.Log(LogType.Warning,
                                     "WorldManager: Lowered access MinRank of world {0} to allow it to be the main world for that rank.",
-                                    rank.Name );
+                                    rank.Name);
                     }
                     rank.MainWorld = world;
                 }
             }
 
-            CheckMapFile( world );
+            CheckMapFile(world);
         }
 
 
@@ -442,25 +485,26 @@ namespace fCraft {
                     }
 
                     XElement elEnv = new XElement( EnvironmentXmlTagName );
+                    //Minecraft
                     if( world.CloudColor > -1 ) elEnv.Add( new XAttribute( "cloud", world.CloudColor ) );
                     if( world.FogColor > -1 ) elEnv.Add( new XAttribute( "fog", world.FogColor ) );
                     if( world.SkyColor > -1 ) elEnv.Add( new XAttribute( "sky", world.SkyColor ) );
                     if( world.EdgeLevel > -1 ) elEnv.Add( new XAttribute( "level", world.EdgeLevel ) );
                     if (world.Terrain != null) elEnv.Add(new XAttribute("terrain", world.Terrain));
                     if( world.EdgeBlock != Block.Water ) elEnv.Add( new XAttribute( "edge", world.EdgeBlock ) );
+
+                    //ClassiCube
+                    elEnv.Add(new XAttribute("cloudCC", world.CloudColorCC));
+                    elEnv.Add(new XAttribute("fogCC", world.FogColorCC));
+                    elEnv.Add(new XAttribute("skyCC", world.SkyColorCC));
+                    elEnv.Add(new XAttribute("levelCC", (int)(world.sideLevel)));
+                    elEnv.Add(new XAttribute("edgeCC", (int)(world.edgeBlock)));
+                    elEnv.Add(new XAttribute("sideCC", (int)(world.sideBlock)));
+                    elEnv.Add(new XAttribute("textureCC", world.textureURL));
+                    elEnv.Add(new XAttribute("hacks", world.Hax.ToString()));
                     if( elEnv.HasAttributes ) {
                         temp.Add( elEnv );
                     }
-
-                    XElement elMap = new XElement(MapeditXMLTagName);
-                    elMap.Add(new XAttribute("cloud", world.CloudColorCC));
-                    elMap.Add(new XAttribute("fog", world.FogColorCC));
-                    elMap.Add(new XAttribute("sky", world.SkyColorCC));
-                    elMap.Add(new XAttribute("level", world.sideLevel));
-                    elMap.Add(new XAttribute("edge", world.edgeBlock));
-                    elMap.Add(new XAttribute("side", world.sideBlock));
-                    elMap.Add(new XAttribute("texture", world.textureURL));
-                    temp.Add(elMap);
 
                     root.Add( temp );
                 }

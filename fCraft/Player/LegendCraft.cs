@@ -24,6 +24,18 @@ namespace fCraft
             Vector3I Blockcoords = player.Position.ToBlockCoords();
             player.Message("Your current coordinates are " + Blockcoords + ".");
         }
+
+        //Used to extract a byte value for string
+        public static byte toByteValue(string s)
+        {
+            byte[] bytes = System.Text.Encoding.ASCII.GetBytes(s);
+            byte bytesValue = (byte)0;
+            foreach (Byte b in bytes)
+            {
+                bytesValue = (byte)((byte)bytesValue + (byte)b);
+            }
+            return bytesValue;
+        }
     }
 }
 
