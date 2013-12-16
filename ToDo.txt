@@ -4,5 +4,8 @@ LegendCraft v2.2.0 Roadmap
 [x]Add voice commands (the server software talks to the owner via audio)-not for mono
 [x]Edit Rules, Swears, Announcements, and Greeting ingame
 []Work on a generator to create autorank.xml's
+[]Remove WOMDirect button from config and remove heartbeat capability (no longer supported)
+[]Finish autorank system
+[]Test and fix up FFA/TDM
 [x]Seduce Women, Obtain Currency
 []More to come
