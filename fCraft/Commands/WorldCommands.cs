@@ -201,9 +201,9 @@ THE SOFTWARE.*/
 
         static void MEditHandler(Player player, Command cmd)
         {
-            if (!Heartbeat.ClassiCube())
+            if (!Heartbeat.ClassiCube() || !player.ClassiCube)
             {
-                player.Message("/MapEdit only works for ClassiCube, not MineCraft! If you are playing on Minecraft.net, please use /Env.");
+                player.Message("/MapEdit only works for ClassiCube servers and clients, not MineCraft! If you are playing on Minecraft.net, please use /Env.");
                 return;
             }
             if (!ConfigKey.WoMEnableEnvExtensions.Enabled())
@@ -2497,7 +2497,7 @@ THE SOFTWARE.*/
 
         static void EnvHandler(Player player, Command cmd)
         {
-            if (Heartbeat.ClassiCube())
+            if (Heartbeat.ClassiCube() || player.ClassiCube)
             {
                 player.Message("/Env is a Minecraft.net only command. If you are playing on ClassiCube, please use /MapEdit ");
             }

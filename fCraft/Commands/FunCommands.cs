@@ -123,11 +123,19 @@ THE SOFTWARE.*/
         static readonly CommandDescriptor CdBotEdit = new CommandDescriptor 
         {                                                                 
             Name = "BotEdit",
-            Permissions = new Permission[] {Permission.ManageWorlds},
-            Category = CommandCategory.Fun ,
+            Permissions = new Permission[] { Permission.ManageWorlds },
+            Category = CommandCategory.Fun,
             IsConsoleSafe = false,
-            Usage = "/BotEdit [List/Summon] [Bot Name]",
-            Help = "Used to edit a bot's behavoir. Use /bot to create a bot. ",
+            Usage = "/BotEdit [List/Summon/GoTo]",
+            Help = "Used to edit a bot's behavoir. Use /bot to create a bot. Use /Help <option> for more info.",
+            HelpSections = new Dictionary<string, string>
+            {
+                { "List",     "Usage is /botedit list, will list all active bots." },
+
+                { "Summon",   "Usage is /botedit summon <botname>, will summon a bot to your location." },
+
+                { "GoTo",     "Usage is /botedit goto <botname> <'player name' or 'X Y Z'>, will make a bot move to a specific location." }
+            },
             Handler = botEditHandler,
         };
 
@@ -148,6 +156,94 @@ THE SOFTWARE.*/
                     player.Message(s + ", ID: " + LegendCraft.toByteValue(s).ToString());
                 }
                 player.Message("-----------");
+                return;
+            }
+            else if (option.ToLower() == "goto")
+            {
+                string name = cmd.Next(); //name of the bot
+                string target = cmd.Next(); //name of position or player name
+                if(string.IsNullOrEmpty(target))
+                {
+                    CdBotEdit.PrintUsage(player);
+                    return;
+                }
+
+                int targetX;
+                int targetY;
+                int targetZ;
+
+                //if second param was a number, check for all 3 coords
+                if(Int32.TryParse(target, out targetX))
+                {
+                    //check for nulls
+                    string targetYString = cmd.Next();
+                    if (string.IsNullOrEmpty(targetYString))
+                    {
+                        CdBotEdit.PrintUsage(player);
+                        return;
+                    }
+
+                    string targetZString = cmd.Next();
+                    if (string.IsNullOrEmpty(targetZString))
+                    {
+                        CdBotEdit.PrintUsage(player);
+                        return;
+                    }
+
+                    //check that all params are numbers
+                    if (!Int32.TryParse(targetYString, out targetY))
+                    {
+                        CdBotEdit.PrintUsage(player);
+                        return;
+                    }
+
+                    if (!Int32.TryParse(targetZString, out targetZ))
+                    {
+                        CdBotEdit.PrintUsage(player);
+                        return;
+                    }
+
+                    //check that all 3 coords are from 0 to map dimensions
+                    bool inBounds = true;
+
+                    if (targetX < 0 || targetX > player.World.map.Width)
+                    {
+                        inBounds = false;
+                    }
+                    if (targetY < 0 || targetY > player.World.map.Length)
+                    {
+                        inBounds = false;
+                    }
+                    if (targetZ < 0 || targetZ > player.World.map.Height)
+                    {
+                        inBounds = false;
+                    }
+
+                    //move bot
+                    if (inBounds)
+                    {
+                        Position pos = new Position(targetX, targetY, targetZ);
+                        player.Message("{0} is now moving.", name);
+                        Bot.MoveTo(LegendCraft.toByteValue(name), pos, player.World);
+                        return;
+                    }
+                    else
+                    {
+                        CdBotEdit.PrintUsage(player);
+                        return;
+                    }
+                }
+                //second param wasn't a number
+                Player targetName = Server.FindPlayerOrPrintMatches(player, target, false, true);
+                if (targetName == null)
+                {
+                    player.Message("Cound not find player {0}. Please make sure you spelled their name correctly. (Also, make sure they aren't hidden!)", name);
+                    return;
+                }
+
+                //player found, move bot
+                player.Message("{0} is now moving.", name);
+                Bot.MoveTo(LegendCraft.toByteValue(name), targetName.Position, player.World);
                 return;
             }
             else if (option.ToLower() == "summon")

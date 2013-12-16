@@ -75,6 +75,8 @@ namespace fCraft
         /// Deaf players can't hear anything. </summary>
         public bool IsDeaf { get; set; }
 
+        /// <summary>Determines whether or not a player is using a CC compatable client.</summary>       
+        public bool ClassiCube = false;
 
         /// <summary> The world that the player is currently on. May be null.
         /// Use .JoinWorld() to make players teleport to another world. </summary>

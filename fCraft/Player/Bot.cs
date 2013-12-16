@@ -1,4 +1,5 @@
 ﻿//based off of the 800Craft bot code
+//Using this as a class simply to call packets and store logic
 
 using System;
 using System.Collections.Generic;
@@ -56,6 +57,12 @@ namespace fCraft
         public static void TeleportBot(int ID, Position pos, World world)
         {
             Packet packet = PacketWriter.MakeTeleport(ID, new Position { X = pos.X, Y = pos.Y, Z = pos.Z });
+            world.Players.Send(packet);
+        }
+
+        public static void MoveTo(int ID, Position pos, World world)
+        {
+            Packet packet = PacketWriter.MakeMoveRotate(ID, pos);
             world.Players.Send(packet);
         }
 

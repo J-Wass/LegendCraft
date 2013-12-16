@@ -609,6 +609,7 @@ namespace fCraft {
 
             string verificationCode = ReadString();
             byte magicNum = reader.ReadByte(); //for ClassiCube protocol check (previously unused)
+            ClassiCube = (magicNum == 0x42);
             BytesReceived += 131;
 
             // ReSharper disable PossibleNullReferenceException
