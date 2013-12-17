@@ -50,7 +50,7 @@ namespace fCraft
         public static void Start()
         {
             world_.gameMode = GameMode.FFA; //set the game mode
-            Scheduler.NewTask(t => world_.Players.Message("&WFFA &fwill be starting in {0} seconds: &WGet ready!", (timeDelay - (DateTime.Now - startTime).TotalSeconds)))
+            Scheduler.NewTask(t => world_.Players.Message("&WFFA &fwill be starting in {0} seconds: &WGet ready!", (timeDelay - (DateTime.Now - startTime).ToSeconds())))
                     .RunRepeating(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(10), (timeDelay / 10));
         }
 
@@ -175,9 +175,9 @@ namespace fCraft
                     return;
                 }
             }
-            timeLeft = Convert.ToInt16(((timeDelay + timeLimit) - (DateTime.Now - startTime).TotalSeconds));
+            timeLeft = Convert.ToInt16(((timeDelay + timeLimit) - (DateTime.Now - startTime).ToSeconds()));
             //Keep the players updated about the score
-            if (lastChecked != null && (DateTime.Now - lastChecked).TotalSeconds > 29.8 && timeLeft <= timeLimit)
+            if (lastChecked != null && (DateTime.Now - lastChecked).TotalSeconds > 29.9 && timeLeft <= timeLimit)
             {
                 Player leader = GetScoreList()[0];  //leader is the top of the score list
                 Player secondPlace = GetScoreList()[1]; //second place is - well, second place XD
@@ -193,7 +193,7 @@ namespace fCraft
                 }
                 lastChecked = DateTime.Now;
             }
-            if (timeLeft == 10)
+            if (timeLeft < 10.1)
             {
                 world_.Players.Message("&WOnly 10 seconds left!");
             }
