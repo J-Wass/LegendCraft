@@ -628,6 +628,7 @@ namespace fCraft {
             BlockNames["gras"] = Block.Grass; // common typo
 
             BlockNames["soil"] = Block.Dirt;
+            BlockNames["cobble"] = Block.Cobblestone; //FINALLY
             BlockNames["stones"] = Block.Cobblestone;
             BlockNames["rocks"] = Block.Cobblestone;
             BlockNames["plank"] = Block.Wood;
@@ -767,8 +768,14 @@ namespace fCraft {
             BlockNames["mossycobblestone"] = Block.MossyRocks;
             BlockNames["mossy_cobblestone"] = Block.MossyRocks;
             BlockNames["blockthathasgreypixelsonitmostlybutsomeareactuallygreen"] = Block.MossyRocks;
+            
+            BlockNames["onyx"] = Block.Obsidian;
 
             BlockNames["cobblestoneslab"] = Block.CobbleSlab;
+            BlockNames["cobblestair"] = Block.CobbleSlab;
+            BlockNames["cobblestep"] = Block.CobbleSlab;
+            BlockNames["cobblestonestair"] = Block.CobbleSlab;
+            BlockNames["cobblestonestep"] = Block.CobbleSlab;
 
             BlockNames["lightpinkwool"] = Block.LightPink;
 
@@ -783,8 +790,8 @@ namespace fCraft {
             BlockNames["darkbluewool"] = Block.DarkBlue;
 
             BlockNames["turqoisewool"] = Block.Turquoise;
-
-            BlockNames["onyx"] = Block.Obsidian;
+            
+            BlockNames["fancybrick"] = Block.StoneBrick;
 
             // add WoM file hashes for edge textures
             BlockEdgeTextures[Block.Air] = "bed8ac09b8c761527f3e205f8b85a2e22519b937";
