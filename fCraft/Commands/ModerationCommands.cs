@@ -125,7 +125,7 @@ THE SOFTWARE.*/
                 return;
             }
             Player target = Server.FindPlayerOrPrintMatches(player, targetName, false, true);
-            if (!target.isUsingCC)
+            if (!target.ClassiCube)
             {
                 player.Message("Click distance can only be changed for people playing on ClassiCube");
                 return;
