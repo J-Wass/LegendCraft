@@ -80,6 +80,7 @@ namespace fCraft {
             CommandManager.RegisterCommand(CdLastCommand);
             CommandManager.RegisterCommand(CdFreezeBring);
             CommandManager.RegisterCommand(CdTempRank);
+            CommandManager.RegisterCommand(CdSetClickDistance);
             //CommandManager.RegisterCommand(CdTPA);
 
         }
@@ -102,7 +103,58 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
-      
+        
+        static readonly CommandDescriptor CdSetClickDistance = new CommandDescriptor 
+        {
+            Name = "SetClickDistance",
+            Aliases = new[] { "setclick", "clickdistance", "click", "scd" },
+            IsConsoleSafe = false,
+            Category = CommandCategory.Moderation,
+            Permissions = new[] { Permission.Promote },
+            Help = "&SSets the clicking distance of a player. NOTE: Block distances are approximate (+/- 1)",
+            Usage = "&S/SetClick (number of blocks)",
+            Handler = SetClickHandler
+        };
+
+        private static void SetClickHandler(Player player, Command cmd)
+        {
+            string targetName = cmd.Next();
+            if (String.IsNullOrEmpty(targetName))
+            {
+                CdSetClickDistance.PrintUsage(player);
+                return;
+            }
+            Player target = Server.FindPlayerOrPrintMatches(player, targetName, false, true);
+            if (!target.isUsingCC)
+            {
+                player.Message("Click distance can only be changed for people playing on ClassiCube");
+                return;
+            }
+            string number = cmd.Next();
+            if (number == "normal")
+            {
+                target.Send(PacketWriter.MakeSetClickDistance(160));
+                player.Message("Player {0}&s's click distance was set to normal.", target.ClassyName);
+                target.hasCustomClickDistance = false;
+                return;
+            }
+            int distance;
+            if (String.IsNullOrEmpty(number) || !Int32.TryParse(number, out distance))
+            {
+                CdSetClickDistance.PrintUsage(player);
+                return;
+            }
+            if (distance > 20 || distance < 1)
+            {
+                player.Message("Accepted values are between 1 and 20!");
+            }
+            int adjustedDistance = (32 * distance);
+            target.Send(PacketWriter.MakeSetClickDistance(adjustedDistance));
+            target.hasCustomClickDistance = true;
+            player.Message("Player {0}&s's click distance was set to {1} blocks.", target.ClassyName, distance);
+        }
+        
+        
         static readonly CommandDescriptor CdTempRank = new CommandDescriptor
         {
             Name = "TempRank",
