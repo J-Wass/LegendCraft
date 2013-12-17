@@ -35,6 +35,7 @@ namespace fCraft {
         RemoveSelectionCuboid = 27,
         SetBlockPermissions = 28,
         ChangeModel = 29,
-        EnvSetMapAppearance = 30
+        EnvSetMapAppearance = 30,
+        EnvSetWeatherAppearance = 31 
     }
 }
