@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using JetBrains.Annotations;
 using System.IO;
+using System.Linq;
 
 namespace fCraft
 {
@@ -1770,8 +1771,6 @@ namespace fCraft
         public static List<PlayerInfo> TopBuilders = new List<PlayerInfo>(PlayerDB.PlayerInfoList         
                                         .OrderBy(p => p.BlocksBuilt).ToArray().Reverse());
 
-        public static List<PlayerInfo> Donators = new List<PlayerInfo>(PlayerDB.PlayerInfoList            
-                                        .Where(r => r.IsDonator).ToArray());
         #endregion 
 
 
