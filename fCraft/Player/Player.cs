@@ -1583,7 +1583,7 @@ namespace fCraft
             }
             
             //check classicube blocks and convert if necessary
-            if (!Heartbeat.ClassiCube() && newBlock > Block.Obsidian) //TODO: change Heartbeat.ClassiCube() to this.isUsingCC
+            if (!ClassiCube && newBlock > Block.Obsidian) 
             {
                 newBlock = Map.GetFallbackBlock(newBlock);
                 result = CanPlaceResult.Allowed;
