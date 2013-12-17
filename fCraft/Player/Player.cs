@@ -77,6 +77,9 @@ namespace fCraft
 
         /// <summary>Determines whether or not a player is using a CC compatable client.</summary>       
         public bool ClassiCube = false;
+        
+        /// <summary> Has a custom click distance set by the server </summary>
+        public bool hasCustomClickDistance { get; set; }
 
         /// <summary> The world that the player is currently on. May be null.
         /// Use .JoinWorld() to make players teleport to another world. </summary>
