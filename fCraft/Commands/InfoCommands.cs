@@ -43,6 +43,7 @@ namespace fCraft {
             CommandManager.RegisterCommand(CdIrc);
             CommandManager.RegisterCommand(CdWebsite);
             CommandManager.RegisterCommand(CdMoneyMessages);
+            CommandManager.RegisterCommand(CdGameStats);
 
 #if DEBUG_SCHEDULER
             CommandManager.RegisterCommand( cdTaskDebug );
@@ -68,6 +69,46 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
+        
+        static readonly CommandDescriptor CdGameStats = new CommandDescriptor
+        {
+            Name = "GameStats",
+            Aliases = new[] { "gs" },
+            IsConsoleSafe = true,
+            Category = CommandCategory.Info,
+            UsableByFrozenPlayers = true,
+            Usage = "/GameStats (player)",
+            Help = "Shows the status of the given player in all of the stats leaderboard lists.",
+            Handler = GSHandler
+        };
+
+        static void GSHandler(Player player, Command cmd)
+        {
+            string targetName = cmd.Next();
+            if (targetName == null) { CdGameStats.PrintUsage(player); return; }
+            PlayerInfo target = PlayerDB.FindPlayerInfoOrPrintMatches(player, targetName);
+            if (target == null) return; 
+            
+            
+            int indexLogins = PlayerInfo.TopLogins.FindIndex(p => p.Name.Equals(target.Name)) + 1;
+            
+            int indexPromos = PlayerInfo.MostPromos.FindIndex(p => p.Name.Equals(target.Name)) + 1;
+
+            int indexBuilders = PlayerInfo.TopBuilders.FindIndex(p => p.Name.Equals(target.Name)) + 1;
+
+            int indexKicks = PlayerInfo.MostKicks.FindIndex(p => p.Name.Equals(target.Name)) + 1;
+
+            int indexTime = PlayerInfo.MostTime.FindIndex(p => p.Name.Equals(target.Name)) + 1;
+
+            int indexBans = PlayerInfo.MostBans.FindIndex(p => p.Name.Equals(target.Name)) + 1;
+
+
+            player.Message("&c_Player {0}&c's Game Stats_:\n&6TopLogins: {1}\n&eTopTime: {2}\n&aTopBuilders: {3}\n&2MostKicks: {4}\n&1MostBans: {5}\n&5MostPromos: {6}", target.ClassyName, indexLogins
+                , indexTime, indexBuilders, indexKicks, indexBans, indexPromos);
+            return;
+            
+
+        }
         
         static readonly CommandDescriptor CdIrc = new CommandDescriptor
         {
@@ -469,7 +510,7 @@ THE SOFTWARE.*/
             if (Option == null)
             {
                 CdList.PrintUsage(player);
-                player.Message("  Sections include: Staff, DisplayedNames, Idles, Portals, Rank, Top10, TopBuilders, MostTime, MostKicks, MostBans, MostPromos, MostLogins, and Donators");
+                player.Message("  Sections include: Staff, DisplayedNames, Idles, Portals, Rank, Top10, HaxOff, TopBuilders, MostTime, MostKicks, MostBans, MostPromos, MostLogins, and Donators");
                 return;
             }
             switch (Option.ToLower())
@@ -492,19 +533,10 @@ THE SOFTWARE.*/
                     player.Message("&WShowing worlds with the most visits: " + list);
                     WorldNames.Clear();
                     break;
-                case "don":
-                case "donators":
-                case "donator":
-                    if (PlayerInfo.Donators.Count() < 1)
-                    {
-                        player.Message("&WNo donators found");
-                        return;
-                    }
-                    player.Message("&CAll Players With Donator Status: {0}", PlayerInfo.Donators.JoinToClassyString());
-                    break;
                 case "haxoffworlds":
                 case "nohaxworlds":
                 case "haxoff":
+                case "hacksoff":
                     player.Message("&cAll worlds with Hax disabled: {0}", WorldManager.ListHaxOffWorlds().JoinToClassyString());
                     break;
                 case "mostlogins":
