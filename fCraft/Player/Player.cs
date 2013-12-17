@@ -1572,6 +1572,14 @@ namespace fCraft
                 result = CanPlaceResult.OutOfBounds;
                 goto eventCheck;
             }
+            
+            //check classicube blocks and convert if necessary
+            if (!Heartbeat.ClassiCube() && newBlock > Block.Obsidian) //TODO: change Heartbeat.ClassiCube() to this.isUsingCC
+            {
+                newBlock = Map.GetFallbackBlock(newBlock);
+                result = CanPlaceResult.Allowed;
+                goto eventCheck;
+            }
 
             // check special blocktypes
             if (newBlock == Block.Admincrete && !Can(Permission.PlaceAdmincrete))
