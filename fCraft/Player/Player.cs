@@ -1243,11 +1243,17 @@ namespace fCraft
 
             Vector3I coordBelow = new Vector3I(coord.X, coord.Y, coord.Z - 1);
 
-            // check if player is frozen or too far away to legitimately place a block
-            if (Info.IsFrozen ||
-                Math.Abs(coord.X * 32 - Position.X) > MaxBlockPlacementRange ||
+            // check if player is frozen
+            if (Info.IsFrozen)
+            {
+                RevertBlockNow(coord);
+                return false;
+            }
+
+            //if too far away
+            if ((Math.Abs(coord.X * 32 - Position.X) > MaxBlockPlacementRange ||
                 Math.Abs(coord.Y * 32 - Position.Y) > MaxBlockPlacementRange ||
-                Math.Abs(coord.Z * 32 - Position.Z) > MaxBlockPlacementRange)
+                Math.Abs(coord.Z * 32 - Position.Z) > MaxBlockPlacementRange) && !this.hasCustomClickDistance)
             {
                 RevertBlockNow(coord);
                 return false;
