@@ -213,6 +213,15 @@ namespace fCraft {
             packet.Data[7] = (byte)type;
             return packet;
         }
+        
+        //Tested and works bby
+        /// <param name="distance"> Default range is 160 (5 blocks). Multiply number of blocks of reach by 32.</param>
+        public static Packet MakeSetClickDistance(int distance)
+        {
+            Packet packet = new Packet(OpCode.SetClickDistance);
+            ToNetOrder((short)distance, packet.Data, 1);
+            return packet;
+        }
 
         public static Packet MakeExtAddEntity(byte EntityID, string entityName, string skinName)
         {
@@ -231,6 +240,15 @@ namespace fCraft {
             ToNetOrder((short)(col.R), packet.Data, 2);
             ToNetOrder((short)(col.G), packet.Data, 4);
             ToNetOrder((short)(col.B), packet.Data, 6);
+            return packet;
+        }
+        
+        //Client does not support atm, test later when supported!!!
+        /// <param name="weatherType"> 0 - Clear, 1 - Rain, 2 - Snow </param>
+        public static Packet MakeEnvWeatherType(byte weatherType)
+        {
+            Packet packet = new Packet(OpCode.EnvSetWeatherAppearance);
+            packet.Data[1] = (byte)weatherType;
             return packet;
         }
 
