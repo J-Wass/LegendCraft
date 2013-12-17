@@ -59,19 +59,22 @@ namespace fCraft
 
 //Classicube packets past this point
             
-            67,     // ExtInfo
-            69,     // ExtEntry
-            0,
-            2,      // CustomBlockSupportLevel
-            0,0,0,
-            130,     //ExtAddEntity
-            0,
-            8,      //EnvSetColor
-            0,
-            0,
-            4,      // SetBlockPermission
-            66,     //Change Model
-            69      //EnvSetMapAppearance
+            67,     //ExtInfo (16)
+            69,     //ExtEntry (17)
+            3,      //SetClickDistance (18)
+            2,      //CustomBlockSupportLevel (19)
+            3,      //HeldBlock (20)
+            134,    //SetTextHotKey (21)
+            196,    //ExtAddPlayerName (22)
+            130,    //ExtAddEntity (23)
+            3,      //ExtRemovePlayerName (24)
+            8,      //EnvSetColor (25)
+            86,     //SelectionCuboid (26)
+            2,      //RemoveSelection (27)
+            4,      //SetBlockPermissions (28)
+            66,     //ChangeModel (29)
+            69,     //EnvSetMapAppearance (30)
+            2       //EnvSetWeatherAppearance (31)
         };
     }
 }
