@@ -787,6 +787,11 @@ namespace fCraft {
         public static IEnumerable<World> ListLoadedWorlds() {
             return Worlds.Where( world => world.IsLoaded );
         }
+        
+        public static IEnumerable<World> ListHaxOffWorlds()
+        {
+            return Worlds.Where(world => !world.Hax);
+        }
 
 
         public static IEnumerable<World> ListLoadedWorlds( [NotNull] Player observer ) {
