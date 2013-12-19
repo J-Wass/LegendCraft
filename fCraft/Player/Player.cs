@@ -286,7 +286,7 @@ namespace fCraft
         public bool entityChanged = false;
 
 
-        // This constructor is used to create pseudoplayers (such as Console and /dummy).
+        // This constructor is used to create pseudoplayers (such as Console).
         // Such players have unlimited permissions, but no world.
         // This should be replaced by a more generic solution, like an IEntity interface.
         internal Player([NotNull] string name)
@@ -299,6 +299,22 @@ namespace fCraft
             State = SessionState.Offline;
             IsSuper = true;
         }
+
+        // This constructor is used to create pseudoplayers (such as bots)
+        // Such players have unlimited permissions.
+        // This should be replaced by a more generic solution, like an IEntity interface.
+        internal Player([NotNull] string name, World world)
+        {
+            if (name == null) throw new ArgumentNullException("name");
+            Info = new PlayerInfo(name, RankManager.HighestRank, true, RankChangeType.AutoPromoted);
+            spamBlockLog = new Queue<DateTime>(Info.Rank.AntiGriefBlocks);
+            IP = IPAddress.Loopback;
+            ResetAllBinds();
+            State = SessionState.Offline;
+            IsSuper = true;
+            World = world;
+        }
+
         public void BassKick([NotNull] Player player, [NotNull] string reason, LeaveReason context,
                         bool announce, bool raiseEvents, bool recordToPlayerDB)
         {

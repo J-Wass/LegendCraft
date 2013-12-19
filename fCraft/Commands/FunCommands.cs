@@ -33,10 +33,10 @@ namespace fCraft
             CommandManager.RegisterCommand(CdLife);
             CommandManager.RegisterCommand(CdPossess);
             CommandManager.RegisterCommand(CdUnpossess);
-           
+
             CommandManager.RegisterCommand(CdThrow);
             CommandManager.RegisterCommand(CdInsult);
-            
+
             //FFA
             CommandManager.RegisterCommand(CdFFAStatistics);
             CommandManager.RegisterCommand(CdFreeForAll);
@@ -47,7 +47,7 @@ namespace fCraft
             CommandManager.RegisterCommand(CdInfection);
             //Bot
             CommandManager.RegisterCommand(CdBot);
-            CommandManager.RegisterCommand(CdBotEdit);
+            CommandManager.RegisterCommand(CdBotAdv);
             Player.Moving += PlayerMoved;
         }
 
@@ -72,7 +72,7 @@ namespace fCraft
             Vector3I oldPos = e.OldPosition.ToBlockCoords();
             Vector3I newPos = e.NewPosition.ToBlockCoords();
             //check if has moved 1 whole block
-            if (newPos.X == oldPos.X + 1 || newPos.X == oldPos.X-1 || newPos.Y == oldPos.Y + 1 || newPos.Y == oldPos.Y-1)
+            if (newPos.X == oldPos.X + 1 || newPos.X == oldPos.X - 1 || newPos.Y == oldPos.Y + 1 || newPos.Y == oldPos.Y - 1)
             {
                 Server.Players.Message("Old: " + newPos.ToString());
                 Vector3I move = newPos - oldPos;
@@ -119,23 +119,15 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
-         
-        static readonly CommandDescriptor CdBotEdit = new CommandDescriptor 
-        {                                                                 
-            Name = "BotEdit",
+
+        static readonly CommandDescriptor CdBotAdv = new CommandDescriptor
+        {
+            Name = "BotAdv",
             Permissions = new Permission[] { Permission.ManageWorlds },
             Category = CommandCategory.Fun,
             IsConsoleSafe = false,
-            Usage = "/BotEdit [List/Summon/GoTo]",
+            Usage = "/BotAdv [List / Summon <botname> / GoTo <bot name> <location>]",
             Help = "Used to edit a bot's behavoir. Use /bot to create a bot. Use /Help <option> for more info.",
-            HelpSections = new Dictionary<string, string>
-            {
-                { "List",     "Usage is /botedit list, will list all active bots." },
-
-                { "Summon",   "Usage is /botedit summon <botname>, will summon a bot to your location." },
-
-                { "GoTo",     "Usage is /botedit goto <botname> <'player name' or 'X Y Z'>, will make a bot move to a specific location." }
-            },
             Handler = botEditHandler,
         };
 
@@ -144,7 +136,7 @@ THE SOFTWARE.*/
             string option = cmd.Next();
             if (string.IsNullOrEmpty(option))
             {
-                CdBotEdit.PrintUsage(player);
+                CdBotAdv.PrintUsage(player);
                 return;
             }
 
@@ -162,9 +154,9 @@ THE SOFTWARE.*/
             {
                 string name = cmd.Next(); //name of the bot
                 string target = cmd.Next(); //name of position or player name
-                if(string.IsNullOrEmpty(target))
+                if (string.IsNullOrEmpty(target))
                 {
-                    CdBotEdit.PrintUsage(player);
+                    CdBotAdv.PrintUsage(player);
                     return;
                 }
 
@@ -173,33 +165,33 @@ THE SOFTWARE.*/
                 int targetZ;
 
                 //if second param was a number, check for all 3 coords
-                if(Int32.TryParse(target, out targetX))
+                if (Int32.TryParse(target, out targetX))
                 {
                     //check for nulls
                     string targetYString = cmd.Next();
                     if (string.IsNullOrEmpty(targetYString))
                     {
-                        CdBotEdit.PrintUsage(player);
+                        CdBotAdv.PrintUsage(player);
                         return;
                     }
 
                     string targetZString = cmd.Next();
                     if (string.IsNullOrEmpty(targetZString))
                     {
-                        CdBotEdit.PrintUsage(player);
+                        CdBotAdv.PrintUsage(player);
                         return;
                     }
 
                     //check that all params are numbers
                     if (!Int32.TryParse(targetYString, out targetY))
                     {
-                        CdBotEdit.PrintUsage(player);
+                        CdBotAdv.PrintUsage(player);
                         return;
                     }
 
                     if (!Int32.TryParse(targetZString, out targetZ))
                     {
-                        CdBotEdit.PrintUsage(player);
+                        CdBotAdv.PrintUsage(player);
                         return;
                     }
 
@@ -224,12 +216,14 @@ THE SOFTWARE.*/
                     {
                         Position pos = new Position(targetX, targetY, targetZ);
                         player.Message("{0} is now moving.", name);
-                        Bot.MoveTo(LegendCraft.toByteValue(name), pos, player.World);
+
+                        Player bot = Server.FindPlayerOrPrintMatches(player, name, true, true);
+                        bot.MoveTo(pos);
                         return;
                     }
                     else
                     {
-                        CdBotEdit.PrintUsage(player);
+                        CdBotAdv.PrintUsage(player);
                         return;
                     }
                 }
@@ -243,7 +237,9 @@ THE SOFTWARE.*/
 
                 //player found, move bot
                 player.Message("{0} is now moving.", name);
-                Bot.MoveTo(LegendCraft.toByteValue(name), targetName.Position, player.World);
+
+                Player bot_ = Server.FindPlayerOrPrintMatches(player, name, true, true);
+                bot_.MoveTo(targetName.Position);
                 return;
             }
             else if (option.ToLower() == "summon")
@@ -261,41 +257,41 @@ THE SOFTWARE.*/
                     return;
                 }
 
-                Bot.TeleportBot(LegendCraft.toByteValue(name), player.Position, player.World);
+                Player bot = Server.FindPlayerOrPrintMatches(player, name, true, true);
+                bot.MoveTo(player.Position);
                 return;
             }
             else
             {
-                CdBotEdit.PrintUsage(player);
+                CdBotAdv.PrintUsage(player);
                 return;
             }
 
         }
 
-        static readonly CommandDescriptor CdBot = new CommandDescriptor 
-        {                                                                 
+        static readonly CommandDescriptor CdBot = new CommandDescriptor
+        {
             Name = "Bot",
-            Permissions = new Permission[] {Permission.ManageWorlds},
-            Category = CommandCategory.Fun ,
+            Permissions = new Permission[] { Permission.ManageWorlds },
+            Category = CommandCategory.Fun,
             IsConsoleSafe = false,
             Usage = "/Bot [Create/Delete/DeleteAll] [Bot Name] [Bot Type]",
             Help = "Allows you to create or delete entities. Example for create: /bot create Mr.Pig pig. Example for delete: /bot delete Mr.Pig. Valid bot types are as following: " +
             "chicken, creeper, croc, humanoid, pig, printer, sheep, skeleton, spider, or zombie. " +
-            "Use /BotEdit to modify your bot.",
+            "Use /BotAdv to modify your bot.",
             Handler = botHandler,
         };
 
         static void botHandler(Player player, Command cmd)
         {
-            if (!Heartbeat.ClassiCube())
+            if (!Heartbeat.ClassiCube() || !player.ClassiCube)
             {
                 player.Message("Sorry, this is a classicube only command.");
                 return;
             }
-            Bot bot;
             Position pos = new Position(player.Position.X, player.Position.Y, player.Position.Z, player.Position.R, player.Position.L);
 
-            string option = cmd.Next();        
+            string option = cmd.Next();
 
             if (string.IsNullOrEmpty(option))
             {
@@ -303,7 +299,7 @@ THE SOFTWARE.*/
                 return;
             }
 
-            else if(option.ToLower() == "create")
+            else if (option.ToLower() == "create")
             {
                 string entityName = cmd.Next();
                 if (string.IsNullOrEmpty(entityName))
@@ -312,7 +308,7 @@ THE SOFTWARE.*/
                     return;
                 }
                 string entityType = cmd.Next();
-                if(string.IsNullOrEmpty(entityType))
+                if (string.IsNullOrEmpty(entityType))
                 {
                     player.Message("Please specifiy the type of bot you wish to create!");
                     return;
@@ -336,9 +332,9 @@ THE SOFTWARE.*/
                 if (validEntities.Contains(entityType))
                 {
                     player.Message("Bot created.");
-                    bot = new Bot(entityName, pos, (int)entityByteValue, player.World);
-                    bot.SetBot();
-                    bot.ChangeBot(entityByteValue, entityType);
+                    Player bot = new Player(entityName, player.World);
+                    bot.Bot(entityName, player.Position, LegendCraft.toByteValue(entityName), player.World);
+                    bot.ChangeBot(entityType);
                     Server.Entities.Add(entityName);
                     return;
                 }
@@ -349,11 +345,11 @@ THE SOFTWARE.*/
                     Block entityBlock = (fCraft.Block)System.Enum.Parse(typeof(Block), entityType.Substring(0, 1).ToUpper() + entityType.Substring(1));
                     string blockID = ((byte)entityBlock).ToString();
 
-                    bot = new Bot(entityName, pos, (int)entityByteValue, player.World);
-                    bot.SetBot();
-                    bot.ChangeBot(entityByteValue, entityType);
+                    player.Message("Bot created.");
+                    Player bot = new Player(entityName);
+                    bot.Bot(entityName, player.Position, LegendCraft.toByteValue(entityName), player.World);
+                    bot.ChangeBot(entityType);
                     Server.Entities.Add(entityName);
-
                     return;
                 }
                 else
@@ -375,7 +371,8 @@ THE SOFTWARE.*/
                     player.Message("Please insert the name of the bot you wish to remove.");
                 }
 
-                Bot.RemoveBot(LegendCraft.toByteValue(target), player.World);
+                Player bot = Server.FindPlayerOrPrintMatches(player, target, true, true);
+                bot.RemoveBot();
 
                 player.Message("Bot removed.");
                 Server.Entities.Remove(target);
@@ -385,7 +382,8 @@ THE SOFTWARE.*/
             {
                 foreach (string s in Server.Entities.ToList())
                 {
-                    Bot.RemoveBot(LegendCraft.toByteValue(s), player.World);
+                    Player bot = Server.FindPlayerOrPrintMatches(player, s, true, true);
+                    bot.RemoveBot();
                     Server.Entities.Remove(s);
                 }
                 player.Message("All bots removed.");
@@ -398,11 +396,11 @@ THE SOFTWARE.*/
             }
         }
 
-	    static readonly CommandDescriptor CdTroll = new CommandDescriptor //Troll is an old command from 800craft that i have rehashed because of its popularity
+        static readonly CommandDescriptor CdTroll = new CommandDescriptor //Troll is an old command from 800craft that i have rehashed because of its popularity
         {                                                                 //The original command and the idea for the command were done by Jonty800 and Rebelliousdude.
             Name = "Troll",
-            Permissions = new Permission[] {Permission.Moderation},
-            Category = CommandCategory.Chat | CommandCategory.Fun ,
+            Permissions = new Permission[] { Permission.Moderation },
+            Category = CommandCategory.Chat | CommandCategory.Fun,
             IsConsoleSafe = true,
             Usage = "/Troll (playername) (message-type) (message)",
             Help = "Allows you impersonate others in the chat. Available chat types are msg, st, ac, pm, rq, and leave.",
@@ -431,7 +429,7 @@ THE SOFTWARE.*/
                 case "leave":
                     Server.Message("&SPlayer {0}&S left the server.", tgt.ClassyName);
                     break;
-                case "ragequit": 
+                case "ragequit":
                 case "rq":
                     string quitMsg = "";
                     if (msg.Length > 1) { quitMsg = ": &C" + msg; }
@@ -482,12 +480,12 @@ THE SOFTWARE.*/
                     break;
             }
             return;
-    	}
-        
-        
+        }
+
+
         static readonly CommandDescriptor CdInfection = new CommandDescriptor
         {
-            Name = "Infection",            
+            Name = "Infection",
             Aliases = new[] { "ZombieSurvival", "zs" },
             Category = CommandCategory.World,
             Permissions = new Permission[] { Permission.Games },
@@ -497,7 +495,7 @@ THE SOFTWARE.*/
             Handler = InfectionHandler
         };
 
-        private static void InfectionHandler(Player player, Command cmd)       
+        private static void InfectionHandler(Player player, Command cmd)
         {
             string Option = cmd.Next();
             World world = player.World;
@@ -507,7 +505,7 @@ THE SOFTWARE.*/
                 CdInfection.PrintUsage(player);
                 return;
             }
-            if (Option.ToLower() == "start")    
+            if (Option.ToLower() == "start")
             {
                 if (world == WorldManager.MainWorld)
                 {
@@ -521,8 +519,8 @@ THE SOFTWARE.*/
                 }
                 if (player.World.CountPlayers(true) < 2)
                 {
-                   player.Message("&SThere must be at least &W2&S players on this world to play Infection");
-                   return;
+                    player.Message("&SThere must be at least &W2&S players on this world to play Infection");
+                    return;
                 }
                 else
                 {
@@ -615,7 +613,7 @@ THE SOFTWARE.*/
             }
             if (Option.ToLower() == "help")
             {
-                player.Message("&SStart: Will begin a game of infection on the current world.\n" +                                       
+                player.Message("&SStart: Will begin a game of infection on the current world.\n" +
                     "&SStop: Will end a game of infection on the current world.\n" +
                     "&SCustom: Determines factors in the next Infection game. Factors are TimeLimit and TimeDelay. TimeDelay must be greater than 10.\n" +
                     "&fExample: '/Infection Custom 100 12' would start an Infection game with a game length of 100 seconds, and it will begin in 12 seconds.\n"
@@ -1011,7 +1009,7 @@ THE SOFTWARE.*/
             }
         }
 
-         static readonly CommandDescriptor CdFreeForAll = new CommandDescriptor
+        static readonly CommandDescriptor CdFreeForAll = new CommandDescriptor
         {
             Name = "FreeForAll",            //I think I resolved all of the bugs...
             Aliases = new[] { "ffa" },
@@ -1285,7 +1283,7 @@ THE SOFTWARE.*/
                             return;
                         }
                         PlayerInfo tar = PlayerDB.FindPlayerInfoOrPrintMatches(player, option);
-                        if (tar == null) { return; }                       
+                        if (tar == null) { return; }
                         else
                         {
                             double tarKills = tar.gameKills;
@@ -1317,52 +1315,52 @@ THE SOFTWARE.*/
                                 }
                                 return;
                             }
-                            switch(opt.ToLower())
+                            switch (opt.ToLower())
                             {
                                 default:
-                                player.Message("By default, checking game stats for {0}", tar.ClassyName);
-                                if (tarKills == 0)
-                                {
-                                    gameKDR = 0;
-                                }
-                                else if (tarDeaths == 0 && tarKills > 0)
-                                {
-                                    gameKDR = tarKills;
-                                }
-                                else if (tarDeaths > 0 && tarKills > 0)
-                                {
-                                    gameKDR = tarKills / tarDeaths;
-                                }
-                                if (tar.isPlayingTD)
-                                {
-                                    player.Message("&s{0}&S has &W{1}&s Kills and &W{2}&s Deaths. Their Kill/Death Ratio is &W{3:0.00}&s.", tar.ClassyName, tarKills, tarDeaths, gameKDR);
-                                }
-                                else
-                                {
-                                    player.Message("&s{0}&S had &W{1}&s Kills and &W{2}&s Deaths. Their Kill/Death Ratio was &W{3:0.00}&s.", tar.ClassyName, tarKills, tarDeaths, gameKDR);
-                                }
-                                break;
+                                    player.Message("By default, checking game stats for {0}", tar.ClassyName);
+                                    if (tarKills == 0)
+                                    {
+                                        gameKDR = 0;
+                                    }
+                                    else if (tarDeaths == 0 && tarKills > 0)
+                                    {
+                                        gameKDR = tarKills;
+                                    }
+                                    else if (tarDeaths > 0 && tarKills > 0)
+                                    {
+                                        gameKDR = tarKills / tarDeaths;
+                                    }
+                                    if (tar.isPlayingTD)
+                                    {
+                                        player.Message("&s{0}&S has &W{1}&s Kills and &W{2}&s Deaths. Their Kill/Death Ratio is &W{3:0.00}&s.", tar.ClassyName, tarKills, tarDeaths, gameKDR);
+                                    }
+                                    else
+                                    {
+                                        player.Message("&s{0}&S had &W{1}&s Kills and &W{2}&s Deaths. Their Kill/Death Ratio was &W{3:0.00}&s.", tar.ClassyName, tarKills, tarDeaths, gameKDR);
+                                    }
+                                    break;
 
                                 case "alltime":
 
-                                double alltimeKDR = 0;
-                                double dubKills = tar.totalKillsTDM;
-                                double dubDeaths = tar.totalDeathsTDM;
-                                if (tar.totalKillsTDM == 0)
-                                {
-                                    alltimeKDR = 0;
-                                }
-                                else if (dubDeaths == 0 && dubKills > 0)
-                                {
-                                    alltimeKDR = dubKills;
-                                }
-                                else if (dubDeaths > 0 && dubKills > 0)
-                                {
-                                    alltimeKDR = dubKills / dubDeaths;
-                                }
-                                player.Message("&sIn all &WTeam Deathmatch&S games {0}&S has played, they have gotten: &W{1}&S Kills and &W{2}&s Deaths giving them a Kill/Death ratio of &W{3:0.00}&S.",
-                                    tar.ClassyName, dubKills, dubDeaths, alltimeKDR);
-                                break;
+                                    double alltimeKDR = 0;
+                                    double dubKills = tar.totalKillsTDM;
+                                    double dubDeaths = tar.totalDeathsTDM;
+                                    if (tar.totalKillsTDM == 0)
+                                    {
+                                        alltimeKDR = 0;
+                                    }
+                                    else if (dubDeaths == 0 && dubKills > 0)
+                                    {
+                                        alltimeKDR = dubKills;
+                                    }
+                                    else if (dubDeaths > 0 && dubKills > 0)
+                                    {
+                                        alltimeKDR = dubKills / dubDeaths;
+                                    }
+                                    player.Message("&sIn all &WTeam Deathmatch&S games {0}&S has played, they have gotten: &W{1}&S Kills and &W{2}&s Deaths giving them a Kill/Death ratio of &W{3:0.00}&S.",
+                                        tar.ClassyName, dubKills, dubDeaths, alltimeKDR);
+                                    break;
                             }
                         }
                         return;
@@ -1398,7 +1396,7 @@ THE SOFTWARE.*/
                         player.Message("&HShowing the players with the most all-time TDM Kills:");
                         if (TDPlayers.Count() < 10)
                         {
-                            for (int i = 0; i < TDPlayers.Count(); i++) 
+                            for (int i = 0; i < TDPlayers.Count(); i++)
                             {
                                 player.Message("{0}&s - {1} Kills", TDPlayers[i].ClassyName, TDPlayers[i].totalKillsTDM);
                             }
@@ -1793,11 +1791,11 @@ THE SOFTWARE.*/
                 "{0}&s incinerated {1}&s with a Kamehameha!"
             };
 
-            int index = randomizer.Next(0, insults.Count); 
+            int index = randomizer.Next(0, insults.Count);
             double time = (DateTime.Now - player.Info.LastUsedInsult).TotalSeconds;
 
             if (name == null || name.Length < 1)
-            { 
+            {
                 player.Message("/Insult (PlayerName)");
                 return;
             }
@@ -1821,25 +1819,25 @@ THE SOFTWARE.*/
                 player.Info.LastUsedInsult = DateTime.Now;
                 return;
             }
-            
+
         }
 
-      
+
 
 
         static readonly CommandDescriptor CdThrow = new CommandDescriptor
-            {
-                Name = "Throw",
-                Aliases = new string[] { "Toss" },
-                Category = CommandCategory.Chat | CommandCategory.Fun,
-                Permissions = new Permission[] { Permission.Mute },
-                IsConsoleSafe = true,
-                Usage = "/Throw playername",
-                Help = "Throw's a player.",
-                NotRepeatable = true,
-                Handler = ThrowHandler,
-            };
-  
+        {
+            Name = "Throw",
+            Aliases = new string[] { "Toss" },
+            Category = CommandCategory.Chat | CommandCategory.Fun,
+            Permissions = new Permission[] { Permission.Mute },
+            IsConsoleSafe = true,
+            Usage = "/Throw playername",
+            Help = "Throw's a player.",
+            NotRepeatable = true,
+            Handler = ThrowHandler,
+        };
+
         static void ThrowHandler(Player player, Command cmd)
         {
             string name = cmd.Next();
@@ -1869,78 +1867,78 @@ THE SOFTWARE.*/
             }
             Random random = new Random();
             int randomNumber = random.Next(1, 4);
-           
 
-                         if (randomNumber == 1)
-                            if (player.Can(Permission.Slap, target.Info.Rank))
-                            {
-                                Position slap = new Position(target.Position.Z, target.Position.X, (target.World.Map.Bounds.YMax) * 32);
-                                target.TeleportTo(slap);
-                                Server.Players.CanSee(target).Except(target).Message("&SPlayer {0}&S was &eThrown&s by {1}&S.", target.ClassyName, player.ClassyName);
-                                IRC.PlayerSomethingMessage(player, "thrown", target, null);
-                                target.Message("&sYou were &eThrown&s by {0}&s.", player.ClassyName);
-                                return;
-                            }
-                            else
-                            {
-                                player.Message("&sYou can only Throw players ranked {0}&S or lower",
-                                               player.Info.Rank.GetLimit(Permission.Slap).ClassyName);
-                                player.Message("{0}&S is ranked {1}", target.ClassyName, target.Info.Rank.ClassyName);
-                            }
-                       
-                    
-                       
-                         if (randomNumber == 2)
-                            if (player.Can(Permission.Slap, target.Info.Rank))
-                            {
-                                Position slap = new Position(target.Position.X, target.Position.Z, (target.World.Map.Bounds.YMax) * 32);
-                                target.TeleportTo(slap);
-                                Server.Players.CanSee(target).Except(target).Message("&sPlayer {0}&s was &eThrown&s by {1}&s.", target.ClassyName, player.ClassyName);
-                                IRC.PlayerSomethingMessage(player, "thrown", target, null);
-                                target.Message("&sYou were &eThrown&s by {0}&s.", player.ClassyName);
-                                return;
-                            }
-                            else
-                            {
-                                player.Message("&sYou can only Throw players ranked {0}&S or lower",
-                                               player.Info.Rank.GetLimit(Permission.Slap).ClassyName);
-                                player.Message("{0}&S is ranked {1}", target.ClassyName, target.Info.Rank.ClassyName);
-                            }
 
-                         if (randomNumber == 3)
-                            if (player.Can(Permission.Slap, target.Info.Rank))
-                            {
-                                Position slap = new Position(target.Position.Z, target.Position.Y, (target.World.Map.Bounds.XMax) * 32);
-                                target.TeleportTo(slap);
-                                Server.Players.CanSee(target).Except(target).Message("&sPlayer {0}&s was &eThrown&s by {1}&s.", target.ClassyName, player.ClassyName);
-                                IRC.PlayerSomethingMessage(player, "thrown", target, null);
-                                target.Message("&sYou were &eThrown&s by {0}&s.", player.ClassyName);
-                                return;
-                            }
-                            else
-                            {
-                                player.Message("&sYou can only Throw players ranked {0}&S or lower",
-                                               player.Info.Rank.GetLimit(Permission.Slap).ClassyName);
-                                player.Message("{0}&S is ranked {1}", target.ClassyName, target.Info.Rank.ClassyName);
-                            }
-                        
-                          if (randomNumber == 4)
-                             if (player.Can(Permission.Slap, target.Info.Rank))
-                             {
-                                 Position slap = new Position(target.Position.Y, target.Position.Z, (target.World.Map.Bounds.XMax) * 32);
-                                 target.TeleportTo(slap);
-                                 Server.Players.CanSee(target).Except(target).Message("&sPlayer {0}&s was &eThrown&s by {1}&s.", target.ClassyName, player.ClassyName);
-                                 IRC.PlayerSomethingMessage(player, "thrown", target, null);
-                                 target.Message("&sYou were &eThrown&s by {0}&s.", player.ClassyName);
-                                 return;
-                             }
-                             else
-                             {
-                                 player.Message("&sYou can only Throw players ranked {0}&S or lower",
-                                                player.Info.Rank.GetLimit(Permission.Slap).ClassyName);
-                                 player.Message("{0}&S is ranked {1}", target.ClassyName, target.Info.Rank.ClassyName);
-                             }
+            if (randomNumber == 1)
+                if (player.Can(Permission.Slap, target.Info.Rank))
+                {
+                    Position slap = new Position(target.Position.Z, target.Position.X, (target.World.Map.Bounds.YMax) * 32);
+                    target.TeleportTo(slap);
+                    Server.Players.CanSee(target).Except(target).Message("&SPlayer {0}&S was &eThrown&s by {1}&S.", target.ClassyName, player.ClassyName);
+                    IRC.PlayerSomethingMessage(player, "thrown", target, null);
+                    target.Message("&sYou were &eThrown&s by {0}&s.", player.ClassyName);
+                    return;
                 }
+                else
+                {
+                    player.Message("&sYou can only Throw players ranked {0}&S or lower",
+                                   player.Info.Rank.GetLimit(Permission.Slap).ClassyName);
+                    player.Message("{0}&S is ranked {1}", target.ClassyName, target.Info.Rank.ClassyName);
+                }
+
+
+
+            if (randomNumber == 2)
+                if (player.Can(Permission.Slap, target.Info.Rank))
+                {
+                    Position slap = new Position(target.Position.X, target.Position.Z, (target.World.Map.Bounds.YMax) * 32);
+                    target.TeleportTo(slap);
+                    Server.Players.CanSee(target).Except(target).Message("&sPlayer {0}&s was &eThrown&s by {1}&s.", target.ClassyName, player.ClassyName);
+                    IRC.PlayerSomethingMessage(player, "thrown", target, null);
+                    target.Message("&sYou were &eThrown&s by {0}&s.", player.ClassyName);
+                    return;
+                }
+                else
+                {
+                    player.Message("&sYou can only Throw players ranked {0}&S or lower",
+                                   player.Info.Rank.GetLimit(Permission.Slap).ClassyName);
+                    player.Message("{0}&S is ranked {1}", target.ClassyName, target.Info.Rank.ClassyName);
+                }
+
+            if (randomNumber == 3)
+                if (player.Can(Permission.Slap, target.Info.Rank))
+                {
+                    Position slap = new Position(target.Position.Z, target.Position.Y, (target.World.Map.Bounds.XMax) * 32);
+                    target.TeleportTo(slap);
+                    Server.Players.CanSee(target).Except(target).Message("&sPlayer {0}&s was &eThrown&s by {1}&s.", target.ClassyName, player.ClassyName);
+                    IRC.PlayerSomethingMessage(player, "thrown", target, null);
+                    target.Message("&sYou were &eThrown&s by {0}&s.", player.ClassyName);
+                    return;
+                }
+                else
+                {
+                    player.Message("&sYou can only Throw players ranked {0}&S or lower",
+                                   player.Info.Rank.GetLimit(Permission.Slap).ClassyName);
+                    player.Message("{0}&S is ranked {1}", target.ClassyName, target.Info.Rank.ClassyName);
+                }
+
+            if (randomNumber == 4)
+                if (player.Can(Permission.Slap, target.Info.Rank))
+                {
+                    Position slap = new Position(target.Position.Y, target.Position.Z, (target.World.Map.Bounds.XMax) * 32);
+                    target.TeleportTo(slap);
+                    Server.Players.CanSee(target).Except(target).Message("&sPlayer {0}&s was &eThrown&s by {1}&s.", target.ClassyName, player.ClassyName);
+                    IRC.PlayerSomethingMessage(player, "thrown", target, null);
+                    target.Message("&sYou were &eThrown&s by {0}&s.", player.ClassyName);
+                    return;
+                }
+                else
+                {
+                    player.Message("&sYou can only Throw players ranked {0}&S or lower",
+                                   player.Info.Rank.GetLimit(Permission.Slap).ClassyName);
+                    player.Message("{0}&S is ranked {1}", target.ClassyName, target.Info.Rank.ClassyName);
+                }
+        }
         #endregion
 
 
@@ -2034,7 +2032,7 @@ THE SOFTWARE.*/
             UsableByFrozenPlayers = false,
             Handler = LifeHandlerFunc,
         };
-        
+
         static readonly CommandDescriptor CdFirework = new CommandDescriptor
         {
             Name = "Firework",
@@ -2119,22 +2117,24 @@ THE SOFTWARE.*/
         }
         private static void LifeHandlerFunc(Player p, Command cmd)
         {
-        	try
-        	{
+            try
+            {
                 if (!cmd.HasNext)
                 {
                     p.Message("&H/Life <command> <params>. Commands are Help, Create, Delete, Start, Stop, Set, List, Print");
                     p.Message("Type /Life help <command> for more information");
                     return;
                 }
-				LifeHandler.ProcessCommand(p, cmd);
-        	}
-        	catch (Exception e)
-        	{
-				p.Message("Error: " + e.Message);
-        	}
+                LifeHandler.ProcessCommand(p, cmd);
+            }
+            catch (Exception e)
+            {
+                p.Message("Error: " + e.Message);
+            }
         }
 
-        
+
     }
 }
+
+
