@@ -222,6 +222,53 @@ namespace fCraft {
             ToNetOrder((short)distance, packet.Data, 1);
             return packet;
         }
+        
+        /// <summary> Be sure to make sure the block is not undefined! If undefined, change to (byte)0 </summary>
+        public static Packet MakeHoldThis(byte BlockToHold, bool preventChange)
+        {
+            Packet packet = new Packet(OpCode.HoldThis);
+            packet.Data[1] = BlockToHold;
+            packet.Data[2] = preventChange ? (byte)1 : (byte)0;
+            return packet;
+        }
+
+        /// <param name="Label"> Name of hotkey shortcut </param>
+        /// <param name="Action"> Action needing to be completed with hotkey use </param>
+        /// <param name="KeyCode"> Keycode, refer here: http://minecraft.gamepedia.com/Key_Codes </param>
+        /// <param name="KeyMods"> 0 - None, 1 - Ctrl, 2 - Shift, 3 - Alt </param>
+        public static Packet MakeSetTextHotKey(string Label, string Action, int KeyCode, byte KeyMods)
+        {
+            Packet packet = new Packet(OpCode.SetTextHotKey);
+            Encoding.ASCII.GetBytes(Label.PadRight(64), 0, 64, packet.Data, 1);
+            Encoding.ASCII.GetBytes(Action.PadRight(64), 0, 64, packet.Data, 65);
+            ToNetOrder(KeyCode, packet.Data, 129);
+            packet.Data[133] = (byte)KeyMods;
+            return packet;
+        }
+
+        /// <summary> Packet used to change players names/group in TabList as well as their autocomplete name. Color code friendly. </summary>
+        /// <param name="NameID"> Name ID number from 0-255 </param>
+        /// <param name="PlayerName"> Name used for autocompletion (can be null) </param>
+        /// <param name="ListName"> Name displayed in Tab List </param>
+        /// <param name="GroupName"> Name of group in Tab List </param>
+        /// <param name="GroupRank"> Rank of group in Tab list (0 is highest) </param>
+        public static Packet MakeExtAddPlayerName(short NameID, [CanBeNull]string PlayerName, string ListName, string GroupName, byte GroupRank)
+        {
+            Packet packet = new Packet(OpCode.ExtAddPlayerName); //0
+            ToNetOrder((short)NameID, packet.Data, 1); //1
+            Encoding.ASCII.GetBytes(PlayerName.PadRight(64), 0, 64, packet.Data, 3);  //2
+            Encoding.ASCII.GetBytes(ListName.PadRight(64), 0, 64, packet.Data, 67); //67 
+            Encoding.ASCII.GetBytes(GroupName.PadRight(64), 0, 64, packet.Data, 131); //131
+            packet.Data[195] = (byte)GroupRank;
+            return packet;
+        }
+
+        public static Packet MakeExtRemovePlayerName(short NameID)
+        {
+            Packet packet = new Packet(OpCode.ExtRemovePlayerName);
+            ToNetOrder((short)NameID, packet.Data, 1);
+            return packet;
+        }
 
         public static Packet MakeExtAddEntity(byte EntityID, string entityName, string skinName)
         {
@@ -275,6 +322,24 @@ namespace fCraft {
             packet.Data[65] = sideBlock;
             packet.Data[66] = edgeBlock;
             ToNetOrder((short)sideLevel, packet.Data, 67);
+            return packet;
+        }
+        
+        //NOT YET SUPPORTED
+        /// <param name="weatherType"> 0 - Clear, 1 - Rain, 2 - Snow </param>
+        public static Packet MakeEnvWeatherAppearance(byte weatherType)
+        {
+            Packet packet = new Packet(OpCode.EnvSetWeatherAppearance);
+            packet.Data[1] = (byte)weatherType;
+            return packet;
+        }
+        
+        public static Packet MakeSetBlockPermissions(byte BlockType, bool AllowPlacement, bool AllowDeletion)
+        {
+            Packet packet = new Packet(OpCode.SetBlockPermissions);
+            ToNetOrder(BlockType, packet.Data, 1);
+            ToNetOrder(AllowPlacement ? (byte)1 : (byte)0, packet.Data, 2);
+            ToNetOrder(AllowDeletion ? (byte)1 : (byte)0, packet.Data, 3);
             return packet;
         }
 
