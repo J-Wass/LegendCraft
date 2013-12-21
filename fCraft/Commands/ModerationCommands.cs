@@ -125,6 +125,11 @@ THE SOFTWARE.*/
                 return;
             }
             Player target = Server.FindPlayerOrPrintMatches(player, targetName, false, true);
+            if (target == null)
+            {
+                player.MessageNoPlayer(targetName);
+                return;
+            }
             if (!target.ClassiCube)
             {
                 player.Message("Click distance can only be changed for people playing on ClassiCube");
@@ -147,6 +152,7 @@ THE SOFTWARE.*/
             if (distance > 20 || distance < 1)
             {
                 player.Message("Accepted values are between 1 and 20!");
+                return;
             }
             int adjustedDistance = (32 * distance);
             target.Send(PacketWriter.MakeSetClickDistance(adjustedDistance));
