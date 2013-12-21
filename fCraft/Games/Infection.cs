@@ -31,6 +31,7 @@ namespace fCraft.Games
 
         //Timing
         private static SchedulerTask task_;
+        public static SchedulerTask delayTask;
         public static DateTime startTime;
         public static DateTime lastChecked;
         public static int timeLeft = 0;
@@ -65,7 +66,8 @@ namespace fCraft.Games
             stopwatch.Reset();
             stopwatch.Start();
             world_.gameMode = GameMode.Infection;
-            Scheduler.NewTask(t => world_.Players.Message("&WInfection &fwill be starting in {0} seconds: &WGet ready!", (timeDelay - stopwatch.Elapsed.Seconds))).RunRepeating(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(10), 2);
+            delayTask = Scheduler.NewTask(t => world_.Players.Message("&WInfection &fwill be starting in {0} seconds: &WGet ready!", (timeDelay - stopwatch.Elapsed.Seconds)));
+            delayTask.RunRepeating(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(10), (int)Math.Floor((double)(timeDelay/10)));//Start task immediately, send message every 10s
             if (stopwatch.Elapsed.Seconds > 11)
             {
                 stopwatch.Stop();
@@ -80,6 +82,10 @@ namespace fCraft.Games
             }
             stopwatch.Reset();//reset timer for next game
             RevertGame();
+            if (!delayTask.IsStopped)//if stop is called when the delayTask is still going, stop the delayTask
+            {
+                delayTask.Stop();
+            }
             return;
         }
 

@@ -1644,9 +1644,9 @@ THE SOFTWARE.*/
                                 Updater.LatestStable,
                                 MonoCompat.MonoVersionString );
             } else {
-                player.Message( " Running &5Legend&WCraft&S v{0}, under .NET {1}",
+                player.Message(" Running &5Legend&WCraft&S v{0}, under .NET {1}",
                                 Updater.LatestStable,
-                                Environment.Version );
+                                Environment.Version);
             }
 
             double bytesReceivedRate = Server.Players.Aggregate( 0d, ( i, p ) => i + p.BytesReceivedRate );

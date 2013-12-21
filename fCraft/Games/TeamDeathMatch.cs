@@ -1,5 +1,23 @@
-//This game was created by DingusBungus 2013 for use with LegendCraft servers. The code was based on the template used in ZombieGame.cs 
-//written by Jonty800. Thanks to everyone who helped me test the game and work out the bugs. 
+//Developed by DingusBungus for use with the LegendCraft software. Template based off of 800Craft's ZombieGame.cs
+
+/* Copyright (c) <2013> <LeChosenOne, DingusBungus>
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.*/
 
 using System;
 using System.Collections.Generic;
@@ -24,6 +42,7 @@ namespace fCraft
         //Timing
         public static int timeLeft = 0;
         private static SchedulerTask task_;
+        public static SchedulerTask delayTask;
         public static TeamDeathMatch instance;
         public static DateTime startTime;
         public static DateTime lastChecked;
@@ -62,8 +81,8 @@ namespace fCraft
         public static void Start()
         {
             world_.gameMode = GameMode.TeamDeathMatch; //set the game mode
-            Scheduler.NewTask(t => world_.Players.Message("&WTEAM DEATHMATCH &fwill be starting in {0} seconds: &WGet ready!", timeDelay))
-                    .RunRepeating(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(10), 1);
+            delayTask = Scheduler.NewTask(t => world_.Players.Message("&WTEAM DEATHMATCH &fwill be starting in {0} seconds: &WGet ready!", timeDelay));
+            delayTask.RunRepeating(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(10), 1);                  
         }
 
         public static void Stop(Player p) //for stopping the game early
@@ -77,7 +96,12 @@ namespace fCraft
             {
                 DisplayScoreBoard();
             }
-            RevertGame();          
+            RevertGame();
+
+            if (!delayTask.IsStopped)//if stop is called when the delayTask is still going, stop the delayTask
+            {
+                delayTask.Stop();
+            }
             return;
         }
 
