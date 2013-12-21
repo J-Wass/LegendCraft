@@ -1532,6 +1532,8 @@ namespace fCraft
             foreach (var pos in entities.Values)
             {
                 SendNow(PacketWriter.MakeRemoveEntity(pos.Id));
+                if (ClassiCube)
+                    SendNow(PacketWriter.MakeExtRemovePlayerName(pos.Id));
             }
             freePlayerIDs.Clear();
             for (int i = 1; i <= sbyte.MaxValue; i++)
