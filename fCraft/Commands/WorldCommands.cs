@@ -2499,7 +2499,8 @@ THE SOFTWARE.*/
         {
             if (Heartbeat.ClassiCube() || player.ClassiCube)
             {
-                player.Message("/Env is a Minecraft.net only command. If you are playing on ClassiCube, please use /MapEdit ");
+                player.Message("/Env is a Minecraft.net only command.");//add reference /mapedit here once it works.
+                return;
             }
             if (!ConfigKey.WoMEnableEnvExtensions.Enabled())
             {

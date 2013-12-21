@@ -326,7 +326,10 @@ THE SOFTWARE.*/
                     CdLastCommand.PrintUsage(player);
                     return;
                 }
-                player.Message("Your last command used was: " + player.LastCommand.ToString());
+
+                string sub = player.LastCommand.ToString().Split('"')[1].Split('"')[0];
+
+                player.Message("Your last command used was: " + sub);
                 return;
             }
             Player targetName = Server.FindPlayerOrPrintMatches(player, target, false, true);
@@ -337,7 +340,9 @@ THE SOFTWARE.*/
             }
             else
             {
-                player.Message(targetName.Name + "s last command was " + targetName.LastCommand.ToString());
+                string sub = targetName.LastCommand.ToString().Split('"')[1].Split('"')[0];
+
+                player.Message(targetName.Name + "'s last command was " + sub);
                 return;
             }
         }

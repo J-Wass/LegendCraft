@@ -99,11 +99,11 @@ THE SOFTWARE.*/
         {
             Name = "Edit",
             Aliases = new[] { "configure", "set" },
-            Category = CommandCategory.Chat | CommandCategory.Fun,
+            Category = CommandCategory.Chat ,
             Permissions = new[] {Permission.ReloadConfig},
             IsConsoleSafe = true,
             Usage = "/Edit [Add|Clear|Help] [Swears|Rules|Greeting|Announcements] [Message]",
-            Help = "Allows a player to add items to the swearwords, rules, amd announcements or create a new greeting. You can also clear one of the options.",
+            Help = "Allows a player to add items to the swearwords, rules, and announcements or create a new greeting. You can also clear one of the options.",
             NotRepeatable = true,
             Handler = EditHandler,
         };
@@ -126,17 +126,22 @@ THE SOFTWARE.*/
             if (option == "help")
             {
                 player.Message("Options are Add and Clear.\r\n " +
-                    "'/Edit Clear Swears' will completely erase all the swears so you can start from scratch.\r\n " +
+                    "'/Edit Clear Swears' will completely erase all the swears so you can start from scratch.\n " +
                     "'/Edit Add Swears Monkey' will add the word 'Monkey' to the current list of swears.");
                 return;
             }
                        
             else if(option == "clear")
             {
-                target = cmd.Next().ToLower();
+                target = cmd.Next();
+                if(string.IsNullOrEmpty(target))
+                {
+                    CdEdit.PrintUsage(player);
+                    return;
+                }
                
                 //clear the files
-                switch (target)
+                switch (target.ToLower())
                 {
                     case "swears":
                         if (File.Exists("swearwords.txt"))
@@ -171,7 +176,7 @@ THE SOFTWARE.*/
                         player.Message("&eThe announcements for the server has been wiped.");
                         break;
                     default:
-                        player.Message("&ePlease choose either greeting, rules, or swears as an option to clear.");
+                        player.Message("&ePlease choose either 'greeting', 'rules', 'announcements' or 'swears' as an option to clear.");
                         break;
                 }
                 return;
@@ -179,7 +184,12 @@ THE SOFTWARE.*/
 
             else if (option == "add")
             {
-                target = cmd.Next().ToLower();
+                target = cmd.Next();
+                if (String.IsNullOrEmpty(target))
+                {
+                    CdEdit.PrintUsage(player);
+                    return;
+                }
                 
                 //append the files
                 string newItem = cmd.NextAll();
@@ -188,8 +198,11 @@ THE SOFTWARE.*/
                     CdEdit.PrintUsage(player);
                     return;
                 }
-                switch (target)
+                switch (target.ToLower())
                 {
+                    case "swear":
+                    case "swearwords":
+                    case "swearword":
                     case "swears":
                         if (!File.Exists("swearwords.txt"))
                         {
@@ -203,6 +216,7 @@ THE SOFTWARE.*/
                         }
                         player.ParseMessage("/reload swears", true, false);
                         break;
+                    case "rule":
                     case "rules":
                         if (!File.Exists("rules.txt"))
                         {
@@ -215,6 +229,7 @@ THE SOFTWARE.*/
                             sw.Close();
                         }
                         break;
+                    case "announcement":
                     case "announcements":
                         if (!File.Exists("announcements.txt"))
                         {

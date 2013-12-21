@@ -46,8 +46,8 @@ namespace fCraft
             //Infection
             CommandManager.RegisterCommand(CdInfection);
             //Bot
-            CommandManager.RegisterCommand(CdBot);
-            CommandManager.RegisterCommand(CdBotAdv);
+            //CommandManager.RegisterCommand(CdBot);
+            //CommandManager.RegisterCommand(CdBotAdv);
             Player.Moving += PlayerMoved;
         }
 
@@ -1859,7 +1859,7 @@ THE SOFTWARE.*/
                 player.Message("&sYou can't throw yourself... It's just physically impossible...");
                 return;
             }
-            double time = (DateTime.Now - player.Info.LastUsedSlap).TotalSeconds;
+            double time = (DateTime.Now - player.Info.LastUsedThrow).TotalSeconds;
             if (time < 10)
             {
                 player.Message("&WYou can use /Throw again in " + Math.Round(10 - time) + " seconds.");
@@ -1867,7 +1867,7 @@ THE SOFTWARE.*/
             }
             Random random = new Random();
             int randomNumber = random.Next(1, 4);
-
+            player.Info.LastUsedThrow = DateTime.Now;
 
             if (randomNumber == 1)
                 if (player.Can(Permission.Slap, target.Info.Rank))

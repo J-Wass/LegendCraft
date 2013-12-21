@@ -1,4 +1,4 @@
-﻿/* Copyright (c) <2012> <LeChosenOne, DingusBungus, Eeyle>
+﻿/* Copyright (c) <2012 - 2013> <LeChosenOne, DingusBungus>
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -248,7 +248,7 @@ namespace fCraft.Games
                     {
                         Vector3I pos = p.Position.ToBlockCoords(); //convert to block coords                       
 
-                        if (e.NewPosition.DistanceSquaredTo(pos.ToPlayerCoords()) <= 33 * 33 && p != e.Player) //Get blocks on and around player, ignore instances when the target = player
+                        if (e.NewPosition.DistanceSquaredTo(pos.ToPlayerCoords()) <= 42 * 42 && p != e.Player) //Get blocks on and around player, ignore instances when the target = player
                         {
                             if (!p.Info.isInfected)
                             {

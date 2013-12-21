@@ -85,6 +85,7 @@ namespace fCraft
         public DateTime LastUsedHug;
         public DateTime LastUsedBeatDown;
         public DateTime LastUsedBarf;
+        public DateTime LastUsedThrow;
         public bool KillWait = false;
 
         //bromode

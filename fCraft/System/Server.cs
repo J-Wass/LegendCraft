@@ -407,6 +407,10 @@ namespace fCraft {
                                 Logger.Log(LogType.Warning, "Download the latest LegendCraft at: http://www.mediafire.com/folder/oy3rdjfanvdt7/LegendCraft_Releases");
 
                             }
+                            else
+                            {
+                                Logger.Log(LogType.ConsoleOutput, "Your LegendCraft version is up to date!");
+                            }
                         }
                     }
                 }
@@ -437,7 +441,7 @@ namespace fCraft {
             // Check for idles (every 30s)
             checkIdlesTask = Scheduler.NewTask( CheckIdles ).RunForever( CheckIdlesInterval );
 
-            //Check for tempranks (every 20s)
+            //Check for tempranks (every 10s)
             checkTempRanksTask = Scheduler.NewTask(CheckTempRanks).RunForever(CheckTempRanksInterval);
 
             // Monitor CPU usage (every 30s)
@@ -777,7 +781,7 @@ namespace fCraft {
 
         //checks to re-rank tempranked players
         static SchedulerTask checkTempRanksTask;
-        static TimeSpan checkTempRanksInterval = TimeSpan.FromSeconds(20);
+        static TimeSpan checkTempRanksInterval = TimeSpan.FromSeconds(10);
         public static TimeSpan CheckTempRanksInterval
         {
             get { return checkTempRanksInterval; }
