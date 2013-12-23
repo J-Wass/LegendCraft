@@ -284,6 +284,7 @@ namespace fCraft
         //if null, default skin is used
         public string iName = null;
         public bool entityChanged = false;
+        public List<Player> playersWhoHaveSeenEntityChanges = new List<Player>(); //exactly what the name says lol
 
 
         // This constructor is used to create pseudoplayers (such as Console).
