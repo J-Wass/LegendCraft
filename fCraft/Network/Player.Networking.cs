@@ -1652,11 +1652,18 @@ namespace fCraft
                         ReAddEntity(entity, otherPlayer, otherPos);
                         entity.LastKnownRank = otherPlayer.Info.Rank;
                     }
-                    if (otherPlayer.entityChanged)
+                    //if entity changed for another player, add this player to the list pf players who have seen the update
+                    if( otherPlayer.entityChanged && !otherPlayer.playersWhoHaveSeenEntityChanges.Contains(this))
                     {
-                        ReAddEntity(entity, otherPlayer, otherPos);
+						ReAddEntity(entity, otherPlayer, otherPos);
+                        otherPlayer.playersWhoHaveSeenEntityChanges.Add(this);
+					}
+					//if this player is already in the list (has updated the skin), continue
+					//if the player whose skin changed has updated for everyone, clear the list and set entityChanged to false
+                    else if (otherPlayer.playersWhoHaveSeenEntityChanges.Count() == (World.Players.Count() - 1))
+                    {
+                        otherPlayer.playersWhoHaveSeenEntityChanges.Clear();
                         otherPlayer.entityChanged = false;
-
                     }
                     else if (entity.Hidden)
                     {
