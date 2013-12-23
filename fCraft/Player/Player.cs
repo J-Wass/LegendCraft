@@ -122,8 +122,7 @@ namespace fCraft
         public Command LastCommand { get; private set; }
 
 
-        /// <summary> Plain version of the name (no formatting). </summary>
-        
+        /// <summary> Plain version of the name (no formatting). </summary>      
         [NotNull]
         public string Name
         {

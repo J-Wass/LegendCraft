@@ -114,7 +114,7 @@ namespace fCraft.HeartbeatSaver
             UriBuilder ub = new UriBuilder(MinecraftNetUri);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(" ***Welcome to LegendCraft HeartbeatSaver***\n");
-            Console.WriteLine(" ...:: The program is designed to send ::...\n ....:: a Heartbeat to minecraft.net! ::.... \n");
+            Console.WriteLine(" ...:: The program is designed to send ::...\n .:: a Heartbeat to Minecraft/ClassiCube!::. \n");
             Console.WriteLine(" .::.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.::.\n");
             Console.ResetColor();
             Console.ForegroundColor = ConsoleColor.White;

@@ -967,6 +967,11 @@ namespace fCraft
                 }
             }
 
+            if (Info.tempDisplayedName != null)
+            {
+                Info.tempDisplayedName = null;
+            }
+
             // Check if other banned players logged in from this IP
             PlayerInfo[] bannedPlayerNames = PlayerDB.FindPlayers(IP, 25)
                                                      .Where(playerFromSameIP => playerFromSameIP.IsBanned)
@@ -1444,6 +1449,7 @@ namespace fCraft
 
             canReceive = false;
             canQueue = false;
+            Info.tempDisplayedName = null;//If player happens to be in game or using /impersonate, reset temp name
 
             // clear all pending output to be written to client (it won't matter after the kick)
             ClearLowPriotityOutputQueue();
@@ -1467,6 +1473,7 @@ namespace fCraft
             {
                 throw new InvalidOperationException("KickNow may only be called from player's own thread.");
             }
+            Info.tempDisplayedName = null;
             State = SessionState.PendingDisconnect;
             LeaveReason = leaveReason;
 

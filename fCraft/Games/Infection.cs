@@ -198,8 +198,10 @@ namespace fCraft.Games
             {
                 world_.Players.Message("&c{0} has been infected!", infected.Name);
             }
+
             infected.Info.isInfected = true;
             infected.iName = "_Infected_";
+            infected.Info.tempDisplayedName = "_Infected_";
             infected.entityChanged = true;
         }
 
@@ -208,6 +210,7 @@ namespace fCraft.Games
             world_.Players.Message("&c{0} has infected {1}!", player.Name, target.Name);
             target.Info.isInfected = true;
             target.iName = "_Infected_";
+            target.Info.tempDisplayedName = "_Infected_";
             target.entityChanged = true;
         }
 
@@ -224,6 +227,7 @@ namespace fCraft.Games
                 {
                     p.Info.isInfected = false;
                     p.iName = null;
+                    p.Info.tempDisplayedName = null;
                     p.entityChanged = false;
                 }
                 p.Message("&aYour status has been reverted!");

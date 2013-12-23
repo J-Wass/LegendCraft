@@ -25,7 +25,7 @@ import sys;
 
 #prettyfull welcome message
 print("***Welcome to LegendCraft HeartbeatSaver***\n");
-print("...:: This program is designed to send ::...\n ....:: a Heartbeat to minecraft.net! ::.... \n");
+print("...:: This program is designed to send ::...\n ....:: a Heartbeat to ClassiCube.net! ::.... \n");
 print(".::.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.::.\n");
 
 
@@ -37,11 +37,11 @@ count = 1
 
 #send the request (called from checkData() )
 def sendHeartBeat(rawData, count):
-    finalData = "https://minecraft.net/heartbeat.jsp?public=" + rawData[6].replace("\n", "") + "&max=" + rawData[4].replace("\n", "") + "&users=" + rawData[3].replace("\n", "") + "&port=" + rawData[2].replace("\n", "") + "&version=7&salt=" + rawData[0].replace("\n", "") + "&name=" + (rawData[5].replace("\n", "")); 
+    finalData = "http://www.classicube.net/heartbeat.jsp?public=" + rawData[6].replace("\n", "") + "&max=" + rawData[4].replace("\n", "") + "&users=" + rawData[3].replace("\n", "") + "&port=" + rawData[2].replace("\n", "") + "&version=7&salt=" + rawData[0].replace("\n", "") + "&name=" + (rawData[5].replace("\n", "")); 
     response = urllib2.urlopen(finalData.replace(" ","%20"));#grab the response
     responseData = response.read();
     print str(strftime("%I:%M")) + " - Sending Heartbeat... Count: " + str(count);
-    if(responseData.startswith("https://minecraft.net/classic/play")):#check that the response does not contain errors
+    if(responseData.startswith("http://www.classicube/server/play")):#check that the response does not contain errors
        print "Heartbeat sent!\n";
        try:
           with open("externalurl.txt"): pass

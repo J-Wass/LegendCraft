@@ -1426,7 +1426,7 @@ THE SOFTWARE.*/
             {
                 player.iName = null;
                 player.entityChanged = true;
-                player.Info.DisplayedName = player.Info.Rank.Color + player.Name;
+                player.Info.tempDisplayedName = null;
                 player.Message("&SAll changes have been removed and your skin has been updated");
                 return;
             }
@@ -1440,18 +1440,20 @@ THE SOFTWARE.*/
                 player.Message("&SYour name has changed from '" + player.iName + "&S' to '" + iName + "&S'");
             }
             PlayerInfo targetInfo = PlayerDB.FindPlayerInfoExact(iName);
+
             try
             {
                 player.iName = targetInfo.Rank.Color + targetInfo.Name;
+
                 if (targetInfo.DisplayedName != null)
-                    player.Info.DisplayedName = targetInfo.DisplayedName;
+                    player.Info.tempDisplayedName = targetInfo.DisplayedName;
                 else
-                    player.Info.DisplayedName = targetInfo.Rank.Color + targetInfo.Name;
+                    player.Info.tempDisplayedName = targetInfo.Rank.Color + targetInfo.Name;
             }
             catch 
             {
                 player.iName = RankManager.LowestRank.Color + iName;
-                player.Info.DisplayedName = RankManager.LowestRank.Color + iName;
+                player.Info.tempDisplayedName = RankManager.LowestRank.Color + iName;
             }
             player.entityChanged = true;
         }

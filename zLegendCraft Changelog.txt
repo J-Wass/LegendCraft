@@ -14,7 +14,7 @@ Add: /hax
 Change: /Econ and /Pay bug fixes
 Change: /place has a better failsafe (places stone block)
 Change: /lastcmd bug fix
-Change: TDM updates and code cleaning
+Change: All Gamemodes enhanced
 
 LegendCraft Changelog v2.1.1 (Bug Fix Update)
 Add: /name

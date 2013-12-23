@@ -32,6 +32,10 @@ namespace fCraft
         [CanBeNull]
         public string DisplayedName;
 
+        /// <summary> If set, overrides both DisplayedName and Name. Used for temp name changes like gamemodes or /impersonation. </summary>
+        [CanBeNull]
+        public string tempDisplayedName;
+
         /// <summary>Player's title.</summary>
         [CanBeNull]
         public string TitleName;
@@ -1644,9 +1648,15 @@ namespace fCraft
                 {
                     sb.Append(Rank.Color);
                 }
-                if (DisplayedName != null)
+
+                //tempDisplayName overrides DisplayedName always, but we store displayedname for use after games
+                if (tempDisplayedName != null)
                 {
-                    sb.Append(DisplayedName);
+                    sb.Append(tempDisplayedName);
+                }
+                else if(DisplayedName != null)
+                {
+                    sb.Append(DisplayedName);//Create priority list: Check temp first, then displ name, and finally use Name if nothing works
                 }
                 else
                 {
