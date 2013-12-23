@@ -1417,24 +1417,42 @@ THE SOFTWARE.*/
         {
             //entityChanged should be set to true for the skin update to happen in real time
             string iName = cmd.Next();
-            if (iName == null && player.iName == null){
+            if (iName == null && player.iName == null)
+            {
                 CdImpersonate.PrintUsage(player);
                 return;
             }
-            if (iName == null){
+            if (iName == null)
+            {
                 player.iName = null;
                 player.entityChanged = true;
+                player.Info.DisplayedName = player.Info.Rank.Color + player.Name;
                 player.Message("&SAll changes have been removed and your skin has been updated");
                 return;
             }
             //ignore isvalidname for percent codes to work
-            if (player.iName == null){
-                player.Message("&SYour name has changed from '" + player.Info.Rank.Color + player.Name + "&S' to '" + iName);
+            if (player.iName == null)
+            {
+                player.Message("&SYour name has changed from '" + player.Info.Rank.Color + player.Name + "&S' to '" + iName + "&S'");
             }
-            if (player.iName != null){
-                player.Message("&SYour name has changed from '" + player.iName + "&S' to '" + iName);
+            if (player.iName != null)
+            {
+                player.Message("&SYour name has changed from '" + player.iName + "&S' to '" + iName + "&S'");
             }
-            player.iName = iName;
+            PlayerInfo targetInfo = PlayerDB.FindPlayerInfoExact(iName);
+            try
+            {
+                player.iName = targetInfo.Rank.Color + targetInfo.Name;
+                if (targetInfo.DisplayedName != null)
+                    player.Info.DisplayedName = targetInfo.DisplayedName;
+                else
+                    player.Info.DisplayedName = targetInfo.Rank.Color + targetInfo.Name;
+            }
+            catch 
+            {
+                player.iName = RankManager.LowestRank.Color + iName;
+                player.Info.DisplayedName = RankManager.LowestRank.Color + iName;
+            }
             player.entityChanged = true;
         }
 
