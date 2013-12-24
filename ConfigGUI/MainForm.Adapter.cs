@@ -494,7 +494,6 @@ namespace fCraft.ConfigGUI
                 xIP.Checked = true;
             }
 
-            xHeartbeatToWoMDirect.Checked = ConfigKey.HeartbeatToWoMDirect.Enabled();
         }
 
 
@@ -737,8 +736,6 @@ namespace fCraft.ConfigGUI
             ConfigKey.MaxUndoStates.TrySetValue(Convert.ToInt32(nMaxUndoStates.Value));
 
             ConfigKey.ConsoleName.TrySetValue(tConsoleName.Text);
-
-            ConfigKey.HeartbeatToWoMDirect.TrySetValue(xHeartbeatToWoMDirect.Checked);
 
             SaveWorldList();
         }

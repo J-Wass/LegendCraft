@@ -59,11 +59,11 @@
   <ItemGroup>
     <Reference Include="fCraft, Version=0.6.1.7, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\bin\release\fCraft.dll</HintPath>
+      <HintPath>..\..\..\..\Desktop\LC Testing Server\fCraft.dll</HintPath>
     </Reference>
     <Reference Include="fCraftGUI, Version=0.6.1.7, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\bin\Release\fCraftGUI.dll</HintPath>
+      <HintPath>..\..\..\..\Desktop\LC Testing Server\fCraftGUI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">

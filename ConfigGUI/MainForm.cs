@@ -181,7 +181,7 @@ Your rank is {RANK}&S. Type &H/Help&S for help." );
         }
 
         private void bReportABug_Click( object sender, EventArgs e ) {
-            Process.Start("http://risingembers.us");
+            Process.Start("http://LegendCraft.webuda.com");
         }
 
         private void nMaxPlayerPerWorld_Validating( object sender, CancelEventArgs e ) {
