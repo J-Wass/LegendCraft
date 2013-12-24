@@ -57,13 +57,13 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="fCraft, Version=0.6.1.7, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="fCraft, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Desktop\LC Testing Server\fCraft.dll</HintPath>
+      <HintPath>..\bin\Release\fCraft.dll</HintPath>
     </Reference>
     <Reference Include="fCraftGUI, Version=0.6.1.7, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Desktop\LC Testing Server\fCraftGUI.dll</HintPath>
+      <HintPath>..\bin\Release\fCraftGUI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
