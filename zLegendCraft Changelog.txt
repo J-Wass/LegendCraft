@@ -7,11 +7,14 @@ Add: /edit
 Add: /barf 
 Add: /setclick
 Add: /gamestats
-Add: FFA gamemode
+Add: Free For All gamemode
+Add: /FFAStatistics - stats cmd for Free For All
 Add: CPE Support
 Add: Option to run server on classicube
 Add: /troll
 Add: /hax
+Add: Team Deathmatch enhancements: scoreboard, does gun for you, can set team spawns, can make custom teams, better overall performance
+Change: /Statistics is now /TDStatistics 
 Change: /Econ and /Pay bug fixes
 Change: /place has a better failsafe (places stone block)
 Change: /lastcmd bug fix
