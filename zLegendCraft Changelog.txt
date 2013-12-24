@@ -6,6 +6,7 @@ Add: /jump
 Add: /edit
 Add: /barf 
 Add: /setclick
+Add: /gamestats
 Add: FFA gamemode
 Add: CPE Support
 Add: Option to run server on classicube
