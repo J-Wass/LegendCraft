@@ -1539,7 +1539,7 @@ namespace fCraft
             foreach (var pos in entities.Values)
             {
                 SendNow(PacketWriter.MakeRemoveEntity(pos.Id));
-                if (ClassiCube)
+                if (ClassiCube && Heartbeat.ClassiCube())
                     SendNow(PacketWriter.MakeExtRemovePlayerName(pos.Id));
             }
             freePlayerIDs.Clear();
@@ -1735,7 +1735,7 @@ namespace fCraft
                 var pos = new VisibleEntity(newPos, freePlayerIDs.Pop(), player.Info.Rank);
                 entities.Add(player, pos);
                 SendNow(PacketWriter.MakeAddEntity(entities[player].Id, player.Info.Rank.Color + player.Name, newPos));
-                if (ClassiCube)
+                if (ClassiCube && Heartbeat.ClassiCube())
                 {
                     SendNow(PacketWriter.MakeExtAddEntity((byte)entities[player].Id, player.ListName, player.Name));
                     SendNow(PacketWriter.MakeExtAddPlayerName((short)pos.Id, player.Name, player.ListName, player.Info.Rank.ClassyName, (byte)player.Info.Rank.Index));
@@ -1750,7 +1750,7 @@ namespace fCraft
             entity.Hidden = true;
             entity.LastKnownPosition = VisibleEntity.HiddenPosition;
             SendNow(PacketWriter.MakeTeleport(entity.Id, VisibleEntity.HiddenPosition));
-            if (ClassiCube)
+            if (ClassiCube && Heartbeat.ClassiCube())
                 SendNow(PacketWriter.MakeExtRemovePlayerName(entity.Id));
         }
 
@@ -1769,13 +1769,13 @@ namespace fCraft
             if (entity == null) throw new ArgumentNullException("entity");
             if (player == null) throw new ArgumentNullException("player");
             SendNow(PacketWriter.MakeRemoveEntity(entity.Id));
-            if (ClassiCube)
+            if (ClassiCube && Heartbeat.ClassiCube())
                 SendNow(PacketWriter.MakeExtRemovePlayerName((short)entity.Id));
             if (player.iName == null)
                 SendNow(PacketWriter.MakeAddEntity(entities[player].Id, player.Info.Rank.Color + player.Name, newPos));
             else
                 SendNow(PacketWriter.MakeAddEntity(entities[player].Id, player.iName, newPos));
-            if (ClassiCube)
+            if (ClassiCube && Heartbeat.ClassiCube())
             {
                 if (player.iName == null)
                     SendNow(PacketWriter.MakeExtAddEntity((byte)entities[player].Id, player.Name, player.Name));
@@ -1791,7 +1791,7 @@ namespace fCraft
         {
             if (player == null) throw new ArgumentNullException("player");
             SendNow(PacketWriter.MakeRemoveEntity(entities[player].Id));
-            if (ClassiCube)
+            if (ClassiCube && Heartbeat.ClassiCube())
                 SendNow(PacketWriter.MakeExtRemovePlayerName((short)entities[player].Id));
             freePlayerIDs.Push(entities[player].Id);
             entities.Remove(player);
