@@ -1028,6 +1028,7 @@ namespace fCraft {
         public string CloudColorCC = "#ffffff";
         public string SkyColorCC = "#99CCFF";
         public string FogColorCC = "#ffffff";
+        public int WeatherCC = 0;
         public short sideLevel = 0;
         public byte sideBlock = 7;
         public byte edgeBlock = 8;

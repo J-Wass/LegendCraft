@@ -156,17 +156,17 @@ THE SOFTWARE.*/
                 }
                 return;
             }
-        }   
-        
-        
-         static readonly CommandDescriptor CdMapEdit = new CommandDescriptor
+        }
+
+
+        static readonly CommandDescriptor CdMapEdit = new CommandDescriptor
         {
             Name = "MapEdit",
             Aliases = new[] { "WorldEdit", "MEdit", "WEdit", "MapSet" },
             Category = CommandCategory.World,
             Permissions = new[] { Permission.ManageWorlds },
             Help = "&SPrints or changes the environmental variables for a given world. " +
-                   "Variables are: clouds, fog, sky, level, edge, side, and texture. " +
+                   "Variables are: clouds, fog, sky, level, edge, side, texture and weather. " +
                    "See &H/Help MapEdit <Variable>&S for details about each variable. " +
                    "Type &H/MapEdit <WorldName> normal&S to reset everything for a world. " +
                    "All Color formats should be in hexcode. \n Ex: #ffffff",
@@ -192,7 +192,10 @@ THE SOFTWARE.*/
                                 "Use \"normal\" instead of a number to reset to default (admincrete)." },
                 { "texture", "&H/MapEdit <WorldName> texture url\n&S" +
                                 "Retextures the blocks of the map to a specific texture pack. "+
-                                "Use \"normal\" instead of a url to reset to default." }
+                                "Use \"normal\" instead of a url to reset to default." },
+                { "weather", "&H/MapEdit <WorldName> weather <Normal/Rain/Snow>\n&S" +
+                                "Sets the default weather of the map. " +
+                                "Use \"normal\" instead of a number to reset to default (Clear)" },
             },
             Usage = "/MapEdit <WorldName> <Variable> <Setting>",
             IsConsoleSafe = true,
@@ -201,9 +204,9 @@ THE SOFTWARE.*/
 
         static void MEditHandler(Player player, Command cmd)
         {
-            if (!Heartbeat.ClassiCube() || !player.ClassiCube)
+            if (ConfigKey.HeartbeatUrl.GetString() == "https://minecraft.net/heartbeat.jsp")
             {
-                player.Message("/MapEdit only works for ClassiCube servers and clients, not MineCraft! If you are playing on Minecraft.net, please use /Env.");
+                player.Message("/MapEdit only works for ClassiCube, not MineCraft! If you are playing on Minecraft.net, please use /Env.");
                 return;
             }
             if (!ConfigKey.WoMEnableEnvExtensions.Enabled())
@@ -244,10 +247,12 @@ THE SOFTWARE.*/
             switch (option)
             {
                 case "normal":
+                    //reset all defaults
                     world.sideBlock = 7;
                     world.edgeBlock = 8;
+                    world.WeatherCC = 0;
                     world.sideLevel = (short)(world.Map.Height / 2);
-                    world.SkyColorCC = "#99CCFF";
+                    world.SkyColorCC = "#99ccff";
                     world.CloudColorCC = "#ffffff";
                     world.FogColorCC = "#ffffff";
 
@@ -255,13 +260,15 @@ THE SOFTWARE.*/
                     Packet cloud = PacketWriter.MakeEnvSetColor((byte)1, (world.CloudColorCC));
                     Packet sky = PacketWriter.MakeEnvSetColor((byte)0, (world.SkyColorCC));
                     Packet appearence = PacketWriter.MakeEnvSetMapAppearance("", world.sideBlock, world.edgeBlock, world.sideLevel);
+                    Packet weather = PacketWriter.MakeEnvWeatherAppearance((byte)world.WeatherCC);
 
-                    foreach (Player p in world.Players)
+                    foreach (Player p in world.Players.Where(p => p.ClassiCube))
                     {
                         p.Send(sky);
                         p.Send(cloud);
                         p.Send(fog);
                         p.Send(appearence);
+                        p.Send(weather);
                     }
                     break;
                 case "texture":
@@ -276,7 +283,7 @@ THE SOFTWARE.*/
                         world.textureURL = "";
 
                         Packet textNormal = PacketWriter.MakeEnvSetMapAppearance(world.textureURL, world.sideBlock, world.edgeBlock, world.sideLevel);
-                        foreach (Player p in world.Players)
+                        foreach (Player p in world.Players.Where(p => p.ClassiCube))
                         {
                             p.Send(textNormal);
                         }
@@ -288,7 +295,7 @@ THE SOFTWARE.*/
                     {
                         world.textureURL = setting;
                         Packet texture = PacketWriter.MakeEnvSetMapAppearance(world.textureURL, world.sideBlock, world.edgeBlock, world.sideLevel);
-                        foreach (Player p in world.Players)
+                        foreach (Player p in world.Players.Where(p => p.ClassiCube))
                         {
                             p.Send(texture);
                         }
@@ -312,7 +319,7 @@ THE SOFTWARE.*/
                         world.edgeBlock = 8;
 
                         Packet edgeNormal = PacketWriter.MakeEnvSetMapAppearance(world.textureURL, world.sideBlock, world.edgeBlock, world.sideLevel);
-                        foreach (Player p in world.Players)
+                        foreach (Player p in world.Players.Where(p => p.ClassiCube))
                         {
                             p.Send(edgeNormal);
                         }
@@ -327,7 +334,7 @@ THE SOFTWARE.*/
                         world.edgeBlock = (byte)eBlock;
 
                         Packet edge = PacketWriter.MakeEnvSetMapAppearance(world.textureURL, world.sideBlock, world.edgeBlock, world.sideLevel);
-                        foreach (Player p in world.Players)
+                        foreach (Player p in world.Players.Where(p => p.ClassiCube))
                         {
                             p.Send(edge);
                         }
@@ -351,7 +358,7 @@ THE SOFTWARE.*/
                         world.sideBlock = 7;
 
                         Packet sideNormal = PacketWriter.MakeEnvSetMapAppearance(world.textureURL, world.sideBlock, world.edgeBlock, world.sideLevel);
-                        foreach (Player p in world.Players)
+                        foreach (Player p in world.Players.Where(p => p.ClassiCube))
                         {
                             p.Send(sideNormal);
                         }
@@ -366,7 +373,7 @@ THE SOFTWARE.*/
                         world.sideBlock = (byte)sBlock;
 
                         Packet side = PacketWriter.MakeEnvSetMapAppearance(world.textureURL, world.sideBlock, world.edgeBlock, world.sideLevel);
-                        foreach (Player p in world.Players)
+                        foreach (Player p in world.Players.Where(p => p.ClassiCube))
                         {
                             p.Send(side);
                         }
@@ -390,7 +397,7 @@ THE SOFTWARE.*/
                         world.sideLevel = (short)(world.Map.Height / 2);
 
                         Packet levelNormal = PacketWriter.MakeEnvSetMapAppearance(world.textureURL, world.sideBlock, world.edgeBlock, world.sideLevel);
-                        foreach (Player p in world.Players)
+                        foreach (Player p in world.Players.Where(p => p.ClassiCube))
                         {
                             p.Send(levelNormal);
                         }
@@ -409,7 +416,7 @@ THE SOFTWARE.*/
                         world.sideLevel = (short)level;
 
                         Packet levelP = PacketWriter.MakeEnvSetMapAppearance(world.textureURL, world.sideBlock, world.edgeBlock, world.sideLevel);
-                        foreach (Player p in world.Players)
+                        foreach (Player p in world.Players.Where(p => p.ClassiCube))
                         {
                             p.Send(levelP);
                         }
@@ -434,7 +441,10 @@ THE SOFTWARE.*/
                         world.CloudColorCC = "#ffffff";
 
                         Packet cloudPacketNormal = PacketWriter.MakeEnvSetColor((byte)1, (world.CloudColorCC));
-                        player.Send(cloudPacketNormal);
+                        foreach (Player p in world.Players.Where(p => p.ClassiCube))
+                        {
+                            p.Send(cloudPacketNormal);
+                        }
                         return;
                     }
 
@@ -451,7 +461,10 @@ THE SOFTWARE.*/
                     world.CloudColorCC = setting;
                     player.Message("The map texture has been edited.");
                     Packet cloudPacket = PacketWriter.MakeEnvSetColor((byte)1, world.CloudColorCC);
-                    player.Send(cloudPacket);
+                    foreach (Player p in world.Players.Where(p => p.ClassiCube))
+                    {
+                        p.Send(cloudPacket);
+                    }
                     break;
 
                 case "fog":
@@ -466,7 +479,10 @@ THE SOFTWARE.*/
                         world.FogColorCC = "#ffffff";
 
                         Packet fogPacketNormal = PacketWriter.MakeEnvSetColor((byte)2, world.FogColorCC.Replace("#", ""));
-                        player.Send(fogPacketNormal);
+                        foreach (Player p in world.Players.Where(p => p.ClassiCube))
+                        {
+                            p.Send(fogPacketNormal);
+                        }
                         return;
                     }
 
@@ -483,7 +499,10 @@ THE SOFTWARE.*/
                     world.FogColorCC = setting;
                     player.Message("The map texture has been edited.");
                     Packet fogPacket = PacketWriter.MakeEnvSetColor((byte)2, world.FogColorCC);
-                    player.Send(fogPacket);
+                    foreach (Player p in world.Players.Where(p => p.ClassiCube))
+                    {
+                        p.Send(fogPacket);
+                    }
                     break;
 
                 case "sky":
@@ -498,7 +517,10 @@ THE SOFTWARE.*/
                         world.SkyColorCC = "#99CCFF";
 
                         Packet skyPacketNormal = PacketWriter.MakeEnvSetColor((byte)0, world.SkyColorCC);
-                        player.Send(skyPacketNormal);
+                        foreach (Player p in world.Players.Where(p => p.ClassiCube))
+                        {
+                            p.Send(skyPacketNormal);
+                        }
                         return;
                     }
 
@@ -516,8 +538,64 @@ THE SOFTWARE.*/
                     world.SkyColorCC = setting;
                     player.Message("The map texture has been edited.");
                     Packet skyPacket = PacketWriter.MakeEnvSetColor((byte)0, world.SkyColorCC);
-                    player.Send(skyPacket);
+                    foreach (Player p in world.Players.Where(p => p.ClassiCube))
+                    {
+                        p.Send(skyPacket);
+                    }
                     break;
+
+                case "weather":
+                    if (string.IsNullOrEmpty(setting))
+                    {
+                        player.Message("Please specify a setting for {0}. Choose either normal, rain or snow.", option);
+                        break;
+                    }
+                    switch (setting.ToLower())
+                    {
+                        case "normal":
+                        case "clear":
+                        case "sunny":
+                        case "0":
+                            player.Message("Weather set to {0}", setting);
+                            world.WeatherCC = 0;
+
+                            Packet weatherPacketNormal = PacketWriter.MakeEnvWeatherAppearance((byte)world.WeatherCC);
+                            foreach (Player p in world.Players.Where(p => p.ClassiCube))
+                            {
+                                p.Send(weatherPacketNormal);
+                            }
+                            break;
+                        case "rain":
+                        case "rainy":
+                        case "1":
+                            player.Message("Weather set to {0}", setting);
+                            world.WeatherCC = 1;
+
+                            Packet weatherPacketRain = PacketWriter.MakeEnvWeatherAppearance((byte)world.WeatherCC);
+                            foreach (Player p in world.Players.Where(p => p.ClassiCube))
+                            {
+                                p.Send(weatherPacketRain);
+                            }
+                            break;
+                        case "snow":
+                        case "snowy":
+                        case "snowing":
+                        case "2":
+                            player.Message("Weather set to {0}", setting);
+                            world.WeatherCC = 2;
+
+                            Packet weatherPacketSnow = PacketWriter.MakeEnvWeatherAppearance((byte)world.WeatherCC);
+                            foreach (Player p in world.Players.Where(p => p.ClassiCube))
+                            {
+                                p.Send(weatherPacketSnow);
+                            }
+                            break;
+                        default:
+                            player.Message("Please specify a setting for {0}. Choose either normal, rain or snow.", option);
+                            break;
+                    }
+                    break;
+
 
                 default:
                     CdMapEdit.PrintUsage(player);

@@ -1360,15 +1360,20 @@ namespace fCraft
             }
             RaisePlayerJoinedWorldEvent(this, oldWorld, reason);
 
-            //send mapedit env packet values
-            /*Packet envSetMapAppearance = PacketWriter.MakeEnvSetMapAppearance(World.textureURL, World.sideBlock, World.edgeBlock, World.sideLevel);
-            Packet sky = PacketWriter.MakeEnvSetColor((byte)0, World.SkyColorCC);
-            Packet cloud = PacketWriter.MakeEnvSetColor((byte)1, World.CloudColorCC);
-            Packet fog = PacketWriter.MakeEnvSetColor((byte)2, World.FogColorCC);
-            Info.PlayerObject.Send(envSetMapAppearance);
-            Info.PlayerObject.Send(sky);
-            Info.PlayerObject.Send(cloud);
-            Info.PlayerObject.Send(fog);*/
+            //send mapedit env packet values if applicable
+            if (Heartbeat.ClassiCube() && ClassiCube)
+            {
+                Packet envSetMapAppearance = PacketWriter.MakeEnvSetMapAppearance(World.textureURL, World.sideBlock, World.edgeBlock, World.sideLevel);
+                Packet sky = PacketWriter.MakeEnvSetColor((byte)0, World.SkyColorCC);
+                Packet cloud = PacketWriter.MakeEnvSetColor((byte)1, World.CloudColorCC);
+                Packet fog = PacketWriter.MakeEnvSetColor((byte)2, World.FogColorCC);
+                Packet weather = PacketWriter.MakeEnvWeatherAppearance((byte)World.WeatherCC);
+                Send(envSetMapAppearance);
+                Send(sky);
+                Send(cloud);
+                Send(fog);
+                Send(weather);
+            }
 
             // Done.
             Server.RequestGC();
@@ -1735,7 +1740,7 @@ namespace fCraft
                 var pos = new VisibleEntity(newPos, freePlayerIDs.Pop(), player.Info.Rank);
                 entities.Add(player, pos);
                 SendNow(PacketWriter.MakeAddEntity(entities[player].Id, player.Info.Rank.Color + player.Name, newPos));
-                if (ClassiCube)
+                if (ClassiCube && Heartbeat.ClassiCube())
                 {
                     SendNow(PacketWriter.MakeExtAddEntity((byte)entities[player].Id, player.ListName, player.Name));
                     SendNow(PacketWriter.MakeExtAddPlayerName((short)pos.Id, player.Name, player.ListName, player.Info.Rank.ClassyName, (byte)player.Info.Rank.Index));
@@ -1750,7 +1755,7 @@ namespace fCraft
             entity.Hidden = true;
             entity.LastKnownPosition = VisibleEntity.HiddenPosition;
             SendNow(PacketWriter.MakeTeleport(entity.Id, VisibleEntity.HiddenPosition));
-            if (ClassiCube)
+            if (ClassiCube && Heartbeat.ClassiCube())
                 SendNow(PacketWriter.MakeExtRemovePlayerName(entity.Id));
         }
 
@@ -1769,13 +1774,13 @@ namespace fCraft
             if (entity == null) throw new ArgumentNullException("entity");
             if (player == null) throw new ArgumentNullException("player");
             SendNow(PacketWriter.MakeRemoveEntity(entity.Id));
-            if (ClassiCube)
+            if (ClassiCube && Heartbeat.ClassiCube())
                 SendNow(PacketWriter.MakeExtRemovePlayerName((short)entity.Id));
             if (player.iName == null)
                 SendNow(PacketWriter.MakeAddEntity(entities[player].Id, player.Info.Rank.Color + player.Name, newPos));
             else
                 SendNow(PacketWriter.MakeAddEntity(entities[player].Id, player.iName, newPos));
-            if (ClassiCube)
+            if (ClassiCube && Heartbeat.ClassiCube())
             {
                 if (player.iName == null)
                     SendNow(PacketWriter.MakeExtAddEntity((byte)entities[player].Id, player.Name, player.Name));
@@ -1791,7 +1796,7 @@ namespace fCraft
         {
             if (player == null) throw new ArgumentNullException("player");
             SendNow(PacketWriter.MakeRemoveEntity(entities[player].Id));
-            if (ClassiCube)
+            if (ClassiCube && Heartbeat.ClassiCube())
                 SendNow(PacketWriter.MakeExtRemovePlayerName((short)entities[player].Id));
             freePlayerIDs.Push(entities[player].Id);
             entities.Remove(player);
