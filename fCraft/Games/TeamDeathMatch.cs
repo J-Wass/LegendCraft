@@ -337,7 +337,7 @@ namespace fCraft
                 if (p != null)
                 {
                     p.iName = null;
-                    pI.DisplayedName = pI.oldname;
+                    pI.tempDisplayedName = null;
                     pI.isOnRedTeam = false;
                     pI.isOnBlueTeam = false;
                     pI.isPlayingTD = false;
@@ -400,8 +400,7 @@ namespace fCraft
             p.Message("Let the games Begin!");
             p.Message("You are on the &cRed Team");
             p.iName = Color.Red + sbName;
-            p.Info.oldname = p.Info.DisplayedName;
-            p.Info.DisplayedName = "&f(" + redTeam + "&f) " + Color.Red + sbName;
+            p.Info.tempDisplayedName = "&f(" + redTeam + "&f) " + Color.Red + sbName;
             p.Info.isOnRedTeam = true;
             p.Info.isOnBlueTeam = false;
             p.Info.isPlayingTD = true;
@@ -417,8 +416,7 @@ namespace fCraft
             p.Message("Let the games Begin!");
             p.Message("You are on the &1Blue Team");
             p.iName = Color.Navy + sbName;
-            p.Info.oldname = p.Info.DisplayedName;
-            p.Info.DisplayedName = "&f(" + blueTeam + "&f) " + Color.Navy + sbName;
+            p.Info.tempDisplayedName = "&f(" + blueTeam + "&f) " + Color.Navy + sbName;
             p.Info.isOnBlueTeam = true;
             p.Info.isOnRedTeam = false;
             p.Info.isPlayingTD = true;

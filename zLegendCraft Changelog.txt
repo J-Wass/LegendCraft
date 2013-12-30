@@ -13,6 +13,7 @@ Add: CPE Support
 Add: Option to run server on classicube
 Add: /troll
 Add: /hax
+Add: /MapEdit
 Add: Team Deathmatch enhancements: scoreboard, does gun for you, can set team spawns, can make custom teams, better overall performance
 Change: /Statistics is now /TDStatistics 
 Change: /Econ and /Pay bug fixes
