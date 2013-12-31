@@ -62,7 +62,8 @@ namespace fCraft.Games
         }
 
         public static void Start()
-        {                   
+        {
+            world_.Hax = false;
             stopwatch.Reset();
             stopwatch.Start();
             world_.gameMode = GameMode.Infection;
@@ -76,6 +77,7 @@ namespace fCraft.Games
 
         public static void Stop(Player p) //for stopping the game early
         {
+            world_.Hax = true;
             if (p != null && world_ != null)
             {
                 world_.Players.Message("{0}&S stopped the game of Infection on world {1}", p.ClassyName, world_.ClassyName);                    
@@ -91,6 +93,7 @@ namespace fCraft.Games
 
         public static void Custom(int limit, int delay)
         {
+            world_.Hax = false;
             timeDelay = delay;
             timeLimit = limit;
 

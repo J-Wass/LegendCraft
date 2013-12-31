@@ -1,4 +1,4 @@
-LegendCraft Changelog v2.2.0 (unreleased)
+LegendCraft Changelog v2.2.0 
 Add: Major improvements for mono
 Add: /temprank
 Add: Voice commands for ServerGUI + audio responses
