@@ -968,6 +968,7 @@ namespace fCraft
                 canSee.Message(message);
             }
 
+            //reset tempDisplName if player still has
             if (Info.tempDisplayedName != null)
             {
                 Info.tempDisplayedName = null;

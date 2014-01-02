@@ -20,6 +20,7 @@ Change: /Econ and /Pay bug fixes
 Change: /place has a better failsafe (places stone block)
 Change: /lastcmd bug fix
 Change: All Gamemodes enhanced
+Change: GUI remodeling for credits window
 
 LegendCraft Changelog v2.1.1 (Bug Fix Update)
 Add: /name

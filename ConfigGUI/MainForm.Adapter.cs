@@ -172,7 +172,9 @@ namespace fCraft.ConfigGUI
             MaxCapsValue.Value = ConfigKey.MaxCaps.GetInt();
             nUploadBandwidth.Value = ConfigKey.UploadBandwidth.GetInt();
 
-            xAnnouncements.Checked = (ConfigKey.AnnouncementInterval.GetInt() > 0);
+            int interval = 0;
+            xAnnouncements.Checked = ConfigKey.AnnouncementInterval.TryGetInt(out interval) && interval > 0;
+
             if (xAnnouncements.Checked)
             {
                 nAnnouncements.Value = ConfigKey.AnnouncementInterval.GetInt();

@@ -522,10 +522,17 @@ THE SOFTWARE.*/
                     player.Message("&SThere must be at least &W2&S players on this world to play Infection");
                     return;
                 }
+
                 else
                 {
                     try
                     {
+                        player.World.Hax = false;
+                        foreach (Player p in player.World.Players)
+                        {
+                            p.JoinWorld(player.World, WorldChangeReason.Rejoin);
+                        }
+
                         fCraft.Games.Infection.GetInstance(world);
                         fCraft.Games.Infection.Start();
                     }
@@ -601,6 +608,12 @@ THE SOFTWARE.*/
                 {
                     try
                     {
+                        player.World.Hax = false;
+                        foreach (Player p in player.World.Players)
+                        {
+                            p.JoinWorld(player.World, WorldChangeReason.Rejoin);
+                        }
+
                         fCraft.Games.Infection.GetInstance(world);
                         fCraft.Games.Infection.Custom(intLimit, intDelay);
                     }
@@ -672,6 +685,11 @@ THE SOFTWARE.*/
                 }
                 else
                 {
+                    player.World.Hax = false;
+                    foreach (Player p in player.World.Players)
+                    {
+                        p.JoinWorld(player.World, WorldChangeReason.Rejoin);
+                    }
                     TeamDeathMatch.GetInstance(player.World);
                     TeamDeathMatch.Start();
                     return;
@@ -1050,6 +1068,13 @@ THE SOFTWARE.*/
                 }
                 else
                 {
+                    //restart, without hax
+                    player.World.Hax = false;
+                    foreach (Player p in player.World.Players)
+                    {
+                        p.JoinWorld(player.World, WorldChangeReason.Rejoin);
+                    }
+
                     FFA.GetInstance(player.World);
                     FFA.Start();
                     return;
