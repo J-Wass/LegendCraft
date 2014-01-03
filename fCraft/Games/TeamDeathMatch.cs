@@ -80,6 +80,11 @@ namespace fCraft
 
         public static void Start()
         {
+            timeDelay = 20; //reset vars incase they were altered in a custom start
+            scoreLimit = 50;
+            timeLimit = 300;
+
+            world_.Hax = false;
             world_.gameMode = GameMode.TeamDeathMatch; //set the game mode
             delayTask = Scheduler.NewTask(t => world_.Players.Message("&WTEAM DEATHMATCH &fwill be starting in {0} seconds: &WGet ready!", timeDelay));
             delayTask.RunRepeating(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(10), 1);                  
@@ -87,6 +92,10 @@ namespace fCraft
 
         public static void Stop(Player p) //for stopping the game early
         {
+            Player.JoinedWorld -= PlayerLeftWorld;
+            Player.Disconnected -= PlayerLeftServer;
+
+            world_.Hax = true;
             if (p != null && world_ != null)
             {
                 world_.Players.Message("{0}&S stopped the game of Team Deathmatch on world {1}",
@@ -136,6 +145,9 @@ namespace fCraft
                         }
                         if (p.Info.isOnRedTeam) { p.TeleportTo(TeamDeathMatch.redSpawn); } //teleport players to the team spawn
                         if (p.Info.isOnBlueTeam) { p.TeleportTo(TeamDeathMatch.blueSpawn); }
+
+                        Player.JoinedWorld += PlayerLeftWorld;
+                        Player.Disconnected += PlayerLeftServer;
 
                         if (!p.GunMode)
                         {
@@ -337,11 +349,13 @@ namespace fCraft
                 if (p != null)
                 {
                     p.iName = null;
-                    pI.DisplayedName = pI.oldname;
+                    pI.tempDisplayedName = null;
                     pI.isOnRedTeam = false;
                     pI.isOnBlueTeam = false;
                     pI.isPlayingTD = false;
                     p.entityChanged = true;
+
+                    p.JoinWorld(p.World, WorldChangeReason.Rejoin);//rejoin world for hax changes to take effect
                     
                     //undo gunmode (taken from GunHandler.cs)
                     p.GunMode = false;
@@ -400,8 +414,7 @@ namespace fCraft
             p.Message("Let the games Begin!");
             p.Message("You are on the &cRed Team");
             p.iName = Color.Red + sbName;
-            p.Info.oldname = p.Info.DisplayedName;
-            p.Info.DisplayedName = "&f(" + redTeam + "&f) " + Color.Red + sbName;
+            p.Info.tempDisplayedName = "&f(" + redTeam + "&f) " + Color.Red + sbName;
             p.Info.isOnRedTeam = true;
             p.Info.isOnBlueTeam = false;
             p.Info.isPlayingTD = true;
@@ -417,8 +430,7 @@ namespace fCraft
             p.Message("Let the games Begin!");
             p.Message("You are on the &1Blue Team");
             p.iName = Color.Navy + sbName;
-            p.Info.oldname = p.Info.DisplayedName;
-            p.Info.DisplayedName = "&f(" + blueTeam + "&f) " + Color.Navy + sbName;
+            p.Info.tempDisplayedName = "&f(" + blueTeam + "&f) " + Color.Navy + sbName;
             p.Info.isOnBlueTeam = true;
             p.Info.isOnRedTeam = false;
             p.Info.isPlayingTD = true;
@@ -428,5 +440,84 @@ namespace fCraft
             blueTeamCount++;
             return;
         }
+
+
+
+        #region Events
+
+        //check if player left server to reset stats
+        public static void PlayerLeftServer(object poo, fCraft.Events.PlayerDisconnectedEventArgs e)
+        {
+            e.Player.iName = null;
+            e.Player.Info.tempDisplayedName = null;
+            e.Player.Info.isOnRedTeam = false;
+            e.Player.Info.isOnBlueTeam = false;
+            e.Player.Info.isPlayingTD = false;
+            e.Player.entityChanged = true;
+
+            e.Player.GunMode = false;
+           
+        }
+
+        //check if player left world where infection is being played
+        public static void PlayerLeftWorld(object poo, fCraft.Events.PlayerJoinedWorldEventArgs e)
+        {
+            e.Player.iName = null;
+            e.Player.Info.tempDisplayedName = null;
+            e.Player.Info.isOnRedTeam = false;
+            e.Player.Info.isOnBlueTeam = false;
+            e.Player.Info.isPlayingTD = false;
+            e.Player.entityChanged = true;
+
+            e.Player.GunMode = false;
+
+            try
+            {
+                foreach (Vector3I block in e.Player.GunCache.Values)
+                {
+                    e.Player.Send(PacketWriter.MakeSetBlock(block.X, block.Y, block.Z, e.Player.WorldMap.GetBlock(block)));
+                    Vector3I removed;
+                    e.Player.GunCache.TryRemove(block.ToString(), out removed);
+                }
+                if (e.Player.bluePortal.Count > 0)
+                {
+                    int j = 0;
+                    foreach (Vector3I block in e.Player.bluePortal)
+                    {
+                        if (e.Player.WorldMap != null && e.Player.World.IsLoaded)
+                        {
+                            e.Player.WorldMap.QueueUpdate(new BlockUpdate(null, block, e.Player.blueOld[j]));
+                            j++;
+                        }
+                    }
+                    e.Player.blueOld.Clear();
+                    e.Player.bluePortal.Clear();
+                }
+                if (e.Player.orangePortal.Count > 0)
+                {
+                    int j = 0;
+                    foreach (Vector3I block in e.Player.orangePortal)
+                    {
+                        if (e.Player.WorldMap != null && e.Player.World.IsLoaded)
+                        {
+                            e.Player.WorldMap.QueueUpdate(new BlockUpdate(null, block, e.Player.orangeOld[j]));
+                            j++;
+                        }
+                    }
+                    e.Player.orangeOld.Clear();
+                    e.Player.orangePortal.Clear();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogType.SeriousError, "" + ex);
+            }
+
+            if (e.Player.IsOnline)
+            {
+                e.Player.Message("Your status has been reverted. (Left World)");
+            }
+        }
+        #endregion
     }
 }

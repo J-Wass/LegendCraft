@@ -9,20 +9,13 @@ namespace fCraft.GUI {
             InitializeComponent();
             lSubheader.Text = String.Format( lSubheader.Text, Updater.CurrentRelease.VersionString );
         }
-
-        private void linkLabel1_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e ) {
+        private void lfCraft_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e ) {
             try {
                 Process.Start( "http://www.fcraft.net" );
             } catch { }
         }
 
-        private void linkLabel2_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e ) {
-            try {
-                Process.Start( "mailto:jonty800@gmail.com" );
-            } catch { }
-        }
-
-        private void linkLabel2_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e)
+        private void l800Craft_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             try
             {
@@ -31,18 +24,13 @@ namespace fCraft.GUI {
             catch { }
         }
 
-        private void label3_Click_LinkClicked_2(object sender, LinkLabelLinkClickedEventArgs e)
+        private void lLegendCraft_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             try
             {
                 Process.Start("http://legendcraft.webuda.com/");
             }
             catch { }
-
-        }
-
-        private void AboutWindow_Load(object sender, EventArgs e)
-        {
 
         }
 

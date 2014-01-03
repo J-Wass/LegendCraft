@@ -890,18 +890,32 @@ namespace fCraft
             World startingWorld = Info.Rank.MainWorld ?? WorldManager.MainWorld;
             startingWorld = RaisePlayerConnectedEvent(this, startingWorld);
 
-            // Send server information
+            // Send server information, set motd
             string serverName = ConfigKey.ServerName.GetString();
             string motd;
             if (ConfigKey.WoMEnableEnvExtensions.Enabled())
             {
-                if (IP.Equals(IPAddress.Loopback))
+                if (ClassiCube)
                 {
-                    motd = "&0cfg=localhost:" + Server.Port + "/" + startingWorld.Name + "~motd";
+                    if (!startingWorld.Hax)
+                    {
+                        motd =  ConfigKey.MOTD.GetString() + "-hax";
+                    }
+                    else
+                    {
+                        motd = ConfigKey.MOTD.GetString();
+                    }
                 }
                 else
                 {
-                    motd = "&0cfg=" + Server.ExternalIP + ":" + Server.Port + "/" + startingWorld.Name + "~motd";
+                    if (IP.Equals(IPAddress.Loopback))
+                    {
+                        motd = "&0cfg=localhost:" + Server.Port + "/" + startingWorld.Name + "~motd";
+                    }
+                    else
+                    {
+                        motd = "&0cfg=" + Server.ExternalIP + ":" + Server.Port + "/" + startingWorld.Name + "~motd";
+                    }
                 }
             }
             else
@@ -954,6 +968,11 @@ namespace fCraft
                 canSee.Message(message);
             }
 
+            //reset tempDisplName if player still has
+            if (Info.tempDisplayedName != null)
+            {
+                Info.tempDisplayedName = null;
+            }
 
             if (Info.IsHidden)
             {
@@ -965,11 +984,6 @@ namespace fCraft
                 {
                     Info.IsHidden = false;
                 }
-            }
-
-            if (Info.tempDisplayedName != null)
-            {
-                Info.tempDisplayedName = null;
             }
 
             // Check if other banned players logged in from this IP
@@ -1197,7 +1211,7 @@ namespace fCraft
                     textLine2 = "cfg=" + Server.ExternalIP + ":" + Server.Port + "/" + newWorld.Name;
                 }
             }
-            else if (IsUsingWoM && ConfigKey.WoMEnableEnvExtensions.Enabled() && Heartbeat.ClassiCube())
+            else if (ClassiCube && ConfigKey.WoMEnableEnvExtensions.Enabled() && Heartbeat.ClassiCube())
             {
                 if (!newWorld.Hax)
                 {

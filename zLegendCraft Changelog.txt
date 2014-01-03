@@ -1,4 +1,4 @@
-LegendCraft Changelog v2.2.0 (unreleased)
+LegendCraft Changelog v2.2.0 
 Add: Major improvements for mono
 Add: /temprank
 Add: Voice commands for ServerGUI + audio responses
@@ -13,12 +13,14 @@ Add: CPE Support
 Add: Option to run server on classicube
 Add: /troll
 Add: /hax
+Add: /MapEdit
 Add: Team Deathmatch enhancements: scoreboard, does gun for you, can set team spawns, can make custom teams, better overall performance
 Change: /Statistics is now /TDStatistics 
 Change: /Econ and /Pay bug fixes
 Change: /place has a better failsafe (places stone block)
 Change: /lastcmd bug fix
 Change: All Gamemodes enhanced
+Change: GUI remodeling for credits window
 
 LegendCraft Changelog v2.1.1 (Bug Fix Update)
 Add: /name

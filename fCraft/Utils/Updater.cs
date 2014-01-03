@@ -34,9 +34,10 @@ namespace fCraft {
 
         public static string UpdateUrl { get; set; }
 
+        //lol i don't even use this
         static Updater() {
             UpdateCheckTimeout = 4000;
-            UpdateUrl = "http://au70.net/UpdateCheck.php?r={0}";
+            UpdateUrl = "http://legendcraft.webuda.com/";
         }
 
 

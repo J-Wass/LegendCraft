@@ -49,10 +49,6 @@ namespace fCraft.Games
         {
             if (instance == null)
             {
-                Player.Moving += PlayerMoved;
-                Player.JoinedWorld += PlayerLeftWorld;
-                Player.Disconnected += PlayerLeftServer;
-
                 world_ = world;
                 instance = new Infection();
                 startTime = DateTime.Now;
@@ -62,7 +58,11 @@ namespace fCraft.Games
         }
 
         public static void Start()
-        {                   
+        {
+            timeLimit = 300;//reset variables incase of a server using custom and then start
+            timeDelay = 20;
+
+            world_.Hax = false;
             stopwatch.Reset();
             stopwatch.Start();
             world_.gameMode = GameMode.Infection;
@@ -76,6 +76,7 @@ namespace fCraft.Games
 
         public static void Stop(Player p) //for stopping the game early
         {
+            world_.Hax = true;
             if (p != null && world_ != null)
             {
                 world_.Players.Message("{0}&S stopped the game of Infection on world {1}", p.ClassyName, world_.ClassyName);                    
@@ -91,6 +92,7 @@ namespace fCraft.Games
 
         public static void Custom(int limit, int delay)
         {
+            world_.Hax = false;
             timeDelay = delay;
             timeLimit = limit;
 
@@ -137,8 +139,15 @@ namespace fCraft.Games
                                 break;
                             }
                         }
+
+                        //reset world settings and disable hax requires the player to rejoin the world since the motd must update                        
                         p.TeleportTo(new Position(x, y, z1 + 2).ToVector3I().ToPlayerCoords()); //teleport players to a random position
                         beginGame(p);
+
+                        Player.Moving += PlayerMoved;
+                        Player.JoinedWorld += PlayerLeftWorld;
+                        Player.Disconnected += PlayerLeftServer;
+
                         chooseInfected();
                         
                     }
@@ -155,6 +164,9 @@ namespace fCraft.Games
                 {
                     world_.Players.Message("");
                     world_.Players.Message("&cThe Zombies have won! All humans have died off!");
+                    Player.Moving -= PlayerMoved;
+                    Player.JoinedWorld -= PlayerLeftWorld;
+                    Player.Disconnected -= PlayerLeftServer;
                     RevertGame();
                     return;
                 }
@@ -162,6 +174,9 @@ namespace fCraft.Games
                 {
                     world_.Players.Message("");
                     world_.Players.Message("&aThe Zombies have died off! The Humans win!");
+                    Player.Moving -= PlayerMoved;
+                    Player.JoinedWorld -= PlayerLeftWorld;
+                    Player.Disconnected -= PlayerLeftServer;
                     RevertGame();
                     return;
                 }
@@ -169,6 +184,9 @@ namespace fCraft.Games
                 {
                     world_.Players.Message("");
                     world_.Players.Message("&aThe Zombies failed to infect everyone! The Humans win!");
+                    Player.Moving -= PlayerMoved;
+                    Player.JoinedWorld -= PlayerLeftWorld;
+                    Player.Disconnected -= PlayerLeftServer;
                     RevertGame();
                     return;
                 }
@@ -216,9 +234,7 @@ namespace fCraft.Games
 
         public static void RevertGame() //Reset game bools/stats and stop timers
         {
-            Player.Moving -= PlayerMoved;
-            Player.JoinedWorld -= PlayerLeftWorld;
-            Player.Disconnected -= PlayerLeftServer;
+            world_.Hax = true;
 
             foreach (Player p in world_.Players)
             {
@@ -231,9 +247,10 @@ namespace fCraft.Games
                     p.entityChanged = false;
                 }
                 p.Message("&aYour status has been reverted!");
-                p.JoinWorld(world_, WorldChangeReason.Rejoin);                
+                p.JoinWorld(world_, WorldChangeReason.Rejoin);
             }
 
+            
             world_.gameMode = GameMode.NULL;
             task_.Stop();
             isOn = false;
@@ -286,16 +303,13 @@ namespace fCraft.Games
         //check if player left world where infection is being played
         public static void PlayerLeftWorld(object poo, fCraft.Events.PlayerJoinedWorldEventArgs e)
         {
-            //kinda rusty, if the player left the world and joined a different world, prevents /rejoin from breaking the game
-            if(e.Player.World.Name != world_.ToString())
+
+            e.Player.Info.isPlayingInfection = false;
+            if (e.Player.Info.isInfected)
             {
-                e.Player.Info.isPlayingInfection = false;
-                if (e.Player.Info.isInfected)
-                {
-                    e.Player.Info.isInfected = false;
-                    e.Player.entityChanged = false;
-                    e.Player.iName = null;
-                }
+                e.Player.Info.isInfected = false;
+                e.Player.entityChanged = false;
+                e.Player.iName = null;
             }
         }
         #endregion

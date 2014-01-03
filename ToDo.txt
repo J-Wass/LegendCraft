@@ -1,14 +1,14 @@
 LegendCraft v2.2.0 Roadmap
 [x]Create full mono support
-[] Finish CPE support
--[]Test EnvWeatherAppearance when it is supported
--[x]Add SetClickDistance support
+[x] Finish CPE support
+[x]Test EnvWeatherAppearance when it is supported
+[x]Add SetClickDistance support
 [x]Add voice commands (the server software talks to the owner via audio)-not for mono
 [x]Edit Rules, Swears, Announcements, and Greeting ingame
 []Work on a generator to create autorank.xml's
-[]Remove WOMDirect button from config and remove heartbeat capability (no longer supported)
+[x]Remove WOMDirect button from config and remove heartbeat capability (no longer supported)
 []Finish autorank system
-[]Test and fix up FFA/TDM/Infection (mainly timing issues)
+[x]Test and fix up FFA/TDM/Infection (mainly timing issues)
 [x]Add /GameStats
 [x]Add /List HaxOff
 [x]Make hax togglable per world

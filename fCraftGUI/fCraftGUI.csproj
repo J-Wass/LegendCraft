@@ -59,7 +59,7 @@
   <ItemGroup>
     <Reference Include="fCraft, Version=0.6.1.7, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\bin\Release\fCraft.dll</HintPath>
+      <HintPath>..\bin\release\fCraft.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -89,8 +89,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ConfigGUI.ico" />
+    <Content Include="grayAbstract.jpg" />
+    <Content Include="grayArt.PNG" />
     <Content Include="LegendCraftLogoIcon.ico" />
     <Content Include="LegendCraftLogoText.ico" />
+    <None Include="Resources\Background.bmp" />
     <Content Include="Tileset.png" />
     <Content Include="TilesetShadowed.png" />
   </ItemGroup>
