@@ -80,10 +80,6 @@ namespace fCraft
 
         public static void Start()
         {
-            timeDelay = 20; //reset vars incase they were altered in a custom start
-            scoreLimit = 50;
-            timeLimit = 300;
-
             world_.Hax = false;
             world_.gameMode = GameMode.TeamDeathMatch; //set the game mode
             delayTask = Scheduler.NewTask(t => world_.Players.Message("&WTEAM DEATHMATCH &fwill be starting in {0} seconds: &WGet ready!", timeDelay));
@@ -98,7 +94,7 @@ namespace fCraft
             world_.Hax = true;
             if (p != null && world_ != null)
             {
-                world_.Players.Message("{0}&S stopped the game of Team Deathmatch on world {1}",
+                world_.Players.Message("{0}&S stopped the game of Team Deathmatch early on world {1}",
                     p.ClassyName, world_.ClassyName);
             }
             if (world_.Players.Count() > 1)

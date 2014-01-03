@@ -77,10 +77,15 @@ namespace fCraft
         public static void Stop(Player p) //for stopping the game early
         {
             world_.Hax = true;
+
+            //unhook event handlers
+            Player.JoinedWorld -= PlayerLeftWorld;
+            Player.Disconnected -= PlayerLeftServer;
+
             if (world_ == null) return;                                                     
             if (world_ != null && world_.Players.Count() > 0 && stoppedEarly)               
             {
-                world_.Players.Message("{0}&S stopped the game of FFA on world {1}",
+                world_.Players.Message("{0}&S stopped the game of FFA early on world {1}",
                     p.ClassyName, world_.ClassyName);
             }
             if (p != null && !stoppedEarly)
@@ -122,7 +127,7 @@ namespace fCraft
                 world_ = null;
                 return;
             }
-            if (!started)
+            if (!started)//first time running the interval
             {
                 if (world_.Players.Count() < 2) //in case players leave the world or disconnect during the start delay
                 {
@@ -154,6 +159,7 @@ namespace fCraft
                             timer.Start();
                         }
 
+                        //hook up handlers
                         Player.JoinedWorld += PlayerLeftWorld;
                         Player.Disconnected += PlayerLeftServer;
 
@@ -371,6 +377,7 @@ namespace fCraft
             e.Player.GunMode = false;
 
         }
+
 
         //check if player left world where infection is being played
         public static void PlayerLeftWorld(object poo, fCraft.Events.PlayerJoinedWorldEventArgs e)
