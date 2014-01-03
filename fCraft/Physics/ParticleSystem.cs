@@ -426,6 +426,16 @@ namespace fCraft
                         by.Info.totalKillsTDM++;        //tallies total TDM kills
                     }
                 }
+                if (FFA.isOn)
+                {
+                    if (hitted.Info.isPlayingFFA && by.Info.isPlayingFFA) //if the player is playing FFA and the person they hit is also playing
+                    {
+                        hitted.Info.gameDeathsFFA++;
+                        hitted.Info.totalDeathsFFA++;
+                        by.Info.gameKillsFFA++;
+                        by.Info.totalKillsFFA++;
+                    }
+                }
             }
 		}
 	}
