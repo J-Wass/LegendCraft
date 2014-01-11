@@ -1372,7 +1372,19 @@ namespace fCraft
                     World.VisitCount++;
                 }
             }
+
+            //revert game values if a player leaves a world
             RaisePlayerJoinedWorldEvent(this, oldWorld, reason);
+            Info.isPlayingFFA = false;
+            Info.isPlayingInfection = false;
+            Info.isPlayingTD = false;
+            Info.tempDisplayedName = null;
+            Info.isOnRedTeam = false;
+            Info.isOnBlueTeam = false;
+            Info.isPlayingTD = false;
+            entityChanged = false;
+            iName = null;
+            GunMode = false;
 
             //send mapedit env packet values if applicable
             if (Heartbeat.ClassiCube() && ClassiCube)

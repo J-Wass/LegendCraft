@@ -1,16 +1,4 @@
-LegendCraft v2.2.0 Roadmap
-[x]Create full mono support
-[x] Finish CPE support
-[x]Test EnvWeatherAppearance when it is supported
-[x]Add SetClickDistance support
-[x]Add voice commands (the server software talks to the owner via audio)-not for mono
-[x]Edit Rules, Swears, Announcements, and Greeting ingame
-[]Work on a generator to create autorank.xml's
-[x]Remove WOMDirect button from config and remove heartbeat capability (no longer supported)
-[]Finish autorank system
-[x]Test and fix up FFA/TDM/Infection (mainly timing issues)
-[x]Add /GameStats
-[x]Add /List HaxOff
-[x]Make hax togglable per world
-[x]Seduce Women, Obtain Currency <-- fo sho
+LegendCraft v2.3.0 Roadmap
+[]Possibly create autorank system
+[]Seduce Women, Obtain Currency
 []More to come

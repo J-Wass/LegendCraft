@@ -2,11 +2,8 @@
 #LegendCraft
 ![LegendCraft](http://i.imgur.com/YNPR6p0.png "Ya it's a logo deal with it")<br />
 
-Download the latest LegendCraft Beta release here: 
-http://www.mediafire.com/download/bldmn06tnim5z7i/LegendCraft%20Template%20v2.2.0%20BETA.zip
-
-Dowload the latest LegendCraft stable release here: 
-http://www.mediafire.com/download/t0v616d969owfek/LegendCraft%20Template%20v2.1.1.zip
+Dowload the latest LegendCraft release here: 
+http://www.mediafire.com/download/k8z61e6i0vyina5/LegendCraft%20Template%20v2.2.0.zip
 
 View all LegendCraft releases:
 https://www.mediafire.com/folder/oy3rdjfanvdt7/LegendCraft%20Releases

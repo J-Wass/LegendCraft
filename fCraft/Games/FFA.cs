@@ -79,9 +79,6 @@ namespace fCraft
             world_.Hax = true;
 
             //unhook event handlers
-            Player.JoinedWorld -= PlayerLeftWorld;
-            Player.Disconnected -= PlayerLeftServer;
-
             if (world_ == null) return;                                                     
             if (world_ != null && world_.Players.Count() > 0 && stoppedEarly)               
             {
@@ -160,8 +157,6 @@ namespace fCraft
                         }
 
                         //hook up handlers
-                        Player.JoinedWorld += PlayerLeftWorld;
-                        Player.Disconnected += PlayerLeftServer;
 
                         if (p.Info.IsHidden) //unhides players automatically if hidden (cannot shoot guns while hidden)
                         {
@@ -184,8 +179,6 @@ namespace fCraft
             {
                 if (started && startTime != null && (DateTime.Now - startTime).TotalSeconds >= timeDelay && p.Info.gameKillsFFA >= scoreLimit)
                 {
-                    Player.JoinedWorld -= PlayerLeftWorld;
-                    Player.Disconnected -= PlayerLeftServer;
                     Stop(p);
                     return;
                 }
@@ -197,13 +190,9 @@ namespace fCraft
                 Player winner = GetScoreList()[0];
                 if (world_.Players.Count() < 2)
                 {
-                    Player.JoinedWorld -= PlayerLeftWorld;
-                    Player.Disconnected -= PlayerLeftServer;
                     Stop(winner);
                     return;
                 }
-                Player.JoinedWorld -= PlayerLeftWorld;
-                Player.Disconnected -= PlayerLeftServer;
                 Stop(winner);
                 return;
             }
@@ -213,8 +202,6 @@ namespace fCraft
                 if (world_.Players.Count() < 2)
                 {
                     Player[] players = world_.Players;
-                    Player.JoinedWorld -= PlayerLeftWorld;
-                    Player.Disconnected -= PlayerLeftServer;
                     Stop(players[0]);
                     return;
                 }
@@ -362,82 +349,5 @@ namespace fCraft
             return;
         }
 
-        #region Events
-
-        //check if player left server to reset stats
-        public static void PlayerLeftServer(object poo, fCraft.Events.PlayerDisconnectedEventArgs e)
-        {           
-            e.Player.iName = null;
-            e.Player.Info.tempDisplayedName = null;
-            e.Player.Info.isOnRedTeam = false;
-            e.Player.Info.isOnBlueTeam = false;
-            e.Player.Info.isPlayingFFA = false;
-            e.Player.entityChanged = true;
-
-            e.Player.GunMode = false;
-
-        }
-
-
-        //check if player left world where infection is being played
-        public static void PlayerLeftWorld(object poo, fCraft.Events.PlayerJoinedWorldEventArgs e)
-        {
-            e.Player.iName = null;
-            e.Player.Info.tempDisplayedName = null;
-            e.Player.Info.isOnRedTeam = false;
-            e.Player.Info.isOnBlueTeam = false;
-            e.Player.Info.isPlayingFFA = false;
-            e.Player.entityChanged = true;
-
-            e.Player.GunMode = false;
-
-            try
-            {
-                foreach (Vector3I block in e.Player.GunCache.Values)
-                {
-                    e.Player.Send(PacketWriter.MakeSetBlock(block.X, block.Y, block.Z, e.Player.WorldMap.GetBlock(block)));
-                    Vector3I removed;
-                    e.Player.GunCache.TryRemove(block.ToString(), out removed);
-                }
-                if (e.Player.bluePortal.Count > 0)
-                {
-                    int j = 0;
-                    foreach (Vector3I block in e.Player.bluePortal)
-                    {
-                        if (e.Player.WorldMap != null && e.Player.World.IsLoaded)
-                        {
-                            e.Player.WorldMap.QueueUpdate(new BlockUpdate(null, block, e.Player.blueOld[j]));
-                            j++;
-                        }
-                    }
-                    e.Player.blueOld.Clear();
-                    e.Player.bluePortal.Clear();
-                }
-                if (e.Player.orangePortal.Count > 0)
-                {
-                    int j = 0;
-                    foreach (Vector3I block in e.Player.orangePortal)
-                    {
-                        if (e.Player.WorldMap != null && e.Player.World.IsLoaded)
-                        {
-                            e.Player.WorldMap.QueueUpdate(new BlockUpdate(null, block, e.Player.orangeOld[j]));
-                            j++;
-                        }
-                    }
-                    e.Player.orangeOld.Clear();
-                    e.Player.orangePortal.Clear();
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(LogType.SeriousError, "" + ex);
-            }
-
-            if (e.Player.IsOnline)
-            {
-                e.Player.Message("Your status has been reverted. (Left Game world)");
-            }
-        }
-        #endregion
     }
 }

@@ -653,6 +653,7 @@ THE SOFTWARE.*/
 
         private static void TDHandler(Player player, Command cmd)       //For TDM Game: starting/ending game, customizing game options, viewing score, etc.
         {
+
             string Option = cmd.Next();
             World world = player.World;
 
