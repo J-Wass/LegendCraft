@@ -1,5 +1,8 @@
 LegendCraft Changelog v2.3.0
 
+LegendCraft Changelog v2.2.1
+Change: Auto updater works with github instead of mediafire
+
 LegendCraft Changelog v2.2.0 
 Add: Major improvements for mono
 Add: /temprank

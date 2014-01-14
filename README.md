@@ -3,10 +3,10 @@
 ![LegendCraft](http://i.imgur.com/YNPR6p0.png "Ya it's a logo deal with it")<br />
 
 Dowload the latest LegendCraft release here: 
-http://www.mediafire.com/download/k8z61e6i0vyina5/LegendCraft%20Template%20v2.2.0.zip
+https://github.com/LeChosenOne/LegendCraft/releases/tag/2.2.1
 
 View all LegendCraft releases:
-https://www.mediafire.com/folder/oy3rdjfanvdt7/LegendCraft%20Releases
+https://github.com/LeChosenOne/LegendCraft/releases
 
 Thank you for downloading LegendCraft, a custom Minecraft/ClassiCube server based on fCraft and 800craft.
 

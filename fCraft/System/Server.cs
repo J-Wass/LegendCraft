@@ -404,7 +404,7 @@ namespace fCraft {
                             {
 
                                 Logger.Log(LogType.Warning, "Server.Run: Your LegendCraft version is out of date. A LegendCraft Update is available!");
-                                Logger.Log(LogType.Warning, "Download the latest LegendCraft at: http://www.mediafire.com/folder/oy3rdjfanvdt7/LegendCraft_Releases");
+                                Logger.Log(LogType.Warning, "Download the latest LegendCraft at: https://github.com/LeChosenOne/LegendCraft/releases");
 
                             }
                             else
