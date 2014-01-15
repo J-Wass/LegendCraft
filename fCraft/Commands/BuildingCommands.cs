@@ -105,7 +105,7 @@ namespace fCraft {
             CommandManager.RegisterCommand(Cdzz);
         }
         #region LegendCraft
-        /* Copyright (c) <2012-2013> <LeChosenOne, DingusBungus, Eeyle>
+        /* Copyright (c) <2012-2014> <LeChosenOne, DingusBungus>
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
