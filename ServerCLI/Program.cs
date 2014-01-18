@@ -21,10 +21,12 @@
  *
  */
 
-//Modified 5/25/13 LegendCraft Team
+//Modified LegendCraft Team
+
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
 using System.Threading;
 using System.Net;
@@ -51,7 +53,10 @@ namespace fCraft.ServerCLI {
 
                 Server.InitServer();
 
-                CheckForUpdates();
+                if (ConfigKey.CheckForUpdates.GetString() == "True")
+                {
+                    CheckForUpdates();
+                }
                 Console.Title = "LegendCraft " + Updater.LatestStable + " - " + ConfigKey.ServerName.GetString();
 
                 if( !ConfigKey.ProcessPriority.IsBlank() ) {
@@ -184,38 +189,70 @@ namespace fCraft.ServerCLI {
         }
 
 
-        static void CheckForUpdates() {
-            UpdaterMode updaterMode = ConfigKey.UpdaterMode.GetEnum<UpdaterMode>();
-            if( updaterMode == UpdaterMode.Disabled ) return;
+        static void CheckForUpdates() 
+        {
+            Console.WriteLine("Checking for LegendCraft updates...");
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://legendcraft.webuda.com//CurrentVersion.html");
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 
-            UpdaterResult update = Updater.CheckForUpdates();
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    using (Stream stream = response.GetResponseStream())
+                    {
+                        if (stream != null)
+                        {
+                            StreamReader streamReader = new StreamReader(stream);
+                            string version = streamReader.ReadLine();
 
-            if( update.UpdateAvailable ) {
-                Console.WriteLine( "** A new version of LegendCraft is available: {0}, released {1:0} day(s) ago. **",
-                                   update.LatestRelease.VersionString,
-                                   update.LatestRelease.Age.TotalDays );
-                if( updaterMode != UpdaterMode.Notify ) {
-                    WebClient client = new WebClient();
-                    client.DownloadProgressChanged += OnUpdateDownloadProgress;
-                    client.DownloadFileCompleted += OnUpdateDownloadCompleted;
-                    client.DownloadFileAsync( update.DownloadUri, Paths.UpdaterFileName );
-                    UpdateDownloadWaiter.WaitOne();
-                    if( updateFailed ) return;
+                            //update is available, prompt for a download
+                            if (version != null && version != fCraft.Updater.LatestStable)
+                            {
 
-                    if( updaterMode == UpdaterMode.Prompt ) {
-                        Console.WriteLine( "Restart the server and update now? y/n" );
-                        var key = Console.ReadKey();
-                        if( key.KeyChar == 'y' ) {
-                            RestartForUpdate();
-                            return;
-                        } else {
-                            Console.WriteLine( "You can update manually by shutting down the server and running " + Paths.UpdaterFileName );
+                                Console.WriteLine("Server.Run: Your LegendCraft version is out of date. A LegendCraft Update is available!");
+                                Console.WriteLine("Download the latest LegendCraft version and restart the server? (Y/N)");
+                                string answer = Console.ReadLine();
+                                if (answer.ToLower() == "y" || answer.ToLower() == "yes" || answer.ToLower() == "yup" || answer.ToLower() == "yeah")//preparedness at its finest
+                                {
+                                    using (var client = new WebClient())
+                                    {
+                                        try
+                                        {
+                                            //download new zip in current directory
+                                            Process.Start("http://www.legend-craft.tk/download/latest");
+                                            Console.WriteLine("Downloading the latest LegendCraft Version. Please replace all the files (not folders) in your current folder with the new ones after shutting down.");
+                                        }
+                                        catch(Exception ex)
+                                        {
+                                            Console.WriteLine("Update error: " + ex);
+                                        }
+
+                                    }
+
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Update ignored. To ignore future LegendCraft update requests, uncheck the box in configGUI.");
+                                }
+
+                            }
+                            else
+                            {
+                                Console.WriteLine("Your LegendCraft version is up to date!");
+                            }
                         }
-                    } else {
-                        RestartForUpdate();
-                        return;
                     }
                 }
+            }
+
+            catch (WebException error)
+            {
+                Console.WriteLine("There was an internet connection error. Server was unable to check for updates. Error: \n\r" + error);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("There was an error in trying to check for updates:\n\r " + e);
             }
         }
 
@@ -223,7 +260,7 @@ namespace fCraft.ServerCLI {
         static void RestartForUpdate() {
             string restartArgs = String.Format( "{0} --restart=\"{1}\"",
                                                 Server.GetArgString(),
-                                                MonoCompat.PrependMono( "ServerGUI.exe" ) );
+                                                MonoCompat.PrependMono( "ServerCLI.exe" ) );
             MonoCompat.StartDotNetProcess( Paths.UpdaterFileName, restartArgs, true );
         }
 

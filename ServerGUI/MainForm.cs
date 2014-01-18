@@ -1,10 +1,13 @@
 ﻿// Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
+//Modified LegendCraft Team
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using System.Threading;
+using System.Net;
+using System.IO;
 using fCraft.Events;
 using fCraft.GUI;
 using fCraft.ServerGUI;
@@ -61,7 +64,10 @@ namespace fCraft.ServerGUI
                 if (shutdownPending) return;
 
                 BeginInvoke((Action)OnInitSuccess);
-
+                if (ConfigKey.CheckForUpdates.GetString() == "True")
+                {
+                    UpdateCheck();
+                }
 
 
                 // set process priority
@@ -104,6 +110,71 @@ namespace fCraft.ServerGUI
             Text = "LegendCraft " + " - " + ConfigKey.ServerName.GetString();
         }
 
+        void UpdateCheck()
+        {
+            Logger.Log(LogType.SystemActivity, "Checking for LegendCraft updates...");
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://legendcraft.webuda.com//CurrentVersion.html");
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    using (Stream stream = response.GetResponseStream())
+                    {
+                        if (stream != null)
+                        {
+                            StreamReader streamReader = new StreamReader(stream);
+                            string version = streamReader.ReadLine();
+
+                            //update is available, prompt for a download
+                            if (version != null && version != fCraft.Updater.LatestStable)
+                            {
+
+                                Logger.Log(LogType.SystemActivity, "Server.Run: Your LegendCraft version is out of date. A LegendCraft Update is available!");
+
+                                DialogResult answer = MessageBox.Show("Would you like to download the latest LegendCraft Version? (" + version + ")", "LegendCraft Updater", MessageBoxButtons.YesNo);
+                                if (answer == DialogResult.Yes)
+                                {
+                                    using (var client = new WebClient())
+                                    {
+                                        try
+                                        {
+                                            Process.Start("http://www.legend-craft.tk/download/latest");
+                                            Logger.Log(LogType.SystemActivity, "Downloading the latest LegendCraft Version. Please replace all the files (not folders) in your current folder with the new ones after shutting down.");
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Logger.Log(LogType.Error, "Update error: " + ex);
+                                        }
+
+                                    }
+
+                                }
+                                else
+                                {
+                                    Logger.Log(LogType.SystemActivity, "Update ignored. To ignore future LegendCraft update requests, uncheck the box in configGUI.");
+                                }
+
+                            }
+                            else
+                            {
+                                Logger.Log(LogType.SystemActivity, "Your LegendCraft version is up to date!");
+                            }
+                        }
+                    }
+                }
+            }
+
+            catch (WebException)
+            {
+                Console.WriteLine("There was an internet connection error. Server was unable to check for updates.");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("There was an error in trying to check for updates:\n\r " + e);
+            }
+        }
 
         void OnStartupSuccess()
         {

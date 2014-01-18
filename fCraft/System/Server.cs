@@ -385,8 +385,9 @@ namespace fCraft {
                             ExternalIP, Port );
             }
 
-            //check for updates
-            Logger.Log(LogType.ConsoleOutput, "Checking for LegendCraft updates...");
+            //check for updates, updates are now checked from serverGUI/serverCLI
+            
+            /*Logger.Log(LogType.ConsoleOutput, "Checking for LegendCraft updates...");
             try
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://legendcraft.webuda.com//CurrentVersion.html");
@@ -415,6 +416,7 @@ namespace fCraft {
                     }
                 }
             }
+            
             catch (WebException)
             {
                 Logger.Log(LogType.Warning, "There was an internet connection error. Server was unable to check for updates.");
@@ -422,7 +424,7 @@ namespace fCraft {
             catch(Exception e)
             {
                 Logger.Log(LogType.Error, "There was an error in trying to check for updates:\n\r " + e);
-            }
+            }*/
 
 
             // list loaded worlds

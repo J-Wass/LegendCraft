@@ -166,7 +166,7 @@ LegendCraft code and binaries are covered by the MIT license.
 LegendCraft license:
 
 -------------------------------------------------------------------------------
-Copyright (c) <2012> <LeChosenOne, DingusBingus>
+Copyright (c) <2012 - 2014> <LeChosenOne, DingusBingus>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -252,7 +252,7 @@ or any other files from Minecraft... neither does 800Craft or LegendCraft.
 
 LegendCraft was developed by LeChosenOne, and DingusBungus
   
-  -With code contribution by Jonty800 (he lifts), Eeyle.
+  -With code contribution by Jonty800 (he lifts) and Eeyle.
 
 Thanks to 800Craft code contributers:
     Rebelliousdude, boblol0909, WaterGod469 and Maicke98 for trying. 

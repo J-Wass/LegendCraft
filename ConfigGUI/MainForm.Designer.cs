@@ -31,49 +31,10 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabs = new System.Windows.Forms.TabControl();
-            this.tabChat = new System.Windows.Forms.TabPage();
-            this.gAppearence = new System.Windows.Forms.GroupBox();
-            this.xShowConnectionMessages = new System.Windows.Forms.CheckBox();
-            this.xShowJoinedWorldMessages = new System.Windows.Forms.CheckBox();
-            this.xRankColorsInWorldNames = new System.Windows.Forms.CheckBox();
-            this.xRankPrefixesInList = new System.Windows.Forms.CheckBox();
-            this.xRankPrefixesInChat = new System.Windows.Forms.CheckBox();
-            this.xRankColorsInChat = new System.Windows.Forms.CheckBox();
-            this.gChatColors = new System.Windows.Forms.GroupBox();
-            this.lColorMe = new System.Windows.Forms.Label();
-            this.bColorMe = new System.Windows.Forms.Button();
-            this.lColorWarning = new System.Windows.Forms.Label();
-            this.bColorWarning = new System.Windows.Forms.Button();
-            this.bColorSys = new System.Windows.Forms.Button();
-            this.lColorSys = new System.Windows.Forms.Label();
-            this.bColorPM = new System.Windows.Forms.Button();
-            this.lColorHelp = new System.Windows.Forms.Label();
-            this.lColorPM = new System.Windows.Forms.Label();
-            this.lColorSay = new System.Windows.Forms.Label();
-            this.bColorAnnouncement = new System.Windows.Forms.Button();
-            this.lColorAnnouncement = new System.Windows.Forms.Label();
-            this.bColorHelp = new System.Windows.Forms.Button();
-            this.bColorSay = new System.Windows.Forms.Button();
             this.tabGeneral = new System.Windows.Forms.TabPage();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.bSoft = new System.Windows.Forms.Button();
-            this.bWiki = new System.Windows.Forms.Button();
-            this.bWeb = new System.Windows.Forms.Button();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.bChangelog = new System.Windows.Forms.Button();
-            this.bCredits = new System.Windows.Forms.Button();
-            this.bReadme = new System.Windows.Forms.Button();
-            this.gInformation = new System.Windows.Forms.GroupBox();
-            this.bGreeting = new System.Windows.Forms.Button();
-            this.lAnnouncementsUnits = new System.Windows.Forms.Label();
-            this.nAnnouncements = new System.Windows.Forms.NumericUpDown();
-            this.xAnnouncements = new System.Windows.Forms.CheckBox();
-            this.bRules = new System.Windows.Forms.Button();
-            this.bAnnouncements = new System.Windows.Forms.Button();
             this.gBasic = new System.Windows.Forms.GroupBox();
             this.label6 = new System.Windows.Forms.Label();
             this.HeartBeatUrlComboBox = new System.Windows.Forms.ComboBox();
@@ -96,6 +57,46 @@
             this.nMaxPlayers = new System.Windows.Forms.NumericUpDown();
             this.lPublic = new System.Windows.Forms.Label();
             this.lMaxPlayers = new System.Windows.Forms.Label();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.bSoft = new System.Windows.Forms.Button();
+            this.bWiki = new System.Windows.Forms.Button();
+            this.bWeb = new System.Windows.Forms.Button();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.bChangelog = new System.Windows.Forms.Button();
+            this.bCredits = new System.Windows.Forms.Button();
+            this.bReadme = new System.Windows.Forms.Button();
+            this.gInformation = new System.Windows.Forms.GroupBox();
+            this.bGreeting = new System.Windows.Forms.Button();
+            this.lAnnouncementsUnits = new System.Windows.Forms.Label();
+            this.nAnnouncements = new System.Windows.Forms.NumericUpDown();
+            this.xAnnouncements = new System.Windows.Forms.CheckBox();
+            this.bRules = new System.Windows.Forms.Button();
+            this.bAnnouncements = new System.Windows.Forms.Button();
+            this.tabChat = new System.Windows.Forms.TabPage();
+            this.chatPreview = new fCraft.ConfigGUI.ChatPreview();
+            this.gAppearence = new System.Windows.Forms.GroupBox();
+            this.xShowConnectionMessages = new System.Windows.Forms.CheckBox();
+            this.xShowJoinedWorldMessages = new System.Windows.Forms.CheckBox();
+            this.xRankColorsInWorldNames = new System.Windows.Forms.CheckBox();
+            this.xRankPrefixesInList = new System.Windows.Forms.CheckBox();
+            this.xRankPrefixesInChat = new System.Windows.Forms.CheckBox();
+            this.xRankColorsInChat = new System.Windows.Forms.CheckBox();
+            this.gChatColors = new System.Windows.Forms.GroupBox();
+            this.lColorMe = new System.Windows.Forms.Label();
+            this.bColorMe = new System.Windows.Forms.Button();
+            this.lColorWarning = new System.Windows.Forms.Label();
+            this.bColorWarning = new System.Windows.Forms.Button();
+            this.bColorSys = new System.Windows.Forms.Button();
+            this.lColorSys = new System.Windows.Forms.Label();
+            this.bColorPM = new System.Windows.Forms.Button();
+            this.lColorHelp = new System.Windows.Forms.Label();
+            this.lColorPM = new System.Windows.Forms.Label();
+            this.lColorSay = new System.Windows.Forms.Label();
+            this.bColorAnnouncement = new System.Windows.Forms.Button();
+            this.lColorAnnouncement = new System.Windows.Forms.Label();
+            this.bColorHelp = new System.Windows.Forms.Button();
+            this.bColorSay = new System.Windows.Forms.Button();
             this.tabWorlds = new System.Windows.Forms.TabPage();
             this.xWoMEnableEnvExtensions = new System.Windows.Forms.CheckBox();
             this.bMapPath = new System.Windows.Forms.Button();
@@ -187,7 +188,10 @@
             this.xMaxConnectionsPerIP = new System.Windows.Forms.CheckBox();
             this.lVerifyNames = new System.Windows.Forms.Label();
             this.cVerifyNames = new System.Windows.Forms.ComboBox();
-            this.tabSavingAndBackup = new System.Windows.Forms.TabPage();
+            this.gUpdate = new System.Windows.Forms.TabPage();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.bUpdate = new System.Windows.Forms.Button();
+            this.checkUpdate = new System.Windows.Forms.CheckBox();
             this.gDataBackup = new System.Windows.Forms.GroupBox();
             this.xBackupDataOnStartup = new System.Windows.Forms.CheckBox();
             this.gSaving = new System.Windows.Forms.GroupBox();
@@ -281,7 +285,7 @@
             this.xRelayAllBlockUpdates = new System.Windows.Forms.CheckBox();
             this.xNoPartialPositionUpdates = new System.Windows.Forms.CheckBox();
             this.gCrashReport = new System.Windows.Forms.GroupBox();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.lCrashReportDisclaimer = new System.Windows.Forms.Label();
             this.Misc = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -308,22 +312,21 @@
             this.bApply = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.chatPreview = new fCraft.ConfigGUI.ChatPreview();
             this.tabs.SuspendLayout();
-            this.tabChat.SuspendLayout();
-            this.gAppearence.SuspendLayout();
-            this.gChatColors.SuspendLayout();
             this.tabGeneral.SuspendLayout();
-            this.groupBox4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            this.groupBox2.SuspendLayout();
-            this.gInformation.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nAnnouncements)).BeginInit();
             this.gBasic.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nMaxPlayersPerWorld)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nPort)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nUploadBandwidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nMaxPlayers)).BeginInit();
+            this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.groupBox2.SuspendLayout();
+            this.gInformation.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nAnnouncements)).BeginInit();
+            this.tabChat.SuspendLayout();
+            this.gAppearence.SuspendLayout();
+            this.gChatColors.SuspendLayout();
             this.tabWorlds.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvWorlds)).BeginInit();
             this.tabRanks.SuspendLayout();
@@ -345,7 +348,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.nAntispamMessageCount)).BeginInit();
             this.gVerify.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nMaxConnectionsPerIP)).BeginInit();
-            this.tabSavingAndBackup.SuspendLayout();
+            this.gUpdate.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.gDataBackup.SuspendLayout();
             this.gSaving.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nSaveInterval)).BeginInit();
@@ -386,7 +390,7 @@
             this.tabs.Controls.Add(this.tabWorlds);
             this.tabs.Controls.Add(this.tabRanks);
             this.tabs.Controls.Add(this.tabSecurity);
-            this.tabs.Controls.Add(this.tabSavingAndBackup);
+            this.tabs.Controls.Add(this.gUpdate);
             this.tabs.Controls.Add(this.tabLogging);
             this.tabs.Controls.Add(this.tabIRC);
             this.tabs.Controls.Add(this.tabAdvanced);
@@ -397,252 +401,6 @@
             this.tabs.SelectedIndex = 0;
             this.tabs.Size = new System.Drawing.Size(660, 510);
             this.tabs.TabIndex = 0;
-            // 
-            // tabChat
-            // 
-            this.tabChat.BackColor = System.Drawing.Color.Firebrick;
-            this.tabChat.Controls.Add(this.chatPreview);
-            this.tabChat.Controls.Add(this.gAppearence);
-            this.tabChat.Controls.Add(this.gChatColors);
-            this.tabChat.Location = new System.Drawing.Point(4, 24);
-            this.tabChat.Name = "tabChat";
-            this.tabChat.Padding = new System.Windows.Forms.Padding(5, 5, 5, 10);
-            this.tabChat.Size = new System.Drawing.Size(652, 482);
-            this.tabChat.TabIndex = 10;
-            this.tabChat.Text = "Chat";
-            // 
-            // gAppearence
-            // 
-            this.gAppearence.Controls.Add(this.xShowConnectionMessages);
-            this.gAppearence.Controls.Add(this.xShowJoinedWorldMessages);
-            this.gAppearence.Controls.Add(this.xRankColorsInWorldNames);
-            this.gAppearence.Controls.Add(this.xRankPrefixesInList);
-            this.gAppearence.Controls.Add(this.xRankPrefixesInChat);
-            this.gAppearence.Controls.Add(this.xRankColorsInChat);
-            this.gAppearence.Location = new System.Drawing.Point(7, 153);
-            this.gAppearence.Name = "gAppearence";
-            this.gAppearence.Size = new System.Drawing.Size(637, 97);
-            this.gAppearence.TabIndex = 1;
-            this.gAppearence.TabStop = false;
-            this.gAppearence.Text = "Appearence Tweaks";
-            // 
-            // xShowConnectionMessages
-            // 
-            this.xShowConnectionMessages.AutoSize = true;
-            this.xShowConnectionMessages.Location = new System.Drawing.Point(325, 45);
-            this.xShowConnectionMessages.Name = "xShowConnectionMessages";
-            this.xShowConnectionMessages.Size = new System.Drawing.Size(306, 19);
-            this.xShowConnectionMessages.TabIndex = 4;
-            this.xShowConnectionMessages.Text = "Show a message when players join/leave SERVER.";
-            this.xShowConnectionMessages.UseVisualStyleBackColor = true;
-            // 
-            // xShowJoinedWorldMessages
-            // 
-            this.xShowJoinedWorldMessages.AutoSize = true;
-            this.xShowJoinedWorldMessages.Location = new System.Drawing.Point(325, 20);
-            this.xShowJoinedWorldMessages.Name = "xShowJoinedWorldMessages";
-            this.xShowJoinedWorldMessages.Size = new System.Drawing.Size(261, 19);
-            this.xShowJoinedWorldMessages.TabIndex = 3;
-            this.xShowJoinedWorldMessages.Text = "Show a message when players join worlds.";
-            this.xShowJoinedWorldMessages.UseVisualStyleBackColor = true;
-            // 
-            // xRankColorsInWorldNames
-            // 
-            this.xRankColorsInWorldNames.AutoSize = true;
-            this.xRankColorsInWorldNames.Location = new System.Drawing.Point(325, 70);
-            this.xRankColorsInWorldNames.Name = "xRankColorsInWorldNames";
-            this.xRankColorsInWorldNames.Size = new System.Drawing.Size(243, 19);
-            this.xRankColorsInWorldNames.TabIndex = 5;
-            this.xRankColorsInWorldNames.Text = "Color world names based on build rank.";
-            this.xRankColorsInWorldNames.UseVisualStyleBackColor = true;
-            // 
-            // xRankPrefixesInList
-            // 
-            this.xRankPrefixesInList.AutoSize = true;
-            this.xRankPrefixesInList.Location = new System.Drawing.Point(44, 70);
-            this.xRankPrefixesInList.Name = "xRankPrefixesInList";
-            this.xRankPrefixesInList.Size = new System.Drawing.Size(219, 19);
-            this.xRankPrefixesInList.TabIndex = 2;
-            this.xRankPrefixesInList.Text = "Prefixes in player list (breaks skins).";
-            this.xRankPrefixesInList.UseVisualStyleBackColor = true;
-            // 
-            // xRankPrefixesInChat
-            // 
-            this.xRankPrefixesInChat.AutoSize = true;
-            this.xRankPrefixesInChat.Location = new System.Drawing.Point(25, 45);
-            this.xRankPrefixesInChat.Name = "xRankPrefixesInChat";
-            this.xRankPrefixesInChat.Size = new System.Drawing.Size(133, 19);
-            this.xRankPrefixesInChat.TabIndex = 1;
-            this.xRankPrefixesInChat.Text = "Show rank prefixes.";
-            this.xRankPrefixesInChat.UseVisualStyleBackColor = true;
-            this.xRankPrefixesInChat.CheckedChanged += new System.EventHandler(this.xRankPrefixesInChat_CheckedChanged);
-            // 
-            // xRankColorsInChat
-            // 
-            this.xRankColorsInChat.AutoSize = true;
-            this.xRankColorsInChat.Location = new System.Drawing.Point(25, 20);
-            this.xRankColorsInChat.Name = "xRankColorsInChat";
-            this.xRankColorsInChat.Size = new System.Drawing.Size(123, 19);
-            this.xRankColorsInChat.TabIndex = 0;
-            this.xRankColorsInChat.Text = "Show rank colors.";
-            this.xRankColorsInChat.UseVisualStyleBackColor = true;
-            // 
-            // gChatColors
-            // 
-            this.gChatColors.BackColor = System.Drawing.Color.Firebrick;
-            this.gChatColors.Controls.Add(this.lColorMe);
-            this.gChatColors.Controls.Add(this.bColorMe);
-            this.gChatColors.Controls.Add(this.lColorWarning);
-            this.gChatColors.Controls.Add(this.bColorWarning);
-            this.gChatColors.Controls.Add(this.bColorSys);
-            this.gChatColors.Controls.Add(this.lColorSys);
-            this.gChatColors.Controls.Add(this.bColorPM);
-            this.gChatColors.Controls.Add(this.lColorHelp);
-            this.gChatColors.Controls.Add(this.lColorPM);
-            this.gChatColors.Controls.Add(this.lColorSay);
-            this.gChatColors.Controls.Add(this.bColorAnnouncement);
-            this.gChatColors.Controls.Add(this.lColorAnnouncement);
-            this.gChatColors.Controls.Add(this.bColorHelp);
-            this.gChatColors.Controls.Add(this.bColorSay);
-            this.gChatColors.Location = new System.Drawing.Point(8, 8);
-            this.gChatColors.Name = "gChatColors";
-            this.gChatColors.Size = new System.Drawing.Size(636, 139);
-            this.gChatColors.TabIndex = 0;
-            this.gChatColors.TabStop = false;
-            this.gChatColors.Text = "Colors";
-            // 
-            // lColorMe
-            // 
-            this.lColorMe.AutoSize = true;
-            this.lColorMe.Location = new System.Drawing.Point(402, 82);
-            this.lColorMe.Name = "lColorMe";
-            this.lColorMe.Size = new System.Drawing.Size(117, 15);
-            this.lColorMe.TabIndex = 12;
-            this.lColorMe.Text = "/Me command color";
-            // 
-            // bColorMe
-            // 
-            this.bColorMe.BackColor = System.Drawing.Color.White;
-            this.bColorMe.Location = new System.Drawing.Point(525, 78);
-            this.bColorMe.Name = "bColorMe";
-            this.bColorMe.Size = new System.Drawing.Size(100, 23);
-            this.bColorMe.TabIndex = 13;
-            this.bColorMe.UseVisualStyleBackColor = false;
-            this.bColorMe.Click += new System.EventHandler(this.bColorMe_Click);
-            // 
-            // lColorWarning
-            // 
-            this.lColorWarning.AutoSize = true;
-            this.lColorWarning.Location = new System.Drawing.Point(69, 53);
-            this.lColorWarning.Name = "lColorWarning";
-            this.lColorWarning.Size = new System.Drawing.Size(118, 15);
-            this.lColorWarning.TabIndex = 2;
-            this.lColorWarning.Text = "Warning / error color";
-            // 
-            // bColorWarning
-            // 
-            this.bColorWarning.BackColor = System.Drawing.Color.White;
-            this.bColorWarning.Location = new System.Drawing.Point(193, 49);
-            this.bColorWarning.Name = "bColorWarning";
-            this.bColorWarning.Size = new System.Drawing.Size(100, 23);
-            this.bColorWarning.TabIndex = 3;
-            this.bColorWarning.UseVisualStyleBackColor = false;
-            this.bColorWarning.Click += new System.EventHandler(this.bColorWarning_Click);
-            // 
-            // bColorSys
-            // 
-            this.bColorSys.BackColor = System.Drawing.Color.White;
-            this.bColorSys.Location = new System.Drawing.Point(193, 20);
-            this.bColorSys.Name = "bColorSys";
-            this.bColorSys.Size = new System.Drawing.Size(100, 23);
-            this.bColorSys.TabIndex = 1;
-            this.bColorSys.UseVisualStyleBackColor = false;
-            this.bColorSys.Click += new System.EventHandler(this.bColorSys_Click);
-            // 
-            // lColorSys
-            // 
-            this.lColorSys.AutoSize = true;
-            this.lColorSys.Location = new System.Drawing.Point(56, 24);
-            this.lColorSys.Name = "lColorSys";
-            this.lColorSys.Size = new System.Drawing.Size(131, 15);
-            this.lColorSys.TabIndex = 0;
-            this.lColorSys.Text = "System message color";
-            // 
-            // bColorPM
-            // 
-            this.bColorPM.BackColor = System.Drawing.Color.White;
-            this.bColorPM.Location = new System.Drawing.Point(193, 78);
-            this.bColorPM.Name = "bColorPM";
-            this.bColorPM.Size = new System.Drawing.Size(100, 23);
-            this.bColorPM.TabIndex = 5;
-            this.bColorPM.UseVisualStyleBackColor = false;
-            this.bColorPM.Click += new System.EventHandler(this.bColorPM_Click);
-            // 
-            // lColorHelp
-            // 
-            this.lColorHelp.AutoSize = true;
-            this.lColorHelp.Location = new System.Drawing.Point(70, 111);
-            this.lColorHelp.Name = "lColorHelp";
-            this.lColorHelp.Size = new System.Drawing.Size(117, 15);
-            this.lColorHelp.TabIndex = 6;
-            this.lColorHelp.Text = "Help message color";
-            // 
-            // lColorPM
-            // 
-            this.lColorPM.AutoSize = true;
-            this.lColorPM.Location = new System.Drawing.Point(26, 82);
-            this.lColorPM.Name = "lColorPM";
-            this.lColorPM.Size = new System.Drawing.Size(161, 15);
-            this.lColorPM.TabIndex = 4;
-            this.lColorPM.Text = "Private / rank message color";
-            // 
-            // lColorSay
-            // 
-            this.lColorSay.AutoSize = true;
-            this.lColorSay.Location = new System.Drawing.Point(407, 53);
-            this.lColorSay.Name = "lColorSay";
-            this.lColorSay.Size = new System.Drawing.Size(114, 15);
-            this.lColorSay.TabIndex = 10;
-            this.lColorSay.Text = "/Say message color";
-            // 
-            // bColorAnnouncement
-            // 
-            this.bColorAnnouncement.BackColor = System.Drawing.Color.White;
-            this.bColorAnnouncement.Location = new System.Drawing.Point(525, 20);
-            this.bColorAnnouncement.Name = "bColorAnnouncement";
-            this.bColorAnnouncement.Size = new System.Drawing.Size(100, 23);
-            this.bColorAnnouncement.TabIndex = 9;
-            this.bColorAnnouncement.UseVisualStyleBackColor = false;
-            this.bColorAnnouncement.Click += new System.EventHandler(this.bColorAnnouncement_Click);
-            // 
-            // lColorAnnouncement
-            // 
-            this.lColorAnnouncement.AutoSize = true;
-            this.lColorAnnouncement.Location = new System.Drawing.Point(342, 24);
-            this.lColorAnnouncement.Name = "lColorAnnouncement";
-            this.lColorAnnouncement.Size = new System.Drawing.Size(182, 15);
-            this.lColorAnnouncement.TabIndex = 8;
-            this.lColorAnnouncement.Text = "Announcement and /Rules color";
-            // 
-            // bColorHelp
-            // 
-            this.bColorHelp.BackColor = System.Drawing.Color.White;
-            this.bColorHelp.Location = new System.Drawing.Point(193, 107);
-            this.bColorHelp.Name = "bColorHelp";
-            this.bColorHelp.Size = new System.Drawing.Size(100, 23);
-            this.bColorHelp.TabIndex = 7;
-            this.bColorHelp.UseVisualStyleBackColor = false;
-            this.bColorHelp.Click += new System.EventHandler(this.bColorHelp_Click);
-            // 
-            // bColorSay
-            // 
-            this.bColorSay.BackColor = System.Drawing.Color.White;
-            this.bColorSay.Location = new System.Drawing.Point(525, 49);
-            this.bColorSay.Name = "bColorSay";
-            this.bColorSay.Size = new System.Drawing.Size(100, 23);
-            this.bColorSay.TabIndex = 11;
-            this.bColorSay.UseVisualStyleBackColor = false;
-            this.bColorSay.Click += new System.EventHandler(this.bColorSay_Click);
             // 
             // tabGeneral
             // 
@@ -658,196 +416,6 @@
             this.tabGeneral.Size = new System.Drawing.Size(652, 482);
             this.tabGeneral.TabIndex = 0;
             this.tabGeneral.Text = "General";
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.AccessibleRole = System.Windows.Forms.AccessibleRole.Window;
-            this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox4.Controls.Add(this.bSoft);
-            this.groupBox4.Controls.Add(this.bWiki);
-            this.groupBox4.Controls.Add(this.bWeb);
-            this.groupBox4.Location = new System.Drawing.Point(468, 306);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(126, 135);
-            this.groupBox4.TabIndex = 5;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Contact Us";
-            // 
-            // bSoft
-            // 
-            this.bSoft.Location = new System.Drawing.Point(7, 89);
-            this.bSoft.Name = "bSoft";
-            this.bSoft.Size = new System.Drawing.Size(110, 23);
-            this.bSoft.TabIndex = 2;
-            this.bSoft.Text = "Other Software";
-            this.bSoft.UseVisualStyleBackColor = true;
-            this.bSoft.Click += new System.EventHandler(this.bSoft_Click);
-            // 
-            // bWiki
-            // 
-            this.bWiki.Location = new System.Drawing.Point(6, 60);
-            this.bWiki.Name = "bWiki";
-            this.bWiki.Size = new System.Drawing.Size(111, 23);
-            this.bWiki.TabIndex = 1;
-            this.bWiki.Text = "Wiki";
-            this.bWiki.UseVisualStyleBackColor = true;
-            // 
-            // bWeb
-            // 
-            this.bWeb.Location = new System.Drawing.Point(7, 31);
-            this.bWeb.Name = "bWeb";
-            this.bWeb.Size = new System.Drawing.Size(110, 23);
-            this.bWeb.TabIndex = 1;
-            this.bWeb.Text = "Website";
-            this.bWeb.UseVisualStyleBackColor = true;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(212, 294);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(213, 175);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox1.TabIndex = 5;
-            this.pictureBox1.TabStop = false;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.groupBox2.Controls.Add(this.bChangelog);
-            this.groupBox2.Controls.Add(this.bCredits);
-            this.groupBox2.Controls.Add(this.bReadme);
-            this.groupBox2.Location = new System.Drawing.Point(51, 306);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(123, 135);
-            this.groupBox2.TabIndex = 4;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "About";
-            // 
-            // bChangelog
-            // 
-            this.bChangelog.Location = new System.Drawing.Point(7, 89);
-            this.bChangelog.Name = "bChangelog";
-            this.bChangelog.Size = new System.Drawing.Size(110, 23);
-            this.bChangelog.TabIndex = 2;
-            this.bChangelog.Text = "Changelog";
-            this.bChangelog.UseVisualStyleBackColor = true;
-            this.bChangelog.Click += new System.EventHandler(this.bChangelog_Click);
-            // 
-            // bCredits
-            // 
-            this.bCredits.Location = new System.Drawing.Point(6, 31);
-            this.bCredits.Name = "bCredits";
-            this.bCredits.Size = new System.Drawing.Size(111, 23);
-            this.bCredits.TabIndex = 1;
-            this.bCredits.Text = "Credits";
-            this.bCredits.UseVisualStyleBackColor = true;
-            this.bCredits.Click += new System.EventHandler(this.bCredits_Click);
-            // 
-            // bReadme
-            // 
-            this.bReadme.Location = new System.Drawing.Point(7, 60);
-            this.bReadme.Name = "bReadme";
-            this.bReadme.Size = new System.Drawing.Size(110, 23);
-            this.bReadme.TabIndex = 1;
-            this.bReadme.Text = "Readme";
-            this.bReadme.UseVisualStyleBackColor = true;
-            this.bReadme.Click += new System.EventHandler(this.bReadme_Click);
-            // 
-            // gInformation
-            // 
-            this.gInformation.Controls.Add(this.bGreeting);
-            this.gInformation.Controls.Add(this.lAnnouncementsUnits);
-            this.gInformation.Controls.Add(this.nAnnouncements);
-            this.gInformation.Controls.Add(this.xAnnouncements);
-            this.gInformation.Controls.Add(this.bRules);
-            this.gInformation.Controls.Add(this.bAnnouncements);
-            this.gInformation.Location = new System.Drawing.Point(8, 219);
-            this.gInformation.Name = "gInformation";
-            this.gInformation.Size = new System.Drawing.Size(636, 57);
-            this.gInformation.TabIndex = 1;
-            this.gInformation.TabStop = false;
-            this.gInformation.Text = "Information";
-            // 
-            // bGreeting
-            // 
-            this.bGreeting.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bGreeting.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bGreeting.Location = new System.Drawing.Point(538, 20);
-            this.bGreeting.Name = "bGreeting";
-            this.bGreeting.Size = new System.Drawing.Size(92, 28);
-            this.bGreeting.TabIndex = 5;
-            this.bGreeting.Text = "Edit Greeting";
-            this.bGreeting.UseVisualStyleBackColor = true;
-            this.bGreeting.Click += new System.EventHandler(this.bGreeting_Click);
-            // 
-            // lAnnouncementsUnits
-            // 
-            this.lAnnouncementsUnits.AutoSize = true;
-            this.lAnnouncementsUnits.Location = new System.Drawing.Point(266, 27);
-            this.lAnnouncementsUnits.Name = "lAnnouncementsUnits";
-            this.lAnnouncementsUnits.Size = new System.Drawing.Size(28, 15);
-            this.lAnnouncementsUnits.TabIndex = 2;
-            this.lAnnouncementsUnits.Text = "min";
-            // 
-            // nAnnouncements
-            // 
-            this.nAnnouncements.Enabled = false;
-            this.nAnnouncements.Location = new System.Drawing.Point(210, 25);
-            this.nAnnouncements.Maximum = new decimal(new int[] {
-            60,
-            0,
-            0,
-            0});
-            this.nAnnouncements.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nAnnouncements.Name = "nAnnouncements";
-            this.nAnnouncements.Size = new System.Drawing.Size(50, 21);
-            this.nAnnouncements.TabIndex = 1;
-            this.nAnnouncements.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // xAnnouncements
-            // 
-            this.xAnnouncements.AutoSize = true;
-            this.xAnnouncements.Location = new System.Drawing.Point(24, 26);
-            this.xAnnouncements.Name = "xAnnouncements";
-            this.xAnnouncements.Size = new System.Drawing.Size(180, 19);
-            this.xAnnouncements.TabIndex = 0;
-            this.xAnnouncements.Text = "Show announcements every";
-            this.xAnnouncements.UseVisualStyleBackColor = true;
-            this.xAnnouncements.CheckedChanged += new System.EventHandler(this.xAnnouncements_CheckedChanged);
-            // 
-            // bRules
-            // 
-            this.bRules.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bRules.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bRules.Location = new System.Drawing.Point(445, 20);
-            this.bRules.Name = "bRules";
-            this.bRules.Size = new System.Drawing.Size(87, 28);
-            this.bRules.TabIndex = 4;
-            this.bRules.Text = "Edit Rules";
-            this.bRules.UseVisualStyleBackColor = true;
-            this.bRules.Click += new System.EventHandler(this.bRules_Click);
-            // 
-            // bAnnouncements
-            // 
-            this.bAnnouncements.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bAnnouncements.Enabled = false;
-            this.bAnnouncements.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bAnnouncements.Location = new System.Drawing.Point(301, 20);
-            this.bAnnouncements.Name = "bAnnouncements";
-            this.bAnnouncements.Size = new System.Drawing.Size(138, 28);
-            this.bAnnouncements.TabIndex = 3;
-            this.bAnnouncements.Text = "Edit Announcements";
-            this.bAnnouncements.UseVisualStyleBackColor = true;
-            this.bAnnouncements.Click += new System.EventHandler(this.bAnnouncements_Click);
             // 
             // gBasic
             // 
@@ -899,7 +467,6 @@
             this.HeartBeatUrlComboBox.Name = "HeartBeatUrlComboBox";
             this.HeartBeatUrlComboBox.Size = new System.Drawing.Size(194, 23);
             this.HeartBeatUrlComboBox.TabIndex = 19;
-            this.HeartBeatUrlComboBox.SelectedIndexChanged += new System.EventHandler(this.HeartBeatUrlComboBox_SelectedIndexChanged);
             // 
             // nMaxPlayersPerWorld
             // 
@@ -1142,6 +709,449 @@
             this.lMaxPlayers.TabIndex = 4;
             this.lMaxPlayers.Text = "Max players (total)";
             // 
+            // groupBox4
+            // 
+            this.groupBox4.AccessibleRole = System.Windows.Forms.AccessibleRole.Window;
+            this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox4.Controls.Add(this.bSoft);
+            this.groupBox4.Controls.Add(this.bWiki);
+            this.groupBox4.Controls.Add(this.bWeb);
+            this.groupBox4.Location = new System.Drawing.Point(468, 306);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(126, 135);
+            this.groupBox4.TabIndex = 5;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Contact Us";
+            // 
+            // bSoft
+            // 
+            this.bSoft.Location = new System.Drawing.Point(7, 89);
+            this.bSoft.Name = "bSoft";
+            this.bSoft.Size = new System.Drawing.Size(110, 23);
+            this.bSoft.TabIndex = 2;
+            this.bSoft.Text = "Other Software";
+            this.bSoft.UseVisualStyleBackColor = true;
+            this.bSoft.Click += new System.EventHandler(this.bSoft_Click);
+            // 
+            // bWiki
+            // 
+            this.bWiki.Location = new System.Drawing.Point(6, 60);
+            this.bWiki.Name = "bWiki";
+            this.bWiki.Size = new System.Drawing.Size(111, 23);
+            this.bWiki.TabIndex = 1;
+            this.bWiki.Text = "Wiki";
+            this.bWiki.UseVisualStyleBackColor = true;
+            // 
+            // bWeb
+            // 
+            this.bWeb.Location = new System.Drawing.Point(7, 31);
+            this.bWeb.Name = "bWeb";
+            this.bWeb.Size = new System.Drawing.Size(110, 23);
+            this.bWeb.TabIndex = 1;
+            this.bWeb.Text = "Website";
+            this.bWeb.UseVisualStyleBackColor = true;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(212, 294);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(213, 175);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 5;
+            this.pictureBox1.TabStop = false;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox2.Controls.Add(this.bChangelog);
+            this.groupBox2.Controls.Add(this.bCredits);
+            this.groupBox2.Controls.Add(this.bReadme);
+            this.groupBox2.Location = new System.Drawing.Point(51, 306);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(123, 135);
+            this.groupBox2.TabIndex = 4;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "About";
+            // 
+            // bChangelog
+            // 
+            this.bChangelog.Location = new System.Drawing.Point(7, 89);
+            this.bChangelog.Name = "bChangelog";
+            this.bChangelog.Size = new System.Drawing.Size(110, 23);
+            this.bChangelog.TabIndex = 2;
+            this.bChangelog.Text = "Changelog";
+            this.bChangelog.UseVisualStyleBackColor = true;
+            this.bChangelog.Click += new System.EventHandler(this.bChangelog_Click);
+            // 
+            // bCredits
+            // 
+            this.bCredits.Location = new System.Drawing.Point(6, 31);
+            this.bCredits.Name = "bCredits";
+            this.bCredits.Size = new System.Drawing.Size(111, 23);
+            this.bCredits.TabIndex = 1;
+            this.bCredits.Text = "Credits";
+            this.bCredits.UseVisualStyleBackColor = true;
+            this.bCredits.Click += new System.EventHandler(this.bCredits_Click);
+            // 
+            // bReadme
+            // 
+            this.bReadme.Location = new System.Drawing.Point(7, 60);
+            this.bReadme.Name = "bReadme";
+            this.bReadme.Size = new System.Drawing.Size(110, 23);
+            this.bReadme.TabIndex = 1;
+            this.bReadme.Text = "Readme";
+            this.bReadme.UseVisualStyleBackColor = true;
+            this.bReadme.Click += new System.EventHandler(this.bReadme_Click);
+            // 
+            // gInformation
+            // 
+            this.gInformation.Controls.Add(this.bGreeting);
+            this.gInformation.Controls.Add(this.lAnnouncementsUnits);
+            this.gInformation.Controls.Add(this.nAnnouncements);
+            this.gInformation.Controls.Add(this.xAnnouncements);
+            this.gInformation.Controls.Add(this.bRules);
+            this.gInformation.Controls.Add(this.bAnnouncements);
+            this.gInformation.Location = new System.Drawing.Point(8, 219);
+            this.gInformation.Name = "gInformation";
+            this.gInformation.Size = new System.Drawing.Size(636, 57);
+            this.gInformation.TabIndex = 1;
+            this.gInformation.TabStop = false;
+            this.gInformation.Text = "Information";
+            // 
+            // bGreeting
+            // 
+            this.bGreeting.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bGreeting.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bGreeting.Location = new System.Drawing.Point(538, 20);
+            this.bGreeting.Name = "bGreeting";
+            this.bGreeting.Size = new System.Drawing.Size(92, 28);
+            this.bGreeting.TabIndex = 5;
+            this.bGreeting.Text = "Edit Greeting";
+            this.bGreeting.UseVisualStyleBackColor = true;
+            this.bGreeting.Click += new System.EventHandler(this.bGreeting_Click);
+            // 
+            // lAnnouncementsUnits
+            // 
+            this.lAnnouncementsUnits.AutoSize = true;
+            this.lAnnouncementsUnits.Location = new System.Drawing.Point(266, 27);
+            this.lAnnouncementsUnits.Name = "lAnnouncementsUnits";
+            this.lAnnouncementsUnits.Size = new System.Drawing.Size(28, 15);
+            this.lAnnouncementsUnits.TabIndex = 2;
+            this.lAnnouncementsUnits.Text = "min";
+            // 
+            // nAnnouncements
+            // 
+            this.nAnnouncements.Enabled = false;
+            this.nAnnouncements.Location = new System.Drawing.Point(210, 25);
+            this.nAnnouncements.Maximum = new decimal(new int[] {
+            60,
+            0,
+            0,
+            0});
+            this.nAnnouncements.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nAnnouncements.Name = "nAnnouncements";
+            this.nAnnouncements.Size = new System.Drawing.Size(50, 21);
+            this.nAnnouncements.TabIndex = 1;
+            this.nAnnouncements.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // xAnnouncements
+            // 
+            this.xAnnouncements.AutoSize = true;
+            this.xAnnouncements.Location = new System.Drawing.Point(24, 26);
+            this.xAnnouncements.Name = "xAnnouncements";
+            this.xAnnouncements.Size = new System.Drawing.Size(180, 19);
+            this.xAnnouncements.TabIndex = 0;
+            this.xAnnouncements.Text = "Show announcements every";
+            this.xAnnouncements.UseVisualStyleBackColor = true;
+            this.xAnnouncements.CheckedChanged += new System.EventHandler(this.xAnnouncements_CheckedChanged);
+            // 
+            // bRules
+            // 
+            this.bRules.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bRules.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bRules.Location = new System.Drawing.Point(445, 20);
+            this.bRules.Name = "bRules";
+            this.bRules.Size = new System.Drawing.Size(87, 28);
+            this.bRules.TabIndex = 4;
+            this.bRules.Text = "Edit Rules";
+            this.bRules.UseVisualStyleBackColor = true;
+            this.bRules.Click += new System.EventHandler(this.bRules_Click);
+            // 
+            // bAnnouncements
+            // 
+            this.bAnnouncements.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bAnnouncements.Enabled = false;
+            this.bAnnouncements.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bAnnouncements.Location = new System.Drawing.Point(301, 20);
+            this.bAnnouncements.Name = "bAnnouncements";
+            this.bAnnouncements.Size = new System.Drawing.Size(138, 28);
+            this.bAnnouncements.TabIndex = 3;
+            this.bAnnouncements.Text = "Edit Announcements";
+            this.bAnnouncements.UseVisualStyleBackColor = true;
+            this.bAnnouncements.Click += new System.EventHandler(this.bAnnouncements_Click);
+            // 
+            // tabChat
+            // 
+            this.tabChat.BackColor = System.Drawing.Color.Firebrick;
+            this.tabChat.Controls.Add(this.chatPreview);
+            this.tabChat.Controls.Add(this.gAppearence);
+            this.tabChat.Controls.Add(this.gChatColors);
+            this.tabChat.Location = new System.Drawing.Point(4, 24);
+            this.tabChat.Name = "tabChat";
+            this.tabChat.Padding = new System.Windows.Forms.Padding(5, 5, 5, 10);
+            this.tabChat.Size = new System.Drawing.Size(652, 482);
+            this.tabChat.TabIndex = 10;
+            this.tabChat.Text = "Chat";
+            // 
+            // chatPreview
+            // 
+            this.chatPreview.Location = new System.Drawing.Point(8, 256);
+            this.chatPreview.Name = "chatPreview";
+            this.chatPreview.Size = new System.Drawing.Size(636, 213);
+            this.chatPreview.TabIndex = 2;
+            // 
+            // gAppearence
+            // 
+            this.gAppearence.Controls.Add(this.xShowConnectionMessages);
+            this.gAppearence.Controls.Add(this.xShowJoinedWorldMessages);
+            this.gAppearence.Controls.Add(this.xRankColorsInWorldNames);
+            this.gAppearence.Controls.Add(this.xRankPrefixesInList);
+            this.gAppearence.Controls.Add(this.xRankPrefixesInChat);
+            this.gAppearence.Controls.Add(this.xRankColorsInChat);
+            this.gAppearence.Location = new System.Drawing.Point(7, 153);
+            this.gAppearence.Name = "gAppearence";
+            this.gAppearence.Size = new System.Drawing.Size(637, 97);
+            this.gAppearence.TabIndex = 1;
+            this.gAppearence.TabStop = false;
+            this.gAppearence.Text = "Appearence Tweaks";
+            // 
+            // xShowConnectionMessages
+            // 
+            this.xShowConnectionMessages.AutoSize = true;
+            this.xShowConnectionMessages.Location = new System.Drawing.Point(325, 45);
+            this.xShowConnectionMessages.Name = "xShowConnectionMessages";
+            this.xShowConnectionMessages.Size = new System.Drawing.Size(306, 19);
+            this.xShowConnectionMessages.TabIndex = 4;
+            this.xShowConnectionMessages.Text = "Show a message when players join/leave SERVER.";
+            this.xShowConnectionMessages.UseVisualStyleBackColor = true;
+            // 
+            // xShowJoinedWorldMessages
+            // 
+            this.xShowJoinedWorldMessages.AutoSize = true;
+            this.xShowJoinedWorldMessages.Location = new System.Drawing.Point(325, 20);
+            this.xShowJoinedWorldMessages.Name = "xShowJoinedWorldMessages";
+            this.xShowJoinedWorldMessages.Size = new System.Drawing.Size(261, 19);
+            this.xShowJoinedWorldMessages.TabIndex = 3;
+            this.xShowJoinedWorldMessages.Text = "Show a message when players join worlds.";
+            this.xShowJoinedWorldMessages.UseVisualStyleBackColor = true;
+            // 
+            // xRankColorsInWorldNames
+            // 
+            this.xRankColorsInWorldNames.AutoSize = true;
+            this.xRankColorsInWorldNames.Location = new System.Drawing.Point(325, 70);
+            this.xRankColorsInWorldNames.Name = "xRankColorsInWorldNames";
+            this.xRankColorsInWorldNames.Size = new System.Drawing.Size(243, 19);
+            this.xRankColorsInWorldNames.TabIndex = 5;
+            this.xRankColorsInWorldNames.Text = "Color world names based on build rank.";
+            this.xRankColorsInWorldNames.UseVisualStyleBackColor = true;
+            // 
+            // xRankPrefixesInList
+            // 
+            this.xRankPrefixesInList.AutoSize = true;
+            this.xRankPrefixesInList.Location = new System.Drawing.Point(44, 70);
+            this.xRankPrefixesInList.Name = "xRankPrefixesInList";
+            this.xRankPrefixesInList.Size = new System.Drawing.Size(219, 19);
+            this.xRankPrefixesInList.TabIndex = 2;
+            this.xRankPrefixesInList.Text = "Prefixes in player list (breaks skins).";
+            this.xRankPrefixesInList.UseVisualStyleBackColor = true;
+            // 
+            // xRankPrefixesInChat
+            // 
+            this.xRankPrefixesInChat.AutoSize = true;
+            this.xRankPrefixesInChat.Location = new System.Drawing.Point(25, 45);
+            this.xRankPrefixesInChat.Name = "xRankPrefixesInChat";
+            this.xRankPrefixesInChat.Size = new System.Drawing.Size(133, 19);
+            this.xRankPrefixesInChat.TabIndex = 1;
+            this.xRankPrefixesInChat.Text = "Show rank prefixes.";
+            this.xRankPrefixesInChat.UseVisualStyleBackColor = true;
+            this.xRankPrefixesInChat.CheckedChanged += new System.EventHandler(this.xRankPrefixesInChat_CheckedChanged);
+            // 
+            // xRankColorsInChat
+            // 
+            this.xRankColorsInChat.AutoSize = true;
+            this.xRankColorsInChat.Location = new System.Drawing.Point(25, 20);
+            this.xRankColorsInChat.Name = "xRankColorsInChat";
+            this.xRankColorsInChat.Size = new System.Drawing.Size(123, 19);
+            this.xRankColorsInChat.TabIndex = 0;
+            this.xRankColorsInChat.Text = "Show rank colors.";
+            this.xRankColorsInChat.UseVisualStyleBackColor = true;
+            // 
+            // gChatColors
+            // 
+            this.gChatColors.BackColor = System.Drawing.Color.Firebrick;
+            this.gChatColors.Controls.Add(this.lColorMe);
+            this.gChatColors.Controls.Add(this.bColorMe);
+            this.gChatColors.Controls.Add(this.lColorWarning);
+            this.gChatColors.Controls.Add(this.bColorWarning);
+            this.gChatColors.Controls.Add(this.bColorSys);
+            this.gChatColors.Controls.Add(this.lColorSys);
+            this.gChatColors.Controls.Add(this.bColorPM);
+            this.gChatColors.Controls.Add(this.lColorHelp);
+            this.gChatColors.Controls.Add(this.lColorPM);
+            this.gChatColors.Controls.Add(this.lColorSay);
+            this.gChatColors.Controls.Add(this.bColorAnnouncement);
+            this.gChatColors.Controls.Add(this.lColorAnnouncement);
+            this.gChatColors.Controls.Add(this.bColorHelp);
+            this.gChatColors.Controls.Add(this.bColorSay);
+            this.gChatColors.Location = new System.Drawing.Point(8, 8);
+            this.gChatColors.Name = "gChatColors";
+            this.gChatColors.Size = new System.Drawing.Size(636, 139);
+            this.gChatColors.TabIndex = 0;
+            this.gChatColors.TabStop = false;
+            this.gChatColors.Text = "Colors";
+            // 
+            // lColorMe
+            // 
+            this.lColorMe.AutoSize = true;
+            this.lColorMe.Location = new System.Drawing.Point(402, 82);
+            this.lColorMe.Name = "lColorMe";
+            this.lColorMe.Size = new System.Drawing.Size(117, 15);
+            this.lColorMe.TabIndex = 12;
+            this.lColorMe.Text = "/Me command color";
+            // 
+            // bColorMe
+            // 
+            this.bColorMe.BackColor = System.Drawing.Color.White;
+            this.bColorMe.Location = new System.Drawing.Point(525, 78);
+            this.bColorMe.Name = "bColorMe";
+            this.bColorMe.Size = new System.Drawing.Size(100, 23);
+            this.bColorMe.TabIndex = 13;
+            this.bColorMe.UseVisualStyleBackColor = false;
+            this.bColorMe.Click += new System.EventHandler(this.bColorMe_Click);
+            // 
+            // lColorWarning
+            // 
+            this.lColorWarning.AutoSize = true;
+            this.lColorWarning.Location = new System.Drawing.Point(69, 53);
+            this.lColorWarning.Name = "lColorWarning";
+            this.lColorWarning.Size = new System.Drawing.Size(118, 15);
+            this.lColorWarning.TabIndex = 2;
+            this.lColorWarning.Text = "Warning / error color";
+            // 
+            // bColorWarning
+            // 
+            this.bColorWarning.BackColor = System.Drawing.Color.White;
+            this.bColorWarning.Location = new System.Drawing.Point(193, 49);
+            this.bColorWarning.Name = "bColorWarning";
+            this.bColorWarning.Size = new System.Drawing.Size(100, 23);
+            this.bColorWarning.TabIndex = 3;
+            this.bColorWarning.UseVisualStyleBackColor = false;
+            this.bColorWarning.Click += new System.EventHandler(this.bColorWarning_Click);
+            // 
+            // bColorSys
+            // 
+            this.bColorSys.BackColor = System.Drawing.Color.White;
+            this.bColorSys.Location = new System.Drawing.Point(193, 20);
+            this.bColorSys.Name = "bColorSys";
+            this.bColorSys.Size = new System.Drawing.Size(100, 23);
+            this.bColorSys.TabIndex = 1;
+            this.bColorSys.UseVisualStyleBackColor = false;
+            this.bColorSys.Click += new System.EventHandler(this.bColorSys_Click);
+            // 
+            // lColorSys
+            // 
+            this.lColorSys.AutoSize = true;
+            this.lColorSys.Location = new System.Drawing.Point(56, 24);
+            this.lColorSys.Name = "lColorSys";
+            this.lColorSys.Size = new System.Drawing.Size(131, 15);
+            this.lColorSys.TabIndex = 0;
+            this.lColorSys.Text = "System message color";
+            // 
+            // bColorPM
+            // 
+            this.bColorPM.BackColor = System.Drawing.Color.White;
+            this.bColorPM.Location = new System.Drawing.Point(193, 78);
+            this.bColorPM.Name = "bColorPM";
+            this.bColorPM.Size = new System.Drawing.Size(100, 23);
+            this.bColorPM.TabIndex = 5;
+            this.bColorPM.UseVisualStyleBackColor = false;
+            this.bColorPM.Click += new System.EventHandler(this.bColorPM_Click);
+            // 
+            // lColorHelp
+            // 
+            this.lColorHelp.AutoSize = true;
+            this.lColorHelp.Location = new System.Drawing.Point(70, 111);
+            this.lColorHelp.Name = "lColorHelp";
+            this.lColorHelp.Size = new System.Drawing.Size(117, 15);
+            this.lColorHelp.TabIndex = 6;
+            this.lColorHelp.Text = "Help message color";
+            // 
+            // lColorPM
+            // 
+            this.lColorPM.AutoSize = true;
+            this.lColorPM.Location = new System.Drawing.Point(26, 82);
+            this.lColorPM.Name = "lColorPM";
+            this.lColorPM.Size = new System.Drawing.Size(161, 15);
+            this.lColorPM.TabIndex = 4;
+            this.lColorPM.Text = "Private / rank message color";
+            // 
+            // lColorSay
+            // 
+            this.lColorSay.AutoSize = true;
+            this.lColorSay.Location = new System.Drawing.Point(407, 53);
+            this.lColorSay.Name = "lColorSay";
+            this.lColorSay.Size = new System.Drawing.Size(114, 15);
+            this.lColorSay.TabIndex = 10;
+            this.lColorSay.Text = "/Say message color";
+            // 
+            // bColorAnnouncement
+            // 
+            this.bColorAnnouncement.BackColor = System.Drawing.Color.White;
+            this.bColorAnnouncement.Location = new System.Drawing.Point(525, 20);
+            this.bColorAnnouncement.Name = "bColorAnnouncement";
+            this.bColorAnnouncement.Size = new System.Drawing.Size(100, 23);
+            this.bColorAnnouncement.TabIndex = 9;
+            this.bColorAnnouncement.UseVisualStyleBackColor = false;
+            this.bColorAnnouncement.Click += new System.EventHandler(this.bColorAnnouncement_Click);
+            // 
+            // lColorAnnouncement
+            // 
+            this.lColorAnnouncement.AutoSize = true;
+            this.lColorAnnouncement.Location = new System.Drawing.Point(342, 24);
+            this.lColorAnnouncement.Name = "lColorAnnouncement";
+            this.lColorAnnouncement.Size = new System.Drawing.Size(182, 15);
+            this.lColorAnnouncement.TabIndex = 8;
+            this.lColorAnnouncement.Text = "Announcement and /Rules color";
+            // 
+            // bColorHelp
+            // 
+            this.bColorHelp.BackColor = System.Drawing.Color.White;
+            this.bColorHelp.Location = new System.Drawing.Point(193, 107);
+            this.bColorHelp.Name = "bColorHelp";
+            this.bColorHelp.Size = new System.Drawing.Size(100, 23);
+            this.bColorHelp.TabIndex = 7;
+            this.bColorHelp.UseVisualStyleBackColor = false;
+            this.bColorHelp.Click += new System.EventHandler(this.bColorHelp_Click);
+            // 
+            // bColorSay
+            // 
+            this.bColorSay.BackColor = System.Drawing.Color.White;
+            this.bColorSay.Location = new System.Drawing.Point(525, 49);
+            this.bColorSay.Name = "bColorSay";
+            this.bColorSay.Size = new System.Drawing.Size(100, 23);
+            this.bColorSay.TabIndex = 11;
+            this.bColorSay.UseVisualStyleBackColor = false;
+            this.bColorSay.Click += new System.EventHandler(this.bColorSay_Click);
+            // 
             // tabWorlds
             // 
             this.tabWorlds.BackColor = System.Drawing.Color.Firebrick;
@@ -1304,8 +1314,8 @@
             this.dgvWorlds.MultiSelect = false;
             this.dgvWorlds.Name = "dgvWorlds";
             this.dgvWorlds.RowHeadersVisible = false;
-            dataGridViewCellStyle4.Padding = new System.Windows.Forms.Padding(0, 1, 0, 1);
-            this.dgvWorlds.RowsDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Padding = new System.Windows.Forms.Padding(0, 1, 0, 1);
+            this.dgvWorlds.RowsDefaultCellStyle = dataGridViewCellStyle2;
             this.dgvWorlds.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvWorlds.Size = new System.Drawing.Size(636, 325);
             this.dgvWorlds.TabIndex = 0;
@@ -1363,8 +1373,8 @@
             // dgvcBlockDB
             // 
             this.dgvcBlockDB.DataPropertyName = "BlockDBEnabled";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.dgvcBlockDB.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.dgvcBlockDB.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgvcBlockDB.HeaderText = "BlockDB";
             this.dgvcBlockDB.Name = "dgvcBlockDB";
             this.dgvcBlockDB.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
@@ -2211,18 +2221,50 @@
             this.cVerifyNames.TabIndex = 1;
             this.cVerifyNames.SelectedIndexChanged += new System.EventHandler(this.cVerifyNames_SelectedIndexChanged);
             // 
-            // tabSavingAndBackup
+            // gUpdate
             // 
-            this.tabSavingAndBackup.BackColor = System.Drawing.Color.Firebrick;
-            this.tabSavingAndBackup.Controls.Add(this.gDataBackup);
-            this.tabSavingAndBackup.Controls.Add(this.gSaving);
-            this.tabSavingAndBackup.Controls.Add(this.gBackups);
-            this.tabSavingAndBackup.Location = new System.Drawing.Point(4, 24);
-            this.tabSavingAndBackup.Name = "tabSavingAndBackup";
-            this.tabSavingAndBackup.Padding = new System.Windows.Forms.Padding(5, 10, 5, 10);
-            this.tabSavingAndBackup.Size = new System.Drawing.Size(652, 482);
-            this.tabSavingAndBackup.TabIndex = 4;
-            this.tabSavingAndBackup.Text = "Saving and Backup";
+            this.gUpdate.BackColor = System.Drawing.Color.Firebrick;
+            this.gUpdate.Controls.Add(this.groupBox5);
+            this.gUpdate.Controls.Add(this.gDataBackup);
+            this.gUpdate.Controls.Add(this.gSaving);
+            this.gUpdate.Controls.Add(this.gBackups);
+            this.gUpdate.Location = new System.Drawing.Point(4, 24);
+            this.gUpdate.Name = "gUpdate";
+            this.gUpdate.Padding = new System.Windows.Forms.Padding(5, 10, 5, 10);
+            this.gUpdate.Size = new System.Drawing.Size(652, 482);
+            this.gUpdate.TabIndex = 4;
+            this.gUpdate.Text = "Saving and Backup";
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.bUpdate);
+            this.groupBox5.Controls.Add(this.checkUpdate);
+            this.groupBox5.Location = new System.Drawing.Point(8, 293);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(635, 54);
+            this.groupBox5.TabIndex = 3;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Update";
+            // 
+            // bUpdate
+            // 
+            this.bUpdate.Location = new System.Drawing.Point(221, 14);
+            this.bUpdate.Name = "bUpdate";
+            this.bUpdate.Size = new System.Drawing.Size(205, 28);
+            this.bUpdate.TabIndex = 23;
+            this.bUpdate.Text = "Manual Update Check";
+            this.bUpdate.UseVisualStyleBackColor = true;
+            this.bUpdate.Click += new System.EventHandler(this.bUpdate_Click);
+            // 
+            // checkUpdate
+            // 
+            this.checkUpdate.AutoSize = true;
+            this.checkUpdate.Location = new System.Drawing.Point(11, 20);
+            this.checkUpdate.Name = "checkUpdate";
+            this.checkUpdate.Size = new System.Drawing.Size(201, 19);
+            this.checkUpdate.TabIndex = 22;
+            this.checkUpdate.Text = "Automatically Check for Updates";
+            this.checkUpdate.UseVisualStyleBackColor = true;
             // 
             // gDataBackup
             // 
@@ -3307,7 +3349,7 @@
             // 
             this.gCrashReport.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gCrashReport.Controls.Add(this.linkLabel1);
+            this.gCrashReport.Controls.Add(this.checkBox1);
             this.gCrashReport.Controls.Add(this.lCrashReportDisclaimer);
             this.gCrashReport.Location = new System.Drawing.Point(8, 13);
             this.gCrashReport.Name = "gCrashReport";
@@ -3316,16 +3358,14 @@
             this.gCrashReport.TabStop = false;
             this.gCrashReport.Text = "Crash Reporting";
             // 
-            // linkLabel1
+            // checkBox1
             // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(179, 24);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(148, 15);
-            this.linkLabel1.TabIndex = 2;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "LegendCraft.webuda.com";
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(25, 25);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(15, 14);
+            this.checkBox1.TabIndex = 2;
+            this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // lCrashReportDisclaimer
             // 
@@ -3335,9 +3375,9 @@
             this.lCrashReportDisclaimer.Name = "lCrashReportDisclaimer";
             this.lCrashReportDisclaimer.Size = new System.Drawing.Size(468, 39);
             this.lCrashReportDisclaimer.TabIndex = 1;
-            this.lCrashReportDisclaimer.Text = "Send all Crash Reports To:  \r\nCrash reports are when serious unexpected errors oc" +
-    "cur. Being able to receive crash reports helps\r\nidentify bugs and improve Legend" +
-    "Craft! .";
+            this.lCrashReportDisclaimer.Text = "Send all Crash Reports To The LegendCraft Dev Team\r\nCrash reports are when seriou" +
+    "s unexpected errors occur. Being able to receive crash reports helps\r\nidentify b" +
+    "ugs and improve LegendCraft! ";
             // 
             // Misc
             // 
@@ -3610,13 +3650,6 @@
             this.toolTip.IsBalloon = true;
             this.toolTip.ReshowDelay = 100;
             // 
-            // chatPreview
-            // 
-            this.chatPreview.Location = new System.Drawing.Point(8, 256);
-            this.chatPreview.Name = "chatPreview";
-            this.chatPreview.Size = new System.Drawing.Size(636, 213);
-            this.chatPreview.TabIndex = 2;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -3634,26 +3667,25 @@
             this.Name = "MainForm";
             this.Text = "LegendCraft Config Tool";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ConfigUI_FormClosing);
-            this.Load += new System.EventHandler(this.MainForm_Load);
             this.tabs.ResumeLayout(false);
-            this.tabChat.ResumeLayout(false);
-            this.gAppearence.ResumeLayout(false);
-            this.gAppearence.PerformLayout();
-            this.gChatColors.ResumeLayout(false);
-            this.gChatColors.PerformLayout();
             this.tabGeneral.ResumeLayout(false);
-            this.groupBox4.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            this.groupBox2.ResumeLayout(false);
-            this.gInformation.ResumeLayout(false);
-            this.gInformation.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nAnnouncements)).EndInit();
             this.gBasic.ResumeLayout(false);
             this.gBasic.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nMaxPlayersPerWorld)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nPort)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nUploadBandwidth)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nMaxPlayers)).EndInit();
+            this.groupBox4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.groupBox2.ResumeLayout(false);
+            this.gInformation.ResumeLayout(false);
+            this.gInformation.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nAnnouncements)).EndInit();
+            this.tabChat.ResumeLayout(false);
+            this.gAppearence.ResumeLayout(false);
+            this.gAppearence.PerformLayout();
+            this.gChatColors.ResumeLayout(false);
+            this.gChatColors.PerformLayout();
             this.tabWorlds.ResumeLayout(false);
             this.tabWorlds.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvWorlds)).EndInit();
@@ -3682,7 +3714,9 @@
             this.gVerify.ResumeLayout(false);
             this.gVerify.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nMaxConnectionsPerIP)).EndInit();
-            this.tabSavingAndBackup.ResumeLayout(false);
+            this.gUpdate.ResumeLayout(false);
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             this.gDataBackup.ResumeLayout(false);
             this.gDataBackup.PerformLayout();
             this.gSaving.ResumeLayout(false);
@@ -3742,7 +3776,7 @@
         private System.Windows.Forms.TextBox tMOTD;
         private System.Windows.Forms.Label lMaxPlayers;
         private System.Windows.Forms.NumericUpDown nMaxPlayers;
-        private System.Windows.Forms.TabPage tabSavingAndBackup;
+        private System.Windows.Forms.TabPage gUpdate;
         private System.Windows.Forms.ComboBox cPublic;
         private System.Windows.Forms.Label lPublic;
         private System.Windows.Forms.Button bMeasure;
@@ -4003,8 +4037,11 @@
         private System.Windows.Forms.Button bSoft;
         private System.Windows.Forms.Button bWiki;
         private System.Windows.Forms.Button bWeb;
-        private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.ComboBox HeartBeatUrlComboBox;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.Button bUpdate;
+        private System.Windows.Forms.CheckBox checkUpdate;
     }
 }

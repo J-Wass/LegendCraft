@@ -156,6 +156,15 @@ namespace fCraft.ConfigGUI
             CheckMaxPlayersPerWorldValue();
             nMaxPlayersPerWorld.Value = ConfigKey.MaxPlayersPerWorld.GetInt();
 
+            if (ConfigKey.CheckForUpdates.GetString() == "True")
+            {
+                checkUpdate.Checked = true;
+            }
+            else
+            {
+                checkUpdate.Checked = false;
+            }
+
             FillRankList(cDefaultRank, "(lowest rank)");
             if (ConfigKey.DefaultRank.IsBlank())
             {
@@ -532,6 +541,7 @@ namespace fCraft.ConfigGUI
             ConfigKey.ServerName.TrySetValue(tServerName.Text);
             ConfigKey.CustomChatName.TrySetValue(CustomName.Text);
             ConfigKey.SwearName.TrySetValue(SwearBox.Text);
+            ConfigKey.CheckForUpdates.TrySetValue(checkUpdate.Checked.ToString());
             ConfigKey.WebsiteURL.TrySetValue(websiteURL.Text);
             ConfigKey.HeartbeatUrl.TrySetValue(HeartBeatUrlComboBox.SelectedItem);
             ConfigKey.CustomAliasName.TrySetValue(CustomAliases.Text);

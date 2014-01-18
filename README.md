@@ -51,7 +51,7 @@ properly.
 LegendCraft code and binaries are licensed and distributed under the permissive MIT License, reproduced here: <br />
 Copyright < 2012- 2013 > LegendCraft Team
 
-Copyright (c) < 2012-2013 > < LeChosenOne, DingusBungus >
+Copyright (c) < 2012-2014 > < LeChosenOne, DingusBungus >
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

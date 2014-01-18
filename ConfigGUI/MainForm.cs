@@ -1597,7 +1597,7 @@ Your rank is {RANK}&S. Type &H/Help&S for help." );
         {
             try
             {
-                Process.Start("http://legendcraft.webuda.com/");
+                Process.Start("http://legend-craft.tk/");
             }
             catch { }
         }
@@ -1624,7 +1624,7 @@ Your rank is {RANK}&S. Type &H/Help&S for help." );
         {
             try
             {
-                Process.Start("http://legendcraft.webuda.com/");
+                Process.Start("http://legend-craft.tk");
             }
             catch { }
         }
@@ -1647,14 +1647,66 @@ Your rank is {RANK}&S. Type &H/Help&S for help." );
             catch { }
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
+        private void bUpdate_Click(object sender, EventArgs e)
         {
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://legendcraft.webuda.com//CurrentVersion.html");
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    using (Stream stream = response.GetResponseStream())
+                    {
+                        if (stream != null)
+                        {
+                            StreamReader streamReader = new StreamReader(stream);
+                            string version = streamReader.ReadLine();
+
+                            //update is available, prompt for a download
+                            if (version != null && version != fCraft.Updater.LatestStable)
+                            {
+
+                                DialogResult answer = MessageBox.Show("A LegendCraft Update is available. Would you like to download the latest LegendCraft Version? (" + version + ")", "LegendCraft Updater", MessageBoxButtons.YesNo);
+                                if (answer == DialogResult.Yes)
+                                {
+                                    using (var client = new WebClient())
+                                    {
+                                        try
+                                        {
+                                            //download new zip in current directory
+                                            Process.Start("http://www.legend-craft.tk/download/latest");                                            
+                                        }
+                                        catch(Exception ex)
+                                        {
+                                            MessageBox.Show("Update error: " + ex);
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+                            else
+                            {
+                                MessageBox.Show("Your LegendCraft version is up to date!");
+                            }
+                        }
+                    }
+                }
+            }
+
+            catch (WebException error)
+            {
+                MessageBox.Show("There was an internet connection error. Server was unable to check for updates. Error: \n\r" + error);
+            }
+            catch (Exception error_)
+            {
+                MessageBox.Show("There was an error in trying to check for updates:\n\r " + error_);
+            }
+      
         }
 
-        private void HeartBeatUrlComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
 
-        }
     }
 }

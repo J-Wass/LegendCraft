@@ -27,6 +27,10 @@ official server list (if server is public).",
 MinLength = 1, MaxLength = 64)]
         WebsiteURL,
 
+        [StringKey(ConfigSection.General, "True",
+@"Determines if the server should check for updates", MinLength = 4, MaxLength = 5)]
+        CheckForUpdates,
+
         [StringKey(ConfigSection.General, "%CBlock",
 @"The word which swears will be replaced with",
             MinLength = 1, MaxLength = 12)]
