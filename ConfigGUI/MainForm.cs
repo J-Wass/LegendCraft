@@ -1651,7 +1651,7 @@ Your rank is {RANK}&S. Type &H/Help&S for help." );
         {
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://legendcraft.webuda.com//CurrentVersion.html");
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://legend-craft.tk/download/latest/update");
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 
                 if (response.StatusCode == HttpStatusCode.OK)

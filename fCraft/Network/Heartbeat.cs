@@ -41,7 +41,7 @@ namespace fCraft
 
             MinecraftNetUri = new Uri("https://minecraft.net/heartbeat.jsp");
             ClassiCubeNetUri = new Uri("http://www.classicube.net/heartbeat.jsp");
-            Delay = TimeSpan.FromSeconds(25);
+            Delay = TimeSpan.FromSeconds(10);
             Timeout = TimeSpan.FromSeconds(10);
             Salt = Server.GetRandomString(32);
             Server.ShutdownBegan += OnServerShutdown;
@@ -123,46 +123,35 @@ namespace fCraft
         static void SendLegendCraftNetBeat()
         {
             if (Server.Uri == null) return;
-            string uri = "http://LegendCraft.webuda.com/Heartbeat.php";
-            // create a request
-            try
-            {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
-                request.Method = "POST";
 
-                // turn request string into a byte stream
-                byte[] postBytes = Encoding.ASCII.GetBytes(string.Format("ServerName={0}&Url={1}&Players={2}&MaxPlayers={3}&Uptime={4}",
-                                 Uri.EscapeDataString(ConfigKey.ServerName.GetString()),
-                                 Server.Uri,
+            string uri = "http://legend-craft.tk/heartbeat?";
+
+            StringBuilder builder = new StringBuilder();
+            builder.AppendFormat("name={0}&url={1}&players={2}&max={3}&version={4}",
+                                 (Uri.EscapeDataString(ConfigKey.ServerName.GetString()).Replace(" ", "%20")),
+                                 Server.Uri.ToString(),
                                  Server.Players.Length,
                                  ConfigKey.MaxPlayers.GetInt(),
-                                 DateTime.UtcNow.Subtract(Server.StartTime).TotalMinutes));
-
-                request.ContentType = "application/x-www-form-urlencoded";
-                request.CachePolicy = new System.Net.Cache.RequestCachePolicy(System.Net.Cache.RequestCacheLevel.NoCacheNoStore);
-                request.ContentLength = postBytes.Length;
-                request.Timeout = 5000;
-                Stream requestStream = request.GetRequestStream();
-
-                // send it
-                requestStream.Write(postBytes, 0, postBytes.Length);
-                requestStream.Flush();
-                requestStream.Close();
-                /* try
-                 {
-                    HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                    Logger.LogToConsole(new StreamReader(response.GetResponseStream()).ReadToEnd());
-                    Logger.LogToConsole(response.StatusCode + "\n");
-                 }
-                 catch (Exception ex)
-                 {
-                     Logger.LogToConsole("" + ex);
-                 }*/
-            }
-            catch (Exception e)
+                                 Updater.LatestStable);
+            using (StreamWriter sw = new StreamWriter("test.txt"))
             {
-                e.GetType();
-                //do nothing, server is probably down and host doesnt care
+                sw.Write(uri + builder.ToString());
+            }
+            try
+            {
+                WebRequest url = WebRequest.Create(uri + builder.ToString());
+                Stream webResponse = url.GetResponse().GetResponseStream();//just kind of here incase i need it :P
+            }
+            catch(Exception e)
+            {
+                if (e is WebException)
+                {
+                    //operation timed out, just chill and wait for next beat
+                }
+                else
+                {
+                    Logger.Log(LogType.Warning, "Error with web connection: " + e);
+                }
             }
         }
 
