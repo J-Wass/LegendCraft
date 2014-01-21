@@ -34,122 +34,7 @@ namespace fCraft {
 
         public static string UpdateUrl { get; set; }
 
-        //lol i don't even use this
-        static Updater() {
-            UpdateCheckTimeout = 4000;
-            UpdateUrl = "http://legendcraft.webuda.com/";
-        }
-
-
-        public static int UpdateCheckTimeout { get; set; }
-
-        public static UpdaterResult CheckForUpdates() {
-            UpdaterMode mode = ConfigKey.UpdaterMode.GetEnum<UpdaterMode>();
-            if( mode == UpdaterMode.Disabled ) return UpdaterResult.NoUpdate;
-
-            string url = String.Format( UpdateUrl, CurrentRelease.Revision );
-            if( RaiseCheckingForUpdatesEvent( ref url ) ) return UpdaterResult.NoUpdate;
-
-            Logger.Log( LogType.SystemActivity, "Checking for LegendCraft updates..." );//outdated, new, easier update methon in server.cs
-            try {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create( url );
-
-                request.Method = "GET";
-                request.UserAgent = "LegendCraft";
-                request.Timeout = UpdateCheckTimeout;
-                request.ReadWriteTimeout = UpdateCheckTimeout;
-                request.CachePolicy = new HttpRequestCachePolicy( HttpRequestCacheLevel.BypassCache );
-                request.UserAgent = UserAgent;
-
-                using( WebResponse response = request.GetResponse() ) {
-                    // ReSharper disable AssignNullToNotNullAttribute
-                    // ReSharper disable PossibleNullReferenceException
-                    using( XmlTextReader reader = new XmlTextReader( response.GetResponseStream() ) ) {
-                        // ReSharper restore AssignNullToNotNullAttribute
-                        XDocument doc = XDocument.Load( reader );
-                        XElement root = doc.Root;
-                        if( root.Attribute( "result" ).Value == "update" ) {
-                            string downloadUrl = root.Attribute( "url" ).Value;
-                            var releases = new List<ReleaseInfo>();
-                            // ReSharper disable LoopCanBeConvertedToQuery
-                            foreach( XElement el in root.Elements( "Release" ) ) {
-                                releases.Add(
-                                    new ReleaseInfo(
-                                        Int32.Parse( el.Attribute( "v" ).Value ),
-                                        Int32.Parse( el.Attribute( "r" ).Value ),
-                                        Int64.Parse( el.Attribute( "date" ).Value ).ToDateTime(),
-                                        el.Element( "Summary" ).Value,
-                                        el.Element( "ChangeLog" ).Value,
-                                        ReleaseInfo.StringToReleaseFlags( el.Attribute( "flags" ).Value )
-                                    )
-                                );
-                            }
-                            // ReSharper restore LoopCanBeConvertedToQuery
-                            // ReSharper restore PossibleNullReferenceException
-                            UpdaterResult result = new UpdaterResult( (releases.Count > 0), new Uri( downloadUrl ),
-                                                                      releases.ToArray() );
-                            RaiseCheckedForUpdatesEvent( UpdateUrl, result );
-                            return result;
-                        } else {
-                            return UpdaterResult.NoUpdate;
-                        }
-                    }
-                }
-            } catch( Exception ) {
-                return UpdaterResult.NoUpdate;
-            }
-        }
-
-
         public static bool RunAtShutdown { get; set; }
-
-
-        #region Events
-
-        /// <summary> Occurs when fCraft is about to check for updates (cancellable).
-        /// The update Url may be overridden. </summary>
-        public static event EventHandler<CheckingForUpdatesEventArgs> CheckingForUpdates;
-
-
-        /// <summary> Occurs when fCraft has just checked for updates. </summary>
-        public static event EventHandler<CheckedForUpdatesEventArgs> CheckedForUpdates;
-
-
-        static bool RaiseCheckingForUpdatesEvent( ref string updateUrl ) {
-            var h = CheckingForUpdates;
-            if( h == null ) return false;
-            var e = new CheckingForUpdatesEventArgs( updateUrl );
-            h( null, e );
-            updateUrl = e.Url;
-            return e.Cancel;
-        }
-
-
-        static void RaiseCheckedForUpdatesEvent( string url, UpdaterResult result ) {
-            var h = CheckedForUpdates;
-            if( h != null ) h( null, new CheckedForUpdatesEventArgs( url, result ) );
-        }
-
-        #endregion
-    }
-
-
-    public sealed class UpdaterResult {
-        public static UpdaterResult NoUpdate {
-            get {
-                return new UpdaterResult( false, null, new ReleaseInfo[0] );
-            }
-        }
-        internal UpdaterResult( bool updateAvailable, Uri downloadUri, IEnumerable<ReleaseInfo> releases ) {
-            UpdateAvailable = updateAvailable;
-            DownloadUri = downloadUri;
-            History = releases.OrderByDescending( r => r.Revision ).ToArray();
-            LatestRelease = releases.FirstOrDefault();
-        }
-        public bool UpdateAvailable { get; private set; }
-        public Uri DownloadUri { get; private set; }
-        public ReleaseInfo[] History { get; private set; }
-        public ReleaseInfo LatestRelease { get; private set; }
     }
 
 
@@ -179,21 +64,6 @@ namespace fCraft {
         public TimeSpan Age {
             get {
                 return DateTime.UtcNow.Subtract( Date );
-            }
-        }
-
-        public string VersionString {
-            get {
-                string formatString = "{0:0.000}_r{1}";
-                if( IsFlagged( ReleaseFlags.Dev ) ) {
-                    formatString += "_dev";
-                }
-                if( IsFlagged( ReleaseFlags.Unstable ) ) {
-                    formatString += "_u";
-                }
-                return String.Format( CultureInfo.InvariantCulture, formatString,
-                                      Decimal.Divide( Version, 1000 ),
-                                      Revision );
             }
         }
 
@@ -340,25 +210,3 @@ namespace fCraft {
     #endregion
 }
 
-
-namespace fCraft.Events {
-    public sealed class CheckingForUpdatesEventArgs : EventArgs, ICancellableEvent {
-        internal CheckingForUpdatesEventArgs( string url ) {
-            Url = url;
-        }
-
-        public string Url { get; set; }
-        public bool Cancel { get; set; }
-    }
-
-
-    public sealed class CheckedForUpdatesEventArgs : EventArgs {
-        internal CheckedForUpdatesEventArgs( string url, UpdaterResult result ) {
-            Url = url;
-            Result = result;
-        }
-
-        public string Url { get; private set; }
-        public UpdaterResult Result { get; private set; }
-    }
-}

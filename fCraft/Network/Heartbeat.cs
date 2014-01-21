@@ -41,7 +41,7 @@ namespace fCraft
 
             MinecraftNetUri = new Uri("https://minecraft.net/heartbeat.jsp");
             ClassiCubeNetUri = new Uri("http://www.classicube.net/heartbeat.jsp");
-            Delay = TimeSpan.FromSeconds(10);
+            Delay = TimeSpan.FromSeconds(45);
             Timeout = TimeSpan.FromSeconds(10);
             Salt = Server.GetRandomString(32);
             Server.ShutdownBegan += OnServerShutdown;
@@ -133,14 +133,11 @@ namespace fCraft
                                  Server.Players.Length,
                                  ConfigKey.MaxPlayers.GetInt(),
                                  Updater.LatestStable);
-            using (StreamWriter sw = new StreamWriter("test.txt"))
-            {
-                sw.Write(uri + builder.ToString());
-            }
             try
             {
                 WebRequest url = WebRequest.Create(uri + builder.ToString());
                 Stream webResponse = url.GetResponse().GetResponseStream();//just kind of here incase i need it :P
+                StreamReader readStream = new StreamReader(webResponse, Encoding.UTF8);
             }
             catch(Exception e)
             {
@@ -153,6 +150,7 @@ namespace fCraft
                     Logger.Log(LogType.Warning, "Error with web connection: " + e);
                 }
             }
+
         }
 
 

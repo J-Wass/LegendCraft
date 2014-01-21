@@ -510,7 +510,7 @@ namespace fCraft
             ReportProgress(0, "Generation complete");
 
             map.Metadata["_Origin", "GeneratorName"] = "fCraft";
-            map.Metadata["_Origin", "GeneratorVersion"] = Updater.CurrentRelease.VersionString;
+            map.Metadata["_Origin", "GeneratorVersion"] = Updater.LatestStable;
             map.Metadata["_Origin", "GeneratorParams"] = args.Serialize().ToString(SaveOptions.DisableFormatting);
             return map;
         }

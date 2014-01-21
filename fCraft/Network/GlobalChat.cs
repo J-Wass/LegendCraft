@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-//Modified 4/5/13 LegendCraft Team
+//Modified LegendCraft Team
 
 using System;
 using System.Collections.Generic;
@@ -64,9 +64,11 @@ namespace fCraft
             public bool Start([NotNull] string botNick, bool parseInput)
             {
                 if (botNick == null) throw new ArgumentNullException("botNick");
+                
+                //shouldn't happen since Init is called before Start 
                 if (botNick.Length > 30)
                 {
-                    Logger.Log(LogType.Error, "Unable to start Global Chat (Server name exceeds 30 in length)");
+                    Logger.Log(LogType.Error, "Server name exceeds 30 characters in length.");
                     return false;
                 }
 
@@ -545,7 +547,14 @@ namespace fCraft
                     channelNames[i] = '#' + channelNames[i].Trim();
                 }
             }
-            botNick = "[" +RemoveTroublesomeCharacters(ConfigKey.ServerName.GetString() + "]");
+
+            //make sure irc nick will be under 30
+            string serverName = ConfigKey.ServerName.GetString();
+            if (serverName.Length > 28)
+            {
+                serverName = ConfigKey.ServerName.GetString().Substring(0, 28);
+            }
+            botNick = "[" + RemoveTroublesomeCharacters(serverName) + "]";
         }
 
         public static string RemoveTroublesomeCharacters(string inString)
