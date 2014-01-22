@@ -141,7 +141,7 @@ namespace fCraft
 
                 //For Debugging and stuff, will remove for actual release
                 Logger.LogToConsole("Sending epic heartbeat to: " + uri + URLdata);
-                Logger.LogToConsole("Recieving epic response: " + readStream.ReadLine());
+                Logger.LogToConsole("Retrieving epic response: " + readStream.ReadLine());
 
 
             }

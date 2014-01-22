@@ -1707,6 +1707,32 @@ Your rank is {RANK}&S. Type &H/Help&S for help." );
       
         }
 
+        private void xChanPass_CheckedChanged(object sender, EventArgs e)
+        {
+            if (xChanPass.Checked)
+            {
+                tChanPass.Enabled = true;
+            }
+            else
+            {
+                tChanPass.Enabled = false;
+                tChanPass.Text = "password";
+            }
+        }
+
+        private void xServPass_CheckedChanged(object sender, EventArgs e)
+        {
+            if (xServPass.Checked)
+            {
+                tServPass.Enabled = true;
+            }
+            else
+            {
+                tServPass.Enabled = false;
+                tServPass.Text = "defaultPass";
+            }
+        }
+
 
     }
 }

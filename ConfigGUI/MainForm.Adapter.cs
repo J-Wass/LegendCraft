@@ -443,6 +443,22 @@ namespace fCraft.ConfigGUI
 
             xIRCUseColor.Checked = ConfigKey.IRCUseColor.Enabled();
             xIRCBotAnnounceServerEvents.Checked = ConfigKey.IRCBotAnnounceServerEvents.Enabled();
+
+            //if server pass is in use
+            if (ConfigKey.IRCBotNetworkPass.GetString() != "defaultPass")
+            {
+                xServPass.Checked = true;
+            }
+
+            //if chan pass is in use
+            if (ConfigKey.IRCChannelPassword.GetString() != "password")
+            {
+                xChanPass.Checked = true;
+            }
+
+            tChanPass.Text = ConfigKey.IRCChannelPassword.GetString();
+            tServPass.Text = ConfigKey.IRCBotNetworkPass.GetString();
+                
         }
 
 
@@ -714,6 +730,9 @@ namespace fCraft.ConfigGUI
 
             ConfigKey.IRCMessageColor.TrySetValue(Color.GetName(colorIRC));
             ConfigKey.IRCUseColor.TrySetValue(xIRCUseColor.Checked);
+
+            ConfigKey.IRCBotNetworkPass.TrySetValue(tServPass.Text);
+            ConfigKey.IRCChannelPassword.TrySetValue(tChanPass.Text);
 
 
             // advanced

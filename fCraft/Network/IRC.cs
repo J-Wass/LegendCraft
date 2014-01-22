@@ -53,6 +53,7 @@ namespace fCraft
         /// not on cooldown (a bit of an intentional race condition). </summary>
         public sealed class IRCThread : IDisposable
         {
+            bool triedPass = false;
             TcpClient client;
             StreamReader reader;
             StreamWriter writer;
@@ -141,6 +142,10 @@ namespace fCraft
                         Connect();
 
                         // register
+                      /*  if (ConfigKey.IRCBotNetworkPass.GetString() != "defaultPass")//if password was set for server, input server password
+                        {
+                            SendRawMessage("/pass " + ConfigKey.IRCBotNetworkPass.GetString());
+                        }*/     
                         Send(IRCCommands.User(ActualBotNick, 8, ConfigKey.ServerName.GetString()));
                         Send(IRCCommands.Nick(ActualBotNick));
 
@@ -223,7 +228,14 @@ namespace fCraft
                         }
                         foreach (string channel in channelNames)
                         {
-                            Send(IRCCommands.Join(channel));
+                            if (ConfigKey.IRCChannelPassword.GetString() != "password")
+                            {
+                                Send(IRCCommands.Join(channel + " " + ConfigKey.IRCChannelPassword.GetString()));
+                            }
+                            else
+                            {
+                                Send(IRCCommands.Join(channel));
+                            }
                         }
                         IsReady = true;
                         AssignBotForInputParsing(); // bot should be ready to receive input after joining
@@ -332,7 +344,6 @@ namespace fCraft
                                         msg.Nick, msg.Message);
                         return;
 
-
                     case IRCMessageType.ErrorMessage:
                     case IRCMessageType.Error:
                         bool die = false;
@@ -346,6 +357,25 @@ namespace fCraft
                                 ActualBotNick += "_";
                                 Send(IRCCommands.Nick(ActualBotNick));
                                 break;
+                            case IRCReplyCode.ErrorPasswordMismatch:
+                                if (triedPass)
+                                {
+                                    Logger.Log(LogType.IRC, "Could not connect with irc server password. Please configure your correct irc server password in the ConfigGUI.");
+                                    die = true;
+                                    break;
+                                }
+                                if (ConfigKey.IRCBotNetworkPass.GetString() == "defaultPass")
+                                {
+                                    Logger.Log(LogType.IRC, "Requested irc server is password-locked. Please set your irc server password in the ConfigGUI.");
+                                    break;
+                                }
+                                Logger.Log(LogType.IRC, "Requested irc server is password-locked, attempting to connect with " + ConfigKey.IRCBotNetworkPass.GetString());
+
+                                //give the irc client a second to prompt for password before sending
+                                Scheduler.NewTask(t => SendChannelMessage("/pass " + ConfigKey.IRCBotNetworkPass.GetString())).RunManual(TimeSpan.FromSeconds(2));                         
+                                triedPass = true;
+
+                                break;
 
                             case IRCReplyCode.ErrorBannedFromChannel:
                             case IRCReplyCode.ErrorNoSuchChannel:
@@ -354,14 +384,6 @@ namespace fCraft
                                             msg.ReplyCode, msg.Channel);
                                 die = true;
                                 break;
-
-                            case IRCReplyCode.ErrorBadChannelKey:
-                                Logger.Log(LogType.IRC,
-                                            "Error: Channel password required for {0}. LegendCraft does not currently support passworded channels.",
-                                            msg.Channel);
-                                die = true;
-                                break;
-
                             default:
                                 Logger.Log(LogType.IRC,
                                             "Error ({0}): {1}",
@@ -509,7 +531,7 @@ namespace fCraft
 
             hostName = ConfigKey.IRCBotNetwork.GetString();
             port = ConfigKey.IRCBotPort.GetInt();
-            channelNames = ConfigKey.IRCBotChannels.GetString().Split(',');
+            channelNames = (ConfigKey.IRCBotChannels.GetString().Split(','));
             for (int i = 0; i < channelNames.Length; i++)
             {
                 channelNames[i] = channelNames[i].Trim();

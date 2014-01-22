@@ -74,7 +74,6 @@
             this.bRules = new System.Windows.Forms.Button();
             this.bAnnouncements = new System.Windows.Forms.Button();
             this.tabChat = new System.Windows.Forms.TabPage();
-            this.chatPreview = new fCraft.ConfigGUI.ChatPreview();
             this.gAppearence = new System.Windows.Forms.GroupBox();
             this.xShowConnectionMessages = new System.Windows.Forms.CheckBox();
             this.xShowJoinedWorldMessages = new System.Windows.Forms.CheckBox();
@@ -312,6 +311,12 @@
             this.bApply = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.gIRCAdv = new System.Windows.Forms.GroupBox();
+            this.xChanPass = new System.Windows.Forms.CheckBox();
+            this.tChanPass = new System.Windows.Forms.TextBox();
+            this.xServPass = new System.Windows.Forms.CheckBox();
+            this.tServPass = new System.Windows.Forms.TextBox();
+            this.chatPreview = new fCraft.ConfigGUI.ChatPreview();
             this.tabs.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.gBasic.SuspendLayout();
@@ -378,6 +383,7 @@
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MaxCapsValue)).BeginInit();
             this.groupBox1.SuspendLayout();
+            this.gIRCAdv.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabs
@@ -911,13 +917,6 @@
             this.tabChat.Size = new System.Drawing.Size(652, 482);
             this.tabChat.TabIndex = 10;
             this.tabChat.Text = "Chat";
-            // 
-            // chatPreview
-            // 
-            this.chatPreview.Location = new System.Drawing.Point(8, 256);
-            this.chatPreview.Name = "chatPreview";
-            this.chatPreview.Size = new System.Drawing.Size(636, 213);
-            this.chatPreview.TabIndex = 2;
             // 
             // gAppearence
             // 
@@ -2625,6 +2624,7 @@
             // tabIRC
             // 
             this.tabIRC.BackColor = System.Drawing.Color.Firebrick;
+            this.tabIRC.Controls.Add(this.gIRCAdv);
             this.tabIRC.Controls.Add(this.xIRCListShowNonEnglish);
             this.tabIRC.Controls.Add(this.gIRCOptions);
             this.tabIRC.Controls.Add(this.gIRCNetwork);
@@ -2681,7 +2681,7 @@
             // xIRCUseColor
             // 
             this.xIRCUseColor.AutoSize = true;
-            this.xIRCUseColor.Location = new System.Drawing.Point(325, 23);
+            this.xIRCUseColor.Location = new System.Drawing.Point(325, 34);
             this.xIRCUseColor.Name = "xIRCUseColor";
             this.xIRCUseColor.Size = new System.Drawing.Size(149, 19);
             this.xIRCUseColor.TabIndex = 2;
@@ -3650,6 +3650,64 @@
             this.toolTip.IsBalloon = true;
             this.toolTip.ReshowDelay = 100;
             // 
+            // gIRCAdv
+            // 
+            this.gIRCAdv.Controls.Add(this.tServPass);
+            this.gIRCAdv.Controls.Add(this.xServPass);
+            this.gIRCAdv.Controls.Add(this.tChanPass);
+            this.gIRCAdv.Controls.Add(this.xChanPass);
+            this.gIRCAdv.Location = new System.Drawing.Point(10, 374);
+            this.gIRCAdv.Name = "gIRCAdv";
+            this.gIRCAdv.Size = new System.Drawing.Size(419, 95);
+            this.gIRCAdv.TabIndex = 6;
+            this.gIRCAdv.TabStop = false;
+            this.gIRCAdv.Text = "Advanced";
+            // 
+            // xChanPass
+            // 
+            this.xChanPass.AutoSize = true;
+            this.xChanPass.Location = new System.Drawing.Point(16, 23);
+            this.xChanPass.Name = "xChanPass";
+            this.xChanPass.Size = new System.Drawing.Size(154, 19);
+            this.xChanPass.TabIndex = 0;
+            this.xChanPass.Text = "Use Channel Password";
+            this.xChanPass.UseVisualStyleBackColor = true;
+            this.xChanPass.CheckedChanged += new System.EventHandler(this.xChanPass_CheckedChanged);
+            // 
+            // tChanPass
+            // 
+            this.tChanPass.Enabled = false;
+            this.tChanPass.Location = new System.Drawing.Point(16, 48);
+            this.tChanPass.Name = "tChanPass";
+            this.tChanPass.Size = new System.Drawing.Size(154, 21);
+            this.tChanPass.TabIndex = 1;
+            // 
+            // xServPass
+            // 
+            this.xServPass.AutoSize = true;
+            this.xServPass.Location = new System.Drawing.Point(219, 23);
+            this.xServPass.Name = "xServPass";
+            this.xServPass.Size = new System.Drawing.Size(143, 19);
+            this.xServPass.TabIndex = 2;
+            this.xServPass.Text = "Use Server Password";
+            this.xServPass.UseVisualStyleBackColor = true;
+            this.xServPass.CheckedChanged += new System.EventHandler(this.xServPass_CheckedChanged);
+            // 
+            // tServPass
+            // 
+            this.tServPass.Enabled = false;
+            this.tServPass.Location = new System.Drawing.Point(219, 48);
+            this.tServPass.Name = "tServPass";
+            this.tServPass.Size = new System.Drawing.Size(154, 21);
+            this.tServPass.TabIndex = 3;
+            // 
+            // chatPreview
+            // 
+            this.chatPreview.Location = new System.Drawing.Point(8, 256);
+            this.chatPreview.Name = "chatPreview";
+            this.chatPreview.Size = new System.Drawing.Size(636, 213);
+            this.chatPreview.TabIndex = 2;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -3758,6 +3816,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.MaxCapsValue)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.gIRCAdv.ResumeLayout(false);
+            this.gIRCAdv.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -4043,5 +4103,10 @@
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.Button bUpdate;
         private System.Windows.Forms.CheckBox checkUpdate;
+        private System.Windows.Forms.GroupBox gIRCAdv;
+        private System.Windows.Forms.TextBox tServPass;
+        private System.Windows.Forms.CheckBox xServPass;
+        private System.Windows.Forms.TextBox tChanPass;
+        private System.Windows.Forms.CheckBox xChanPass;
     }
 }

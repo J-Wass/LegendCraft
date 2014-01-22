@@ -92,9 +92,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="UpdateWindow.resx">
-      <DependentUpon>UpdateWindow.cs</DependentUpon>
-    </EmbeddedResource>
     <None Include="app.config" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -106,12 +103,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="UpdateWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UpdateWindow.Designer.cs">
-      <DependentUpon>UpdateWindow.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

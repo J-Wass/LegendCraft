@@ -45,9 +45,10 @@ namespace fCraft
             CommandManager.RegisterCommand(CdTeamDeathMatch);
             //Infection
             CommandManager.RegisterCommand(CdInfection);
+            
             //Bot
-            //CommandManager.RegisterCommand(CdBot);
-            //CommandManager.RegisterCommand(CdBotAdv);
+            CommandManager.RegisterCommand(CdBot);
+            CommandManager.RegisterCommand(CdBotAdv);
             Player.Moving += PlayerMoved;
         }
 
@@ -128,10 +129,10 @@ THE SOFTWARE.*/
             IsConsoleSafe = false,
             Usage = "/BotAdv [List / Summon <botname> / GoTo <bot name> <location>]",
             Help = "Used to edit a bot's behavoir. Use /bot to create a bot. Use /Help <option> for more info.",
-            Handler = botEditHandler,
+            Handler = botAdvHandler,
         };
 
-        static void botEditHandler(Player player, Command cmd)
+        static void botAdvHandler(Player player, Command cmd)
         {
             string option = cmd.Next();
             if (string.IsNullOrEmpty(option))
@@ -149,6 +150,14 @@ THE SOFTWARE.*/
                 }
                 player.Message("-----------");
                 return;
+            }
+            else if (option.ToLower() == "request")
+            {
+                string name = cmd.Next();
+                if (string.IsNullOrEmpty(name))
+                {
+
+                }
             }
             else if (option.ToLower() == "goto")
             {
@@ -258,7 +267,11 @@ THE SOFTWARE.*/
                 }
 
                 Player bot = Server.FindPlayerOrPrintMatches(player, name, true, true);
-                bot.MoveTo(player.Position);
+                if (bot != null)
+                {
+                    bot.MoveTo(player.Position);
+                }
+
                 return;
             }
             else
@@ -371,11 +384,14 @@ THE SOFTWARE.*/
                     player.Message("Please insert the name of the bot you wish to remove.");
                 }
 
+                
                 Player bot = Server.FindPlayerOrPrintMatches(player, target, true, true);
-                bot.RemoveBot();
-
-                player.Message("Bot removed.");
-                Server.Entities.Remove(target);
+                if (bot != null)
+                {
+                    bot.RemoveBot();
+                    player.Message("Bot removed.");
+                    Server.Entities.Remove(target);
+                }
                 return;
             }
             else if (option.ToLower() == "removeall" || option.ToLower() == "deleteall")
@@ -383,8 +399,11 @@ THE SOFTWARE.*/
                 foreach (string s in Server.Entities.ToList())
                 {
                     Player bot = Server.FindPlayerOrPrintMatches(player, s, true, true);
-                    bot.RemoveBot();
-                    Server.Entities.Remove(s);
+                    if (bot != null)
+                    {
+                        bot.RemoveBot();
+                        Server.Entities.Remove(s);
+                    }
                 }
                 player.Message("All bots removed.");
                 return;

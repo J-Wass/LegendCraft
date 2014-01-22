@@ -17,6 +17,7 @@ official server list (if server is public).",
 @"The name of the custom chat channel",
             MinLength = 1, MaxLength = 12)]
         CustomChatName,
+
         [StringKey(ConfigSection.General, "En",
 @"The name of the custom chat alias",
             MinLength = 1, MaxLength = 12)]
@@ -362,7 +363,7 @@ If exceeded, oldest logs will be erased first. Set this to 0 to keep all logs.",
         #region IRC
 
         [BoolKey( ConfigSection.IRC, false,
-@"800Craft includes an IRC (Internet Relay Chat) client for
+@"LegendCraft includes an IRC (Internet Relay Chat) client for
 relaying messages to and from any IRC network.
 Note that encrypted IRC (via SSL) is not supported." )]
         IRCBotEnabled,
@@ -376,6 +377,10 @@ an underscore (_) to the name and retry.",
         [StringKey( ConfigSection.IRC, "irc.esper.net",
 @"Host or address of the IRC network." )]
         IRCBotNetwork,
+
+        [StringKey(ConfigSection.IRC, "defaultPass",
+@"Optional, password of the IRC network.")]
+        IRCBotNetworkPass,
 
         [IntKey( ConfigSection.IRC, 6667,
 @"Port number of the IRC network. Most networks use port 6667.",
@@ -446,6 +451,10 @@ It is recommended to leave this at 1 unless you are having specific issues
 with IRC bots falling behind on messages.",
             MinValue = 1, MaxValue=3 )]
         IRCThreads,
+
+        [StringKey(ConfigSection.IRC, "password",
+@"Optional, used to connect to password-protected channels.")]
+        IRCChannelPassword,
 
         #endregion
 
