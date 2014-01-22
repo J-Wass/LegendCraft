@@ -126,18 +126,24 @@ namespace fCraft
 
             string uri = "http://legend-craft.tk/heartbeat?";
 
-            StringBuilder builder = new StringBuilder();
-            builder.AppendFormat("name={0}&url={1}&players={2}&max={3}&version={4}",
+            string URLdata = String.Format("name={0}&url={1}&players={2}&max={3}&version={4}",
                                  (Uri.EscapeDataString(ConfigKey.ServerName.GetString()).Replace(" ", "%20")),
                                  Server.Uri.ToString(),
                                  Server.Players.Length,
                                  ConfigKey.MaxPlayers.GetInt(),
                                  Updater.LatestStable);
+                
             try
             {
-                WebRequest url = WebRequest.Create(uri + builder.ToString());
+                WebRequest url = WebRequest.Create(uri + URLdata);
                 Stream webResponse = url.GetResponse().GetResponseStream();//just kind of here incase i need it :P
                 StreamReader readStream = new StreamReader(webResponse, Encoding.UTF8);
+
+                //For Debugging and stuff, will remove for actual release
+                Logger.LogToConsole("Sending epic heartbeat to: " + uri + URLdata);
+                Logger.LogToConsole("Recieving epic response: " + readStream.ReadLine());
+
+
             }
             catch(Exception e)
             {

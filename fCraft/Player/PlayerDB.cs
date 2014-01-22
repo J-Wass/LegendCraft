@@ -219,7 +219,7 @@ namespace fCraft
 #if !DEBUG
                     } catch( Exception ex ) {
                         Logger.LogAndReportCrash( "Error while parsing PlayerInfo record: " + line,
-                                                  "800Craft",
+                                                  "LegendCraft",
                                                   ex,
                                                   false );
                     }

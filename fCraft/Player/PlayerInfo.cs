@@ -1756,34 +1756,6 @@ namespace fCraft
             return Rank.Can(permission, rank);
         }
         
-        #region Stat Lists
-
-        /// <summary> Gives back an array of players arranged from most to least number of bans </summary>
-        public static List<PlayerInfo> MostBans = new List<PlayerInfo>(PlayerDB.PlayerInfoList            
-                                         .OrderBy(p => p.TimesBannedOthers).ToArray().Reverse());
-
-        /// <summary> Gives back an array of players arranged from most to least number of logins </summary>
-        public static List<PlayerInfo> TopLogins = new List<PlayerInfo>(PlayerDB.PlayerInfoList          
-                                        .OrderBy(p => p.TimesVisited).ToArray().Reverse());
-
-        /// <summary> Gives back an array of players arranged from most to least number of promotions of others </summary>
-        public static List<PlayerInfo> MostPromos = new List<PlayerInfo>(PlayerDB.PlayerInfoList           
-                                        .OrderBy(p => p.PromoCount).ToArray().Reverse());
-
-        /// <summary> Gives back an array of players arranged from most to least total time spent on server </summary>
-        public static List<PlayerInfo> MostTime = new List<PlayerInfo>(PlayerDB.PlayerInfoList            
-                                        .OrderBy(p => p.TotalTime).ToArray().Reverse());
-
-        /// <summary> Gives back an array of players arranged from most to least number of times kicked others </summary>
-        public static List<PlayerInfo> MostKicks = new List<PlayerInfo>(PlayerDB.PlayerInfoList           
-                                        .OrderBy(p => p.TimesKickedOthers).ToArray().Reverse());
-
-        /// <summary> Gives back an array of players arranged from most to least blocks placed </summary>
-        public static List<PlayerInfo> TopBuilders = new List<PlayerInfo>(PlayerDB.PlayerInfoList         
-                                        .OrderBy(p => p.BlocksBuilt).ToArray().Reverse());
-
-        #endregion 
-
 
         #region Unfinished / Not Implemented
 

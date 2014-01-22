@@ -1,5 +1,7 @@
 LegendCraft v2.3.0 Roadmap
 []Possibly create autorank system
+[]Create Bots
+[]If Bots can be made, do cool things with bots
 []Seduce Women, Obtain Currency
 []Convert downloads from mediafire over to github
 []More to come
