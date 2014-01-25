@@ -121,6 +121,20 @@
     <value>25, 12</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="bVoice.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        /9j/4AAQSkZJRgABAQEAAAAAAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYa
+        HSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgo
+        KCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAYABgDASIAAhEBAxEB/8QA
+        FgABAQEAAAAAAAAAAAAAAAAAAAgG/8QAKxAAAAUDAgQGAwEAAAAAAAAAAQIDBBEABRITFQYUFiEHFyJB
+        QlEyM1Jh/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhED
+        EQA/AKWvF5aW1Rs2XWAjx4CoNUxKI6hiJmOYJAICClEe8VBPUdz3veOfcbpq63M5jnnMzNWF4tuC2y78
+        G3d36La3fqtnK/xR10DpEOb6KBjBI1J/lbxxvm19O3DPU0+Z0TctH960YY+8zQXJZ7y0uSjlsgsB3jME
+        gdJgUQ0zHTKcoSIQMlMA9ppWL8JHBbnd+Mru09dtcP0mzZf4raCBEjnL9lExRgaUG8u7JlcrW6Z3VBFw
+        wWTEqySxZIYvvNRB17w15gbfzXE3ltlo7duS2GM/lhl+ue+MzH+9qUoLftDJlbbW1Z2pBFuwRTAqKSJY
+        IUvtFKUoP//Z
+</value>
+  </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAUAAAAAAAEAIAAoIAQAVgAAAICAAAABACAAKAgBAH4gBAAwMAAAAQAgAKglAACmKAUAICAAAAEA

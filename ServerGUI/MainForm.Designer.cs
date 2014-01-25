@@ -26,7 +26,6 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.uriDisplay = new System.Windows.Forms.TextBox();
-            this.URLLabel = new System.Windows.Forms.Label();
             this.playerList = new System.Windows.Forms.ListBox();
             this.playerListLabel = new System.Windows.Forms.Label();
             this.bPlay = new System.Windows.Forms.Button();
@@ -38,28 +37,19 @@
             this.Rank = new System.Windows.Forms.ToolStripMenuItem();
             this.PM = new System.Windows.Forms.ToolStripMenuItem();
             this.logBox = new System.Windows.Forms.RichTextBox();
-            this.console = new fCraft.ServerGUI.ConsoleBox();
             this.bVoice = new System.Windows.Forms.Button();
+            this.URLLabel = new System.Windows.Forms.Label();
+            this.bReport = new System.Windows.Forms.Button();
+            this.console = new fCraft.ServerGUI.ConsoleBox();
             this.PlayerOptions.SuspendLayout();
             this.SuspendLayout();
             // 
             // uriDisplay
             // 
-            this.uriDisplay.Location = new System.Drawing.Point(92, 12);
+            this.uriDisplay.Location = new System.Drawing.Point(46, 11);
             this.uriDisplay.Name = "uriDisplay";
             this.uriDisplay.Size = new System.Drawing.Size(476, 20);
             this.uriDisplay.TabIndex = 7;
-            // 
-            // URLLabel
-            // 
-            this.URLLabel.AutoSize = true;
-            this.URLLabel.Font = new System.Drawing.Font("Lucida Sans", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.URLLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.URLLabel.Location = new System.Drawing.Point(9, 15);
-            this.URLLabel.Name = "URLLabel";
-            this.URLLabel.Size = new System.Drawing.Size(73, 12);
-            this.URLLabel.TabIndex = 5;
-            this.URLLabel.Text = "Server URL:";
             // 
             // playerList
             // 
@@ -88,17 +78,22 @@
             // bPlay
             // 
             this.bPlay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bPlay.BackColor = System.Drawing.Color.WhiteSmoke;
             this.bPlay.Enabled = false;
-            this.bPlay.Location = new System.Drawing.Point(574, 10);
+            this.bPlay.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bPlay.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.bPlay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bPlay.Location = new System.Drawing.Point(528, 9);
             this.bPlay.Name = "bPlay";
             this.bPlay.Size = new System.Drawing.Size(48, 23);
             this.bPlay.TabIndex = 2;
             this.bPlay.Text = "Play";
-            this.bPlay.UseVisualStyleBackColor = true;
+            this.bPlay.UseVisualStyleBackColor = false;
             this.bPlay.Click += new System.EventHandler(this.bPlay_Click);
             // 
             // SizeBox
             // 
+            this.SizeBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SizeBox.FormattingEnabled = true;
             this.SizeBox.Items.AddRange(new object[] {
             "Normal",
@@ -113,6 +108,7 @@
             // 
             // ThemeBox
             // 
+            this.ThemeBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ThemeBox.FormattingEnabled = true;
             this.ThemeBox.Items.AddRange(new object[] {
             "Default LC",
@@ -182,6 +178,46 @@
             this.logBox.Text = "";
             this.logBox.TextChanged += new System.EventHandler(this.logBox_TextChanged);
             // 
+            // bVoice
+            // 
+            this.bVoice.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.bVoice.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bVoice.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.bVoice.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bVoice.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bVoice.Image = ((System.Drawing.Image)(resources.GetObject("bVoice.Image")));
+            this.bVoice.Location = new System.Drawing.Point(680, 429);
+            this.bVoice.Name = "bVoice";
+            this.bVoice.Size = new System.Drawing.Size(27, 29);
+            this.bVoice.TabIndex = 10;
+            this.bVoice.UseVisualStyleBackColor = false;
+            this.bVoice.Click += new System.EventHandler(this.bVoice_Click);
+            // 
+            // URLLabel
+            // 
+            this.URLLabel.AutoSize = true;
+            this.URLLabel.Font = new System.Drawing.Font("Lucida Sans", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.URLLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.URLLabel.Location = new System.Drawing.Point(9, 15);
+            this.URLLabel.Name = "URLLabel";
+            this.URLLabel.Size = new System.Drawing.Size(31, 12);
+            this.URLLabel.TabIndex = 5;
+            this.URLLabel.Text = "URL:";
+            // 
+            // bReport
+            // 
+            this.bReport.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.bReport.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bReport.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.bReport.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bReport.Location = new System.Drawing.Point(723, 430);
+            this.bReport.Name = "bReport";
+            this.bReport.Size = new System.Drawing.Size(49, 28);
+            this.bReport.TabIndex = 11;
+            this.bReport.Text = "Report";
+            this.bReport.UseVisualStyleBackColor = false;
+            this.bReport.Click += new System.EventHandler(this.bReport_Click);
+            // 
             // console
             // 
             this.console.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -193,22 +229,15 @@
             this.console.TabIndex = 0;
             this.console.Text = "Server Loading...";
             // 
-            // bVoice
-            // 
-            this.bVoice.Location = new System.Drawing.Point(680, 433);
-            this.bVoice.Name = "bVoice";
-            this.bVoice.Size = new System.Drawing.Size(92, 20);
-            this.bVoice.TabIndex = 10;
-            this.bVoice.Text = "Voice Command";
-            this.bVoice.UseVisualStyleBackColor = true;
-            this.bVoice.Click += new System.EventHandler(this.bVoice_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Firebrick;
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(784, 464);
+            this.Controls.Add(this.bReport);
+            this.Controls.Add(this.URLLabel);
             this.Controls.Add(this.bVoice);
             this.Controls.Add(this.ThemeBox);
             this.Controls.Add(this.logBox);
@@ -217,7 +246,6 @@
             this.Controls.Add(this.console);
             this.Controls.Add(this.playerListLabel);
             this.Controls.Add(this.playerList);
-            this.Controls.Add(this.URLLabel);
             this.Controls.Add(this.uriDisplay);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(500, 150);
@@ -234,7 +262,6 @@
         /*private bool onGlobal = false;*/
         private System.Windows.Forms.RichTextBox logBox;
         private System.Windows.Forms.TextBox uriDisplay;
-        private System.Windows.Forms.Label URLLabel;
         private System.Windows.Forms.ListBox playerList;
         private System.Windows.Forms.Label playerListLabel;
         private ConsoleBox console;
@@ -247,6 +274,8 @@
         private System.Windows.Forms.ToolStripMenuItem Rank;
         private System.Windows.Forms.ToolStripMenuItem PM;
         private System.Windows.Forms.Button bVoice;
+        private System.Windows.Forms.Label URLLabel;
+        private System.Windows.Forms.Button bReport;
         /*private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.TabPage tabGlobal;
         private System.Windows.Forms.RichTextBox logGlobal;

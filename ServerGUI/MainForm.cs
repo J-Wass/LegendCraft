@@ -744,6 +744,14 @@ namespace fCraft.ServerGUI
                 return;
             }
 
+            //if button was already clicked, cancel
+            if (listening)
+            {
+                listening = false;
+                bVoice.ForeColor = System.Drawing.Color.Black;
+                return;
+            }
+
                 System.Speech.Recognition.SpeechRecognitionEngine engine = new System.Speech.Recognition.SpeechRecognitionEngine();
                 bVoice.ForeColor = System.Drawing.Color.Aqua;
                 System.Speech.Recognition.Choices commands = new System.Speech.Recognition.Choices();
@@ -848,6 +856,12 @@ namespace fCraft.ServerGUI
             }
         }
         #endregion
+
+        private void bReport_Click(object sender, EventArgs e)
+        {
+            var form = new Report();
+            form.Show();
+        }
 
     }
 }
