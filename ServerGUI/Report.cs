@@ -24,13 +24,19 @@ namespace fCraft.ServerGUI
         private void tEmail_MouseClick(object sender, EventArgs e)
         {
             tEmail.ForeColor = System.Drawing.Color.Black;
-            tEmail.Text = "";
+            if (tEmail.Text == "Email...")
+            {
+                tEmail.Text = "";
+            }
         }
 
         private void tReport_MouseClick(object sender, EventArgs e)
         {
             tReport.ForeColor = System.Drawing.Color.Black;
-            tReport.Text = "";
+            if (tReport.Text == "Type in your bug report/feature request here...") 
+            {
+                tReport.Text = "";
+            }
         }
 
         private void bCancel_Click(object sender, EventArgs e)
@@ -46,6 +52,7 @@ namespace fCraft.ServerGUI
                 return;
             }
 
+            //otherwise, send!
             Uri target = new Uri("http://legend-craft.tk/request");
             StringBuilder sb = new StringBuilder();
 
@@ -57,7 +64,7 @@ namespace fCraft.ServerGUI
             }
             else
             {
-                sb.Append(Uri.EscapeDataString(".Net " + Environment.Version.Major));
+                sb.Append(Uri.EscapeDataString(".Net " + Environment.Version.MajorRevision));
             }
             sb.Append("&message=" + tReport.Text);
             sb.Append("&email=" + tEmail.Text);
@@ -120,6 +127,11 @@ namespace fCraft.ServerGUI
             Logger.LogToConsole("Report sent. Thank you for helping with the development of LegendCraft!");
             this.Close();
 
+        }
+
+        private void Report_Load(object sender, EventArgs e)
+        {
+            cType.Text = "Feature";
         }
     }
 }

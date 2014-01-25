@@ -67,8 +67,9 @@
             // 
             this.playerListLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.playerListLabel.AutoSize = true;
+            this.playerListLabel.BackColor = System.Drawing.Color.Brown;
             this.playerListLabel.Font = new System.Drawing.Font("Lucida Sans", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.playerListLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.playerListLabel.ForeColor = System.Drawing.Color.Black;
             this.playerListLabel.Location = new System.Drawing.Point(628, 42);
             this.playerListLabel.Name = "playerListLabel";
             this.playerListLabel.Size = new System.Drawing.Size(65, 12);
@@ -188,7 +189,7 @@
             this.bVoice.Image = ((System.Drawing.Image)(resources.GetObject("bVoice.Image")));
             this.bVoice.Location = new System.Drawing.Point(680, 429);
             this.bVoice.Name = "bVoice";
-            this.bVoice.Size = new System.Drawing.Size(27, 29);
+            this.bVoice.Size = new System.Drawing.Size(37, 29);
             this.bVoice.TabIndex = 10;
             this.bVoice.UseVisualStyleBackColor = false;
             this.bVoice.Click += new System.EventHandler(this.bVoice_Click);
@@ -197,7 +198,7 @@
             // 
             this.URLLabel.AutoSize = true;
             this.URLLabel.Font = new System.Drawing.Font("Lucida Sans", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.URLLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.URLLabel.ForeColor = System.Drawing.Color.Black;
             this.URLLabel.Location = new System.Drawing.Point(9, 15);
             this.URLLabel.Name = "URLLabel";
             this.URLLabel.Size = new System.Drawing.Size(31, 12);
@@ -210,9 +211,9 @@
             this.bReport.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
             this.bReport.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.bReport.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.bReport.Location = new System.Drawing.Point(723, 430);
+            this.bReport.Location = new System.Drawing.Point(723, 429);
             this.bReport.Name = "bReport";
-            this.bReport.Size = new System.Drawing.Size(49, 28);
+            this.bReport.Size = new System.Drawing.Size(49, 29);
             this.bReport.TabIndex = 11;
             this.bReport.Text = "Report";
             this.bReport.UseVisualStyleBackColor = false;
@@ -233,7 +234,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Firebrick;
+            this.BackColor = System.Drawing.Color.Brown;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(784, 464);
             this.Controls.Add(this.bReport);

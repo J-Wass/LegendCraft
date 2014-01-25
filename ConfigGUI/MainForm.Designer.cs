@@ -225,6 +225,11 @@
             this.vConsoleOptions = new System.Windows.Forms.ListView();
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabIRC = new System.Windows.Forms.TabPage();
+            this.gIRCAdv = new System.Windows.Forms.GroupBox();
+            this.tServPass = new System.Windows.Forms.TextBox();
+            this.xServPass = new System.Windows.Forms.CheckBox();
+            this.tChanPass = new System.Windows.Forms.TextBox();
+            this.xChanPass = new System.Windows.Forms.CheckBox();
             this.xIRCListShowNonEnglish = new System.Windows.Forms.CheckBox();
             this.gIRCOptions = new System.Windows.Forms.GroupBox();
             this.xIRCBotAnnounceServerEvents = new System.Windows.Forms.CheckBox();
@@ -311,11 +316,6 @@
             this.bApply = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.gIRCAdv = new System.Windows.Forms.GroupBox();
-            this.xChanPass = new System.Windows.Forms.CheckBox();
-            this.tChanPass = new System.Windows.Forms.TextBox();
-            this.xServPass = new System.Windows.Forms.CheckBox();
-            this.tServPass = new System.Windows.Forms.TextBox();
             this.chatPreview = new fCraft.ConfigGUI.ChatPreview();
             this.tabs.SuspendLayout();
             this.tabGeneral.SuspendLayout();
@@ -367,6 +367,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.nLogLimit)).BeginInit();
             this.gConsole.SuspendLayout();
             this.tabIRC.SuspendLayout();
+            this.gIRCAdv.SuspendLayout();
             this.gIRCOptions.SuspendLayout();
             this.gIRCNetwork.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nIRCDelay)).BeginInit();
@@ -383,7 +384,6 @@
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MaxCapsValue)).BeginInit();
             this.groupBox1.SuspendLayout();
-            this.gIRCAdv.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabs
@@ -410,7 +410,7 @@
             // 
             // tabGeneral
             // 
-            this.tabGeneral.BackColor = System.Drawing.Color.Firebrick;
+            this.tabGeneral.BackColor = System.Drawing.Color.IndianRed;
             this.tabGeneral.Controls.Add(this.gBasic);
             this.tabGeneral.Controls.Add(this.groupBox4);
             this.tabGeneral.Controls.Add(this.pictureBox1);
@@ -465,6 +465,7 @@
             // 
             // HeartBeatUrlComboBox
             // 
+            this.HeartBeatUrlComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.HeartBeatUrlComboBox.FormattingEnabled = true;
             this.HeartBeatUrlComboBox.Items.AddRange(new object[] {
             "Minecraft.net",
@@ -508,12 +509,16 @@
             // 
             // bPortCheck
             // 
+            this.bPortCheck.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.bPortCheck.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bPortCheck.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.bPortCheck.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bPortCheck.Location = new System.Drawing.Point(204, 99);
             this.bPortCheck.Name = "bPortCheck";
             this.bPortCheck.Size = new System.Drawing.Size(68, 23);
             this.bPortCheck.TabIndex = 8;
             this.bPortCheck.Text = "Check";
-            this.bPortCheck.UseVisualStyleBackColor = true;
+            this.bPortCheck.UseVisualStyleBackColor = false;
             this.bPortCheck.Click += new System.EventHandler(this.bPortCheck_Click);
             // 
             // lPort
@@ -550,6 +555,7 @@
             // cDefaultRank
             // 
             this.cDefaultRank.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cDefaultRank.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cDefaultRank.FormattingEnabled = true;
             this.cDefaultRank.Location = new System.Drawing.Point(440, 128);
             this.cDefaultRank.Name = "cDefaultRank";
@@ -577,12 +583,16 @@
             // 
             // bMeasure
             // 
+            this.bMeasure.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.bMeasure.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bMeasure.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.bMeasure.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bMeasure.Location = new System.Drawing.Point(559, 99);
             this.bMeasure.Name = "bMeasure";
             this.bMeasure.Size = new System.Drawing.Size(71, 23);
             this.bMeasure.TabIndex = 16;
             this.bMeasure.Text = "Measure";
-            this.bMeasure.UseVisualStyleBackColor = true;
+            this.bMeasure.UseVisualStyleBackColor = false;
             this.bMeasure.Click += new System.EventHandler(this.bMeasure_Click);
             // 
             // tServerName
@@ -663,6 +673,7 @@
             // cPublic
             // 
             this.cPublic.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cPublic.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cPublic.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cPublic.FormattingEnabled = true;
             this.cPublic.Items.AddRange(new object[] {
@@ -731,31 +742,43 @@
             // 
             // bSoft
             // 
+            this.bSoft.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.bSoft.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bSoft.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.bSoft.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bSoft.Location = new System.Drawing.Point(7, 89);
             this.bSoft.Name = "bSoft";
             this.bSoft.Size = new System.Drawing.Size(110, 23);
             this.bSoft.TabIndex = 2;
             this.bSoft.Text = "Other Software";
-            this.bSoft.UseVisualStyleBackColor = true;
+            this.bSoft.UseVisualStyleBackColor = false;
             this.bSoft.Click += new System.EventHandler(this.bSoft_Click);
             // 
             // bWiki
             // 
+            this.bWiki.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.bWiki.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bWiki.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.bWiki.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bWiki.Location = new System.Drawing.Point(6, 60);
             this.bWiki.Name = "bWiki";
             this.bWiki.Size = new System.Drawing.Size(111, 23);
             this.bWiki.TabIndex = 1;
             this.bWiki.Text = "Wiki";
-            this.bWiki.UseVisualStyleBackColor = true;
+            this.bWiki.UseVisualStyleBackColor = false;
             // 
             // bWeb
             // 
+            this.bWeb.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.bWeb.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bWeb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.bWeb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bWeb.Location = new System.Drawing.Point(7, 31);
             this.bWeb.Name = "bWeb";
             this.bWeb.Size = new System.Drawing.Size(110, 23);
             this.bWeb.TabIndex = 1;
             this.bWeb.Text = "Website";
-            this.bWeb.UseVisualStyleBackColor = true;
+            this.bWeb.UseVisualStyleBackColor = false;
             // 
             // pictureBox1
             // 
@@ -782,32 +805,45 @@
             // 
             // bChangelog
             // 
+            this.bChangelog.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.bChangelog.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bChangelog.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.bChangelog.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bChangelog.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bChangelog.Location = new System.Drawing.Point(7, 89);
             this.bChangelog.Name = "bChangelog";
             this.bChangelog.Size = new System.Drawing.Size(110, 23);
             this.bChangelog.TabIndex = 2;
             this.bChangelog.Text = "Changelog";
-            this.bChangelog.UseVisualStyleBackColor = true;
+            this.bChangelog.UseVisualStyleBackColor = false;
             this.bChangelog.Click += new System.EventHandler(this.bChangelog_Click);
             // 
             // bCredits
             // 
+            this.bCredits.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.bCredits.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bCredits.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.bCredits.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bCredits.Location = new System.Drawing.Point(6, 31);
             this.bCredits.Name = "bCredits";
             this.bCredits.Size = new System.Drawing.Size(111, 23);
             this.bCredits.TabIndex = 1;
             this.bCredits.Text = "Credits";
-            this.bCredits.UseVisualStyleBackColor = true;
+            this.bCredits.UseVisualStyleBackColor = false;
             this.bCredits.Click += new System.EventHandler(this.bCredits_Click);
             // 
             // bReadme
             // 
+            this.bReadme.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.bReadme.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bReadme.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.bReadme.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bReadme.Location = new System.Drawing.Point(7, 60);
             this.bReadme.Name = "bReadme";
             this.bReadme.Size = new System.Drawing.Size(110, 23);
             this.bReadme.TabIndex = 1;
             this.bReadme.Text = "Readme";
-            this.bReadme.UseVisualStyleBackColor = true;
+            this.bReadme.UseVisualStyleBackColor = false;
             this.bReadme.Click += new System.EventHandler(this.bReadme_Click);
             // 
             // gInformation
@@ -828,13 +864,17 @@
             // bGreeting
             // 
             this.bGreeting.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bGreeting.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.bGreeting.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bGreeting.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.bGreeting.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bGreeting.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bGreeting.Location = new System.Drawing.Point(538, 20);
             this.bGreeting.Name = "bGreeting";
             this.bGreeting.Size = new System.Drawing.Size(92, 28);
             this.bGreeting.TabIndex = 5;
             this.bGreeting.Text = "Edit Greeting";
-            this.bGreeting.UseVisualStyleBackColor = true;
+            this.bGreeting.UseVisualStyleBackColor = false;
             this.bGreeting.Click += new System.EventHandler(this.bGreeting_Click);
             // 
             // lAnnouncementsUnits
@@ -872,42 +912,52 @@
             // xAnnouncements
             // 
             this.xAnnouncements.AutoSize = true;
+            this.xAnnouncements.BackColor = System.Drawing.Color.Firebrick;
+            this.xAnnouncements.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.xAnnouncements.Location = new System.Drawing.Point(24, 26);
             this.xAnnouncements.Name = "xAnnouncements";
-            this.xAnnouncements.Size = new System.Drawing.Size(180, 19);
+            this.xAnnouncements.Size = new System.Drawing.Size(186, 20);
             this.xAnnouncements.TabIndex = 0;
             this.xAnnouncements.Text = "Show announcements every";
-            this.xAnnouncements.UseVisualStyleBackColor = true;
+            this.xAnnouncements.UseVisualStyleBackColor = false;
             this.xAnnouncements.CheckedChanged += new System.EventHandler(this.xAnnouncements_CheckedChanged);
             // 
             // bRules
             // 
             this.bRules.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bRules.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.bRules.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bRules.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.bRules.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bRules.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bRules.Location = new System.Drawing.Point(445, 20);
             this.bRules.Name = "bRules";
             this.bRules.Size = new System.Drawing.Size(87, 28);
             this.bRules.TabIndex = 4;
             this.bRules.Text = "Edit Rules";
-            this.bRules.UseVisualStyleBackColor = true;
+            this.bRules.UseVisualStyleBackColor = false;
             this.bRules.Click += new System.EventHandler(this.bRules_Click);
             // 
             // bAnnouncements
             // 
             this.bAnnouncements.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bAnnouncements.BackColor = System.Drawing.Color.WhiteSmoke;
             this.bAnnouncements.Enabled = false;
+            this.bAnnouncements.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bAnnouncements.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.bAnnouncements.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bAnnouncements.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bAnnouncements.Location = new System.Drawing.Point(301, 20);
             this.bAnnouncements.Name = "bAnnouncements";
             this.bAnnouncements.Size = new System.Drawing.Size(138, 28);
             this.bAnnouncements.TabIndex = 3;
             this.bAnnouncements.Text = "Edit Announcements";
-            this.bAnnouncements.UseVisualStyleBackColor = true;
+            this.bAnnouncements.UseVisualStyleBackColor = false;
             this.bAnnouncements.Click += new System.EventHandler(this.bAnnouncements_Click);
             // 
             // tabChat
             // 
-            this.tabChat.BackColor = System.Drawing.Color.Firebrick;
+            this.tabChat.BackColor = System.Drawing.Color.IndianRed;
             this.tabChat.Controls.Add(this.chatPreview);
             this.tabChat.Controls.Add(this.gAppearence);
             this.tabChat.Controls.Add(this.gChatColors);
@@ -996,7 +1046,7 @@
             // 
             // gChatColors
             // 
-            this.gChatColors.BackColor = System.Drawing.Color.Firebrick;
+            this.gChatColors.BackColor = System.Drawing.Color.IndianRed;
             this.gChatColors.Controls.Add(this.lColorMe);
             this.gChatColors.Controls.Add(this.bColorMe);
             this.gChatColors.Controls.Add(this.lColorWarning);
@@ -1153,7 +1203,7 @@
             // 
             // tabWorlds
             // 
-            this.tabWorlds.BackColor = System.Drawing.Color.Firebrick;
+            this.tabWorlds.BackColor = System.Drawing.Color.IndianRed;
             this.tabWorlds.Controls.Add(this.xWoMEnableEnvExtensions);
             this.tabWorlds.Controls.Add(this.bMapPath);
             this.tabWorlds.Controls.Add(this.xMapPath);
@@ -1187,13 +1237,17 @@
             // bMapPath
             // 
             this.bMapPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.bMapPath.BackColor = System.Drawing.Color.WhiteSmoke;
             this.bMapPath.Enabled = false;
+            this.bMapPath.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bMapPath.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.bMapPath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bMapPath.Location = new System.Drawing.Point(587, 409);
             this.bMapPath.Name = "bMapPath";
-            this.bMapPath.Size = new System.Drawing.Size(57, 23);
+            this.bMapPath.Size = new System.Drawing.Size(62, 23);
             this.bMapPath.TabIndex = 10;
             this.bMapPath.Text = "Browse";
-            this.bMapPath.UseVisualStyleBackColor = true;
+            this.bMapPath.UseVisualStyleBackColor = false;
             this.bMapPath.Click += new System.EventHandler(this.bMapPath_Click);
             // 
             // xMapPath
@@ -1233,6 +1287,7 @@
             // 
             this.cDefaultBuildRank.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cDefaultBuildRank.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cDefaultBuildRank.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cDefaultBuildRank.FormattingEnabled = true;
             this.cDefaultBuildRank.Location = new System.Drawing.Point(372, 378);
             this.cDefaultBuildRank.Name = "cDefaultBuildRank";
@@ -1244,6 +1299,7 @@
             // 
             this.cMainWorld.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cMainWorld.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cMainWorld.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cMainWorld.Location = new System.Drawing.Point(542, 17);
             this.cMainWorld.Name = "cMainWorld";
             this.cMainWorld.Size = new System.Drawing.Size(102, 23);
@@ -1261,34 +1317,46 @@
             // 
             // bWorldEdit
             // 
+            this.bWorldEdit.BackColor = System.Drawing.Color.WhiteSmoke;
             this.bWorldEdit.Enabled = false;
+            this.bWorldEdit.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bWorldEdit.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.bWorldEdit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bWorldEdit.Location = new System.Drawing.Point(114, 13);
             this.bWorldEdit.Name = "bWorldEdit";
             this.bWorldEdit.Size = new System.Drawing.Size(100, 28);
             this.bWorldEdit.TabIndex = 2;
             this.bWorldEdit.Text = "Edit";
-            this.bWorldEdit.UseVisualStyleBackColor = true;
+            this.bWorldEdit.UseVisualStyleBackColor = false;
             this.bWorldEdit.Click += new System.EventHandler(this.bWorldEdit_Click);
             // 
             // bAddWorld
             // 
+            this.bAddWorld.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.bAddWorld.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bAddWorld.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.bAddWorld.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bAddWorld.Location = new System.Drawing.Point(8, 13);
             this.bAddWorld.Name = "bAddWorld";
             this.bAddWorld.Size = new System.Drawing.Size(100, 28);
             this.bAddWorld.TabIndex = 1;
             this.bAddWorld.Text = "Add World";
-            this.bAddWorld.UseVisualStyleBackColor = true;
+            this.bAddWorld.UseVisualStyleBackColor = false;
             this.bAddWorld.Click += new System.EventHandler(this.bAddWorld_Click);
             // 
             // bWorldDelete
             // 
+            this.bWorldDelete.BackColor = System.Drawing.Color.WhiteSmoke;
             this.bWorldDelete.Enabled = false;
+            this.bWorldDelete.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bWorldDelete.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.bWorldDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bWorldDelete.Location = new System.Drawing.Point(220, 13);
             this.bWorldDelete.Name = "bWorldDelete";
             this.bWorldDelete.Size = new System.Drawing.Size(100, 28);
             this.bWorldDelete.TabIndex = 3;
             this.bWorldDelete.Text = "Delete World";
-            this.bWorldDelete.UseVisualStyleBackColor = true;
+            this.bWorldDelete.UseVisualStyleBackColor = false;
             this.bWorldDelete.Click += new System.EventHandler(this.bWorldDel_Click);
             // 
             // dgvWorlds
@@ -1382,7 +1450,7 @@
             // 
             // tabRanks
             // 
-            this.tabRanks.BackColor = System.Drawing.Color.Firebrick;
+            this.tabRanks.BackColor = System.Drawing.Color.IndianRed;
             this.tabRanks.Controls.Add(this.gPermissionLimits);
             this.tabRanks.Controls.Add(this.lRankList);
             this.tabRanks.Controls.Add(this.bLowerRank);
@@ -1437,23 +1505,31 @@
             // bLowerRank
             // 
             this.bLowerRank.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.bLowerRank.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.bLowerRank.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bLowerRank.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray;
+            this.bLowerRank.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bLowerRank.Location = new System.Drawing.Point(84, 455);
             this.bLowerRank.Name = "bLowerRank";
             this.bLowerRank.Size = new System.Drawing.Size(70, 23);
             this.bLowerRank.TabIndex = 5;
             this.bLowerRank.Text = "▼ Lower";
-            this.bLowerRank.UseVisualStyleBackColor = true;
+            this.bLowerRank.UseVisualStyleBackColor = false;
             this.bLowerRank.Click += new System.EventHandler(this.bLowerRank_Click);
             // 
             // bRaiseRank
             // 
             this.bRaiseRank.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.bRaiseRank.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.bRaiseRank.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bRaiseRank.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray;
+            this.bRaiseRank.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bRaiseRank.Location = new System.Drawing.Point(8, 455);
             this.bRaiseRank.Name = "bRaiseRank";
             this.bRaiseRank.Size = new System.Drawing.Size(70, 23);
             this.bRaiseRank.TabIndex = 4;
             this.bRaiseRank.Text = "▲ Raise";
-            this.bRaiseRank.UseVisualStyleBackColor = true;
+            this.bRaiseRank.UseVisualStyleBackColor = false;
             this.bRaiseRank.Click += new System.EventHandler(this.bRaiseRank_Click);
             // 
             // gRankOptions
@@ -1766,12 +1842,16 @@
             // 
             // bDeleteRank
             // 
+            this.bDeleteRank.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.bDeleteRank.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bDeleteRank.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray;
+            this.bDeleteRank.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bDeleteRank.Location = new System.Drawing.Point(84, 28);
             this.bDeleteRank.Name = "bDeleteRank";
             this.bDeleteRank.Size = new System.Drawing.Size(70, 23);
             this.bDeleteRank.TabIndex = 3;
             this.bDeleteRank.Text = "Delete";
-            this.bDeleteRank.UseVisualStyleBackColor = true;
+            this.bDeleteRank.UseVisualStyleBackColor = false;
             this.bDeleteRank.Click += new System.EventHandler(this.bDeleteRank_Click);
             // 
             // vPermissions
@@ -1800,12 +1880,16 @@
             // 
             // bAddRank
             // 
+            this.bAddRank.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.bAddRank.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bAddRank.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray;
+            this.bAddRank.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bAddRank.Location = new System.Drawing.Point(8, 28);
             this.bAddRank.Name = "bAddRank";
             this.bAddRank.Size = new System.Drawing.Size(70, 23);
             this.bAddRank.TabIndex = 2;
             this.bAddRank.Text = "Add Rank";
-            this.bAddRank.UseVisualStyleBackColor = true;
+            this.bAddRank.UseVisualStyleBackColor = false;
             this.bAddRank.Click += new System.EventHandler(this.bAddRank_Click);
             // 
             // lPermissions
@@ -1834,7 +1918,7 @@
             // 
             // tabSecurity
             // 
-            this.tabSecurity.BackColor = System.Drawing.Color.Firebrick;
+            this.tabSecurity.BackColor = System.Drawing.Color.IndianRed;
             this.tabSecurity.Controls.Add(this.gBlockDB);
             this.tabSecurity.Controls.Add(this.gSecurityMisc);
             this.tabSecurity.Controls.Add(this.gSpamChat);
@@ -1861,6 +1945,7 @@
             // cBlockDBAutoEnableRank
             // 
             this.cBlockDBAutoEnableRank.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cBlockDBAutoEnableRank.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cBlockDBAutoEnableRank.FormattingEnabled = true;
             this.cBlockDBAutoEnableRank.Location = new System.Drawing.Point(408, 55);
             this.cBlockDBAutoEnableRank.Name = "cBlockDBAutoEnableRank";
@@ -1943,6 +2028,7 @@
             // cPatrolledRank
             // 
             this.cPatrolledRank.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cPatrolledRank.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cPatrolledRank.FormattingEnabled = true;
             this.cPatrolledRank.Location = new System.Drawing.Point(128, 140);
             this.cPatrolledRank.Name = "cPatrolledRank";
@@ -2145,7 +2231,7 @@
             // 
             // gVerify
             // 
-            this.gVerify.BackColor = System.Drawing.Color.Firebrick;
+            this.gVerify.BackColor = System.Drawing.Color.IndianRed;
             this.gVerify.Controls.Add(this.nMaxConnectionsPerIP);
             this.gVerify.Controls.Add(this.xAllowUnverifiedLAN);
             this.gVerify.Controls.Add(this.xMaxConnectionsPerIP);
@@ -2209,6 +2295,7 @@
             // cVerifyNames
             // 
             this.cVerifyNames.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cVerifyNames.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cVerifyNames.FormattingEnabled = true;
             this.cVerifyNames.Items.AddRange(new object[] {
             "None (Unsafe)",
@@ -2222,7 +2309,7 @@
             // 
             // gUpdate
             // 
-            this.gUpdate.BackColor = System.Drawing.Color.Firebrick;
+            this.gUpdate.BackColor = System.Drawing.Color.IndianRed;
             this.gUpdate.Controls.Add(this.groupBox5);
             this.gUpdate.Controls.Add(this.gDataBackup);
             this.gUpdate.Controls.Add(this.gSaving);
@@ -2247,12 +2334,16 @@
             // 
             // bUpdate
             // 
+            this.bUpdate.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.bUpdate.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bUpdate.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.bUpdate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bUpdate.Location = new System.Drawing.Point(221, 14);
             this.bUpdate.Name = "bUpdate";
             this.bUpdate.Size = new System.Drawing.Size(205, 28);
             this.bUpdate.TabIndex = 23;
             this.bUpdate.Text = "Manual Update Check";
-            this.bUpdate.UseVisualStyleBackColor = true;
+            this.bUpdate.UseVisualStyleBackColor = false;
             this.bUpdate.Click += new System.EventHandler(this.bUpdate_Click);
             // 
             // checkUpdate
@@ -2469,7 +2560,7 @@
             // 
             // tabLogging
             // 
-            this.tabLogging.BackColor = System.Drawing.Color.Firebrick;
+            this.tabLogging.BackColor = System.Drawing.Color.IndianRed;
             this.tabLogging.Controls.Add(this.gLogFile);
             this.tabLogging.Controls.Add(this.gConsole);
             this.tabLogging.Location = new System.Drawing.Point(4, 24);
@@ -2481,7 +2572,7 @@
             // 
             // gLogFile
             // 
-            this.gLogFile.BackColor = System.Drawing.Color.Firebrick;
+            this.gLogFile.BackColor = System.Drawing.Color.IndianRed;
             this.gLogFile.Controls.Add(this.lLogFileOptionsDescription);
             this.gLogFile.Controls.Add(this.xLogLimit);
             this.gLogFile.Controls.Add(this.vLogFileOptions);
@@ -2562,6 +2653,7 @@
             // cLogMode
             // 
             this.cLogMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cLogMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cLogMode.FormattingEnabled = true;
             this.cLogMode.Items.AddRange(new object[] {
             "One long file",
@@ -2623,7 +2715,7 @@
             // 
             // tabIRC
             // 
-            this.tabIRC.BackColor = System.Drawing.Color.Firebrick;
+            this.tabIRC.BackColor = System.Drawing.Color.IndianRed;
             this.tabIRC.Controls.Add(this.gIRCAdv);
             this.tabIRC.Controls.Add(this.xIRCListShowNonEnglish);
             this.tabIRC.Controls.Add(this.gIRCOptions);
@@ -2637,6 +2729,57 @@
             this.tabIRC.Size = new System.Drawing.Size(652, 482);
             this.tabIRC.TabIndex = 8;
             this.tabIRC.Text = "IRC";
+            // 
+            // gIRCAdv
+            // 
+            this.gIRCAdv.Controls.Add(this.tServPass);
+            this.gIRCAdv.Controls.Add(this.xServPass);
+            this.gIRCAdv.Controls.Add(this.tChanPass);
+            this.gIRCAdv.Controls.Add(this.xChanPass);
+            this.gIRCAdv.Location = new System.Drawing.Point(10, 374);
+            this.gIRCAdv.Name = "gIRCAdv";
+            this.gIRCAdv.Size = new System.Drawing.Size(419, 95);
+            this.gIRCAdv.TabIndex = 6;
+            this.gIRCAdv.TabStop = false;
+            this.gIRCAdv.Text = "Advanced";
+            // 
+            // tServPass
+            // 
+            this.tServPass.Enabled = false;
+            this.tServPass.Location = new System.Drawing.Point(219, 48);
+            this.tServPass.Name = "tServPass";
+            this.tServPass.Size = new System.Drawing.Size(154, 21);
+            this.tServPass.TabIndex = 3;
+            // 
+            // xServPass
+            // 
+            this.xServPass.AutoSize = true;
+            this.xServPass.Location = new System.Drawing.Point(219, 23);
+            this.xServPass.Name = "xServPass";
+            this.xServPass.Size = new System.Drawing.Size(143, 19);
+            this.xServPass.TabIndex = 2;
+            this.xServPass.Text = "Use Server Password";
+            this.xServPass.UseVisualStyleBackColor = true;
+            this.xServPass.CheckedChanged += new System.EventHandler(this.xServPass_CheckedChanged);
+            // 
+            // tChanPass
+            // 
+            this.tChanPass.Enabled = false;
+            this.tChanPass.Location = new System.Drawing.Point(16, 48);
+            this.tChanPass.Name = "tChanPass";
+            this.tChanPass.Size = new System.Drawing.Size(154, 21);
+            this.tChanPass.TabIndex = 1;
+            // 
+            // xChanPass
+            // 
+            this.xChanPass.AutoSize = true;
+            this.xChanPass.Location = new System.Drawing.Point(16, 23);
+            this.xChanPass.Name = "xChanPass";
+            this.xChanPass.Size = new System.Drawing.Size(154, 19);
+            this.xChanPass.TabIndex = 0;
+            this.xChanPass.Text = "Use Channel Password";
+            this.xChanPass.UseVisualStyleBackColor = true;
+            this.xChanPass.CheckedChanged += new System.EventHandler(this.xChanPass_CheckedChanged);
             // 
             // xIRCListShowNonEnglish
             // 
@@ -3003,6 +3146,7 @@
             // 
             this.cIRCList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cIRCList.Enabled = false;
+            this.cIRCList.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cIRCList.FormattingEnabled = true;
             this.cIRCList.Location = new System.Drawing.Point(321, 11);
             this.cIRCList.Name = "cIRCList";
@@ -3012,7 +3156,7 @@
             // 
             // tabAdvanced
             // 
-            this.tabAdvanced.BackColor = System.Drawing.Color.Firebrick;
+            this.tabAdvanced.BackColor = System.Drawing.Color.IndianRed;
             this.tabAdvanced.Controls.Add(this.gPerformance);
             this.tabAdvanced.Controls.Add(this.gAdvancedMisc);
             this.tabAdvanced.Controls.Add(this.gCrashReport);
@@ -3080,6 +3224,7 @@
             // cProcessPriority
             // 
             this.cProcessPriority.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cProcessPriority.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cProcessPriority.Items.AddRange(new object[] {
             "(system default)",
             "High",
@@ -3381,7 +3526,7 @@
             // 
             // Misc
             // 
-            this.Misc.BackColor = System.Drawing.Color.Firebrick;
+            this.Misc.BackColor = System.Drawing.Color.IndianRed;
             this.Misc.Controls.Add(this.groupBox3);
             this.Misc.Controls.Add(this.groupBox1);
             this.Misc.Location = new System.Drawing.Point(4, 24);
@@ -3427,22 +3572,30 @@
             // 
             // ReqsEditor
             // 
+            this.ReqsEditor.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.ReqsEditor.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.ReqsEditor.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.ReqsEditor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ReqsEditor.Location = new System.Drawing.Point(442, 94);
             this.ReqsEditor.Name = "ReqsEditor";
             this.ReqsEditor.Size = new System.Drawing.Size(125, 23);
             this.ReqsEditor.TabIndex = 26;
             this.ReqsEditor.Text = "Edit Requirements";
-            this.ReqsEditor.UseVisualStyleBackColor = true;
+            this.ReqsEditor.UseVisualStyleBackColor = false;
             this.ReqsEditor.Click += new System.EventHandler(this.ReqsEditor_Click);
             // 
             // SwearEditor
             // 
+            this.SwearEditor.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.SwearEditor.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.SwearEditor.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.SwearEditor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SwearEditor.Location = new System.Drawing.Point(442, 65);
             this.SwearEditor.Name = "SwearEditor";
             this.SwearEditor.Size = new System.Drawing.Size(125, 23);
             this.SwearEditor.TabIndex = 25;
             this.SwearEditor.Text = "Edit Profanity List";
-            this.SwearEditor.UseVisualStyleBackColor = true;
+            this.SwearEditor.UseVisualStyleBackColor = false;
             this.SwearEditor.Click += new System.EventHandler(this.SwearEditor_Click);
             // 
             // MaxCapsValue
@@ -3588,17 +3741,20 @@
             // bOK
             // 
             this.bOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.bOK.BackColor = System.Drawing.Color.Brown;
             this.bOK.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bOK.Location = new System.Drawing.Point(360, 528);
             this.bOK.Name = "bOK";
             this.bOK.Size = new System.Drawing.Size(100, 28);
             this.bOK.TabIndex = 1;
             this.bOK.Text = "OK";
+            this.bOK.UseVisualStyleBackColor = false;
             this.bOK.Click += new System.EventHandler(this.bSave_Click);
             // 
             // bCancel
             // 
             this.bCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.bCancel.BackColor = System.Drawing.Color.Brown;
             this.bCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.bCancel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bCancel.Location = new System.Drawing.Point(466, 528);
@@ -3606,41 +3762,52 @@
             this.bCancel.Size = new System.Drawing.Size(100, 28);
             this.bCancel.TabIndex = 2;
             this.bCancel.Text = "Cancel";
+            this.bCancel.UseVisualStyleBackColor = false;
             this.bCancel.Click += new System.EventHandler(this.bCancel_Click);
             // 
             // bResetTab
             // 
             this.bResetTab.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.bResetTab.BackColor = System.Drawing.Color.Gainsboro;
+            this.bResetTab.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bResetTab.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray;
+            this.bResetTab.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bResetTab.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bResetTab.Location = new System.Drawing.Point(132, 528);
             this.bResetTab.Name = "bResetTab";
             this.bResetTab.Size = new System.Drawing.Size(100, 28);
             this.bResetTab.TabIndex = 5;
             this.bResetTab.Text = "Reset Tab";
-            this.bResetTab.UseVisualStyleBackColor = true;
+            this.bResetTab.UseVisualStyleBackColor = false;
             this.bResetTab.Click += new System.EventHandler(this.bResetTab_Click);
             // 
             // bResetAll
             // 
             this.bResetAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.bResetAll.BackColor = System.Drawing.Color.Gainsboro;
+            this.bResetAll.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bResetAll.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray;
+            this.bResetAll.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bResetAll.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bResetAll.Location = new System.Drawing.Point(12, 528);
             this.bResetAll.Name = "bResetAll";
             this.bResetAll.Size = new System.Drawing.Size(114, 28);
             this.bResetAll.TabIndex = 4;
             this.bResetAll.Text = "Reset All Defaults";
-            this.bResetAll.UseVisualStyleBackColor = true;
+            this.bResetAll.UseVisualStyleBackColor = false;
             this.bResetAll.Click += new System.EventHandler(this.bResetAll_Click);
             // 
             // bApply
             // 
             this.bApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.bApply.BackColor = System.Drawing.Color.Brown;
             this.bApply.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bApply.Location = new System.Drawing.Point(572, 528);
             this.bApply.Name = "bApply";
             this.bApply.Size = new System.Drawing.Size(100, 28);
             this.bApply.TabIndex = 3;
             this.bApply.Text = "Apply";
+            this.bApply.UseVisualStyleBackColor = false;
             this.bApply.Click += new System.EventHandler(this.bApply_Click);
             // 
             // toolTip
@@ -3649,57 +3816,6 @@
             this.toolTip.InitialDelay = 500;
             this.toolTip.IsBalloon = true;
             this.toolTip.ReshowDelay = 100;
-            // 
-            // gIRCAdv
-            // 
-            this.gIRCAdv.Controls.Add(this.tServPass);
-            this.gIRCAdv.Controls.Add(this.xServPass);
-            this.gIRCAdv.Controls.Add(this.tChanPass);
-            this.gIRCAdv.Controls.Add(this.xChanPass);
-            this.gIRCAdv.Location = new System.Drawing.Point(10, 374);
-            this.gIRCAdv.Name = "gIRCAdv";
-            this.gIRCAdv.Size = new System.Drawing.Size(419, 95);
-            this.gIRCAdv.TabIndex = 6;
-            this.gIRCAdv.TabStop = false;
-            this.gIRCAdv.Text = "Advanced";
-            // 
-            // xChanPass
-            // 
-            this.xChanPass.AutoSize = true;
-            this.xChanPass.Location = new System.Drawing.Point(16, 23);
-            this.xChanPass.Name = "xChanPass";
-            this.xChanPass.Size = new System.Drawing.Size(154, 19);
-            this.xChanPass.TabIndex = 0;
-            this.xChanPass.Text = "Use Channel Password";
-            this.xChanPass.UseVisualStyleBackColor = true;
-            this.xChanPass.CheckedChanged += new System.EventHandler(this.xChanPass_CheckedChanged);
-            // 
-            // tChanPass
-            // 
-            this.tChanPass.Enabled = false;
-            this.tChanPass.Location = new System.Drawing.Point(16, 48);
-            this.tChanPass.Name = "tChanPass";
-            this.tChanPass.Size = new System.Drawing.Size(154, 21);
-            this.tChanPass.TabIndex = 1;
-            // 
-            // xServPass
-            // 
-            this.xServPass.AutoSize = true;
-            this.xServPass.Location = new System.Drawing.Point(219, 23);
-            this.xServPass.Name = "xServPass";
-            this.xServPass.Size = new System.Drawing.Size(143, 19);
-            this.xServPass.TabIndex = 2;
-            this.xServPass.Text = "Use Server Password";
-            this.xServPass.UseVisualStyleBackColor = true;
-            this.xServPass.CheckedChanged += new System.EventHandler(this.xServPass_CheckedChanged);
-            // 
-            // tServPass
-            // 
-            this.tServPass.Enabled = false;
-            this.tServPass.Location = new System.Drawing.Point(219, 48);
-            this.tServPass.Name = "tServPass";
-            this.tServPass.Size = new System.Drawing.Size(154, 21);
-            this.tServPass.TabIndex = 3;
             // 
             // chatPreview
             // 
@@ -3793,6 +3909,8 @@
             this.gConsole.PerformLayout();
             this.tabIRC.ResumeLayout(false);
             this.tabIRC.PerformLayout();
+            this.gIRCAdv.ResumeLayout(false);
+            this.gIRCAdv.PerformLayout();
             this.gIRCOptions.ResumeLayout(false);
             this.gIRCOptions.PerformLayout();
             this.gIRCNetwork.ResumeLayout(false);
@@ -3816,8 +3934,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.MaxCapsValue)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.gIRCAdv.ResumeLayout(false);
-            this.gIRCAdv.PerformLayout();
             this.ResumeLayout(false);
 
         }
