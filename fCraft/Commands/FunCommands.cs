@@ -49,6 +49,10 @@ namespace fCraft
             //Bot
             CommandManager.RegisterCommand(CdBot);
             CommandManager.RegisterCommand(CdBotAdv);
+
+            //ChangeModel
+            CommandManager.RegisterCommand(CdChangeModel);
+
             Player.Moving += PlayerMoved;
         }
 
@@ -121,6 +125,75 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
 
+        static readonly CommandDescriptor CdChangeModel = new CommandDescriptor
+        {
+            Name = "ChangeModel",
+            Permissions = new Permission[] { Permission.ManageWorlds },
+            Category = CommandCategory.Fun,
+            IsConsoleSafe = false,
+            Usage = "/ChangeModel [Player] [Model]",
+            Help = "Changes the model of a target player Valid models are chicken, creeper, croc, humanoid, pig, printer, sheep, skeleton, spider, or zombie. If the model is empty, the player's model will reset.",
+            Handler = ChangeModelHandler,
+        };
+
+        static void ChangeModelHandler(Player player, Command cmd)
+        {
+            string target = cmd.Next();
+            if (string.IsNullOrEmpty(target))
+            {
+                CdChangeModel.PrintUsage(player);
+                return;
+            }
+
+            Player targetPlayer = Server.FindPlayerOrPrintMatches(player, target, false, true);
+            if (targetPlayer == null)
+            {
+                return;
+            }
+
+            string model = cmd.Next();
+            if (string.IsNullOrEmpty(model))
+            {
+                if (player.Info.entityID == -1)
+                {
+                    int idTest = 0;
+                    while (Server.EntityIDs.Contains(idTest))
+                    {
+                        idTest++;
+                    }
+                    player.Info.entityID = idTest;
+                }
+                player.World.Players.Send(PacketWriter.MakeExtAddEntity((byte)player.Info.entityID, player.Name, player.Name));
+                player.World.Players.Send(PacketWriter.MakeChangeModel((byte)player.Info.entityID, "humanoid"));
+                player.Info.modelChanged = false;
+                player.Info.modelType = "humanoid";
+                Server.EntityIDs.Remove(player.Info.entityID);
+                player.Info.entityID = -1;
+                return;
+            }
+
+            if (!validEntities.Contains(model.ToLower()))
+            {
+                player.Message("Please choose a valid model type! Valid models are are chicken, creeper, croc, humanoid, pig, printer, sheep, skeleton, spider, or zombie. If the model is empty, the player's model will reset.");
+                return;
+            }
+
+            if (player.Info.entityID == -1)
+            {
+                int idTest = 0;
+                while (Server.EntityIDs.Contains(idTest))
+                {
+                    idTest++;
+                }
+                player.Info.entityID = idTest;
+            }
+            player.World.Players.Send(PacketWriter.MakeExtAddEntity((byte)player.Info.entityID, player.Name, player.Name));
+            player.World.Players.Send(PacketWriter.MakeChangeModel((byte)player.ID, model));
+            player.Info.modelChanged = true;
+            player.Info.modelType = model;
+            Server.EntityIDs.Add(player.Info.entityID);
+            return;
+        }
         static readonly CommandDescriptor CdBotAdv = new CommandDescriptor
         {
             Name = "BotAdv",
@@ -248,7 +321,10 @@ THE SOFTWARE.*/
                 player.Message("{0} is now moving.", name);
 
                 Player bot_ = Server.FindPlayerOrPrintMatches(player, name, true, true);
-                bot_.MoveTo(targetName.Position);
+                if (bot_ != null)
+                {
+                    bot_.MoveTo(targetName.Position);
+                }
                 return;
             }
             else if (option.ToLower() == "summon")
@@ -362,6 +438,7 @@ THE SOFTWARE.*/
                     Player bot = new Player(entityName);
                     bot.Bot(entityName, player.Position, LegendCraft.toByteValue(entityName), player.World);
                     bot.ChangeBot(entityType);
+                    bot.Message("TEST TEST");
                     Server.Entities.Add(entityName);
                     return;
                 }

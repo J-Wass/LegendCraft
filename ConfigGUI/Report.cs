@@ -13,7 +13,7 @@ using System.Net.Cache;
 using System.Reflection;
 using System.Management;
 
-namespace fCraft.ServerGUI
+namespace fCraft.ConfigGUI
 {
     public partial class Report : Form
     {
@@ -47,7 +47,7 @@ namespace fCraft.ServerGUI
         private void tReport_MouseClick(object sender, EventArgs e)
         {
             tReport.ForeColor = System.Drawing.Color.Black;
-            if (tReport.Text == "Type in your bug report/feature request here...") 
+            if (tReport.Text == "Type in your bug report/feature request here...")
             {
                 tReport.Text = "";
             }
@@ -60,7 +60,7 @@ namespace fCraft.ServerGUI
 
         private void bSubmit_Click(object sender, EventArgs e)
         {
-            if(string.IsNullOrEmpty(tEmail.Text) || string.IsNullOrEmpty(tReport.Text))
+            if (string.IsNullOrEmpty(tEmail.Text) || string.IsNullOrEmpty(tReport.Text))
             {
                 MessageBox.Show("Please fill out all fields before sending a report!");
                 return;
@@ -115,29 +115,29 @@ namespace fCraft.ServerGUI
                 }
                 request.Abort();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Logger.LogToConsole("Error with reporter: " + ex);
+                MessageBox.Show("Error with reporter: " + ex);
                 return;
             }
-                    if (responseString != null && responseString.StartsWith("ERROR"))
-                    {
-                        Logger.Log(LogType.Error, "Crash report could not be processed by http://legend-craft.tk.");
-                    }
-                    else
-                    {
-                        int referenceNumber;
-                        if (responseString != null && Int32.TryParse(responseString, out referenceNumber))
-                        {
-                            Logger.Log(LogType.SystemActivity, "Crash report submitted (Reference #{0})", referenceNumber);
-                        }
-                        else
-                        {
-                            Logger.Log(LogType.SystemActivity, "Crash report submitted.");
-                        }
-                    }
-           
-            Logger.LogToConsole("Report sent. Thank you for helping with the development of LegendCraft!");
+            if (responseString != null && responseString.StartsWith("ERROR"))
+            {
+                MessageBox.Show("Crash report could not be processed by http://legend-craft.tk.");
+            }
+            else
+            {
+                int referenceNumber;
+                if (responseString != null && Int32.TryParse(responseString, out referenceNumber))
+                {
+                    MessageBox.Show("Crash report submitted, Reference #" + referenceNumber);
+                }
+                else
+                {
+                    MessageBox.Show( "Crash report submitted.");
+                }
+            }
+
+            MessageBox.Show("Report sent. Thank you for helping with the development of LegendCraft!");
             this.Close();
 
         }

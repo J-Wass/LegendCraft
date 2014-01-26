@@ -71,6 +71,11 @@ namespace fCraft
         public string LeaveMsg = "left the server";
         public string oldDisplayedName = null;
 
+        //changemodel
+        public bool modelChanged = false;//used for ChangeModel command
+        public string modelType = "humanoid";
+        public int entityID = -1;
+
         //Games
         public bool ArrivedLate = false;
         public bool InGame = false;

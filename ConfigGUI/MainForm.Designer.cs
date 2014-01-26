@@ -58,7 +58,7 @@
             this.lPublic = new System.Windows.Forms.Label();
             this.lMaxPlayers = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.bSoft = new System.Windows.Forms.Button();
+            this.bReport = new System.Windows.Forms.Button();
             this.bWiki = new System.Windows.Forms.Button();
             this.bWeb = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -74,6 +74,7 @@
             this.bRules = new System.Windows.Forms.Button();
             this.bAnnouncements = new System.Windows.Forms.Button();
             this.tabChat = new System.Windows.Forms.TabPage();
+            this.chatPreview = new fCraft.ConfigGUI.ChatPreview();
             this.gAppearence = new System.Windows.Forms.GroupBox();
             this.xShowConnectionMessages = new System.Windows.Forms.CheckBox();
             this.xShowJoinedWorldMessages = new System.Windows.Forms.CheckBox();
@@ -316,7 +317,6 @@
             this.bApply = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.chatPreview = new fCraft.ConfigGUI.ChatPreview();
             this.tabs.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.gBasic.SuspendLayout();
@@ -730,7 +730,7 @@
             // 
             this.groupBox4.AccessibleRole = System.Windows.Forms.AccessibleRole.Window;
             this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox4.Controls.Add(this.bSoft);
+            this.groupBox4.Controls.Add(this.bReport);
             this.groupBox4.Controls.Add(this.bWiki);
             this.groupBox4.Controls.Add(this.bWeb);
             this.groupBox4.Location = new System.Drawing.Point(468, 306);
@@ -740,19 +740,20 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Contact Us";
             // 
-            // bSoft
+            // bReport
             // 
-            this.bSoft.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.bSoft.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
-            this.bSoft.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
-            this.bSoft.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.bSoft.Location = new System.Drawing.Point(7, 89);
-            this.bSoft.Name = "bSoft";
-            this.bSoft.Size = new System.Drawing.Size(110, 23);
-            this.bSoft.TabIndex = 2;
-            this.bSoft.Text = "Other Software";
-            this.bSoft.UseVisualStyleBackColor = false;
-            this.bSoft.Click += new System.EventHandler(this.bSoft_Click);
+            this.bReport.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.bReport.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bReport.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.bReport.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bReport.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bReport.Location = new System.Drawing.Point(7, 89);
+            this.bReport.Name = "bReport";
+            this.bReport.Size = new System.Drawing.Size(110, 23);
+            this.bReport.TabIndex = 2;
+            this.bReport.Text = "Report";
+            this.bReport.UseVisualStyleBackColor = false;
+            this.bReport.Click += new System.EventHandler(this.bReport_Click);
             // 
             // bWiki
             // 
@@ -967,6 +968,13 @@
             this.tabChat.Size = new System.Drawing.Size(652, 482);
             this.tabChat.TabIndex = 10;
             this.tabChat.Text = "Chat";
+            // 
+            // chatPreview
+            // 
+            this.chatPreview.Location = new System.Drawing.Point(8, 256);
+            this.chatPreview.Name = "chatPreview";
+            this.chatPreview.Size = new System.Drawing.Size(636, 213);
+            this.chatPreview.TabIndex = 2;
             // 
             // gAppearence
             // 
@@ -3817,13 +3825,6 @@
             this.toolTip.IsBalloon = true;
             this.toolTip.ReshowDelay = 100;
             // 
-            // chatPreview
-            // 
-            this.chatPreview.Location = new System.Drawing.Point(8, 256);
-            this.chatPreview.Name = "chatPreview";
-            this.chatPreview.Size = new System.Drawing.Size(636, 213);
-            this.chatPreview.TabIndex = 2;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -4210,7 +4211,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.Button bSoft;
+        private System.Windows.Forms.Button bReport;
         private System.Windows.Forms.Button bWiki;
         private System.Windows.Forms.Button bWeb;
         private System.Windows.Forms.ComboBox HeartBeatUrlComboBox;

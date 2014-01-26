@@ -301,16 +301,15 @@ namespace fCraft
         }
 
         // This constructor is used to create pseudoplayers (such as bots)
-        // Such players have unlimited permissions.
         // This should be replaced by a more generic solution, like an IEntity interface.
         internal Player([NotNull] string name, World world)
         {
             if (name == null) throw new ArgumentNullException("name");
-            Info = new PlayerInfo(name, RankManager.HighestRank, true, RankChangeType.AutoPromoted);
+            Info = new PlayerInfo(name, RankManager.LowestRank, true, RankChangeType.AutoPromoted);
             spamBlockLog = new Queue<DateTime>(Info.Rank.AntiGriefBlocks);
             IP = IPAddress.Loopback;
             ResetAllBinds();
-            State = SessionState.Offline;
+            State = SessionState.Online;
             IsSuper = true;
             World = world;
         }

@@ -1602,15 +1602,6 @@ Your rank is {RANK}&S. Type &H/Help&S for help." );
             catch { }
         }
 
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            try
-            {
-                Process.Start("http://risingembers.us/");
-            }
-            catch { }
-        }
-
         private void bWiki_Click(object sender, EventArgs e)
         {
             try
@@ -1620,13 +1611,10 @@ Your rank is {RANK}&S. Type &H/Help&S for help." );
             catch { }
         }
 
-        private void bSoft_Click(object sender, EventArgs e)
+        private void bReport_Click(object sender, EventArgs e)
         {
-            try
-            {
-                Process.Start("http://legend-craft.tk");
-            }
-            catch { }
+            var form = new Report();
+            form.Show();
         }
 
         private void bReadme_Click(object sender, EventArgs e)

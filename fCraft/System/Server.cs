@@ -45,6 +45,7 @@ namespace fCraft {
         public static List<Player> TempBans = new List<Player>();
 
         public static List<string> Entities = new List<string>();
+        public static List<int> EntityIDs = new List<int>();
 
         // networking
         static TcpListener listener;

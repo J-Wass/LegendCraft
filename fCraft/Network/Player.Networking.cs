@@ -1386,9 +1386,9 @@ namespace fCraft
             iName = null;
             GunMode = false;
 
-            //send mapedit env packet values if applicable
             if (Heartbeat.ClassiCube() && ClassiCube)
             {
+                //update mapedit values
                 Packet envSetMapAppearance = PacketWriter.MakeEnvSetMapAppearance(World.textureURL, World.sideBlock, World.edgeBlock, World.sideLevel);
                 Packet sky = PacketWriter.MakeEnvSetColor((byte)0, World.SkyColorCC);
                 Packet cloud = PacketWriter.MakeEnvSetColor((byte)1, World.CloudColorCC);
@@ -1399,6 +1399,22 @@ namespace fCraft
                 Send(cloud);
                 Send(fog);
                 Send(weather);
+
+                //update player models
+                foreach (Player p in World.Players)
+                {
+                    //for the joining player only, update the model of everyone whose model has changed
+                    if (p.Info.modelChanged)
+                    {
+                        Send(PacketWriter.MakeChangeModel((byte)p.ID, p.Info.modelType));
+                    }
+                }
+
+                //if the player's model has changed, update it for everyone on the world 
+                if (Info.modelChanged)
+                {
+                    World.Players.Send(PacketWriter.MakeChangeModel((byte)ID, Info.modelType));
+                }
             }
 
             // Done.

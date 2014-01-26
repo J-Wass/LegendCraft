@@ -399,12 +399,16 @@ namespace fCraft.ServerGUI
             // 
             // PMButton
             // 
+            this.PMButton.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.PMButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.PMButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.PMButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.PMButton.Location = new System.Drawing.Point(86, 319);
             this.PMButton.Name = "PMButton";
-            this.PMButton.Size = new System.Drawing.Size(73, 20);
+            this.PMButton.Size = new System.Drawing.Size(73, 23);
             this.PMButton.TabIndex = 2;
             this.PMButton.Text = "Send";
-            this.PMButton.UseVisualStyleBackColor = true;
+            this.PMButton.UseVisualStyleBackColor = false;
             this.PMButton.Click += new System.EventHandler(this.PMButton_Click);
             // 
             // MTextBox

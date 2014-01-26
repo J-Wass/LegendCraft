@@ -1,4 +1,4 @@
-﻿namespace fCraft.ServerGUI
+﻿namespace fCraft.ConfigGUI
 {
     partial class Report
     {
