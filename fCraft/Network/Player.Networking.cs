@@ -1406,14 +1406,14 @@ namespace fCraft
                     //for the joining player only, update the model of everyone whose model has changed
                     if (p.Info.modelChanged)
                     {
-                        Send(PacketWriter.MakeChangeModel((byte)p.ID, p.Info.modelType));
+                        Send(PacketWriter.MakeChangeModel((byte)p.Info.ID, p.Info.modelType));
                     }
                 }
 
                 //if the player's model has changed, update it for everyone on the world 
                 if (Info.modelChanged)
                 {
-                    World.Players.Send(PacketWriter.MakeChangeModel((byte)ID, Info.modelType));
+                    World.Players.Send(PacketWriter.MakeChangeModel((byte)Info.ID, Info.modelType));
                 }
             }
 

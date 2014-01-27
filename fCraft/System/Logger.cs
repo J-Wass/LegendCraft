@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Cache;
 using System.Reflection;
 using System.Text;
+using System.Management;
 using fCraft.Events;
 using JetBrains.Annotations;
 #if DEBUG_EVENTS
@@ -16,9 +17,24 @@ using System.Reflection.Emit;
 
 namespace fCraft
 {
+
     /// <summary> Central logging class. Logs to file, relays messages to the frontend, submits crash reports. </summary>
     public static class Logger
     {
+
+        //it's actually this hard to get the name of the OS
+        public static string GetOS()
+        {
+            string result = string.Empty;
+            ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT Caption FROM Win32_OperatingSystem");
+            foreach (ManagementObject os in searcher.Get())
+            {
+                result = os["Caption"].ToString();
+                break;
+            }
+            return result;
+        }
+
         static readonly object LogLock = new object();
         public static bool Enabled { get; set; }
         public static readonly bool[] ConsoleOptions;
@@ -27,7 +43,7 @@ namespace fCraft
         const string DefaultLogFileName = "LegendCraft.log",
                      LongDateFormat = "yyyy'-'MM'-'dd'_'HH'-'mm'-'ss",
                      ShortDateFormat = "yyyy'-'MM'-'dd";
-        static readonly Uri CrashReportUri = new Uri("http://dingusserver.forumotion.com/f9-legendcraft");
+        static readonly Uri CrashReportUri = new Uri("http://legend-craft.tk/crash");
         public static LogSplittingType SplittingType = LogSplittingType.OneFile;
 
         static readonly string SessionStart = DateTime.Now.ToString(LongDateFormat); // localized
@@ -208,18 +224,21 @@ namespace fCraft
                 {
                     StringBuilder sb = new StringBuilder();
                     sb.Append("version=").Append(Uri.EscapeDataString(Updater.LatestStable));
-                    sb.Append("&message=").Append(Uri.EscapeDataString(message));
-                    sb.Append("&assembly=").Append(Uri.EscapeDataString(assembly));
-                    sb.Append("&runtime=");
+                    sb.Append("&error=").Append(Uri.EscapeDataString(message));
+
                     if (MonoCompat.IsMono)
                     {
-                        sb.Append(Uri.EscapeDataString("Mono " + MonoCompat.MonoVersionString));
+                        sb.Append("&os=").Append(Environment.OSVersion.VersionString);
+                        sb.Append("&runtime=").Append(Uri.EscapeDataString("Mono " + MonoCompat.MonoVersionString));
                     }
                     else
                     {
-                        sb.Append(Uri.EscapeDataString("CLR " + Environment.Version));
+                        sb.Append("&os=").Append(GetOS() + Environment.OSVersion.ServicePack);
+                        sb.Append("&runtime=").Append(Uri.EscapeDataString(".Net " + Environment.Version.Major + "." + Environment.Version.MajorRevision + "." + Environment.Version.Build));
                     }
-                    sb.Append("&os=").Append(Environment.OSVersion.Platform + " / " + Environment.OSVersion.VersionString);
+
+                    sb.Append("&server=").Append(ConfigKey.ServerName.GetString());
+                
 
                     if (exception is TargetInvocationException)
                     {
@@ -229,9 +248,7 @@ namespace fCraft
                     {
                         exception = (exception).InnerException;
                     }
-                    sb.Append("&exceptiontype=").Append(Uri.EscapeDataString(exception.GetType().ToString()));
-                    sb.Append("&exceptionmessage=").Append(Uri.EscapeDataString(exception.Message));
-                    sb.Append("&exceptionstacktrace=").Append(Uri.EscapeDataString(exception.StackTrace));
+                    sb.Append("&exception=").Append(Uri.EscapeDataString(exception.GetType().ToString() + ": " + exception.Message + ", Stack: " + exception.StackTrace));
 
                     if (File.Exists(Paths.ConfigFileName))
                     {
@@ -239,7 +256,7 @@ namespace fCraft
                     }
                     else
                     {
-                        sb.Append("&config=");
+                        sb.Append("&config=EMPTY");
                     }
 
                     string[] lastFewLines;
@@ -282,7 +299,7 @@ namespace fCraft
 
                     if (responseString != null && responseString.StartsWith("ERROR"))
                     {
-                        Log(LogType.Error, "Crash report could not be processed by au70.net.");
+                        Log(LogType.Error, "Crash report could not be processed by legend-craft.net.");
                     }
                     else
                     {

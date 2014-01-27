@@ -35,6 +35,9 @@ namespace fCraft {
                            MaxBlockUpdatesPerTick = 100000; // used when there are no players in a world
         internal static float TicksPerSecond;
 
+        //public static List<Type> Bots = new List<Type> { typeof(Bot) };
+        public static List<Bot> Bots = new List<Bot>();
+
         public static bool IsRestarting = false;
         public static bool HSaverOn = false;
 
@@ -1211,6 +1214,21 @@ namespace fCraft {
             }
         }
 
+        /// <summary>
+        /// Find bot by name. Returns either the bot by exact name, or null.
+        /// </summary>
+        public static Bot FindBot(String name)
+        {
+            if (name == null) throw new ArgumentNullException("name");
+            foreach(Bot b in Bots)
+            {
+                if (b.name == name)
+                {
+                    return b;
+                }
+            }
+            return null;
+        }
 
         /// <summary> Finds a player by name, using autocompletion.
         /// Returns ALL matching players, including hidden ones. </summary>

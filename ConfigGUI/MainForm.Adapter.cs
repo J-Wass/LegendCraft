@@ -510,6 +510,7 @@ namespace fCraft.ConfigGUI
             tConsoleName.Text = ConfigKey.ConsoleName.GetString();
 
             tIP.Text = ConfigKey.IP.GetString();
+            xCrash.Checked = ConfigKey.SubmitCrashReports.Enabled();
             if (ConfigKey.IP.IsBlank() || ConfigKey.IP.IsDefault())
             {
                 tIP.Enabled = false;
@@ -737,7 +738,7 @@ namespace fCraft.ConfigGUI
 
             // advanced
 
-
+            ConfigKey.SubmitCrashReports.TrySetValue(xCrash.Checked);
             ConfigKey.RelayAllBlockUpdates.TrySetValue(xRelayAllBlockUpdates.Checked);
             ConfigKey.NoPartialPositionUpdates.TrySetValue(xNoPartialPositionUpdates.Checked);
             ConfigKey.TickInterval.TrySetValue(Convert.ToInt32(nTickInterval.Value));

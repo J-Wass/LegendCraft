@@ -290,7 +290,7 @@
             this.xRelayAllBlockUpdates = new System.Windows.Forms.CheckBox();
             this.xNoPartialPositionUpdates = new System.Windows.Forms.CheckBox();
             this.gCrashReport = new System.Windows.Forms.GroupBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.xCrash = new System.Windows.Forms.CheckBox();
             this.lCrashReportDisclaimer = new System.Windows.Forms.Label();
             this.Misc = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -3502,7 +3502,7 @@
             // 
             this.gCrashReport.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gCrashReport.Controls.Add(this.checkBox1);
+            this.gCrashReport.Controls.Add(this.xCrash);
             this.gCrashReport.Controls.Add(this.lCrashReportDisclaimer);
             this.gCrashReport.Location = new System.Drawing.Point(8, 13);
             this.gCrashReport.Name = "gCrashReport";
@@ -3511,14 +3511,14 @@
             this.gCrashReport.TabStop = false;
             this.gCrashReport.Text = "Crash Reporting";
             // 
-            // checkBox1
+            // xCrash
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(25, 25);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(15, 14);
-            this.checkBox1.TabIndex = 2;
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.xCrash.AutoSize = true;
+            this.xCrash.Location = new System.Drawing.Point(25, 25);
+            this.xCrash.Name = "xCrash";
+            this.xCrash.Size = new System.Drawing.Size(15, 14);
+            this.xCrash.TabIndex = 2;
+            this.xCrash.UseVisualStyleBackColor = true;
             // 
             // lCrashReportDisclaimer
             // 
@@ -4216,7 +4216,7 @@
         private System.Windows.Forms.Button bWeb;
         private System.Windows.Forms.ComboBox HeartBeatUrlComboBox;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox xCrash;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.Button bUpdate;
         private System.Windows.Forms.CheckBox checkUpdate;
