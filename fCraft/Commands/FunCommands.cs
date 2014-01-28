@@ -50,7 +50,6 @@ namespace fCraft
 
             //Bot
             CommandManager.RegisterCommand(CdBot);
-            CommandManager.RegisterCommand(CdBotAdv);
 
             Player.Moving += PlayerMoved;
         }
@@ -124,75 +123,30 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
 
-        static readonly CommandDescriptor CdBotAdv = new CommandDescriptor
-        {
-            Name = "BotAdv",
-            Permissions = new Permission[] { Permission.ManageWorlds },
-            Category = CommandCategory.Fun,
-            IsConsoleSafe = false,
-            Usage = "/BotAdv <list/summon>",
-            Help = "Commands for manipulating bots. To create a bot, use /bot.",
-            Handler = BotAdvHandler,
-        };
-
-        static void BotAdvHandler(Player player, Command cmd)
-        {
-            string option = cmd.Next();
-            if (string.IsNullOrEmpty(option))
-            {
-                CdBotAdv.PrintUsage(player);
-                return;
-            }
-
-            switch (option)
-            {
-                case "list":
-                    player.Message("_Bots on {0}_", ConfigKey.ServerName.GetString());
-                    foreach (Bot b in Server.Bots)
-                    {
-                        player.Message(b.name + " on " + b.world.Name);
-                    }
-                    break;
-                case "summon":
-                    string target = cmd.Next();
-                    if(string.IsNullOrEmpty(target))
-                    {
-                        player.Message("Usage is /BotAdv summon <bot name>. To view all the bots, type /BotAdv list.");
-                        return;
-                    }
-
-                    Bot bot = Server.FindBot(target);
-                    if (bot == null)
-                    {
-                        player.Message("Could not find {0}! Please make sure you spelled the bot's name correctly. To view all the bots, type /BotAdv list.", target);
-                        return;
-                    }
-
-                    //remove the bot entity (leave the bot's data), update world and position, replace bot entity in new world/position
-                    bot.tempRemoveBot();
-                    bot.world = player.World;
-                    bot.position = player.Position;
-                    bot.updateBotPosition();
-                    break;
-                default:
-                    break;
-            }
-        }
-
         static readonly CommandDescriptor CdBot = new CommandDescriptor
         {
             Name = "Bot",
             Permissions = new Permission[] { Permission.ManageWorlds },
             Category = CommandCategory.Fun,
             IsConsoleSafe = false,
-            Usage = "/Bot <create/delete> <name> <model>",
-            Help = "Creates a bot with the given model. Valid models are chicken, creeper, croc, humanoid, pig, printer, sheep, skeleton, spider, or zombie. If the model is empty, the player's model will reset." +
-            "To edit a bot, use /botadv.",
+            Usage = "/Bot <create/remove/list/summon>",
+            Help = "Commands for manipulating bots. For help and usage for the individual options, use /help bot <option>.",
+            HelpSections = new Dictionary<string, string>{
+                { "create", "&H/Bot create <botname> <model>\n&S" +
+                                "Creates a new bot with the given name. Valid models are chicken, creeper, croc, humanoid, pig, printer, sheep, skeleton, spider, or zombie." },
+                { "remove", "&H/Bot remove <botname>\n&S" +
+                                "Removes the given bot." },
+                { "list", "&H/Bot list\n&S" +
+                                "Prints out a list of all the bots on the server."},             
+                { "summon", "&H/Bot summon <botname>\n&S" +
+                                "Summons a bot from anywhere to your current position."},
+            },
             Handler = BotHandler,
         };
 
         static void BotHandler(Player player, Command cmd)
         {
+            //ToDo: MoveTo, removeAll, changeModel, changeSkin, explode
             string option = cmd.Next();
             if (string.IsNullOrEmpty(option))
             {
@@ -200,33 +154,69 @@ THE SOFTWARE.*/
                 return;
             }
 
-            string name = cmd.Next();
-            if (string.IsNullOrEmpty(name))
+            switch (option)
             {
-                CdBot.PrintUsage(player);
-                return;
-            }
+                case "create":
+                    string targetBot = cmd.Next();
+                    if (string.IsNullOrEmpty(targetBot))
+                    {
+                        player.Message("Usage is /Bot create <bot name> <bot model>. Valid models are chicken, creeper, croc, humanoid, pig, printer, sheep, skeleton, spider, or zombie.");
+                        return;
+                    }
 
-            if (option.ToLower() == "create")
-            {
-                Bot bot = new Bot();
-                bot.setBot(name, player.World, player.Position, LegendCraft.toByteValue(name));
-                bot.createBot();
-            }
-            else if(option.ToLower() == "delete")
-            {
-                Bot b = Server.FindBot(name);
-                if (b == null)
-                {
-                    player.Message("Could not find {0}! Please make sure you spelled the bot's name correctly. To view all the bots, type /BotAdv list.", name);
-                    return;
-                }
+                    Bot bot = new Bot();
+                    bot.setBot(targetBot, player.World, player.Position, LegendCraft.toByteValue(targetBot));
+                    bot.createBot();
+                    break;
+                case "remove":
+                    string targetName = cmd.Next();
+                    if (string.IsNullOrEmpty(targetName))
+                    {
+                        player.Message("Usage is /Bot remove <bot name>. Valid models are chicken, creeper, croc, humanoid, pig, printer, sheep, skeleton, spider, or zombie.");
+                        return;
+                    }
+                    Bot b = Server.FindBot(targetName);
+                    if (b == null)
+                    {
+                        player.Message("Could not find {0}! Please make sure you spelled the bot's name correctly. To view all the bots, type /Bot list.", targetName);
+                        break;
+                    }
 
-                b.removeBot();
-                return;
+                    b.removeBot();
+                    break;
+                case "list":
+                    player.Message("_Bots on {0}_", ConfigKey.ServerName.GetString());
+                    foreach (Bot botCheck in Server.Bots)
+                    {
+                        player.Message(botCheck.name + " on " + botCheck.world.Name);
+                    }
+                    break;
+                case "summon":
+                    string target = cmd.Next();
+                    if (string.IsNullOrEmpty(target))
+                    {
+                        player.Message("Usage is /Bot summon <bot name>. To view all the bots, type /Bot list.");
+                        return;
+                    }
+
+                    Bot bot_ = Server.FindBot(target);
+                    if (bot_ == null)
+                    {
+                        player.Message("Could not find {0}! Please make sure you spelled the bot's name correctly. To view all the bots, type /Bot list.", target);
+                        return;
+                    }
+
+                    //remove the bot entity (leave the bot's data), update world and position, replace bot entity in new world/positionk
+                    bot_.tempRemoveBot();
+                    bot_.world = player.World;
+                    bot_.position = player.Position;
+                    bot_.updateBotPosition();
+                    break;
+                default:
+                    break;
             }
-            
         }
+
         static readonly CommandDescriptor CdModel = new CommandDescriptor
         {
             Name = "Model",
