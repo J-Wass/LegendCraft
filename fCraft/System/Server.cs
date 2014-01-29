@@ -35,7 +35,6 @@ namespace fCraft {
                            MaxBlockUpdatesPerTick = 100000; // used when there are no players in a world
         internal static float TicksPerSecond;
 
-        //public static List<Type> Bots = new List<Type> { typeof(Bot) };
         public static List<Bot> Bots = new List<Bot>();
 
         public static bool IsRestarting = false;
@@ -1222,7 +1221,7 @@ namespace fCraft {
             if (name == null) throw new ArgumentNullException("name");
             foreach(Bot b in Bots)
             {
-                if (b.Name == name)
+                if (b.Name.ToLower() == name.ToLower())
                 {
                     return b;
                 }

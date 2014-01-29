@@ -161,12 +161,7 @@ THE SOFTWARE.*/
                 return;
             }
 
-            /***********************************************************************
-             * Removing these from the switch/case makes the cmd a lot more flexible
-             * for future additions. It makes cases easier to build, only needing 
-             * to accept additional args and no need to recreate a Bot object for the
-             * first arg in every single case. 
-             ***********************************************************************/
+            //certain options that take in specific params are in here, the rest are in the switch-case
             if (option.ToLower() == "list")
             {
                 player.Message("_Bots on {0}_", ConfigKey.ServerName.GetString());
@@ -185,21 +180,25 @@ THE SOFTWARE.*/
                 player.Message("All bots removed from the server.");
                 return;
             }
-            /***************************************************************/
 
             //finally away from the special cases
             string botName = cmd.Next(); //take in bot name arg
-            if (string.IsNullOrEmpty(botName)) //bot name arg empty? return
+            if (string.IsNullOrEmpty(botName)) //null check
             {
-                player.Message(CdBot.HelpSections[option.ToLower().ToString()]); //prints the individual help section associated with the cmd done
+                CdBot.PrintUsage(player);
                 return;
             }
-            Bot bot = Server.FindBot(botName); //Find the bot and assign to bot var
 
-            if (bot == null) //If null, return and yell at user
+            Bot bot = new Bot(); 
+            if (option != "create")//since the bot wouldn't exist for "create", we must check the bot for all cases other than "create"
             {
-                player.Message("Could not find {0}! Please make sure you spelled the bot's name correctly. To view all the bots, type /Bot list.", botName);
-                return;
+                bot = Server.FindBot(botName.ToLower()); //Find the bot and assign to bot var
+
+                if (bot == null) //If null, return and yell at user
+                {
+                    player.Message("Could not find {0}! Please make sure you spelled the bot's name correctly. To view all the bots, type /Bot list.", botName);
+                    return;
+                }
             }
 
             //now to the cases - additional args should be taken in at the individual cases
@@ -219,19 +218,19 @@ THE SOFTWARE.*/
                         return;
                     }
 
-                    player.Message("Successfully create a bot.");
+                    if(Server.Bots.Contains(bot))
+                    {
+                        player.Message("A bot with that name already exists! To view all bots, type /bot list.");
+                        return;
+                    }
+
+                    player.Message("Successfully created a bot.");
                     Bot botCreate = new Bot();
                     botCreate.setBot(botName, player.World, player.Position, LegendCraft.getNewID());
                     botCreate.createBot();
                     botCreate.changeBotModel(requestedModel);
                     break;
                 case "remove":
-                    if (bot == null)
-                    {
-                        player.Message("Could not find {0}! Please make sure you spelled the bot's name correctly. To view all the bots, type /Bot list.", botName);
-                        break;
-                    }
-
                     player.Message("{0} was removed from the server.", bot.Name);
                     bot.removeBot();
                     break;
@@ -263,7 +262,7 @@ THE SOFTWARE.*/
 
                     if (bot.Model != "humanoid")
                     {
-                        player.Message("A bot must be a humanoid in order to have a skin. Use '/bot model' to change a bot's model.");
+                        player.Message("A bot must be a humanoid in order to have a skin. Use '/bot model <bot> <model>' to change a bot's model.");
                         return;
                     }
 
@@ -290,13 +289,20 @@ THE SOFTWARE.*/
                     bot.explodeBot(player);
                     break;
                 case "summon":
-                    //remove the bot entity (leave the bot's data), update world and position, replace bot entity in new world/position
-                    bot.tempRemoveBot(); //when you tempremove, you need to re-add silly chosen
-                    bot.World = player.World;
+                 
+                    bot.tempRemoveBot(); //remove the entity
+                    bot.World = player.World; //update variables
                     bot.Position = player.Position;
-                    bot.updateBotPosition();
-                    bot.changeBotModel(bot.Model);
-                    bot.reAddBot(); // <--- readd before the command ends or the server cannot find the Bot again (it won't be re-added to the bot list...)
+                    bot.updateBotPosition(); //replace the entity
+
+                    if (bot.Model != "humanoid")
+                    {
+                        bot.changeBotModel(bot.Model); //replace the model, if the model is set
+                    }
+                    if (bot.Skin != "steve")
+                    {
+                        bot.Clone(bot.Skin); //replace the skin, if a skin is set
+                    }
                     break;
                 default:
                     CdBot.PrintUsage(player);

@@ -86,14 +86,6 @@ namespace fCraft
         }
 
         /// <summary>
-        /// Readds an entity after a temp removal
-        /// </summary>
-        public void reAddBot()
-        {
-            Server.Bots.Add(this);
-        }
-
-        /// <summary>
         /// Completely removes the entity and data of the bot.
         /// </summary>
         public void removeBot()
@@ -142,14 +134,75 @@ namespace fCraft
         /// <summary>
         /// Epically explodes the bot
         /// </summary>
-        public void explodeBot(Player player)
+        public void explodeBot(Player player)//Prepare for super copy and paste
         {
             removeBot();
-            Vector3I center = new Vector3I(Position.X / 32, Position.Y / 32, Position.Z / 32); //get the position in blockcoords as integers of the bot
+            Vector3I vector = new Vector3I(Position.X / 32, Position.Y / 32, Position.Z / 32); //get the position in blockcoords as integers of the bot
 
-            World.EnableTNTPhysics(Player.Console, false);
-            World.AddPhysicsTask(new TNTTask(World, center, player, false, true), 2000);//absolutely stole 800craft physics to make that work
-            World.DisableTNTPhysics(Player.Console, false);
+            explode(vector, 1);
+
+            //the following code block generates the centers of each explosion hub for the greater explosion
+
+            //all 6 faces of the explosion point
+            explode(new Vector3I(vector.X + 3, vector.Y, vector.Z), 1);
+            explode(new Vector3I(vector.X - 3, vector.Y, vector.Z), 1);
+            explode(new Vector3I(vector.X, vector.Y + 3, vector.Z), 1);
+            explode(new Vector3I(vector.X, vector.Y - 3, vector.Z), 1);
+            explode(new Vector3I(vector.X, vector.Y, vector.Z + 3), 1);
+            explode(new Vector3I(vector.X, vector.Y, vector.Z - 3), 1);
+
+            //all 8 corners of the explosion point
+            explode(new Vector3I(vector.X + 1, vector.Y + 1, vector.Z + 1), 2);
+            explode(new Vector3I(vector.X + 1, vector.Y + 1, vector.Z - 1), 2);
+            explode(new Vector3I(vector.X + 1, vector.Y - 1, vector.Z + 1), 2);
+            explode(new Vector3I(vector.X + 1, vector.Y - 1, vector.Z - 1), 2);
+            explode(new Vector3I(vector.X - 1, vector.Y + 1, vector.Z + 1), 2);
+            explode(new Vector3I(vector.X - 1, vector.Y + 1, vector.Z - 1), 2);
+            explode(new Vector3I(vector.X - 1, vector.Y - 1, vector.Z + 1), 2);
+            explode(new Vector3I(vector.X - 1, vector.Y - 1, vector.Z - 1), 2);
+        }
+
+        /// <summary>
+        /// Emulates a small explosion at a specific location
+        /// </summary>
+        private void explode(Vector3I center, int delay)
+        {
+            updateBlock(Block.Lava, center, true, 1);
+
+            Random rand1 = new Random((int)DateTime.Now.Ticks);
+            Random rand2 = new Random((int)DateTime.Now.Ticks + 1);
+            Random rand3 = new Random((int)DateTime.Now.Ticks + 2); 
+            Random rand4 = new Random((int)DateTime.Now.Ticks + 3);
+            Random rand5 = new Random((int)DateTime.Now.Ticks + 4);
+            Random rand6 = new Random((int)DateTime.Now.Ticks + 5);
+
+            //The code block generates a lava block from 0 to 3 block spaces, randomly away from the center block
+
+            updateBlock(Block.Lava, new Vector3I(center.X, center.Y, center.Z), true, delay);
+            updateBlock(Block.Lava, new Vector3I(center.X + rand1.Next(0, 3), center.Y, center.Z), true, delay);
+            updateBlock(Block.Lava, new Vector3I(center.X - rand2.Next(0, 3), center.Y, center.Z), true, delay);
+            updateBlock(Block.Lava, new Vector3I(center.X, center.Y + rand3.Next(0, 3), center.Z), true, delay);
+            updateBlock(Block.Lava, new Vector3I(center.X, center.Y - rand4.Next(0, 3), center.Z), true, delay);
+            updateBlock(Block.Lava, new Vector3I(center.X, center.Y, center.Z + rand5.Next(0, 3)), true, delay);
+            updateBlock(Block.Lava, new Vector3I(center.X, center.Y, center.Z - rand6.Next(0, 3)), true, delay);
+
+        }
+
+        /// <summary>
+        /// Updates a specific block for a given time
+        /// </summary>
+        private void updateBlock(Block blockType, Vector3I blockPosition, bool replaceWithAir, int time)//I left this class rather generic incase i used it for anything else
+        {
+            BlockUpdate update = new BlockUpdate(null, blockPosition, blockType);
+            foreach (Player p in World.Players)
+            {
+                p.World.Map.QueueUpdate(update);
+            }
+            
+            if (replaceWithAir)
+            {
+                Scheduler.NewTask(t => updateBlock(Block.Air, blockPosition, false, time)).RunManual(TimeSpan.FromSeconds(time));//place a lava block, and then an air block at site of explosion
+            }
             
         }
 
