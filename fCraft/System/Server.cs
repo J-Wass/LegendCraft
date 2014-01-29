@@ -1222,7 +1222,7 @@ namespace fCraft {
             if (name == null) throw new ArgumentNullException("name");
             foreach(Bot b in Bots)
             {
-                if (b.name == name)
+                if (b.Name == name)
                 {
                     return b;
                 }

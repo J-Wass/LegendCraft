@@ -1400,6 +1400,23 @@ namespace fCraft
                 Send(fog);
                 Send(weather);
 
+                //update bots
+                foreach (Bot bot in Server.Bots)
+                {
+                    if (bot.World == World)
+                    {
+                        Send(PacketWriter.MakeAddEntity(bot.ID, bot.Name, bot.Position));
+                        if (bot.Model != "humanoid")
+                        {
+                            Send(PacketWriter.MakeChangeModel((byte)bot.ID, bot.Model));
+                        }
+                        if (bot.Skin != "steve")
+                        {
+                            Send(PacketWriter.MakeExtAddEntity((byte)bot.ID, bot.Skin, bot.Skin));
+                        }
+                    }
+                }
+
                 //update player models
                 foreach (Player p in World.Players)
                 {

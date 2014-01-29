@@ -26,20 +26,21 @@ namespace fCraft
 {
     public class Bot
     {
+
         /// <summary>
         /// Name of the bot. 
         /// </summary>
-        public String name;
+        public String Name;
 
         /// <summary>
         /// Current world the bot is on.
         /// </summary>
-        public World world;
+        public World World;
 
         /// <summary>
         /// Position of bot.
         /// </summary>
-        public Position position;
+        public Position Position;
 
         /// <summary>
         /// Entity ID of the bot
@@ -47,13 +48,23 @@ namespace fCraft
         public int ID;
 
         /// <summary>
+        /// Current model of the bot
+        /// </summary>
+        public string Model = "humanoid";
+
+        /// <summary>
+        /// Current skin of the bot
+        /// </summary>
+        public string Skin = "steve";
+
+        /// <summary>
         /// Sets a bot. Must be called before any other bot classes.
         /// </summary>
         public void setBot(String botName, World botWorld, Position pos, int entityID)
         {
-            name = botName;
-            world = botWorld;
-            position = pos;
+            Name = botName;
+            World = botWorld;
+            Position = pos;
             ID = entityID;
         }
 
@@ -63,7 +74,7 @@ namespace fCraft
         public void createBot()
         {
             Server.Bots.Add(this);
-            world.Players.Send(PacketWriter.MakeAddEntity(ID, name, new Position(position.X, position.Y, position.Z, position.R, position.L)));
+            World.Players.Send(PacketWriter.MakeAddEntity(ID, Name, new Position(Position.X, Position.Y, Position.Z, Position.R, Position.L)));
         }
 
         /// <summary>
@@ -71,8 +82,7 @@ namespace fCraft
         /// </summary>
         public void tempRemoveBot()
         {
-            Server.Bots.Remove(this);
-            world.Players.Send(PacketWriter.MakeRemoveEntity(ID));
+            World.Players.Send(PacketWriter.MakeRemoveEntity(ID));
         }
 
         /// <summary>
@@ -81,7 +91,7 @@ namespace fCraft
         public void removeBot()
         {
             Server.Bots.Remove(this);
-            world.Players.Send(PacketWriter.MakeRemoveEntity(ID));
+            World.Players.Send(PacketWriter.MakeRemoveEntity(ID));
         }
 
         /// <summary>
@@ -89,7 +99,50 @@ namespace fCraft
         /// </summary>
         public void updateBotPosition()
         {
-            world.Players.Send(PacketWriter.MakeAddEntity(ID, name, new Position(position.X, position.Y, position.Z, position.R, position.L)));
+            World.Players.Send(PacketWriter.MakeAddEntity(ID, Name, new Position(Position.X, Position.Y, Position.Z, Position.R, Position.L)));
+        }
+
+        /// <summary>
+        /// Changes the model of the bot
+        /// </summary>
+        public void changeBotModel(String botModel)
+        {
+            if (!FunCommands.validEntities.Contains(botModel))
+            {
+                return; //something went wrong, model does not exist
+            }
+
+            World.Players.Send(PacketWriter.MakeChangeModel((byte)ID, botModel));
+            Model = botModel;
+        }
+
+        /// <summary>
+        /// Changes the skin of the bot
+        /// </summary>
+        public void Clone(String targetSkin)
+        {
+            PlayerInfo target = PlayerDB.FindPlayerInfoExact(targetSkin);
+            if (target == null)
+            {
+                //something went wrong, player doesn't exist
+            }
+
+            World.Players.Send(PacketWriter.MakeExtAddEntity((byte)ID, targetSkin, targetSkin));
+            Skin = targetSkin;
+        }
+
+        /// <summary>
+        /// Epically explodes the bot
+        /// </summary>
+        public void explodeBot(Player player)
+        {
+            removeBot();
+            Vector3I center = new Vector3I(Position.X / 32, Position.Y / 32, Position.Z / 32); //get the position in blockcoords as integers of the bot
+
+            World.EnableTNTPhysics(Player.Console, false);
+            World.AddPhysicsTask(new TNTTask(World, center, player, false, true), 2000);//absolutely stole 800craft physics to make that work
+            World.DisableTNTPhysics(Player.Console, false);
+            
         }
 
     }

@@ -36,6 +36,24 @@ namespace fCraft
             }
             return bytesValue;
         }
+
+        //generates a new ID for newly created bots
+        public static int getNewID()
+        {
+            int i = 0;
+            foreach (Bot bot in Server.Bots)
+            {
+                if (bot.ID == i)
+                {
+                    i++;
+                }
+                else
+                {
+                    return i;
+                }
+            }
+            return i;
+        }
     }
 }
 
