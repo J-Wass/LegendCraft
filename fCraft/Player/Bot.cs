@@ -86,6 +86,14 @@ namespace fCraft
         }
 
         /// <summary>
+        /// Readds an entity after a temp removal
+        /// </summary>
+        public void reAddBot()
+        {
+            Server.Bots.Add(this);
+        }
+
+        /// <summary>
         /// Completely removes the entity and data of the bot.
         /// </summary>
         public void removeBot()

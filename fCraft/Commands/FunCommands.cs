@@ -154,23 +154,58 @@ THE SOFTWARE.*/
 
         static void BotHandler(Player player, Command cmd)
         {
-            string option = cmd.Next();
-            if (string.IsNullOrEmpty(option))
+            string option = cmd.Next(); //take in the option arg
+            if (string.IsNullOrEmpty(option)) //empty? return, otherwise continue
             {
                 CdBot.PrintUsage(player);
                 return;
             }
 
+            /***********************************************************************
+             * Removing these from the switch/case makes the cmd a lot more flexible
+             * for future additions. It makes cases easier to build, only needing 
+             * to accept additional args and no need to recreate a Bot object for the
+             * first arg in every single case. 
+             ***********************************************************************/
+            if (option.ToLower() == "list")
+            {
+                player.Message("_Bots on {0}_", ConfigKey.ServerName.GetString());
+                foreach (Bot botCheck in Server.Bots)
+                {
+                    player.Message(botCheck.Name + " on " + botCheck.World.Name);
+                }
+                return;
+            }
+            else if (option.ToLower() == "removeall")
+            {
+                Server.Bots.ForEach(botToRemove =>
+                {
+                    botToRemove.removeBot();
+                });
+                player.Message("All bots removed from the server.");
+                return;
+            }
+            /***************************************************************/
+
+            //finally away from the special cases
+            string botName = cmd.Next(); //take in bot name arg
+            if (string.IsNullOrEmpty(botName)) //bot name arg empty? return
+            {
+                player.Message(CdBot.HelpSections[option.ToLower().ToString()]); //prints the individual help section associated with the cmd done
+                return;
+            }
+            Bot bot = Server.FindBot(botName); //Find the bot and assign to bot var
+
+            if (bot == null) //If null, return and yell at user
+            {
+                player.Message("Could not find {0}! Please make sure you spelled the bot's name correctly. To view all the bots, type /Bot list.", botName);
+                return;
+            }
+
+            //now to the cases - additional args should be taken in at the individual cases
             switch (option.ToLower())
             {
                 case "create":
-                    string targetBot = cmd.Next();
-                    if (string.IsNullOrEmpty(targetBot))
-                    {
-                        player.Message("Usage is /Bot create <bot name> <bot model>. Valid models are chicken, creeper, croc, humanoid, pig, printer, sheep, skeleton, spider, or zombie.");
-                        return;
-                    }
-
                     string requestedModel = cmd.Next();
                     if (string.IsNullOrEmpty(requestedModel))
                     {
@@ -185,51 +220,24 @@ THE SOFTWARE.*/
                     }
 
                     player.Message("Successfully create a bot.");
-                    Bot bot = new Bot();
-                    bot.setBot(targetBot, player.World, player.Position, LegendCraft.getNewID());
-                    bot.createBot();
-                    bot.changeBotModel(requestedModel);
+                    Bot botCreate = new Bot();
+                    botCreate.setBot(botName, player.World, player.Position, LegendCraft.getNewID());
+                    botCreate.createBot();
+                    botCreate.changeBotModel(requestedModel);
                     break;
                 case "remove":
-                    string targetName = cmd.Next();
-                    if (string.IsNullOrEmpty(targetName))
+                    if (bot == null)
                     {
-                        player.Message("Usage is /Bot remove <bot name>.");
-                        return;
-                    }
-                    Bot b = Server.FindBot(targetName);
-                    if (b == null)
-                    {
-                        player.Message("Could not find {0}! Please make sure you spelled the bot's name correctly. To view all the bots, type /Bot list.", targetName);
+                        player.Message("Could not find {0}! Please make sure you spelled the bot's name correctly. To view all the bots, type /Bot list.", botName);
                         break;
                     }
 
-                    player.Message("{0} was removed from the server.", b.Name);
-                    b.removeBot();
-                    break;
-                case "removeall":
-
-                    Server.Bots.ForEach(botToRemove =>
-                    {
-                        botToRemove.removeBot();
-                    });
-
-                    player.Message("All bots removed from the server.");
+                    player.Message("{0} was removed from the server.", bot.Name);
+                    bot.removeBot();
                     break;
                 case "model":
-                    string name = cmd.Next();
-                    if (string.IsNullOrEmpty(name))
-                    {
-                        player.Message("Usage is /Bot model <bot> <model>. Valid models are chicken, creeper, croc, humanoid, pig, printer, sheep, skeleton, spider, or zombie.");
-                        break;
-                    }
-                    Bot bawt = Server.FindBot(name);
-                    if (bawt == null)
-                    {
-                        player.Message("Could not find {0}! Please make sure you spelled the bot's name correctly. To view all the bots, type /Bot list.", name);
-                        break;
-                    }
-                    if (bawt.Skin != "steve")
+                    
+                    if (bot.Skin != "steve")
                     {
                         player.Message("Bots cannot change model with a skin! Use '/bot clone' to reset a bot's skin.");
                         return;
@@ -248,24 +256,12 @@ THE SOFTWARE.*/
                     }
 
                     player.Message("Changed bot model to {0}.", model);
-                    bawt.changeBotModel(model);
+                    bot.changeBotModel(model);
 
                     break;
                 case "clone":
-                    string name_ = cmd.Next();
-                    if (string.IsNullOrEmpty(name_))
-                    {
-                        player.Message("Usage is /Bot Clone <bot> <player>.");
-                        break;
-                    }
-                    Bot bawt_ = Server.FindBot(name_);
-                    if (bawt_ == null)
-                    {
-                        player.Message("Could not find {0}! Please make sure you spelled the bot's name correctly. To view all the bots, type /Bot list.", name_);
-                        break;
-                    }
 
-                    if (bawt_.Model != "humanoid")
+                    if (bot.Model != "humanoid")
                     {
                         player.Message("A bot must be a humanoid in order to have a skin. Use '/bot model' to change a bot's model.");
                         return;
@@ -274,8 +270,8 @@ THE SOFTWARE.*/
                     string playerToClone = cmd.Next();
                     if (string.IsNullOrEmpty(playerToClone))
                     {
-                        player.Message("{0}'s skin was reset!", bawt_.Name);
-                        bawt_.Clone("steve");
+                        player.Message("{0}'s skin was reset!", bot.Name);
+                        bot.Clone("steve");
                         break;
                     }
                     PlayerInfo targetPlayer = PlayerDB.FindPlayerInfoExact(playerToClone);
@@ -285,55 +281,22 @@ THE SOFTWARE.*/
                         break;
                     }
 
-                    player.Message("{0}'s skin was updated!", bawt_.Name);
-                    bawt_.Clone(playerToClone);
+                    player.Message("{0}'s skin was updated!", bot.Name);
+                    bot.Clone(playerToClone);
                     break;
                 case "explode":
-                    string botTarget = cmd.Next();
-                    if (string.IsNullOrEmpty(botTarget))
-                    {
-                        CdBot.PrintUsage(player);
-                        return;
-                    }
 
-                    Bot baht = Server.FindBot(botTarget);
-                    if (baht == null)
-                    {
-                        player.Message("Could not find {0}! Please make sure you spelled the bot's name correctly. To view all the bots, type /Bot list.", botTarget);
-                        break;
-                    }
-
-                    Server.Message("{0} exploded!", baht.Name);
-                    baht.explodeBot(player);
-                    break;
-                case "list":
-                    player.Message("_Bots on {0}_", ConfigKey.ServerName.GetString());
-                    foreach (Bot botCheck in Server.Bots)
-                    {
-                        player.Message(botCheck.Name + " on " + botCheck.World.Name);
-                    }
+                    Server.Message("{0} exploded!", bot.Name);
+                    bot.explodeBot(player);
                     break;
                 case "summon":
-                    string target = cmd.Next();
-                    if (string.IsNullOrEmpty(target))
-                    {
-                        player.Message("Usage is /Bot summon <bot name>. To view all the bots, type /Bot list.");
-                        return;
-                    }
-
-                    Bot bot_ = Server.FindBot(target);
-                    if (bot_ == null)
-                    {
-                        player.Message("Could not find {0}! Please make sure you spelled the bot's name correctly. To view all the bots, type /Bot list.", target);
-                        return;
-                    }
-
                     //remove the bot entity (leave the bot's data), update world and position, replace bot entity in new world/position
-                    bot_.tempRemoveBot();
-                    bot_.World = player.World;
-                    bot_.Position = player.Position;
-                    bot_.updateBotPosition();
-                    bot_.changeBotModel(bot_.Model);
+                    bot.tempRemoveBot(); //when you tempremove, you need to re-add silly chosen
+                    bot.World = player.World;
+                    bot.Position = player.Position;
+                    bot.updateBotPosition();
+                    bot.changeBotModel(bot.Model);
+                    bot.reAddBot(); // <--- readd before the command ends or the server cannot find the Bot again (it won't be re-added to the bot list...)
                     break;
                 default:
                     CdBot.PrintUsage(player);
