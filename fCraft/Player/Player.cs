@@ -103,7 +103,6 @@ namespace fCraft
         /// <summary> Player's position in the current world. </summary>
         public Position Position;
 
-
         /// <summary> Time when the session connected. </summary>
         public DateTime LoginTime { get; private set; }
 
@@ -112,10 +111,6 @@ namespace fCraft
 
         /// <summary> Last time when this player was patrolled by someone. </summary>
         public DateTime LastPatrolTime { get; set; }
-
-
-
-
 
         /// <summary> Last command called by the player. </summary>
         [CanBeNull]
@@ -128,6 +123,11 @@ namespace fCraft
         {
             get { return Info.Name; }
         }
+
+        /// <summary>
+        /// Model of a player. "steve" is the default
+        /// </summary>
+        public string Model = "humanoid";
 
         /// <summary> Name formatted for display in the player list. </summary>
         [NotNull]

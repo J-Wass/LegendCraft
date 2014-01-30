@@ -1416,22 +1416,6 @@ namespace fCraft
                         }
                     }
                 }
-
-                //update player models
-                foreach (Player p in World.Players)
-                {
-                    //for the joining player only, update the model of everyone whose model has changed
-                    if (p.Info.modelChanged)
-                    {
-                        Send(PacketWriter.MakeChangeModel((byte)p.Info.ID, p.Info.modelType));
-                    }
-                }
-
-                //if the player's model has changed, update it for everyone on the world 
-                if (Info.modelChanged)
-                {
-                    World.Players.Send(PacketWriter.MakeChangeModel((byte)Info.ID, Info.modelType));
-                }
             }
 
             // Done.
@@ -1717,6 +1701,12 @@ namespace fCraft
                 if (entities.TryGetValue(otherPlayer, out entity))
                 {
                     entity.MarkedForRetention = true;
+                   
+                    //update player models
+                    if (ClassiCube)
+                    {
+                        Send(PacketWriter.MakeChangeModel((byte)entity.Id, otherPlayer.Model));
+                    }
 
                     if (entity.LastKnownRank != otherPlayer.Info.Rank)
                     {

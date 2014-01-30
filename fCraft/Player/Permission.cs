@@ -271,6 +271,9 @@ namespace fCraft {
         TPA, 
         
         /// <summary> Permission for players to change their own Displayed Name with the /Name command</summary>
-        Name
+        Name,
+
+        /// <summary> Permission to manage and edit bots.</summary>
+        Bots
     }
 }

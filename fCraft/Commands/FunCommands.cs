@@ -45,8 +45,8 @@ namespace fCraft
             //Infection
             CommandManager.RegisterCommand(CdInfection);
 
-            //Model
-            CommandManager.RegisterCommand(CdModel);
+            //SetModel
+            CommandManager.RegisterCommand(CdSetModel);
 
             //Bot
             CommandManager.RegisterCommand(CdBot);
@@ -126,7 +126,7 @@ THE SOFTWARE.*/
         static readonly CommandDescriptor CdBot = new CommandDescriptor
         {
             Name = "Bot",
-            Permissions = new Permission[] { Permission.ManageWorlds },
+            Permissions = new Permission[] { Permission.Bots },
             Category = CommandCategory.Fun,
             IsConsoleSafe = false,
             Usage = "/Bot <create / remove / removeAll / model / close / explode / list / summon>",
@@ -310,13 +310,13 @@ THE SOFTWARE.*/
             }
         }
 
-        static readonly CommandDescriptor CdModel = new CommandDescriptor
+        static readonly CommandDescriptor CdSetModel = new CommandDescriptor
         {
-            Name = "Model",
-            Permissions = new Permission[] { Permission.ManageWorlds },
+            Name = "SetModel",
+            Permissions = new Permission[] { Permission.EditPlayerDB },
             Category = CommandCategory.Fun,
             IsConsoleSafe = false,
-            Usage = "/Model [Player] [Model]",
+            Usage = "/SetModel [Player] [Model]",
             Help = "Changes the model of a target player Valid models are chicken, creeper, croc, humanoid, pig, printer, sheep, skeleton, spider, or zombie. If the model is empty, the player's model will reset.",
             Handler = ModelHandler,
         };
@@ -324,9 +324,9 @@ THE SOFTWARE.*/
         static void ModelHandler(Player player, Command cmd)
         {
             string target = cmd.Next();
-            if (string.IsNullOrEmpty(target))
+            if(string.IsNullOrEmpty(target))
             {
-                CdModel.PrintUsage(player);
+                CdSetModel.PrintUsage(player);
                 return;
             }
 
@@ -339,44 +339,19 @@ THE SOFTWARE.*/
             string model = cmd.Next();
             if (string.IsNullOrEmpty(model))
             {
-                if (player.Info.entityID == -1)
-                {
-                    int idTest = 0;
-                    while (Server.EntityIDs.Contains(idTest))
-                    {
-                        idTest++;
-                    }
-                    player.Info.entityID = idTest;
-                }
-                player.World.Players.Send(PacketWriter.MakeExtAddEntity((byte)player.Info.entityID, player.Name, player.Name));
-                player.World.Players.Send(PacketWriter.MakeChangeModel((byte)player.Info.entityID, "humanoid"));
-                player.Info.modelChanged = false;
-                player.Info.modelType = "humanoid";
-                Server.EntityIDs.Remove(player.Info.entityID);
-                player.Info.entityID = -1;
+                player.Message("Reset the model for {0}.", targetPlayer.Name);
+                targetPlayer.Model = player.Name; //reset the model to the player's name
                 return;
             }
 
-            if (!validEntities.Contains(model.ToLower()))
+            if (!validEntities.Contains(model))
             {
-                player.Message("Please choose a valid model type! Valid models are are chicken, creeper, croc, humanoid, pig, printer, sheep, skeleton, spider, or zombie. If the model is empty, the player's model will reset.");
+                player.Message("Please choose a valid model! Valid models are chicken, creeper, croc, humanoid, pig, printer, sheep, skeleton, spider, or zombie.");
                 return;
             }
 
-            if (player.Info.entityID == -1)
-            {
-                int idTest = 0;
-                while (Server.EntityIDs.Contains(idTest))
-                {
-                    idTest++;
-                }
-                player.Info.entityID = idTest;
-            }
-            player.World.Players.Send(PacketWriter.MakeExtAddEntity((byte)player.Info.entityID, player.Name, player.Name));
-            player.World.Players.Send(PacketWriter.MakeChangeModel((byte)player.Info.entityID, model));
-            player.Info.modelChanged = true;
-            player.Info.modelType = model;
-            Server.EntityIDs.Add(player.Info.entityID);
+            player.Message("{0} has been changed into a {1}!", targetPlayer.Name, model);
+            targetPlayer.Model = model;
             return;
         }
 
