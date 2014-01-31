@@ -325,7 +325,6 @@ namespace fCraft {
             return packet;
         }
         
-        //NOT YET SUPPORTED
         /// <param name="weatherType"> 0 - Clear, 1 - Rain, 2 - Snow </param>
         public static Packet MakeEnvWeatherAppearance(byte weatherType)
         {
@@ -340,6 +339,18 @@ namespace fCraft {
             ToNetOrder(BlockType, packet.Data, 1);
             ToNetOrder(AllowPlacement ? (byte)1 : (byte)0, packet.Data, 2);
             ToNetOrder(AllowDeletion ? (byte)1 : (byte)0, packet.Data, 3);
+            return packet;
+        }
+
+        public static Packet MakeHackControl(byte Flying, byte NoClip, byte Speeding, byte SpawnControl, byte ThirdPerson, short JumpHeight)
+        {
+            Packet packet = new Packet(OpCode.HackControl);
+            packet.Data[1] = Flying;
+            packet.Data[2] = NoClip;
+            packet.Data[3] = Speeding;
+            packet.Data[4] = SpawnControl;
+            packet.Data[5] = ThirdPerson;
+            ToNetOrder(JumpHeight, packet.Data, 6);
             return packet;
         }
 

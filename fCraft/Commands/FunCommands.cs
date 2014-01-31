@@ -129,31 +129,38 @@ THE SOFTWARE.*/
             Permissions = new Permission[] { Permission.Bots },
             Category = CommandCategory.Fun,
             IsConsoleSafe = false,
-            Usage = "/Bot <create / remove / removeAll / model / close / explode / list / summon>",
+            Usage = "/Bot <create / remove / removeAll / model / close / explode / list / summon / walk>",
             Help = "Commands for manipulating bots. For help and usage for the individual options, use /help bot <option>.",
             HelpSections = new Dictionary<string, string>{
                 { "create", "&H/Bot create <botname> <model>\n&S" +
-                                "Creates a new bot with the given name. Valid models are chicken, creeper, croc, humanoid, pig, printer, sheep, skeleton, spider, or zombie." },
+                                "Creates a new bot with the given name. Valid models are chicken, creeper, croc, human, pig, printer, sheep, skeleton, spider, or zombie." },
                 { "remove", "&H/Bot remove <botname>\n&S" +
                                 "Removes the given bot." },
                 { "removeall", "&H/Bot removeAll\n&S" +
                                 "Removes all bots from the server."},  
                 { "model", "&H/Bot model <bot name> <model>\n&S" +
-                                "Changes the model of a bot to the given model. Valid models are chicken, creeper, croc, humanoid, pig, printer, sheep, skeleton, spider, or zombie."},  
+                                "Changes the model of a bot to the given model. Valid models are chicken, creeper, croc, human, pig, printer, sheep, skeleton, spider, or zombie."},  
                 { "clone", "&H/Bot clone <bot> <player>\n&S" +
-                                "Changes the skin of a bot to the skin of the given player. Bot's model must be humanoid. Use /bot changeModel to change the bot's model. Leave the player blank to remove the skin."},  
+                                "Changes the skin of a bot to the skin of the given player. Leave the player parameter blank to reset the skin. Bot's model must be human. Use /bot changeModel to change the bot's model."},  
                 { "explode", "&H/Bot explode <bot>\n&S" +
                                 "Epically explodes a bot, removing it from the server."},  
                 { "list", "&H/Bot list\n&S" +
                                 "Prints out a list of all the bots on the server."},             
                 { "summon", "&H/Bot summon <botname>\n&S" +
                                 "Summons a bot from anywhere to your current position."},
+                { "walk", "&H/Bot walk <botname> <player>\n&S" +
+                                "Orders a bot to start walking towards a player."}
             },
             Handler = BotHandler,
         };
 
         static void BotHandler(Player player, Command cmd)
         {
+            if (!player.ClassiCube || !Heartbeat.ClassiCube())
+            {
+                player.Message("Bots can only be used on ClassiCube servers and clients!");
+                return;
+            }
             string option = cmd.Next(); //take in the option arg
             if (string.IsNullOrEmpty(option)) //empty? return, otherwise continue
             {
@@ -208,13 +215,13 @@ THE SOFTWARE.*/
                     string requestedModel = cmd.Next();
                     if (string.IsNullOrEmpty(requestedModel))
                     {
-                        player.Message("Usage is /Bot create <bot name> <bot model>. Valid models are chicken, creeper, croc, humanoid, pig, printer, sheep, skeleton, spider, or zombie.");
+                        player.Message("Usage is /Bot create <bot name> <bot model>. Valid models are chicken, creeper, croc, human, pig, printer, sheep, skeleton, spider, or zombie.");
                         return;
                     }
 
                     if (!validEntities.Contains(requestedModel))
                     {
-                        player.Message("That wasn't a valid bot model! Valid models are chicken, creeper, croc, humanoid, pig, printer, sheep, skeleton, spider, or zombie.");
+                        player.Message("That wasn't a valid bot model! Valid models are chicken, creeper, croc, human, pig, printer, sheep, skeleton, spider, or zombie.");
                         return;
                     }
 
@@ -245,12 +252,17 @@ THE SOFTWARE.*/
                     string model = cmd.Next();
                     if (string.IsNullOrEmpty(model))
                     {
-                        player.Message("Usage is /Bot model <bot> <model>. Valid models are chicken, creeper, croc, humanoid, pig, printer, sheep, skeleton, spider, or zombie.");
+                        player.Message("Usage is /Bot model <bot> <model>. Valid models are chicken, creeper, croc, human, pig, printer, sheep, skeleton, spider, or zombie.");
                         break;
+                    }
+
+                    if(model == "human")//lazy parse
+                    {
+                        model = "humanoid";
                     }
                     if (!validEntities.Contains(model))
                     {
-                        player.Message("Please use a valid model name! Valid models are chicken, creeper, croc, humanoid, pig, printer, sheep, skeleton, spider, or zombie.");
+                        player.Message("Please use a valid model name! Valid models are chicken, creeper, croc, human, pig, printer, sheep, skeleton, spider, or zombie.");
                         break;
                     }
 
@@ -262,7 +274,7 @@ THE SOFTWARE.*/
 
                     if (bot.Model != "humanoid")
                     {
-                        player.Message("A bot must be a humanoid in order to have a skin. Use '/bot model <bot> <model>' to change a bot's model.");
+                        player.Message("A bot must be a human in order to have a skin. Use '/bot model <bot> <model>' to change a bot's model.");
                         return;
                     }
 
@@ -295,7 +307,7 @@ THE SOFTWARE.*/
                     bot.Position = player.Position;
                     bot.updateBotPosition(); //replace the entity
 
-                    if (bot.Model != "humanoid")
+                    if (bot.Model != "human")
                     {
                         bot.changeBotModel(bot.Model); //replace the model, if the model is set
                     }
@@ -303,6 +315,23 @@ THE SOFTWARE.*/
                     {
                         bot.Clone(bot.Skin); //replace the skin, if a skin is set
                     }
+                    break;
+                case "walk":
+                    string target = cmd.Next();
+                    if (string.IsNullOrEmpty(target))
+                    {
+                        CdBot.PrintUsage(player);
+                        return;
+                    }
+
+                    Player targetAsPlayer = Server.FindPlayerOrPrintMatches(player, target, false, true);
+                    if (targetAsPlayer == null)
+                    {
+                        player.Message("Could not find {0}!", target);
+                        return;
+                    }
+
+                    bot.walkTo((Position)targetAsPlayer.Position.ToBlockCoords());//lol idk
                     break;
                 default:
                     CdBot.PrintUsage(player);
@@ -317,7 +346,7 @@ THE SOFTWARE.*/
             Category = CommandCategory.Fun,
             IsConsoleSafe = false,
             Usage = "/SetModel [Player] [Model]",
-            Help = "Changes the model of a target player Valid models are chicken, creeper, croc, humanoid, pig, printer, sheep, skeleton, spider, or zombie. If the model is empty, the player's model will reset.",
+            Help = "Changes the model of a target player Valid models are chicken, creeper, croc, human, pig, printer, sheep, skeleton, spider, or zombie. If the model is empty, the player's model will reset.",
             Handler = ModelHandler,
         };
 
@@ -344,9 +373,13 @@ THE SOFTWARE.*/
                 return;
             }
 
+            if (model == "human")//execute super lazy parse
+            {
+                model = "humanoid";
+            }
             if (!validEntities.Contains(model))
             {
-                player.Message("Please choose a valid model! Valid models are chicken, creeper, croc, humanoid, pig, printer, sheep, skeleton, spider, or zombie.");
+                player.Message("Please choose a valid model! Valid models are chicken, creeper, croc, human, pig, printer, sheep, skeleton, spider, or zombie.");
                 return;
             }
 

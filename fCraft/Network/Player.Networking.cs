@@ -1400,6 +1400,11 @@ namespace fCraft
                 Send(fog);
                 Send(weather);
 
+                if (!World.Hax)
+                {
+                    Send(PacketWriter.MakeHackControl(1, 1, 1, 1, 1, -1)); //re-enable hax to the player if the world has hax on
+                }
+
                 //update bots
                 foreach (Bot bot in Server.Bots)
                 {
@@ -1681,14 +1686,11 @@ namespace fCraft
                 }
             }
 
-            //Get Player array of all players in the world
-            Player[] worldPlayerList = World.Players;
             Position pos = Position;
 
             //Loop through all players in the world
-            for (int i = 0; i < worldPlayerList.Length; i++)
+            foreach(Player otherPlayer in World.Players)
             {
-                Player otherPlayer = worldPlayerList[i];
                 if (otherPlayer == this ||
                     !CanSeeMoving(otherPlayer) ||
                     spectatedPlayer == otherPlayer || possessionPlayer != null) continue;

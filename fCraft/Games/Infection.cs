@@ -63,6 +63,7 @@ namespace fCraft.Games
             timeDelay = 20;
 
             world_.Hax = false;
+            world_.Players.Send(PacketWriter.MakeHackControl(0,0,0,0,0,-1));//disable hax
             stopwatch.Reset();
             stopwatch.Start();
             world_.gameMode = GameMode.Infection;
@@ -77,6 +78,7 @@ namespace fCraft.Games
         public static void Stop(Player p) //for stopping the game early
         {
             world_.Hax = true;
+            world_.Players.Send(PacketWriter.MakeHackControl(1, 1, 1, 1, 1, -1));
             if (p != null && world_ != null)
             {
                 world_.Players.Message("{0}&S stopped the game of Infection on world {1}", p.ClassyName, world_.ClassyName);                    
@@ -93,6 +95,7 @@ namespace fCraft.Games
         public static void Custom(int limit, int delay)
         {
             world_.Hax = false;
+            world_.Players.Send(PacketWriter.MakeHackControl(0, 0, 0, 0, 0, -1));//disable hax
             timeDelay = delay;
             timeLimit = limit;
 
@@ -235,6 +238,7 @@ namespace fCraft.Games
         public static void RevertGame() //Reset game bools/stats and stop timers
         {
             world_.Hax = true;
+            world_.Players.Send(PacketWriter.MakeHackControl(1, 1, 1, 1, 1, -1));//disable hax
 
             foreach (Player p in world_.Players)
             {

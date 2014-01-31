@@ -36,6 +36,7 @@ namespace fCraft {
         SetBlockPermissions = 28,
         ChangeModel = 29,
         EnvSetMapAppearance = 30,
-        EnvSetWeatherAppearance = 31 
+        EnvSetWeatherAppearance = 31,
+        HackControl = 32
     }
 }

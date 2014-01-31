@@ -125,7 +125,7 @@ namespace fCraft
         }
 
         /// <summary>
-        /// Model of a player. "steve" is the default
+        /// Model of a player, "humanoid" is the default
         /// </summary>
         public string Model = "humanoid";
 
