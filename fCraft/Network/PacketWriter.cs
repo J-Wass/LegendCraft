@@ -292,7 +292,7 @@ namespace fCraft {
         
         //Client does not support atm, test later when supported!!!
         /// <param name="weatherType"> 0 - Clear, 1 - Rain, 2 - Snow </param>
-        public static Packet MakeEnvWeatherType(byte weatherType)
+        public static Packet MakeEnvWeatherAppearance(byte weatherType)
         {
             Packet packet = new Packet(OpCode.EnvSetWeatherAppearance);
             packet.Data[1] = (byte)weatherType;
@@ -322,14 +322,6 @@ namespace fCraft {
             packet.Data[65] = sideBlock;
             packet.Data[66] = edgeBlock;
             ToNetOrder((short)sideLevel, packet.Data, 67);
-            return packet;
-        }
-        
-        /// <param name="weatherType"> 0 - Clear, 1 - Rain, 2 - Snow </param>
-        public static Packet MakeEnvWeatherAppearance(byte weatherType)
-        {
-            Packet packet = new Packet(OpCode.EnvSetWeatherAppearance);
-            packet.Data[1] = (byte)weatherType;
             return packet;
         }
         

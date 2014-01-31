@@ -129,7 +129,7 @@ THE SOFTWARE.*/
             Permissions = new Permission[] { Permission.Bots },
             Category = CommandCategory.Fun,
             IsConsoleSafe = false,
-            Usage = "/Bot <create / remove / removeAll / model / close / explode / list / summon / walk>",
+            Usage = "/Bot <create / remove / removeAll / model / close / explode / list / summon / roam / stop>",
             Help = "Commands for manipulating bots. For help and usage for the individual options, use /help bot <option>.",
             HelpSections = new Dictionary<string, string>{
                 { "create", "&H/Bot create <botname> <model>\n&S" +
@@ -148,8 +148,10 @@ THE SOFTWARE.*/
                                 "Prints out a list of all the bots on the server."},             
                 { "summon", "&H/Bot summon <botname>\n&S" +
                                 "Summons a bot from anywhere to your current position."},
-                { "walk", "&H/Bot walk <botname> <player>\n&S" +
-                                "Orders a bot to start walking towards a player."}
+                { "roam", "&H/Bot roam <botname>\n&S" +
+                                "Allows the bot to wonder around."},
+                { "stop", "&H/Bot stop <botname>\n&S" +
+                                "Stops the bot from doing any of its movement actions."}
             },
             Handler = BotHandler,
         };
@@ -316,22 +318,15 @@ THE SOFTWARE.*/
                         bot.Clone(bot.Skin); //replace the skin, if a skin is set
                     }
                     break;
-                case "walk":
-                    string target = cmd.Next();
-                    if (string.IsNullOrEmpty(target))
-                    {
-                        CdBot.PrintUsage(player);
-                        return;
-                    }
+                case "roam":
 
-                    Player targetAsPlayer = Server.FindPlayerOrPrintMatches(player, target, false, true);
-                    if (targetAsPlayer == null)
-                    {
-                        player.Message("Could not find {0}!", target);
-                        return;
-                    }
+                    player.Message("{0} is now roaming!", bot.Name);
+                    bot.isRoaming = true;
+                    break;
+                case "stop":
 
-                    bot.walkTo((Position)targetAsPlayer.Position.ToBlockCoords());//lol idk
+                    player.Message("{0} is no longer moving.", bot.Name);
+                    bot.isRoaming = false;
                     break;
                 default:
                     CdBot.PrintUsage(player);

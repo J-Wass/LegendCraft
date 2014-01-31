@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace fCraft
 {
@@ -58,7 +59,18 @@ namespace fCraft
         public string Skin = "steve";
 
         /// <summary>
-        /// Sets a bot. Must be called before any other bot classes.
+        /// Determines whether the bot can roam
+        /// </summary>
+        public bool isRoaming = false;
+
+        /// <summary>
+        /// Running thread for all bots
+        /// </summary>
+        private SchedulerTask thread;
+
+        #region Public Methods
+        /// <summary>
+        /// Sets a bot, as well as the bot values. Must be called before any other bot classes.
         /// </summary>
         public void setBot(String botName, World botWorld, Position pos, int entityID)
         {
@@ -66,14 +78,28 @@ namespace fCraft
             World = botWorld;
             Position = pos;
             ID = entityID;
+            thread = Scheduler.NewTask(t => NetworkLoop());
+            thread.RunForever(TimeSpan.FromSeconds(2));//run the network loop every 2 seconds
+
+            Server.Bots.Add(this);
         }
 
         /// <summary>
-        /// Creates a bot into the server.
+        /// Handles the networking of the bot. Is always running while the bot is on the server.
+        /// </summary>
+        private void NetworkLoop()
+        {
+            if (isRoaming)
+            {
+                Roam();
+            }
+        }
+
+        /// <summary>
+        /// Creates only the bot entity, not the bot data. Bot data is created from setBot.
         /// </summary>
         public void createBot()
         {
-            Server.Bots.Add(this);
             World.Players.Send(PacketWriter.MakeAddEntity(ID, Name, new Position(Position.X, Position.Y, Position.Z, Position.R, Position.L)));
         }
 
@@ -92,6 +118,7 @@ namespace fCraft
         {
             Server.Bots.Remove(this);
             World.Players.Send(PacketWriter.MakeRemoveEntity(ID));
+            
         }
 
         /// <summary>
@@ -129,7 +156,7 @@ namespace fCraft
 
             World.Players.Send(PacketWriter.MakeExtAddEntity((byte)ID, targetSkin, targetSkin));
             Skin = targetSkin;
-        }
+        }       
 
         /// <summary>
         /// Epically explodes the bot
@@ -161,13 +188,57 @@ namespace fCraft
             explode(new Vector3I(vector.X - 1, vector.Y - 1, vector.Z + 1), 0.5, 0.5);
             explode(new Vector3I(vector.X - 1, vector.Y - 1, vector.Z - 1), 0.5, 0.5);
         }
+        #endregion
+
+        #region Private Methods
 
         /// <summary>
-        /// Orders the bot to walk to a specific position
+        /// Called from NetworkLoop. Bot will randomly roam the world. (Class is pretty much oodles of Randoms)
         /// </summary>
-        public void walkTo(Position pos)
+        private void Roam()
         {
-            World.Players.Send(PacketWriter.MakeMoveRotate(ID, pos));
+            Random randRoam = new Random();
+            int intRoam = randRoam.Next(1, 3);
+
+            switch (intRoam)
+            {
+                //spin
+                case 1:
+                    Position.R += (byte)new Random().Next(1, 180);
+                    World.Players.Send(PacketWriter.MakeRotate(ID, Position));
+                    break;
+                //move
+                case 2:
+                    //DOUBLE SWITCH-CASE
+                    int randDirection = new Random().Next(1, 3);
+                    switch (randDirection)
+                    {
+                        //x
+                        case 1:
+                            Position.X += (short)(new Random().Next(-1, 1));
+                            World.Players.Send(PacketWriter.MakeMove(ID, Position));
+                            break;
+                        //y
+                        case 2:
+                            Position.Y += (short)(new Random().Next(-1, 1));
+                            World.Players.Send(PacketWriter.MakeMove(ID, Position));
+                            break;
+                        //z
+                        case 3:
+                            Position.Z += (short)(new Random().Next(-1, 1));
+                            World.Players.Send(PacketWriter.MakeMove(ID, Position));
+                            break;
+                        default:
+                            break;
+                    }
+
+                    break;
+                //do nothing!
+                case 3:
+                    break;
+                default:
+                    break;
+            }
         }
 
         /// <summary>
@@ -211,8 +282,10 @@ namespace fCraft
             {
                 Scheduler.NewTask(t => updateBlock(Block.Air, blockPosition, false, time)).RunManual(TimeSpan.FromSeconds(time));//place a block, replace it with air once 'time' is up
             }
-            
+
         }
+
+        #endregion
 
     }
 }
