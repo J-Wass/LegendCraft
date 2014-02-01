@@ -318,15 +318,30 @@ THE SOFTWARE.*/
                         bot.Clone(bot.Skin); //replace the skin, if a skin is set
                     }
                     break;
-                case "roam":
+                case "move":
 
-                    player.Message("{0} is now roaming!", bot.Name);
-                    bot.isRoaming = true;
+                    string target = cmd.Next();
+                    if (string.IsNullOrEmpty(target))
+                    {
+                        CdBot.PrintUsage(player);
+                        return;
+                    }
+                    Player targetP = player.World.FindPlayerExact(target);
+                    if (targetP == null)
+                    {
+                        player.Message("Could not find {0} on {1}! Please make sure you spelled their name correctly.", target, player.World);
+                        return;
+                    }
+
+                    player.Message("{0} is now moving!", bot.Name);
+                    bot.isMoving = true;
+                    bot.NewPosition = targetP.Position;
                     break;
                 case "stop":
 
                     player.Message("{0} is no longer moving.", bot.Name);
-                    bot.isRoaming = false;
+                    bot.isMoving = false;
+                    bot.sinceLastMove = DateTime.MinValue;
                     break;
                 default:
                     CdBot.PrintUsage(player);

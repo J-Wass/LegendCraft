@@ -44,6 +44,11 @@ namespace fCraft
         public Position Position;
 
         /// <summary>
+        /// Used for movement. Determines where the next position for the bot should be.
+        /// </summary>
+        public Position NewPosition;
+
+        /// <summary>
         /// Entity ID of the bot
         /// </summary>
         public int ID;
@@ -59,14 +64,19 @@ namespace fCraft
         public string Skin = "steve";
 
         /// <summary>
-        /// Determines whether the bot can roam
+        /// Determines whether the bot should be moving
         /// </summary>
-        public bool isRoaming = false;
+        public bool isMoving = false;
 
         /// <summary>
         /// Running thread for all bots
         /// </summary>
         private SchedulerTask thread;
+
+        /// <summary>
+        /// Time since the bot moved last
+        /// </summary>
+        public DateTime sinceLastMove = DateTime.MinValue;
 
         #region Public Methods
         /// <summary>
@@ -89,9 +99,9 @@ namespace fCraft
         /// </summary>
         private void NetworkLoop()
         {
-            if (isRoaming)
+            if (isMoving)
             {
-                Roam();
+                Move();
             }
         }
 
@@ -193,52 +203,69 @@ namespace fCraft
         #region Private Methods
 
         /// <summary>
-        /// Called from NetworkLoop. Bot will randomly roam the world. (Class is pretty much oodles of Randoms)
+        /// Called from NetworkLoop. Bot will gradually move to a position
         /// </summary>
-        private void Roam()
+        private void Move()
         {
-            Random randRoam = new Random();
-            int intRoam = randRoam.Next(1, 3);
-
-            switch (intRoam)
+            if (NewPosition == Position)
             {
-                //spin
-                case 1:
-                    Position.R += (byte)new Random().Next(1, 180);
-                    World.Players.Send(PacketWriter.MakeRotate(ID, Position));
-                    break;
-                //move
-                case 2:
-                    //DOUBLE SWITCH-CASE
-                    int randDirection = new Random().Next(1, 3);
-                    switch (randDirection)
-                    {
-                        //x
-                        case 1:
-                            Position.X += (short)(new Random().Next(-1, 1));
-                            World.Players.Send(PacketWriter.MakeMove(ID, Position));
-                            break;
-                        //y
-                        case 2:
-                            Position.Y += (short)(new Random().Next(-1, 1));
-                            World.Players.Send(PacketWriter.MakeMove(ID, Position));
-                            break;
-                        //z
-                        case 3:
-                            Position.Z += (short)(new Random().Next(-1, 1));
-                            World.Players.Send(PacketWriter.MakeMove(ID, Position));
-                            break;
-                        default:
-                            break;
-                    }
-
-                    break;
-                //do nothing!
-                case 3:
-                    break;
-                default:
-                    break;
+                isMoving = false;
+                return;
             }
+
+            if (sinceLastMove == DateTime.MinValue)//first time the bot has moved
+            {
+                sinceLastMove = DateTime.Now;
+            }
+            else
+            {
+                double time = (DateTime.Now - sinceLastMove).TotalSeconds;//if bot has moved before, wait till 1s has passed to move again
+                if (time < 1)
+                {
+                    return;
+                }
+                sinceLastMove = DateTime.Now;
+            }
+
+            //get the total change in position the bot must accomplish
+            Position deltaPos = new Position
+            {
+                X = (short)Math.Abs(Position.X - NewPosition.X),
+                Y = (short)Math.Abs(Position.Y - NewPosition.Y),
+                Z = (short)Math.Abs(Position.Z - NewPosition.Z),
+                R = (byte)Math.Abs(Position.R - NewPosition.R),
+                L = (byte)Math.Abs(Position.L - NewPosition.L)
+            };
+
+            bool deltaCoord = (deltaPos.X != 0) || (deltaPos.Y != 0) || (deltaPos.Z != 0);//cheak for a change in coords
+            bool deltaRotation = (deltaPos.R != 0) || (deltaPos.L != 0); //check for a change in rotation and yaw
+            Packet packet;
+
+            if (deltaCoord && deltaRotation)//position and rotation 
+            {
+                packet = PacketWriter.MakeMoveRotate(ID, new Position
+                {
+                    X = deltaPos.X,
+                    Y = deltaPos.Y,
+                    Z = deltaPos.Z,
+                    R = NewPosition.R,
+                    L = NewPosition.L
+                });
+            }
+            else if (deltaCoord)//only position
+            {
+                packet = PacketWriter.MakeMove(ID, deltaPos);
+            }
+            else if (deltaRotation)//only rotation
+            {
+                packet = PacketWriter.MakeRotate(ID, NewPosition);
+            }
+            else //don't move
+            {
+                return;
+            }
+            Position = deltaPos;
+            World.Players.Send(packet);
         }
 
         /// <summary>
