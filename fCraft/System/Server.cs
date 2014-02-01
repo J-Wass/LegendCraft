@@ -1229,6 +1229,22 @@ namespace fCraft {
             return null;
         }
 
+        /// <summary>
+        /// Find bot by ID. Returns either the bot by exact ID, or null.
+        /// </summary>
+        public static Bot FindBot(int ID)
+        {
+            if (ID == -1) throw new ArgumentNullException("id");
+            foreach (Bot b in Bots)
+            {
+                if (b.ID == ID)
+                {
+                    return b;
+                }
+            }
+            return null;
+        }
+
         /// <summary> Finds a player by name, using autocompletion.
         /// Returns ALL matching players, including hidden ones. </summary>
         /// <returns> An array of matches. List length of 0 means "no matches";

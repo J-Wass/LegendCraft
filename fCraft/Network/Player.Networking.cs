@@ -112,7 +112,6 @@ namespace fCraft
 
 
         #region I/O Loop
-
         void IoLoop()
         {
             try

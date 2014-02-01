@@ -303,11 +303,19 @@ THE SOFTWARE.*/
                     bot.explodeBot(player);
                     break;
                 case "summon":
-                 
-                    bot.tempRemoveBot(); //remove the entity
-                    bot.World = player.World; //update variables
-                    bot.Position = player.Position;
-                    bot.updateBotPosition(); //replace the entity
+
+                    if (player.World != bot.World)
+                    {
+                        bot.tempRemoveBot(); //remove the entity
+                        bot.World = player.World; //update variables
+                        bot.Position = player.Position;
+                        bot.updateBotPosition(); //replace the entity
+                    }
+                    else
+                    {
+                        bot.Position = player.Position;
+                        bot.teleportBot(player.Position);
+                    }
 
                     if (bot.Model != "human")
                     {
@@ -335,6 +343,7 @@ THE SOFTWARE.*/
 
                     player.Message("{0} is now moving!", bot.Name);
                     bot.isMoving = true;
+                    bot.OldPosition = bot.Position;
                     bot.NewPosition = targetP.Position;
                     break;
                 case "stop":

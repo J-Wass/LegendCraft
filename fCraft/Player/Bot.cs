@@ -44,14 +44,9 @@ namespace fCraft
         public Position Position;
 
         /// <summary>
-        /// Used for movement. Determines where the next position for the bot should be.
+        /// Entity ID of the bot (-1 = default)
         /// </summary>
-        public Position NewPosition;
-
-        /// <summary>
-        /// Entity ID of the bot
-        /// </summary>
-        public int ID;
+        public int ID = -1;
 
         /// <summary>
         /// Current model of the bot
@@ -73,10 +68,12 @@ namespace fCraft
         /// </summary>
         private SchedulerTask thread;
 
-        /// <summary>
-        /// Time since the bot moved last
-        /// </summary>
+        //movement
+
+        public Position OldPosition;
+        public Position NewPosition;
         public DateTime sinceLastMove = DateTime.MinValue;
+        public readonly double speed = 4.3;//entities move at 4.3 blocks per second
 
         #region Public Methods
         /// <summary>
@@ -114,6 +111,14 @@ namespace fCraft
         }
 
         /// <summary>
+        /// Teleports the bot to a specific location
+        /// </summary>
+        public void teleportBot(Position p)
+        {
+            World.Players.Send(PacketWriter.MakeTeleport(ID, p));
+        }
+
+        /// <summary>
         /// Removes the bot entity, however the bot data remains. Intended as for temp bot changes.
         /// </summary>
         public void tempRemoveBot()
@@ -126,13 +131,15 @@ namespace fCraft
         /// </summary>
         public void removeBot()
         {
+            thread.Stop();
+            isMoving = false;
             Server.Bots.Remove(this);
             World.Players.Send(PacketWriter.MakeRemoveEntity(ID));
             
         }
 
         /// <summary>
-        /// Updates the position and world of the bot for everyone in the world.
+        /// Updates the position and world of the bot for everyone in the world, used to replace the tempRemoveBot() method
         /// </summary>
         public void updateBotPosition()
         {
@@ -207,6 +214,8 @@ namespace fCraft
         /// </summary>
         private void Move()
         {
+            double speed = 4.3;//player walks at around 4.3 blocks per second
+
             if (NewPosition == Position)
             {
                 isMoving = false;
@@ -226,46 +235,26 @@ namespace fCraft
                 }
                 sinceLastMove = DateTime.Now;
             }
+            //past this point, the bot has not moved for 1 second (or has just begun to move) and is ready to move again
 
-            //get the total change in position the bot must accomplish
-            Position deltaPos = new Position
+            double distance = Math.Sqrt(Math.Pow((NewPosition.X - OldPosition.X),2) + Math.Pow((NewPosition.Y - OldPosition.Y),2));//find the distance between both points
+            double intervals = distance / speed; //find how many packets must be sent
+
+            double intervalX = (NewPosition.X - OldPosition.X) / intervals; //determine how much of each interval should change for each packet sending
+            double intervalY = (NewPosition.Y - OldPosition.Y) / intervals; 
+
+            Position delta = new Position //using the new intervals, create a packet to move the bot
             {
-                X = (short)Math.Abs(Position.X - NewPosition.X),
-                Y = (short)Math.Abs(Position.Y - NewPosition.Y),
-                Z = (short)Math.Abs(Position.Z - NewPosition.Z),
-                R = (byte)Math.Abs(Position.R - NewPosition.R),
-                L = (byte)Math.Abs(Position.L - NewPosition.L)
+                X = (short)(intervalX),
+                Y = (short)(intervalY),
+                Z = (short)(Position.Z),
+                R = (byte)(NewPosition.R),
+                L = (byte)(NewPosition.L)
             };
 
-            bool deltaCoord = (deltaPos.X != 0) || (deltaPos.Y != 0) || (deltaPos.Z != 0);//cheak for a change in coords
-            bool deltaRotation = (deltaPos.R != 0) || (deltaPos.L != 0); //check for a change in rotation and yaw
-            Packet packet;
-
-            if (deltaCoord && deltaRotation)//position and rotation 
-            {
-                packet = PacketWriter.MakeMoveRotate(ID, new Position
-                {
-                    X = deltaPos.X,
-                    Y = deltaPos.Y,
-                    Z = deltaPos.Z,
-                    R = NewPosition.R,
-                    L = NewPosition.L
-                });
-            }
-            else if (deltaCoord)//only position
-            {
-                packet = PacketWriter.MakeMove(ID, deltaPos);
-            }
-            else if (deltaRotation)//only rotation
-            {
-                packet = PacketWriter.MakeRotate(ID, NewPosition);
-            }
-            else //don't move
-            {
-                return;
-            }
-            Position = deltaPos;
-            World.Players.Send(packet);
+            World.Players.Send(PacketWriter.MakeTeleport(ID, delta));
+            Position = delta; //update the position of the bot while it moves
+          
         }
 
         /// <summary>
