@@ -126,15 +126,7 @@ namespace fCraft.ServerGUI
                     }
                     else
                     {
-                        int referenceNumber;
-                        if (responseString != null && Int32.TryParse(responseString, out referenceNumber))
-                        {
-                            Logger.Log(LogType.SystemActivity, "Crash report submitted (Reference #{0})", referenceNumber);
-                        }
-                        else
-                        {
-                            Logger.Log(LogType.SystemActivity, "Crash report submitted.");
-                        }
+                        //yolo
                     }
            
             Logger.LogToConsole("Report sent. Thank you for helping with the development of LegendCraft!");

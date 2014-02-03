@@ -345,12 +345,14 @@ THE SOFTWARE.*/
                     bot.isMoving = true;
                     bot.OldPosition = bot.Position;
                     bot.NewPosition = targetP.Position;
+                    bot.timeCheck.Start();
                     break;
                 case "stop":
 
                     player.Message("{0} is no longer moving.", bot.Name);
                     bot.isMoving = false;
-                    bot.sinceLastMove = DateTime.MinValue;
+                    bot.timeCheck.Stop();
+                    bot.timeCheck.Reset();
                     break;
                 default:
                     CdBot.PrintUsage(player);

@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Diagnostics;
 
 namespace fCraft
 {
@@ -72,10 +73,14 @@ namespace fCraft
 
         public Position OldPosition;
         public Position NewPosition;
-        public DateTime sinceLastMove = DateTime.MinValue;
-        public readonly double speed = 4.3;//entities move at 4.3 blocks per second
+        public Stopwatch timeCheck = new Stopwatch();
+        public readonly double speed = 1; //will force bots to move at 1 block per second
+        public double intervalCount = 0;
+        public double intervalTarget = 0;
+
 
         #region Public Methods
+
         /// <summary>
         /// Sets a bot, as well as the bot values. Must be called before any other bot classes.
         /// </summary>
@@ -84,21 +89,26 @@ namespace fCraft
             Name = botName;
             World = botWorld;
             Position = pos;
-            ID = entityID;
+            ID = entityID;           
+
             thread = Scheduler.NewTask(t => NetworkLoop());
-            thread.RunForever(TimeSpan.FromSeconds(2));//run the network loop every 2 seconds
+            thread.RunForever(TimeSpan.FromSeconds(0.2));//run the network loop every 0.2 seconds
 
             Server.Bots.Add(this);
         }
 
         /// <summary>
-        /// Handles the networking of the bot. Is always running while the bot is on the server.
+        /// Main IO loop, handles the networking of the bot.
         /// </summary>
         private void NetworkLoop()
         {
             if (isMoving)
             {
-                Move();
+                if (timeCheck.ElapsedMilliseconds > 1000)
+                {
+                    Move();
+                    timeCheck.Restart();
+                }
             }
         }
 
@@ -214,46 +224,45 @@ namespace fCraft
         /// </summary>
         private void Move()
         {
-            double speed = 4.3;//player walks at around 4.3 blocks per second
-
-            if (NewPosition == Position)
+            if (intervalCount > intervalTarget)//if the bot has moved the amount of intervals needed, stop moving
             {
                 isMoving = false;
+                intervalCount = 0;
+                intervalTarget = 0;
                 return;
             }
 
-            if (sinceLastMove == DateTime.MinValue)//first time the bot has moved
-            {
-                sinceLastMove = DateTime.Now;
-            }
-            else
-            {
-                double time = (DateTime.Now - sinceLastMove).TotalSeconds;//if bot has moved before, wait till 1s has passed to move again
-                if (time < 1)
-                {
-                    return;
-                }
-                sinceLastMove = DateTime.Now;
-            }
-            //past this point, the bot has not moved for 1 second (or has just begun to move) and is ready to move again
+            //for debug lol
+            Logger.LogToConsole("Bot is moving from " + OldPosition.X.ToString() + "," + OldPosition.Y.ToString() +
+            " to " + NewPosition.X.ToString() + "," + NewPosition.Y.ToString());
 
             double distance = Math.Sqrt(Math.Pow((NewPosition.X - OldPosition.X),2) + Math.Pow((NewPosition.Y - OldPosition.Y),2));//find the distance between both points
             double intervals = distance / speed; //find how many packets must be sent
+            
+            if (intervalCount == 0)
+            {
+                intervalCount = intervals;
+            }
 
             double intervalX = (NewPosition.X - OldPosition.X) / intervals; //determine how much of each interval should change for each packet sending
             double intervalY = (NewPosition.Y - OldPosition.Y) / intervals; 
 
-            Position delta = new Position //using the new intervals, create a packet to move the bot
+            Position delta = new Position //apply newly created intervals to current location
             {
-                X = (short)(intervalX),
-                Y = (short)(intervalY),
-                Z = (short)(Position.Z),
+                X = (short)(Position.X + intervalX),
+                Y = (short)(Position.Y + intervalY),
+                Z = (short)(Position.Z + Position.Z),
                 R = (byte)(NewPosition.R),
                 L = (byte)(NewPosition.L)
             };
 
+            //for dat debugging
+            Logger.LogToConsole("Bot's delta position: " + delta.X.ToString() + "," + delta.Y.ToString());
+            Logger.LogToConsole("Distance found at: " + distance.ToString());
+
             World.Players.Send(PacketWriter.MakeTeleport(ID, delta));
             Position = delta; //update the position of the bot while it moves
+            intervalCount++;
           
         }
 

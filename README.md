@@ -49,7 +49,8 @@ properly.
 
 ####LegendCraft license
 LegendCraft code and binaries are licensed and distributed under the permissive MIT License, reproduced here: <br />
-Copyright < 2012- 2013 > LegendCraft Team
+
+Copyright < 2012- 2014 > LegendCraft Team
 
 Copyright (c) < 2012-2014 > < LeChosenOne, DingusBungus >
 
