@@ -60,23 +60,21 @@ namespace fCraft
         public string Skin = "steve";
 
         /// <summary>
-        /// Determines whether the bot should be moving
-        /// </summary>
-        public bool isMoving = false;
-
-        /// <summary>
         /// Running thread for all bots
         /// </summary>
         private SchedulerTask thread;
 
         //movement
-
+        public bool isMoving = false;
         public Position OldPosition;
         public Position NewPosition;
         public Stopwatch timeCheck = new Stopwatch();
-        public readonly double speed = 1; //will force bots to move at 1 block per second
+        public readonly double speed = 4.3 * 32; //player moves at 4.3 blocks per second, convert it into player position per second
         public double intervalCount = 0;
         public double intervalTarget = 0;
+        public bool beganMoving;
+        public IEnumerable<Vector3I> positions;
+        public int positionCount = 0;
 
 
         #region Public Methods
@@ -92,7 +90,7 @@ namespace fCraft
             ID = entityID;           
 
             thread = Scheduler.NewTask(t => NetworkLoop());
-            thread.RunForever(TimeSpan.FromSeconds(0.2));//run the network loop every 0.2 seconds
+            thread.RunForever(TimeSpan.FromSeconds(0.1));//run the network loop every 0.1 seconds
 
             Server.Bots.Add(this);
         }
@@ -104,9 +102,9 @@ namespace fCraft
         {
             if (isMoving)
             {
-                if (timeCheck.ElapsedMilliseconds > 1000)
+                if (timeCheck.ElapsedMilliseconds > 1/(speed * 1000))
                 {
-                    Move();
+                    Travel();
                     timeCheck.Restart();
                 }
             }
@@ -218,6 +216,59 @@ namespace fCraft
         #endregion
 
         #region Private Methods
+
+        /// <summary>
+        /// Called from NetworkLoop. Bot will gradually move to a position
+        /// </summary>
+        private void Travel()
+        {
+            Logger.LogToConsole("Travel() called.");
+            if (!isMoving)
+            {
+                Logger.LogToConsole("Travel() canceled..");
+                return;
+            }
+            //if player has not begun to move, create an IEnumerable of the path to take
+            if (!beganMoving)
+            {
+                Logger.LogToConsole("First move.");
+                positions = fCraft.Drawing.LineDrawOperation.LineEnumerator(Position.ToBlockCoords(), NewPosition.ToBlockCoords());
+                beganMoving = true;
+                positionCount = 1;
+            }
+
+            Position targetPosition = new Position();
+            try
+            {
+                Logger.LogToConsole("Creating Position.");
+                targetPosition = new Position
+                {
+                    X = (short)(positions.ElementAt(positionCount).X * 32),
+                    Y = (short)(positions.ElementAt(positionCount).Y * 32),
+                    Z = (short)(positions.ElementAt(positionCount).Z * 32),
+                    R = (byte)(NewPosition.R),
+                    L = (byte)(NewPosition.L)
+                };
+            }
+            catch (Exception)
+            {
+                //stuff
+            }
+
+            if (NewPosition == targetPosition)
+            {
+                Logger.LogToConsole("Final Position reached.");
+                isMoving = false;
+                beganMoving = false;
+                return;
+            }
+
+            Logger.LogToConsole("Teleporting bot.");
+            teleportBot(targetPosition);
+            positionCount++;
+            
+            
+        }
 
         /// <summary>
         /// Called from NetworkLoop. Bot will gradually move to a position
