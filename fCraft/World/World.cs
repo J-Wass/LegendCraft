@@ -718,6 +718,41 @@ namespace fCraft {
             }
         }
 
+        /// <summary>
+        /// Find bot by name. Returns either the bot by exact name, or null.
+        /// </summary>
+        public Bot FindBot(String name)
+        {
+            var bot =
+               from b in Server.Bots
+               where b.Name == name
+               select b;
+
+            if (bot.Count() != 1)
+            {
+                return null;
+            }
+
+            return bot.First();
+        }
+
+        /// <summary>
+        /// Find bot by ID. Returns either the bot by exact ID, or null.
+        /// </summary>
+        public Bot FindBot(int ID)
+        {
+            var bot =
+                from b in Server.Bots
+                where b.ID == ID
+                select b;
+
+            if (bot.Count() != 1)
+            {
+                return null;
+            }
+
+            return bot.First(); 
+        }
 
         public Player[] FindPlayers( [NotNull] Player player, [NotNull] string playerName ) {
             if( player == null ) throw new ArgumentNullException( "player" );

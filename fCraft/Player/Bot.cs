@@ -104,7 +104,7 @@ namespace fCraft
             {
                 if (timeCheck.ElapsedMilliseconds > 1/(speed * 1000))
                 {
-                    Travel();
+                    Move();
                     timeCheck.Restart();
                 }
             }
@@ -220,24 +220,38 @@ namespace fCraft
         /// <summary>
         /// Called from NetworkLoop. Bot will gradually move to a position
         /// </summary>
-        private void Travel()
+        private void Move()
         {
             Logger.LogToConsole("Travel() called.");
             if (!isMoving)
             {
-                Logger.LogToConsole("Travel() canceled..");
+                Logger.LogToConsole("Travel() canceled.");
                 return;
             }
             //if player has not begun to move, create an IEnumerable of the path to take
             if (!beganMoving)
             {
                 Logger.LogToConsole("First move.");
+
+                //create an IEnumerable list of all blocks that will be in the path between blocks
                 positions = fCraft.Drawing.LineDrawOperation.LineEnumerator(Position.ToBlockCoords(), NewPosition.ToBlockCoords());
                 beganMoving = true;
                 positionCount = 1;
             }
 
             Position targetPosition = new Position();
+
+            //determine distance from the target player to the target bot
+            double groundDistance = Math.Sqrt(Math.Pow((NewPosition.X - OldPosition.X),2) + Math.Pow((NewPosition.Y - OldPosition.Y),2));
+
+            int xDisplacement = NewPosition.X - Position.X;
+            int yDisplacement = NewPosition.Y - Position.Y;
+            int zDisplacement = NewPosition.Z - Position.Z;
+
+            //use arctan to find appropriate angles
+            double rAngle = Math.Atan((double)zDisplacement/groundDistance);
+            double lAngle = Math.Atan((double)xDisplacement/yDisplacement);
+
             try
             {
                 Logger.LogToConsole("Creating Position.");
@@ -245,14 +259,22 @@ namespace fCraft
                 {
                     X = (short)(positions.ElementAt(positionCount).X * 32),
                     Y = (short)(positions.ElementAt(positionCount).Y * 32),
-                    Z = (short)(positions.ElementAt(positionCount).Z * 32),
-                    R = (byte)(NewPosition.R),
-                    L = (byte)(NewPosition.L)
+                    Z = (short)(positions.ElementAt(positionCount).Z * 32 + 16),
+                    R = (byte)(rAngle),
+                    L = (byte)(lAngle)
                 };
             }
             catch (Exception)
             {
                 //stuff
+            }
+
+            if (NewPosition.DistanceSquaredTo(targetPosition) <= 64 * 64) //determine if the position is close enough to stop
+            {
+                Logger.LogToConsole("Final Position reached.");
+                isMoving = false;
+                beganMoving = false;
+                return;
             }
 
             if (NewPosition == targetPosition)
@@ -265,57 +287,11 @@ namespace fCraft
 
             Logger.LogToConsole("Teleporting bot.");
             teleportBot(targetPosition);
+            Position = targetPosition;
             positionCount++;
             
             
-        }
-
-        /// <summary>
-        /// Called from NetworkLoop. Bot will gradually move to a position
-        /// </summary>
-        private void Move()
-        {
-            if (intervalCount > intervalTarget)//if the bot has moved the amount of intervals needed, stop moving
-            {
-                isMoving = false;
-                intervalCount = 0;
-                intervalTarget = 0;
-                return;
-            }
-
-            //for debug lol
-            Logger.LogToConsole("Bot is moving from " + OldPosition.X.ToString() + "," + OldPosition.Y.ToString() +
-            " to " + NewPosition.X.ToString() + "," + NewPosition.Y.ToString());
-
-            double distance = Math.Sqrt(Math.Pow((NewPosition.X - OldPosition.X),2) + Math.Pow((NewPosition.Y - OldPosition.Y),2));//find the distance between both points
-            double intervals = distance / speed; //find how many packets must be sent
-            
-            if (intervalCount == 0)
-            {
-                intervalCount = intervals;
-            }
-
-            double intervalX = (NewPosition.X - OldPosition.X) / intervals; //determine how much of each interval should change for each packet sending
-            double intervalY = (NewPosition.Y - OldPosition.Y) / intervals; 
-
-            Position delta = new Position //apply newly created intervals to current location
-            {
-                X = (short)(Position.X + intervalX),
-                Y = (short)(Position.Y + intervalY),
-                Z = (short)(Position.Z + Position.Z),
-                R = (byte)(NewPosition.R),
-                L = (byte)(NewPosition.L)
-            };
-
-            //for dat debugging
-            Logger.LogToConsole("Bot's delta position: " + delta.X.ToString() + "," + delta.Y.ToString());
-            Logger.LogToConsole("Distance found at: " + distance.ToString());
-
-            World.Players.Send(PacketWriter.MakeTeleport(ID, delta));
-            Position = delta; //update the position of the bot while it moves
-            intervalCount++;
-          
-        }
+        }      
 
         /// <summary>
         /// Emulates a small explosion at a specific location

@@ -148,8 +148,8 @@ THE SOFTWARE.*/
                                 "Prints out a list of all the bots on the server."},             
                 { "summon", "&H/Bot summon <botname>\n&S" +
                                 "Summons a bot from anywhere to your current position."},
-                { "roam", "&H/Bot roam <botname>\n&S" +
-                                "Allows the bot to wonder around."},
+                { "move", "&H/Bot move <botname> <player>\n&S" +
+                                "Moves the bot to a specific player."},
                 { "stop", "&H/Bot stop <botname>\n&S" +
                                 "Stops the bot from doing any of its movement actions."}
             },
@@ -187,6 +187,35 @@ THE SOFTWARE.*/
                     botToRemove.removeBot();
                 });
                 player.Message("All bots removed from the server.");
+                return;
+            }
+            else if (option.ToLower() == "move")
+            {
+                string targetBot = cmd.Next();
+                if (string.IsNullOrEmpty(targetBot))
+                {
+                    CdBot.PrintUsage(player);
+                    return;
+                }
+                string targetPlayer = cmd.Next();
+                if (string.IsNullOrEmpty(targetPlayer))
+                {
+                    CdBot.PrintUsage(player);
+                    return;
+                }
+
+                Bot targetB = player.World.FindBot(targetBot);
+                Player targetP = player.World.FindPlayerExact(targetPlayer);
+                if (targetP == null)
+                {
+                    player.Message("Could not find {0} on {1}! Please make sure you spelled their name correctly.", targetBot, player.World);
+                    return;
+                }
+
+                player.Message("{0} is now moving!", targetB.Name);
+                targetB.isMoving = true;
+                targetB.NewPosition = targetP.Position;
+                targetB.timeCheck.Start();
                 return;
             }
 
@@ -325,27 +354,6 @@ THE SOFTWARE.*/
                     {
                         bot.Clone(bot.Skin); //replace the skin, if a skin is set
                     }
-                    break;
-                case "move":
-
-                    string target = cmd.Next();
-                    if (string.IsNullOrEmpty(target))
-                    {
-                        CdBot.PrintUsage(player);
-                        return;
-                    }
-                    Player targetP = player.World.FindPlayerExact(target);
-                    if (targetP == null)
-                    {
-                        player.Message("Could not find {0} on {1}! Please make sure you spelled their name correctly.", target, player.World);
-                        return;
-                    }
-
-                    player.Message("{0} is now moving!", bot.Name);
-                    bot.isMoving = true;
-                    bot.OldPosition = bot.Position;
-                    bot.NewPosition = targetP.Position;
-                    bot.timeCheck.Start();
                     break;
                 case "stop":
 

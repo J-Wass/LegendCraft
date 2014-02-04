@@ -1218,15 +1218,17 @@ namespace fCraft {
         /// </summary>
         public static Bot FindBot(String name)
         {
-            if (name == null) throw new ArgumentNullException("name");
-            foreach(Bot b in Bots)
+            var bot =
+               from b in Bots
+               where b.Name == name
+               select b;
+
+            if (bot.Count() != 1)
             {
-                if (b.Name.ToLower() == name.ToLower())
-                {
-                    return b;
-                }
+                return null;
             }
-            return null;
+
+            return bot.First();
         }
 
         /// <summary>
@@ -1234,15 +1236,17 @@ namespace fCraft {
         /// </summary>
         public static Bot FindBot(int ID)
         {
-            if (ID == -1) throw new ArgumentNullException("id");
-            foreach (Bot b in Bots)
+            var bot =
+                from b in Bots
+                where b.ID == ID
+                select b;
+
+            if (bot.Count() != 1)
             {
-                if (b.ID == ID)
-                {
-                    return b;
-                }
+                return null;
             }
-            return null;
+
+            return bot.First();
         }
 
         /// <summary> Finds a player by name, using autocompletion.
