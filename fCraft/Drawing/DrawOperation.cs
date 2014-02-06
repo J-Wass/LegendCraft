@@ -245,6 +245,55 @@ namespace fCraft.Drawing {
             return true;
         }
 
+        // Based off of LineEnumerator Contributed by Conrad "Redshift" Morgan
+
+        public static IEnumerable<Vector3I> PositionLineEnumerator(Vector3I a, Vector3I b)
+        {
+            Vector3I pixel = a;
+            Vector3I d = b - a;
+            Vector3I inc = new Vector3I(Math.Sign(d.X),
+                                         Math.Sign(d.Y),
+                                         Math.Sign(d.Z));
+            d = d.Abs();
+            Vector3I d2 = d * 2;
+
+            int x, y, z;
+            if ((d.X >= d.Y) && (d.X >= d.Z))
+            {
+                x = 0; y = 1; z = 2;
+            }
+            else if ((d.Y >= d.X) && (d.Y >= d.Z))
+            {
+                x = 1; y = 2; z = 0;
+            }
+            else
+            {
+                x = 2; y = 0; z = 1;
+            }
+
+            int err1 = d2[y] - d[x];
+            int err2 = d2[z] - d[x];
+            for (int i = 0; i < d[x]; i++)
+            {
+                yield return pixel;
+                if (err1 > 0)
+                {
+                    pixel[y] += inc[y];
+                    err1 -= d2[x];
+                }
+                if (err2 > 0)
+                {
+                    pixel[z] += inc[z];
+                    err2 -= d2[x];
+                }
+                err1 += d2[y];
+                err2 += d2[z];
+                pixel[x] += inc[x];
+            }
+
+            yield return b;
+        }
+
         // Contributed by Conrad "Redshift" Morgan
         public static IEnumerable<Vector3I> LineEnumerator( Vector3I a, Vector3I b ) {
             Vector3I pixel = a;

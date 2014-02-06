@@ -215,6 +215,7 @@ THE SOFTWARE.*/
                 player.Message("{0} is now moving!", targetB.Name);
                 targetB.isMoving = true;
                 targetB.NewPosition = targetP.Position;
+                targetB.OldPosition = targetB.Position;
                 targetB.timeCheck.Start();
                 return;
             }

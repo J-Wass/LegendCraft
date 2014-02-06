@@ -70,10 +70,8 @@ namespace fCraft
         public Position NewPosition;
         public Stopwatch timeCheck = new Stopwatch();
         public readonly double speed = 4.3 * 32; //player moves at 4.3 blocks per second, convert it into player position per second
-        public double intervalCount = 0;
-        public double intervalTarget = 0;
         public bool beganMoving;
-        public IEnumerable<Vector3I> positions;
+        public List<Vector3I> posList = new List<Vector3I>();
         public int positionCount = 0;
 
 
@@ -222,10 +220,10 @@ namespace fCraft
         /// </summary>
         private void Move()
         {
-            Logger.LogToConsole("Travel() called.");
+            Logger.LogToConsole("Move() called.");
             if (!isMoving)
             {
-                Logger.LogToConsole("Travel() canceled.");
+                Logger.LogToConsole("Move() canceled.");
                 return;
             }
             //if player has not begun to move, create an IEnumerable of the path to take
@@ -234,7 +232,12 @@ namespace fCraft
                 Logger.LogToConsole("First move.");
 
                 //create an IEnumerable list of all blocks that will be in the path between blocks
-                positions = fCraft.Drawing.LineDrawOperation.LineEnumerator(Position.ToBlockCoords(), NewPosition.ToBlockCoords());
+                IEnumerable<Vector3I> positions = fCraft.Drawing.LineDrawOperation.LineEnumerator(Position.ToBlockCoords(), NewPosition.ToBlockCoords());
+
+                foreach(Vector3I v in positions)
+                {
+                    posList.Add(v);
+                }
                 beganMoving = true;
                 positionCount = 1;
             }
@@ -248,42 +251,33 @@ namespace fCraft
             int yDisplacement = NewPosition.Y - Position.Y;
             int zDisplacement = NewPosition.Z - Position.Z;
 
-            //use arctan to find appropriate angles
-            double rAngle = Math.Atan((double)zDisplacement/groundDistance);
-            double lAngle = Math.Atan((double)xDisplacement/yDisplacement);
+            //use arctan to find appropriate angles (doesn't work yet)
+            double rAngle = Math.Atan((double)zDisplacement / groundDistance);
+            double lAngle = Math.Atan((double)xDisplacement / yDisplacement);
 
-            try
-            {
-                Logger.LogToConsole("Creating Position.");
-                targetPosition = new Position
-                {
-                    X = (short)(positions.ElementAt(positionCount).X * 32),
-                    Y = (short)(positions.ElementAt(positionCount).Y * 32),
-                    Z = (short)(positions.ElementAt(positionCount).Z * 32 + 16),
-                    R = (byte)(rAngle),
-                    L = (byte)(lAngle)
-                };
-            }
-            catch (Exception)
-            {
-                //stuff
-            }
 
-            if (NewPosition.DistanceSquaredTo(targetPosition) <= 64 * 64) //determine if the position is close enough to stop
+            Logger.LogToConsole("Creating Position.");
+        
+            //create a new position with the next pos list in the posList, then remove that pos
+            targetPosition = new Position
+            {
+                X = (short)(posList.First().X * 32),
+                Y = (short)(posList.First().Y * 32),
+                Z = (short)(posList.First().Z * 32 + 16),
+                R = (byte)(rAngle),
+                L = (byte)(lAngle)
+            };
+
+            posList.Remove(posList.First());
+
+            //once the posList is empty, we have reached the final point
+            if (posList.Count() == 0)
             {
                 Logger.LogToConsole("Final Position reached.");
                 isMoving = false;
                 beganMoving = false;
                 return;
-            }
-
-            if (NewPosition == targetPosition)
-            {
-                Logger.LogToConsole("Final Position reached.");
-                isMoving = false;
-                beganMoving = false;
-                return;
-            }
+            }       
 
             Logger.LogToConsole("Teleporting bot.");
             teleportBot(targetPosition);
