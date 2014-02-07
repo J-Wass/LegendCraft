@@ -73,6 +73,8 @@ namespace fCraft.Drawing {
         /// Used for volume permission checks. Must not be negative. </summary>
         public int BlocksTotalEstimate { get; protected set; }
 
+        public static Position tempPos = new Position();
+
         /// <summary> Estimated total blocks left to process. </summary>
         public int BlocksLeftToProcess {
             get {
@@ -245,53 +247,42 @@ namespace fCraft.Drawing {
             return true;
         }
 
-        // Based off of LineEnumerator Contributed by Conrad "Redshift" Morgan
-
-        public static IEnumerable<Vector3I> PositionLineEnumerator(Vector3I a, Vector3I b)
+        //Experimental, doesn't work, might as well leave it here in case I need it later
+        public static IEnumerable<Position> PositionLineEnumerator(Position a, Position b)
         {
-            Vector3I pixel = a;
-            Vector3I d = b - a;
-            Vector3I inc = new Vector3I(Math.Sign(d.X),
-                                         Math.Sign(d.Y),
-                                         Math.Sign(d.Z));
-            d = d.Abs();
-            Vector3I d2 = d * 2;
+            //determine total distance of the line
+            short groundDistance = (short)Math.Sqrt(Math.Pow((a.X - b.X), 2) + Math.Pow((a.Y - b.Y), 2));
+            short trueDistance = (short)Math.Sqrt(Math.Pow((groundDistance), 2) + Math.Pow((a.Z - b.Z), 2));
 
-            int x, y, z;
-            if ((d.X >= d.Y) && (d.X >= d.Z))
-            {
-                x = 0; y = 1; z = 2;
-            }
-            else if ((d.Y >= d.X) && (d.Y >= d.Z))
-            {
-                x = 1; y = 2; z = 0;
-            }
-            else
-            {
-                x = 2; y = 0; z = 1;
-            }
+            //determine the change in all axes
+            short deltaZ = (short)(a.Z - b.Z);
+            short deltaY = (short)(a.Y - b.Y);
+            short deltaX = (short)(a.X - b.X);
 
-            int err1 = d2[y] - d[x];
-            int err2 = d2[z] - d[x];
-            for (int i = 0; i < d[x]; i++)
+            //number of positions to be put into IEnum, round to the nearest whole digit
+            short posCount = (short)Math.Round((double)trueDistance / Bot.speed, 0, MidpointRounding.AwayFromZero);
+
+            //determine the change in all axis for each new position, again, keep positions to the nearest whole digit
+            short intervalZ = (short)Math.Round((double)(deltaZ / posCount), 0, MidpointRounding.AwayFromZero);
+            short intervalY = (short)Math.Round((double)(deltaY / posCount), 0, MidpointRounding.AwayFromZero);
+            short intervalX = (short)Math.Round((double)(deltaX / posCount), 0, MidpointRounding.AwayFromZero);
+
+            int i = 0;
+            tempPos = a;
+
+            while (i != posCount)
             {
-                yield return pixel;
-                if (err1 > 0)
+                Position newPosition = new Position
                 {
-                    pixel[y] += inc[y];
-                    err1 -= d2[x];
-                }
-                if (err2 > 0)
-                {
-                    pixel[z] += inc[z];
-                    err2 -= d2[x];
-                }
-                err1 += d2[y];
-                err2 += d2[z];
-                pixel[x] += inc[x];
-            }
+                    X = (short)(tempPos.X + intervalX),
+                    Y = (short)(tempPos.Y + intervalY),
+                    Z = (short)(tempPos.Z + intervalZ),
+                };
 
-            yield return b;
+                yield return newPosition;
+                tempPos = newPosition;
+                i++;
+            }
         }
 
         // Contributed by Conrad "Redshift" Morgan

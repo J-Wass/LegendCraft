@@ -69,10 +69,9 @@ namespace fCraft
         public Position OldPosition;
         public Position NewPosition;
         public Stopwatch timeCheck = new Stopwatch();
-        public readonly double speed = 4.3 * 32; //player moves at 4.3 blocks per second, convert it into player position per second
+        public static readonly double speed = 4.3 * 32; //player moves at 4.3 blocks per second, convert it into player position per second
         public bool beganMoving;
         public List<Vector3I> posList = new List<Vector3I>();
-        public int positionCount = 0;
 
 
         #region Public Methods
@@ -239,10 +238,7 @@ namespace fCraft
                     posList.Add(v);
                 }
                 beganMoving = true;
-                positionCount = 1;
             }
-
-            Position targetPosition = new Position();
 
             //determine distance from the target player to the target bot
             double groundDistance = Math.Sqrt(Math.Pow((NewPosition.X - OldPosition.X),2) + Math.Pow((NewPosition.Y - OldPosition.Y),2));
@@ -252,21 +248,42 @@ namespace fCraft
             int zDisplacement = NewPosition.Z - Position.Z;
 
             //use arctan to find appropriate angles (doesn't work yet)
-            double rAngle = Math.Atan((double)zDisplacement / groundDistance);
-            double lAngle = Math.Atan((double)xDisplacement / yDisplacement);
+            double rAngle = Math.Atan((double)zDisplacement / groundDistance);//pitch
+            double lAngle = Math.Atan((double)xDisplacement / yDisplacement);//yaw
 
 
             Logger.LogToConsole("Creating Position.");
         
             //create a new position with the next pos list in the posList, then remove that pos
-            targetPosition = new Position
+            Position targetPosition = new Position
             {
-                X = (short)(posList.First().X * 32),
-                Y = (short)(posList.First().Y * 32),
+                X = (short)(posList.First().X * 32 + 16),
+                Y = (short)(posList.First().Y * 32 + 16),
                 Z = (short)(posList.First().Z * 32 + 16),
                 R = (byte)(rAngle),
                 L = (byte)(lAngle)
             };
+
+            //create a new position one block under targetPos
+            Position underPosition = new Position
+            {
+                X = (short)(targetPosition.X),
+                Y = (short)(targetPosition.Y),
+                Z = (short)(targetPosition.Z - 32),
+                R = (byte)(rAngle),
+                L = (byte)(lAngle)
+            };
+
+            //check whether the next block + the block under it are air
+            if ((World.Map.GetBlock(targetPosition.ToBlockCoords()) != Block.Air) || (World.Map.GetBlock(underPosition.ToBlockCoords()) != Block.Air))
+            {
+                //if a non air-block is in the way, find the next open position and restart the move
+                FindNewPos();
+                beganMoving = false;
+                isMoving = false;
+                posList.Clear();
+                return;
+            }
 
             posList.Remove(posList.First());
 
@@ -281,11 +298,38 @@ namespace fCraft
 
             Logger.LogToConsole("Teleporting bot.");
             teleportBot(targetPosition);
-            Position = targetPosition;
-            positionCount++;
-            
-            
-        }      
+            Position = targetPosition;                
+        }
+
+        private void FindNewPos()
+        {
+            Position testPosOne = new Position
+            {
+                X = (short)(Position.X),
+                Y = (short)(Position.Y + 32),
+                Z = (short)(Position.Z)
+            };
+
+            Position testPosTwo = new Position
+            {
+                X = (short)(Position.X + 32),
+                Y = (short)(Position.Y),
+                Z = (short)(Position.Z)
+            };
+
+            Random rand = new Random();
+            int randInt = rand.Next(0, 1);
+            if (randInt == 1)
+            {
+                teleportBot(testPosOne);
+            }
+            else
+            {
+                teleportBot(testPosTwo);
+            }
+
+            isMoving = true;
+        }
 
         /// <summary>
         /// Emulates a small explosion at a specific location
