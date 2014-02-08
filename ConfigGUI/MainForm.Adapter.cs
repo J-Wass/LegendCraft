@@ -150,7 +150,7 @@ namespace fCraft.ConfigGUI
             CustomAliases.Text = ConfigKey.CustomAliasName.GetString();
             tMOTD.Text = ConfigKey.MOTD.GetString();
             websiteURL.Text = ConfigKey.WebsiteURL.GetString();
-            HeartBeatUrlComboBox.SelectedItem = ConfigKey.HeartbeatUrl.GetString();
+            HeartBeatUrlComboBox.Text = ConfigKey.HeartbeatUrl.GetString();
 
             nMaxPlayers.Value = ConfigKey.MaxPlayers.GetInt();
             CheckMaxPlayersPerWorldValue();
