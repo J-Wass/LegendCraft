@@ -99,7 +99,7 @@ namespace fCraft
         {
             if (isMoving)
             {
-                if (timeCheck.ElapsedMilliseconds > 1/(speed * 1000))
+                if (timeCheck.ElapsedMilliseconds > ((1/(speed * 1000)) * 2.5))
                 {
                     Move();
                     timeCheck.Restart();
@@ -279,9 +279,8 @@ namespace fCraft
             {
                 //if a non air-block is in the way, find the next open position and restart the move
                 FindNewPos();
-                beganMoving = false;
                 isMoving = false;
-                posList.Clear();
+                beganMoving = false;
                 return;
             }
 
@@ -303,16 +302,17 @@ namespace fCraft
 
         private void FindNewPos()
         {
+            Logger.LogToConsole("FindNewPos() called.");
             Position testPosOne = new Position
             {
                 X = (short)(Position.X),
-                Y = (short)(Position.Y + 32),
+                Y = (short)(Position.Y + 64),
                 Z = (short)(Position.Z)
             };
 
             Position testPosTwo = new Position
             {
-                X = (short)(Position.X + 32),
+                X = (short)(Position.X + 64),
                 Y = (short)(Position.Y),
                 Z = (short)(Position.Z)
             };
@@ -321,14 +321,31 @@ namespace fCraft
             int randInt = rand.Next(0, 1);
             if (randInt == 1)
             {
+                if (World.Map.GetBlock(testPosOne.ToBlockCoords()) != Block.Air)
+                {
+                    Logger.LogToConsole("Stopped.");
+                    //give up for now, will actual create a solution later
+                    return;
+                }
                 teleportBot(testPosOne);
+                Position = testPosOne;
             }
             else
             {
+                if (World.Map.GetBlock(testPosTwo.ToBlockCoords()) != Block.Air)
+                {
+                    Logger.LogToConsole("Stopped.");
+                    //give up for now, will actual create a solution later
+                    return;
+                }
                 teleportBot(testPosTwo);
+                Position = testPosOne;
             }
 
+            Logger.LogToConsole("Bot Teleported, back to Move() called.");
             isMoving = true;
+            Move();
+            return;
         }
 
         /// <summary>

@@ -66,6 +66,11 @@ namespace fCraft.ConfigGUI {
             // Redraw chat preview when re-entering the tab.
             // This ensured that changes to rank colors/prefixes are applied.
             tabChat.Enter += ( o, e2 ) => UpdateChatPreview();
+
+            if (HeartBeatUrlComboBox.SelectedItem == null)
+            {
+                HeartBeatUrlComboBox.Text = "ClassiCube.net";
+            }
         }
 
 
@@ -1719,6 +1724,11 @@ Your rank is {RANK}&S. Type &H/Help&S for help." );
                 tServPass.Enabled = false;
                 tServPass.Text = "defaultPass";
             }
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+
         }
 
 

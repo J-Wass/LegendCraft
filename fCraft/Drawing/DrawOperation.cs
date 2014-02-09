@@ -123,7 +123,6 @@ namespace fCraft.Drawing {
         /// <summary> Whether completion or cancellation of this DrawOperation should be logged. </summary>
         public bool LogCompletion { get; set; }
 
-
         const int MaxBlocksToProcessPerBatch = 25000;
         int batchStartProcessedCount;
         protected bool TimeToEndBatch {
@@ -145,7 +144,14 @@ namespace fCraft.Drawing {
 
             Context |= BlockChangeContext.Drawn;
             AnnounceCompletion = true;
-            LogCompletion = true;
+            if (Updater.CurrentRelease.IsFlagged(ReleaseFlags.Dev))
+            {
+                LogCompletion = true;
+            }
+            else
+            {
+                LogCompletion = false;
+            }
         }
 
 
@@ -353,7 +359,7 @@ namespace fCraft.Drawing {
                     }
                 }
             }
-            if( AnnounceCompletion && Map.World != null ) {
+            if( AnnounceCompletion && Map.World != null && Updater.CurrentRelease.IsFlagged(ReleaseFlags.Dev)) {
                 Logger.Log( LogType.UserActivity,
                             "Player {0} executed {1} on world {2} (between {3} and {4}). Processed {5}, Updated {6}, Skipped {7}, Denied {8} blocks.",
                             Player.Name, Description, Map.World.Name,
@@ -377,11 +383,12 @@ namespace fCraft.Drawing {
                                     BlocksProcessed, BlocksUpdated );
                 }
             }
-            if( LogCompletion && Map.World != null ) {
+            if (LogCompletion && Map.World != null && Updater.CurrentRelease.IsFlagged(ReleaseFlags.Dev))
+            {
                 Logger.Log( LogType.UserActivity,
                             "Player {0} cancelled {1} on world {2}. Processed {3}, Updated {4}, Skipped {5}, Denied {6} blocks.",
                             Player, Description, Map.World.Name,
-                            BlocksProcessed, BlocksUpdated, BlocksSkipped, BlocksDenied );
+                            BlocksProcessed, BlocksUpdated, BlocksSkipped, BlocksDenied, Updater.CurrentRelease.FlagsString);
             }
         }
 

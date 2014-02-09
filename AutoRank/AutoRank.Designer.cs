@@ -34,7 +34,6 @@
             this.prevLabel = new System.Windows.Forms.Label();
             this.newLabel = new System.Windows.Forms.Label();
             this.newRank = new System.Windows.Forms.ComboBox();
-            this.rankListings = new System.Windows.Forms.ListBox();
             this.conditionLabel = new System.Windows.Forms.Label();
             this.condition = new System.Windows.Forms.ComboBox();
             this.valueLabel = new System.Windows.Forms.Label();
@@ -46,17 +45,22 @@
             this.bRemove = new System.Windows.Forms.Button();
             this.boxSettings = new System.Windows.Forms.GroupBox();
             this.op = new System.Windows.Forms.ComboBox();
+            this.TreeList = new System.Windows.Forms.TreeView();
             this.boxSettings.SuspendLayout();
             this.SuspendLayout();
             // 
             // bCreate
             // 
+            this.bCreate.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.bCreate.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bCreate.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.bCreate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bCreate.Location = new System.Drawing.Point(7, 19);
             this.bCreate.Name = "bCreate";
             this.bCreate.Size = new System.Drawing.Size(110, 22);
             this.bCreate.TabIndex = 1;
             this.bCreate.Text = "Create New";
-            this.bCreate.UseVisualStyleBackColor = true;
+            this.bCreate.UseVisualStyleBackColor = false;
             this.bCreate.Click += new System.EventHandler(this.bCreate_Click);
             // 
             // prevRank
@@ -94,15 +98,6 @@
             this.newRank.Name = "newRank";
             this.newRank.Size = new System.Drawing.Size(91, 21);
             this.newRank.TabIndex = 4;
-            // 
-            // rankListings
-            // 
-            this.rankListings.FormattingEnabled = true;
-            this.rankListings.HorizontalScrollbar = true;
-            this.rankListings.Location = new System.Drawing.Point(141, 9);
-            this.rankListings.Name = "rankListings";
-            this.rankListings.Size = new System.Drawing.Size(218, 303);
-            this.rankListings.TabIndex = 6;
             // 
             // conditionLabel
             // 
@@ -155,13 +150,17 @@
             // 
             // bAdd
             // 
+            this.bAdd.BackColor = System.Drawing.Color.WhiteSmoke;
             this.bAdd.Enabled = false;
-            this.bAdd.Location = new System.Drawing.Point(44, 292);
+            this.bAdd.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bAdd.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.bAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bAdd.Location = new System.Drawing.Point(44, 302);
             this.bAdd.Name = "bAdd";
             this.bAdd.Size = new System.Drawing.Size(38, 27);
             this.bAdd.TabIndex = 11;
             this.bAdd.Text = "Add";
-            this.bAdd.UseVisualStyleBackColor = true;
+            this.bAdd.UseVisualStyleBackColor = false;
             this.bAdd.Click += new System.EventHandler(this.bAdd_Click);
             // 
             // option
@@ -177,7 +176,6 @@
             this.option.Name = "option";
             this.option.Size = new System.Drawing.Size(91, 21);
             this.option.TabIndex = 13;
-            this.option.SelectedIndexChanged += new System.EventHandler(this.option_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -190,23 +188,29 @@
             // 
             // bExit
             // 
-            this.bExit.Location = new System.Drawing.Point(312, 314);
+            this.bExit.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.bExit.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bExit.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.bExit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bExit.Location = new System.Drawing.Point(307, 314);
             this.bExit.Name = "bExit";
             this.bExit.Size = new System.Drawing.Size(47, 27);
             this.bExit.TabIndex = 14;
             this.bExit.Text = "Save";
-            this.bExit.UseVisualStyleBackColor = true;
-            this.bExit.Click += new System.EventHandler(this.bExit_Click);
+            this.bExit.UseVisualStyleBackColor = false;
             // 
             // bRemove
             // 
-            this.bRemove.Location = new System.Drawing.Point(141, 318);
+            this.bRemove.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.bRemove.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.bRemove.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.bRemove.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bRemove.Location = new System.Drawing.Point(153, 314);
             this.bRemove.Name = "bRemove";
-            this.bRemove.Size = new System.Drawing.Size(155, 23);
+            this.bRemove.Size = new System.Drawing.Size(143, 27);
             this.bRemove.TabIndex = 15;
-            this.bRemove.Text = "Remove Selected  Condition";
-            this.bRemove.UseVisualStyleBackColor = true;
-            this.bRemove.Click += new System.EventHandler(this.bRemove_Click);
+            this.bRemove.Text = "Remove Selected  ";
+            this.bRemove.UseVisualStyleBackColor = false;
             // 
             // boxSettings
             // 
@@ -246,16 +250,23 @@
             this.op.Size = new System.Drawing.Size(33, 21);
             this.op.TabIndex = 15;
             // 
+            // TreeList
+            // 
+            this.TreeList.Location = new System.Drawing.Point(153, 17);
+            this.TreeList.Name = "TreeList";
+            this.TreeList.Size = new System.Drawing.Size(201, 284);
+            this.TreeList.TabIndex = 17;
+            // 
             // AutoRank
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Firebrick;
             this.ClientSize = new System.Drawing.Size(366, 353);
+            this.Controls.Add(this.TreeList);
             this.Controls.Add(this.boxSettings);
             this.Controls.Add(this.bExit);
             this.Controls.Add(this.bRemove);
-            this.Controls.Add(this.rankListings);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "AutoRank";
             this.Text = "LegendCraft AutoRank Program";
@@ -273,7 +284,6 @@
         private System.Windows.Forms.Label prevLabel;
         private System.Windows.Forms.Label newLabel;
         private System.Windows.Forms.ComboBox newRank;
-        private System.Windows.Forms.ListBox rankListings;
         private System.Windows.Forms.Label conditionLabel;
         private System.Windows.Forms.ComboBox condition;
         private System.Windows.Forms.Label valueLabel;
@@ -285,6 +295,7 @@
         private System.Windows.Forms.Button bRemove;
         private System.Windows.Forms.GroupBox boxSettings;
         private System.Windows.Forms.ComboBox op;
+        private System.Windows.Forms.TreeView TreeList;
     }
 }
 

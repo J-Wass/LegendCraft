@@ -22,181 +22,62 @@ namespace AutoRank
 
         private void AutoRank_Load(object sender, EventArgs e)
         {
-            //Create tooltips here
-
-            if (File.Exists("autorank.xml"))
+            foreach (Rank rank in RankManager.Ranks)
             {
-                //load xml
-            }
-            else
-            {
-                //MessageBox.Show("Warning: Cannot find autorank.xml. File is either corrupted or missing. Ignore this message if this is your first time running autorank.");
-                //this.Close(); 
-                //Commented out for quicker debugging purposes
-            }
-
-            //Load Ranks and IDs
-            prevRank.Items.Clear();
-            newRank.Items.Clear();
-
-            XmlDocument doc = new XmlDocument();
-            doc.Load("config.xml");
-            XmlNodeList rankNodes = doc.SelectNodes("/fCraftConfig/Ranks/Rank");
-
-            foreach (XmlNode rankNode in rankNodes)
-            {
-                prevRank.Items.Add(rankNode.Attributes["name"].Value);
-                newRank.Items.Add(rankNode.Attributes["name"].Value);
+                prevRank.Items.Add(rank.Name);
+                newRank.Items.Add(rank.Name);
             }
         }
 
         private void bCreate_Click(object sender, EventArgs e)
         {
-            //Enable options to configure
             prevRank.Enabled = true;
             newRank.Enabled = true;
             condition.Enabled = true;
+            op.Enabled = true;
             value.Enabled = true;
             option.Enabled = true;
             bAdd.Enabled = true;
-            op.Enabled = true;
         }
 
         private void bAdd_Click(object sender, EventArgs e)
         {
-            double valCheck;
-            bool isNum = double.TryParse(value.Text, out valCheck);
-            if (!isNum)
+            if(string.IsNullOrEmpty(prevRank.Text) || string.IsNullOrEmpty(newRank.Text) || string.IsNullOrEmpty(value.Text) ||
+               string.IsNullOrEmpty(condition.Text) || string.IsNullOrEmpty(op.Text) || string.IsNullOrEmpty(option.Text))                            
             {
-                MessageBox.Show("The value must be an integer!");
+                MessageBox.Show("Oops... One or more of the fields were not filled out!");
                 return;
             }
 
-            //Write to rankListings
-            try
+            double valueInt;
+            if (!Double.TryParse(value.Text, out valueInt))
             {
-                //if we are continuing
-                if (Values.Or || Values.And || Values.ButNot)
-                {
-                    switch (option.SelectedItem.ToString())
-                    {
-                        case "Finished":
-                            rankListings.Items.Add(Values.toAdd + ("If " + condition.SelectedItem + op.SelectedItem.ToString() + value.Text.ToString() + "\n\r"));
-                            Values.And = false;
-                            Values.Or = false;
-                            Values.ButNot = false;
-                            break;
-                        case "Or":
-                            Values.toAdd = Values.toAdd + ("If " + condition.SelectedItem + op.SelectedItem.ToString() + value.Text.ToString() + "Or\n\r");
-                            Values.And = false;
-                            Values.Or = true;
-                            Values.ButNot = false;
-                            break;
-                        case "But not":
-                            Values.toAdd = Values.toAdd + ("If " + condition.SelectedItem + op.SelectedItem.ToString() + value.Text.ToString() + "But not\n\r");
-                            Values.And = true;
-                            Values.Or = false;
-                            Values.ButNot = true;
-                            break;
-                        case "And":
-                            Values.toAdd = Values.toAdd + ("If " + condition.SelectedItem + op.SelectedItem.ToString() + value.Text.ToString() + "And\n\r");
-                            Values.And = true;
-                            Values.Or = false;
-                            Values.ButNot = false;
-                            break;
-                        default:
-                            MessageBox.Show("Make sure you fill out all fields before adding!");
-                            break;
-                    }        
-                }
-
-                switch (option.SelectedItem.ToString())
-                {
-                    case "Finished":
-                        rankListings.Items.Add("--Rank from " + prevRank.SelectedItem.ToString() + " to " + newRank.SelectedItem.ToString() + " if " + condition.SelectedItem + op.SelectedItem.ToString() + value.Text.ToString() + "\n\r");
-                        break;
-                    case "Or":
-                        Values.toAdd = ("--Rank from " + prevRank.SelectedItem.ToString() + " to " + newRank.SelectedItem.ToString() + " if " + condition.SelectedItem + op.SelectedItem.ToString() + value.Text.ToString() + "Or\n\r");
-                        Values.Or = true;
-                        break;
-                    case "But not":
-                        Values.toAdd = ("--Rank from " + prevRank.SelectedItem.ToString() + " to " + newRank.SelectedItem.ToString() + " if " + condition.SelectedItem + op.SelectedItem.ToString() + value.Text.ToString() + "But not\n\r");
-                        Values.ButNot = true;
-                        break;
-                    case "And":
-                        Values.toAdd = ("--Rank from " + prevRank.SelectedItem.ToString() + " to " + newRank.SelectedItem.ToString() + " if " + condition.SelectedItem + op.SelectedItem.ToString() + value.Text.ToString() + "And\n\r");
-                        Values.And = true;
-                        break;
-                    default:
-                        MessageBox.Show("Make sure you fill out all fields before adding!" + option.Text);
-                        break;
-                }                
-            }
-            catch (NullReferenceException ex)
-            {
-                MessageBox.Show("Make sure you fill out all fields before adding!" + ex);
+                MessageBox.Show("Uh oh! The value textbox must be a whole number!");
                 return;
             }
 
-            //Disable options if finished, also clear selections
-            if (!Values.And && !Values.Or && !Values.ButNot)
-            {
-                prevRank.Enabled = false;
-                newRank.Enabled = false;
-                condition.Enabled = false;
-                value.Enabled = false;
-                option.Enabled = false;
-                bAdd.Enabled = false;
-                op.Enabled = false;
+            //past this point, all fields are valid
+            TreeNode ConditionNode = new TreeNode("If " + condition.Text + " " + op.Text + " " + value.Text);
+            TreeNode[] ChildNode = new TreeNode[] {ConditionNode};
 
-                newRank.Text = "";
-                prevRank.Text = "";
-                condition.Text = "";
-                value.Clear();
-                option.Text = "";
-                op.Text = "";
-            }
-            //If a player wanted to continue with 'or', 'and', or 'butnot', we will disable the rank options, and clear the rest
-            else
-            {
-                prevRank.Enabled = false;
-                newRank.Enabled = false;
+            TreeNode FinalNode = new TreeNode(prevRank.Text + " - " + newRank.Text, ChildNode);
+            TreeList.Nodes.Add(FinalNode);
 
-                condition.Text = "";
-                value.Clear();
-                option.Text = "";
-                op.Text = "";
-            }
-        }
+            prevRank.Enabled = false;
+            newRank.Enabled = false;
+            condition.Enabled = false;
+            op.Enabled = false;
+            value.Enabled = false;
+            option.Enabled = false;
+            bAdd.Enabled = false;
 
-        private void bExit_Click(object sender, EventArgs e)
-        {
-            //write to xml
-            this.Close();
-        }
+            value.Clear();
+            prevRank.Text = "";
+            newRank.Text = "";
+            condition.Text = "";
+            op.Text = "";
+            option.Text = "";
 
-        private void bRemove_Click(object sender, EventArgs e)
-        {
-            if(rankListings.SelectedItem != null)
-            {
-                rankListings.Items.Remove(rankListings.SelectedItem);
-            }
-            else
-            {
-                MessageBox.Show("Please select an item from the list above to remove.");
-            }
-        }
-
-        private void option_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (option.SelectedItem != "Finished")
-            {
-                bAdd.Text = "Next";
-            }
-            else
-            {
-                bAdd.Text = "Add";
-            }
         }
 
     }

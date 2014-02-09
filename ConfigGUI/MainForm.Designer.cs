@@ -3842,6 +3842,7 @@
             this.Name = "MainForm";
             this.Text = "LegendCraft Config Tool";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ConfigUI_FormClosing);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.tabs.ResumeLayout(false);
             this.tabGeneral.ResumeLayout(false);
             this.gBasic.ResumeLayout(false);

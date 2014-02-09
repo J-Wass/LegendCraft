@@ -545,8 +545,8 @@ Each state increases the maximum potential memory use per-player.",
             MinLength = 1, MaxLength = 64 )]
         ConsoleName,
 
-        [StringKey(ConfigSection.General, "ClassiCube.net",
-@"URL to send heartbeats to. Default is minecraft.net.
+        [StringKey(ConfigSection.General, "Classicube.net",
+@"URL to send heartbeats to. Default is classicube.net.
 This config key is added in case alternative login/heartbeat services arise.")]
         HeartbeatUrl,
 

@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("LegendCraft")]
 [assembly: AssemblyDescription("A feature packed Minecraft server, based on fCraft and 800Craft.")]
 [assembly: AssemblyConfiguration( "" )]
-[assembly: AssemblyCompany("LeChosenOne")]
+[assembly: AssemblyCompany("LegendCraft")]
 [assembly: AssemblyProduct("LegendCraft")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark( "" )]
