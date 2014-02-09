@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace AutoRank
 {
     public static class Values
     {
-        public static bool Or = false;
-        public static bool And = false;
-        public static bool ButNot = false;
-        public static string toAdd = "";
+        public static bool multiLayered = false;
+        public static TreeNode tempMainNode = new TreeNode();
+        public static List<TreeNode> tempChildNodes = new List<TreeNode>();
+        public static string prevOption = "";
     }
 }

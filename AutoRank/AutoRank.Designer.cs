@@ -55,9 +55,9 @@
             this.bCreate.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
             this.bCreate.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.bCreate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.bCreate.Location = new System.Drawing.Point(7, 19);
+            this.bCreate.Location = new System.Drawing.Point(15, 19);
             this.bCreate.Name = "bCreate";
-            this.bCreate.Size = new System.Drawing.Size(110, 22);
+            this.bCreate.Size = new System.Drawing.Size(121, 22);
             this.bCreate.TabIndex = 1;
             this.bCreate.Text = "Create New";
             this.bCreate.UseVisualStyleBackColor = false;
@@ -66,10 +66,11 @@
             // prevRank
             // 
             this.prevRank.Enabled = false;
+            this.prevRank.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.prevRank.FormattingEnabled = true;
             this.prevRank.Location = new System.Drawing.Point(16, 65);
             this.prevRank.Name = "prevRank";
-            this.prevRank.Size = new System.Drawing.Size(91, 21);
+            this.prevRank.Size = new System.Drawing.Size(120, 21);
             this.prevRank.TabIndex = 2;
             // 
             // prevLabel
@@ -93,10 +94,11 @@
             // newRank
             // 
             this.newRank.Enabled = false;
+            this.newRank.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.newRank.FormattingEnabled = true;
             this.newRank.Location = new System.Drawing.Point(15, 115);
             this.newRank.Name = "newRank";
-            this.newRank.Size = new System.Drawing.Size(91, 21);
+            this.newRank.Size = new System.Drawing.Size(121, 21);
             this.newRank.TabIndex = 4;
             // 
             // conditionLabel
@@ -111,6 +113,7 @@
             // condition
             // 
             this.condition.Enabled = false;
+            this.condition.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.condition.FormattingEnabled = true;
             this.condition.Items.AddRange(new object[] {
             "Since First Login",
@@ -128,13 +131,14 @@
             "Since Last Kick"});
             this.condition.Location = new System.Drawing.Point(15, 165);
             this.condition.Name = "condition";
-            this.condition.Size = new System.Drawing.Size(91, 21);
+            this.condition.Size = new System.Drawing.Size(121, 21);
             this.condition.TabIndex = 8;
+            this.condition.SelectedIndexChanged += new System.EventHandler(this.condition_SelectedIndexChanged);
             // 
             // valueLabel
             // 
             this.valueLabel.AutoSize = true;
-            this.valueLabel.Location = new System.Drawing.Point(56, 199);
+            this.valueLabel.Location = new System.Drawing.Point(67, 199);
             this.valueLabel.Name = "valueLabel";
             this.valueLabel.Size = new System.Drawing.Size(34, 13);
             this.valueLabel.TabIndex = 9;
@@ -143,9 +147,9 @@
             // value
             // 
             this.value.Enabled = false;
-            this.value.Location = new System.Drawing.Point(59, 215);
+            this.value.Location = new System.Drawing.Point(70, 215);
             this.value.Name = "value";
-            this.value.Size = new System.Drawing.Size(48, 20);
+            this.value.Size = new System.Drawing.Size(66, 20);
             this.value.TabIndex = 10;
             // 
             // bAdd
@@ -155,9 +159,9 @@
             this.bAdd.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
             this.bAdd.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.bAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.bAdd.Location = new System.Drawing.Point(44, 302);
+            this.bAdd.Location = new System.Drawing.Point(32, 302);
             this.bAdd.Name = "bAdd";
-            this.bAdd.Size = new System.Drawing.Size(38, 27);
+            this.bAdd.Size = new System.Drawing.Size(91, 27);
             this.bAdd.TabIndex = 11;
             this.bAdd.Text = "Add";
             this.bAdd.UseVisualStyleBackColor = false;
@@ -166,6 +170,7 @@
             // option
             // 
             this.option.Enabled = false;
+            this.option.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.option.FormattingEnabled = true;
             this.option.Items.AddRange(new object[] {
             "And",
@@ -174,8 +179,9 @@
             "Finished"});
             this.option.Location = new System.Drawing.Point(15, 265);
             this.option.Name = "option";
-            this.option.Size = new System.Drawing.Size(91, 21);
+            this.option.Size = new System.Drawing.Size(121, 21);
             this.option.TabIndex = 13;
+            this.option.SelectedIndexChanged += new System.EventHandler(this.option_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -205,9 +211,9 @@
             this.bRemove.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
             this.bRemove.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.bRemove.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.bRemove.Location = new System.Drawing.Point(153, 314);
+            this.bRemove.Location = new System.Drawing.Point(168, 314);
             this.bRemove.Name = "bRemove";
-            this.bRemove.Size = new System.Drawing.Size(143, 27);
+            this.bRemove.Size = new System.Drawing.Size(128, 27);
             this.bRemove.TabIndex = 15;
             this.bRemove.Text = "Remove Selected  ";
             this.bRemove.UseVisualStyleBackColor = false;
@@ -229,7 +235,7 @@
             this.boxSettings.Controls.Add(this.prevRank);
             this.boxSettings.Location = new System.Drawing.Point(12, 9);
             this.boxSettings.Name = "boxSettings";
-            this.boxSettings.Size = new System.Drawing.Size(123, 335);
+            this.boxSettings.Size = new System.Drawing.Size(150, 335);
             this.boxSettings.TabIndex = 16;
             this.boxSettings.TabStop = false;
             this.boxSettings.Text = "Settings";
@@ -237,6 +243,7 @@
             // op
             // 
             this.op.Enabled = false;
+            this.op.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.op.FormattingEnabled = true;
             this.op.Items.AddRange(new object[] {
             "=",
@@ -247,14 +254,14 @@
             "=/="});
             this.op.Location = new System.Drawing.Point(15, 214);
             this.op.Name = "op";
-            this.op.Size = new System.Drawing.Size(33, 21);
+            this.op.Size = new System.Drawing.Size(38, 21);
             this.op.TabIndex = 15;
             // 
             // TreeList
             // 
-            this.TreeList.Location = new System.Drawing.Point(153, 17);
+            this.TreeList.Location = new System.Drawing.Point(168, 17);
             this.TreeList.Name = "TreeList";
-            this.TreeList.Size = new System.Drawing.Size(201, 284);
+            this.TreeList.Size = new System.Drawing.Size(186, 284);
             this.TreeList.TabIndex = 17;
             // 
             // AutoRank
