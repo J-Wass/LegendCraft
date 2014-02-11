@@ -61,7 +61,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Values.cs" />
+    <Compile Include="Settings.cs" />
     <EmbeddedResource Include="AutoRank.resx">
       <DependentUpon>AutoRank.cs</DependentUpon>
     </EmbeddedResource>

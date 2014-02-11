@@ -45,7 +45,7 @@
             this.bRemove = new System.Windows.Forms.Button();
             this.boxSettings = new System.Windows.Forms.GroupBox();
             this.op = new System.Windows.Forms.ComboBox();
-            this.TreeList = new System.Windows.Forms.TreeView();
+            TreeList = new System.Windows.Forms.TreeView();
             this.boxSettings.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -173,9 +173,7 @@
             this.option.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.option.FormattingEnabled = true;
             this.option.Items.AddRange(new object[] {
-            "And",
-            "Or",
-            "But not",
+            "Continue",
             "Finished"});
             this.option.Location = new System.Drawing.Point(15, 265);
             this.option.Name = "option";
@@ -204,6 +202,7 @@
             this.bExit.TabIndex = 14;
             this.bExit.Text = "Save";
             this.bExit.UseVisualStyleBackColor = false;
+            this.bExit.Click += new System.EventHandler(this.bExit_Click);
             // 
             // bRemove
             // 
@@ -217,6 +216,7 @@
             this.bRemove.TabIndex = 15;
             this.bRemove.Text = "Remove Selected  ";
             this.bRemove.UseVisualStyleBackColor = false;
+            this.bRemove.Click += new System.EventHandler(this.bRemove_Click);
             // 
             // boxSettings
             // 
@@ -259,10 +259,10 @@
             // 
             // TreeList
             // 
-            this.TreeList.Location = new System.Drawing.Point(168, 17);
-            this.TreeList.Name = "TreeList";
-            this.TreeList.Size = new System.Drawing.Size(186, 284);
-            this.TreeList.TabIndex = 17;
+            TreeList.Location = new System.Drawing.Point(168, 17);
+            TreeList.Name = "TreeList";
+            TreeList.Size = new System.Drawing.Size(186, 284);
+            TreeList.TabIndex = 17;
             // 
             // AutoRank
             // 
@@ -270,7 +270,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Firebrick;
             this.ClientSize = new System.Drawing.Size(366, 353);
-            this.Controls.Add(this.TreeList);
+            this.Controls.Add(TreeList);
             this.Controls.Add(this.boxSettings);
             this.Controls.Add(this.bExit);
             this.Controls.Add(this.bRemove);
@@ -302,7 +302,7 @@
         private System.Windows.Forms.Button bRemove;
         private System.Windows.Forms.GroupBox boxSettings;
         private System.Windows.Forms.ComboBox op;
-        private System.Windows.Forms.TreeView TreeList;
+        public static System.Windows.Forms.TreeView TreeList;
     }
 }
 
