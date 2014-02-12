@@ -15,11 +15,15 @@ using fCraft;
 
 namespace AutoRank
 {
+    /// <summary>
+    /// Handles the UI of the program
+    /// </summary>
     public partial class AutoRank : Form
     {
         public AutoRank()
         {
             InitializeComponent();
+
         }
 
         private void AutoRank_Load(object sender, EventArgs e)
@@ -37,37 +41,13 @@ namespace AutoRank
         {
             if (prevRank.Items.Count == 0)
             {
-                List<Rank> validRankList = new List<Rank>();
-
-                XDocument doc = XDocument.Load("config.xml");
-                XElement docConfig = doc.Root;
-                XElement rankList = docConfig.Element("Ranks");
-                XElement[] rankDefinitionList = rankList.Elements("Rank").ToArray();
-                foreach (XElement rankDefinition in rankDefinitionList)
-                {
-                    try
-                    {
-                        validRankList.Add(new Rank(rankDefinition));
-                    }
-                    catch (RankDefinitionException ex)
-                    {
-                        MessageBox.Show(ex + " " + ex.Data);
-                    }
-                }
-
-                foreach (Rank rank in validRankList)
+                Settings.LoadRankList();
+                foreach (Rank rank in Settings.validRankList)
                 {
                     prevRank.Items.Add(rank.Name);
                     newRank.Items.Add(rank.Name);
                 }
             }
-
-            if (Settings.usedConditionals.Contains(condition.Text))
-            {
-                MessageBox.Show("You have already used that conditional type in this rank node!");
-                return;
-            }
-            Settings.usedConditionals.Add(condition.Text);
 
             prevRank.Enabled = true;
             newRank.Enabled = true;
@@ -91,6 +71,13 @@ namespace AutoRank
                 MessageBox.Show("Oops... One or more of the fields were not filled out!");
                 return;
             }
+
+            if (Settings.usedConditionals.Contains(condition.Text))
+            {
+                MessageBox.Show("You have already used that conditional type in this rank node!");
+                return;
+            }
+            Settings.usedConditionals.Add(condition.Text);
 
             double valueInt;
             if (!Double.TryParse(value.Text, out valueInt))
@@ -132,7 +119,7 @@ namespace AutoRank
                 {
                     Settings.tempChildNodes.Add(new TreeNode("AND: If " + condition.Text + " " + op.Text + " " + value.Text));
                     TreeNode[] MultiChildNode = Settings.tempChildNodes.ToArray();
-                    TreeNode MultiFinalNode = new TreeNode(prevRank.Text + " - " + newRank.Text, MultiChildNode);
+                    TreeNode MultiFinalNode = new TreeNode(prevRank.Text + "-" + newRank.Text, MultiChildNode);
                     Settings.multiLayered = false;                 
                     TreeList.Nodes.Add(MultiFinalNode);
                 }
@@ -147,6 +134,13 @@ namespace AutoRank
                 }
                 bCreate.Enabled = true;
 
+                value.Clear();
+                prevRank.Text = "";
+                newRank.Text = "";
+                condition.Text = "";
+                op.Text = "";
+                option.Text = "";
+
                 prevRank.Enabled = false;
                 newRank.Enabled = false;
                 condition.Enabled = false;
@@ -155,14 +149,8 @@ namespace AutoRank
                 option.Enabled = false;
                 bAdd.Enabled = false;
 
-                value.Clear();
-                prevRank.Text = "";
-                newRank.Text = "";
-                condition.Text = "";
-                op.Text = "";
-                option.Text = "";
-
                 Settings.tempChildNodes = new List<TreeNode>();
+                Settings.usedConditionals = new List<String>();
             }
 
         }
@@ -184,35 +172,35 @@ namespace AutoRank
             //grueling code ahead, create units
             switch (condition.Text)
             {
-                case "Since First Login":
+                case "Since_First_Login":
                     valueLabel.Text = "Value (Days)";
                     break;
 
-                case "Since Last Login":
+                case "Since_Last_Login":
                     valueLabel.Text = "Value (Days)";
                     break;
 
-                case "Last Seen":
+                case "Last_Seen":
                     valueLabel.Text = "Value (Days)";
                     break;
 
-                case "Total Time":
+                case "Total_Time":
                     valueLabel.Text = "Value (Hours)";
                     break;
 
-                case "Blocks Built":
+                case "Blocks_Built":
                     valueLabel.Text = "Value (Blocks)";
                     break;
 
-                case "Blocks Deleted":
+                case "Blocks_Deleted":
                     valueLabel.Text = "Value (Blocks)";
                     break;
 
-                case "Blocks Changed":
+                case "Blocks_Changed":
                     valueLabel.Text = "Value (Blocks)";
                     break;
 
-                case "Blocks Drawn":
+                case "Blocks_Drawn":
                     valueLabel.Text = "Value (Blocks)";
                     break;
 
@@ -224,15 +212,15 @@ namespace AutoRank
                     valueLabel.Text = "Value (Sent)";
                     break;
 
-                case "Times Kicked":
+                case "Times_Kicked":
                     valueLabel.Text = "Value (Times)";
                     break;
 
-                case "Since Rank Change":
+                case "Since_Rank_Change":
                     valueLabel.Text = "Value (Days)";
                     break;
 
-                case "Since Last Kick":
+                case "Since_Last_Kick":
                     valueLabel.Text = "Value (Days)";
                     break;
 

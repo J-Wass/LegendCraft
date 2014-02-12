@@ -65,6 +65,7 @@
             // 
             // prevRank
             // 
+            this.prevRank.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.prevRank.Enabled = false;
             this.prevRank.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.prevRank.FormattingEnabled = true;
@@ -93,6 +94,7 @@
             // 
             // newRank
             // 
+            this.newRank.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.newRank.Enabled = false;
             this.newRank.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.newRank.FormattingEnabled = true;
@@ -112,23 +114,24 @@
             // 
             // condition
             // 
+            this.condition.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.condition.Enabled = false;
             this.condition.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.condition.FormattingEnabled = true;
             this.condition.Items.AddRange(new object[] {
-            "Since First Login",
-            "Since Last Login",
-            "Last Seen",
-            "Total Time",
-            "Blocks Built",
-            "Blocks Deleted",
-            "Blocks Changed",
-            "Blocks Drawn",
+            "Since_First_Login",
+            "Since_Last_Login",
+            "Last_Seen",
+            "Total_Time",
+            "Blocks_Built",
+            "Blocks_Deleted",
+            "Blocks_Changed",
+            "Blocks_Drawn",
             "Visits",
             "Messages",
-            "Times Kicked",
-            "Since Rank Change",
-            "Since Last Kick"});
+            "Times_Kicked",
+            "Since_Rank_Change",
+            "Since_Last_Kick"});
             this.condition.Location = new System.Drawing.Point(15, 165);
             this.condition.Name = "condition";
             this.condition.Size = new System.Drawing.Size(121, 21);
@@ -169,6 +172,7 @@
             // 
             // option
             // 
+            this.option.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.option.Enabled = false;
             this.option.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.option.FormattingEnabled = true;
@@ -242,13 +246,14 @@
             // 
             // op
             // 
+            this.op.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.op.Enabled = false;
             this.op.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.op.FormattingEnabled = true;
             this.op.Items.AddRange(new object[] {
             "=",
             ">",
-            "=>",
+            ">=",
             "<",
             "<=",
             "=/="});

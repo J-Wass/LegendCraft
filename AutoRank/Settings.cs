@@ -2,18 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
 using System.IO;
+using fCraft;
 
 namespace AutoRank
 {
+    /// <summary>
+    /// Handles the static variables, as well as xml loading/saving
+    /// </summary>
     public static class Settings
     {
         public static bool multiLayered = false;
         public static List<TreeNode> tempChildNodes = new List<TreeNode>();
         public static List<string> usedConditionals = new List<string>();
+        public static List<Rank> validRankList = new List<Rank>();
 
         //Save TreeList data to xml
         public static void Save()
@@ -41,19 +47,34 @@ namespace AutoRank
                     string value;
                     if (childNode.Text.Contains("AND"))
                     {
-                        string[] completely_Murdered_String_Of_Text = childNode.Text.Substring(childNode.Text.IndexOf(":") + 4).Split(new char[] { ' ' });//yup
+                        string[] completely_Murdered_String_Of_Text = childNode.Text.Substring(childNode.Text.IndexOf(':') + 4).Split(new char[] { ' ' });//yup
 
-                        conditional = completely_Murdered_String_Of_Text[0].Replace(" ", "");
-                        value = completely_Murdered_String_Of_Text[1].Replace(" ", "");
-                        writer.WriteAttributeString(conditional, value);
+                        conditional = completely_Murdered_String_Of_Text[1].Replace(" ", "");
+                        value = (completely_Murdered_String_Of_Text[2] + completely_Murdered_String_Of_Text[3]).Replace(" ", "");
+                        try
+                        {
+                            writer.WriteAttributeString(conditional, value);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("An error occured while trying to write to xml!" + ex);
+                        }
                     }
                     else
                     {
                         string[] slightly_Murdered_String_Of_Text = childNode.Text.Substring(3).Split(new char[] { ' ' });
 
                         conditional = slightly_Murdered_String_Of_Text[0].Replace(" ", "");
-                        value = slightly_Murdered_String_Of_Text[1].Replace(" ", "");
-                        writer.WriteAttributeString(conditional, value);
+                        value = (slightly_Murdered_String_Of_Text[1] + slightly_Murdered_String_Of_Text[2]).Replace(" ", "");
+
+                        try
+                        {
+                            writer.WriteAttributeString(conditional, value);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("An error occured while trying to write to xml!" + ex);
+                        }
                     }
                 }
                 writer.WriteEndElement();
@@ -69,7 +90,56 @@ namespace AutoRank
         //Load xml into TreeList
         public static void Load()
         {
+            //since Load() is more complicated than Save(), i'll use XDocument instead of XMLReader
+            XDocument doc = XDocument.Load("Autorank.xml");
+            XElement docConfig = doc.Root;
+            MessageBox.Show("root: " + docConfig.Name.ToString() + " " + docConfig.ToString());
 
+            foreach(XElement mainElement in docConfig.Elements())
+            {
+                MessageBox.Show("main: " + mainElement.Name.ToString() + mainElement.ToString());
+                foreach (XAttribute conditional in mainElement.Attributes())
+                {
+                    tempChildNodes.Add(new TreeNode("If " + conditional.Name.ToString() + " " + applySpacing(conditional.Value)));
+                }
+                TreeNode rankNode = new TreeNode(mainElement.Name.ToString(), tempChildNodes.ToArray());
+                MessageBox.Show("ranknode: " + rankNode.ToString());
+                AutoRank.TreeList.Nodes.Add(rankNode);
+            }
         }
+
+        /// <summary>
+        /// Loads validRankList with the ranks of the server
+        /// </summary>
+        public static void LoadRankList()
+        {
+            XDocument doc = XDocument.Load("config.xml");
+            XElement docConfig = doc.Root;
+            XElement rankList = docConfig.Element("Ranks");
+            XElement[] rankDefinitionList = rankList.Elements("Rank").ToArray();
+            foreach (XElement rankDefinition in rankDefinitionList)
+            {
+                try
+                {
+                    validRankList.Add(new Rank(rankDefinition));
+                }
+                catch (RankDefinitionException ex)
+                {
+                    MessageBox.Show(ex + " " + ex.Data);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Apply the correct spacing to the conditional values found in Load. Used to change '>30' into '> 30' or '=/=590' into '=/= 590'.
+        /// </summary>
+        private static string applySpacing(String conditional)
+        {
+            char[] condArray = conditional.ToCharArray();
+            condArray = conditional.Where((c => (!char.IsLetterOrDigit(c)))).ToArray();
+            string str = new string(condArray);
+            return str.Insert(str.Length, " ");
+        }
+
     }
 }
