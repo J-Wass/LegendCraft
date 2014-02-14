@@ -107,6 +107,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoRank\AutoRankManager.cs" />
+    <Compile Include="AutoRank\Condition.cs" />
     <Compile Include="Commands\Command Handlers\BroModeHandler.cs" />
     <Compile Include="Commands\Command Handlers\FlyHandler.cs" />
     <Compile Include="Commands\Command Handlers\GunHandler.cs" />
@@ -129,7 +131,6 @@
     <Compile Include="Commands\MathCommands.cs" />
     <Compile Include="Drawing\Brushes\DiagonalBrush.cs" />
     <Compile Include="Drawing\DrawOperation.cs" />
-    <Compile Include="AutoRank\AutoRankManager.cs" />
     <Compile Include="Commands\ModerationCommands.cs" />
     <Compile Include="Commands\MaintenanceCommands.cs" />
     <Compile Include="Commands\ZoneCommands.cs" />
@@ -297,8 +298,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AutoRank\Conditions.cs" />
-    <Compile Include="AutoRank\Criterion.cs" />
     <Compile Include="Commands\ChatCommands.cs" />
     <Compile Include="Drawing\Brushes\ReplaceBrushBrush.cs" />
     <Compile Include="Drawing\DrawOps\TriangleDrawOperation.cs" />

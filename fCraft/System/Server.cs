@@ -309,10 +309,6 @@ namespace fCraft {
             Physics.Physics.Load();
             HeartbeatSaverUtil.Init();
 
-            if( ConfigKey.AutoRankEnabled.Enabled() ) {
-                AutoRankManager.Init();
-            }
-
             RaiseEvent( Initialized );
 
             serverInitialized = true;
@@ -481,8 +477,6 @@ namespace fCraft {
             }
 
             if( ConfigKey.IRCBotEnabled.Enabled() ) IRC.Start();
-
-            Scheduler.NewTask( AutoRankManager.TaskCallback ).RunForever( AutoRankManager.TickInterval );
 
             // start the main loop - server is now connectible
             Scheduler.Start();

@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
 using System.IO;
-using fCraft;
 
 namespace AutoRank
 {
@@ -19,7 +17,7 @@ namespace AutoRank
         public static bool multiLayered = false;
         public static List<TreeNode> tempChildNodes = new List<TreeNode>();
         public static List<string> usedConditionals = new List<string>();
-        public static List<Rank> validRankList = new List<Rank>();
+        public static List<String> validRankList = new List<String>();
 
         //Save TreeList data to xml
         public static void Save()
@@ -77,7 +75,7 @@ namespace AutoRank
                         }
                     }
                 }
-                writer.WriteEndElement();
+                writer.WriteEndElement();//</autorank>
             }
 
             writer.WriteEndElement();//</Autorank>
@@ -90,21 +88,31 @@ namespace AutoRank
         //Load xml into TreeList
         public static void Load()
         {
+            bool layered = false;
             //since Load() is more complicated than Save(), i'll use XDocument instead of XMLReader
             XDocument doc = XDocument.Load("Autorank.xml");
             XElement docConfig = doc.Root;
-            MessageBox.Show("root: " + docConfig.Name.ToString() + " " + docConfig.ToString());
 
+            //load each rank change
             foreach(XElement mainElement in docConfig.Elements())
             {
-                MessageBox.Show("main: " + mainElement.Name.ToString() + mainElement.ToString());
+                //load each condition in each rank change
                 foreach (XAttribute conditional in mainElement.Attributes())
                 {
-                    tempChildNodes.Add(new TreeNode("If " + conditional.Name.ToString() + " " + applySpacing(conditional.Value)));
+                    if (layered)
+                    {
+                        tempChildNodes.Add(new TreeNode("AND: If " + conditional.Name.ToString() + " " + applySpacing(conditional.Value)));
+                    }
+                    else
+                    {
+                        tempChildNodes.Add(new TreeNode("If " + conditional.Name.ToString() + " " + applySpacing(conditional.Value)));
+                        layered = true;
+                    }
                 }
                 TreeNode rankNode = new TreeNode(mainElement.Name.ToString(), tempChildNodes.ToArray());
-                MessageBox.Show("ranknode: " + rankNode.ToString());
                 AutoRank.TreeList.Nodes.Add(rankNode);
+                tempChildNodes = new List<TreeNode>();
+                layered = false;
             }
         }
 
@@ -119,13 +127,12 @@ namespace AutoRank
             XElement[] rankDefinitionList = rankList.Elements("Rank").ToArray();
             foreach (XElement rankDefinition in rankDefinitionList)
             {
-                try
+                foreach (XAttribute rankName in rankDefinition.Attributes())
                 {
-                    validRankList.Add(new Rank(rankDefinition));
-                }
-                catch (RankDefinitionException ex)
-                {
-                    MessageBox.Show(ex + " " + ex.Data);
+                    if (rankName.Name == "name")
+                    {
+                        validRankList.Add(rankName.Value);
+                    }
                 }
             }
         }
@@ -135,10 +142,22 @@ namespace AutoRank
         /// </summary>
         private static string applySpacing(String conditional)
         {
-            char[] condArray = conditional.ToCharArray();
-            condArray = conditional.Where((c => (!char.IsLetterOrDigit(c)))).ToArray();
-            string str = new string(condArray);
-            return str.Insert(str.Length, " ");
+            string returnString;
+            if (conditional.Contains("=/="))
+            {
+                returnString = conditional.Insert(3, " ");
+                return returnString;
+            }
+            if (conditional.Contains(">=") || conditional.Contains("<="))
+            {
+                returnString = conditional.Insert(2, " ");
+                return returnString;
+            }
+            else
+            {
+                returnString = conditional.Insert(1, " ");
+                return returnString;
+            }
         }
 
     }

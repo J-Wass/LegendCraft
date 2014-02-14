@@ -175,6 +175,12 @@ namespace fCraft
                         lastMovementUpdate = DateTime.UtcNow;
                     }
 
+                    //check for autorank conditions every 15 seconds
+                    if ((DateTime.Now - lastAutorankCheck).TotalSeconds > 15)
+                    {
+                        fCraft.AutoRank.AutoRankManager.Check(this);
+                    }
+
                     // send output to player
                     while (canSend && packetsSent < Server.MaxSessionPacketsPerTick)
                     {
@@ -922,26 +928,7 @@ namespace fCraft
                 motd = ConfigKey.MOTD.GetString();
             }
             SendNow(PacketWriter.MakeHandshake(this, serverName, motd));
-
-            // AutoRank
-            if (ConfigKey.AutoRankEnabled.Enabled())
-            {
-                Rank newRank = AutoRankManager.Check(Info);
-                if (newRank != null)
-                {
-                    try
-                    {
-                        Info.ChangeRank(AutoRank, newRank, "~AutoRank", true, true, true);
-                    }
-                    catch (PlayerOpException ex)
-                    {
-                        Logger.Log(LogType.Error,
-                                    "AutoRank failed on player {0}: {1}",
-                                    ex.Player.Name, ex.Message);
-                    }
-                }
-            }
-
+          
             bool firstTime = (Info.TimesVisited == 1);
             if (!JoinWorldNow(startingWorld, true, WorldChangeReason.FirstWorld))
             {
@@ -1991,6 +1978,7 @@ namespace fCraft
         int entityShowingThreshold, entityHidingThreshold;
         bool partialUpdates, skipUpdates;
 
+        DateTime lastAutorankCheck;
         DateTime lastMovementUpdate;
         TimeSpan movementUpdateInterval;
 

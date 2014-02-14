@@ -11,7 +11,6 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
 using System.IO;
-using fCraft;
 
 namespace AutoRank
 {
@@ -42,10 +41,10 @@ namespace AutoRank
             if (prevRank.Items.Count == 0)
             {
                 Settings.LoadRankList();
-                foreach (Rank rank in Settings.validRankList)
+                foreach (String rank in Settings.validRankList)
                 {
-                    prevRank.Items.Add(rank.Name);
-                    newRank.Items.Add(rank.Name);
+                    prevRank.Items.Add(rank);
+                    newRank.Items.Add(rank);
                 }
             }
 
@@ -245,7 +244,18 @@ namespace AutoRank
                 return;
             }
 
-            TreeList.Nodes.Remove(TreeList.SelectedNode);
+            DialogResult yesNo = MessageBox.Show("Are you sure you want to remove that rank node?", "Warning", MessageBoxButtons.YesNo);
+            if (yesNo == DialogResult.Yes)
+            {
+                if (TreeList.SelectedNode.Parent != null)
+                {
+                    TreeList.Nodes.Remove(TreeList.SelectedNode.Parent);
+                }
+                else
+                {
+                    TreeList.Nodes.Remove(TreeList.SelectedNode);
+                }
+            }
 
         }
     }
