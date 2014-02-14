@@ -176,9 +176,13 @@ namespace fCraft
                     }
 
                     //check for autorank conditions every 15 seconds
-                    if ((DateTime.Now - lastAutorankCheck).TotalSeconds > 15)
+                    if (Server.AutoRankEnabled && IsAutoRankExempt)
                     {
-                        fCraft.AutoRank.AutoRankManager.Check(this);
+                        if ((DateTime.Now - lastAutorankCheck).TotalSeconds > 15)
+                        {
+                            fCraft.AutoRank.AutoRankManager.Check(this);
+                            lastAutorankCheck = DateTime.Now;
+                        }
                     }
 
                     // send output to player

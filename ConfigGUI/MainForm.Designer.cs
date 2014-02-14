@@ -317,6 +317,7 @@
             this.bApply = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.xAutoRank = new System.Windows.Forms.CheckBox();
             this.tabs.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.gBasic.SuspendLayout();
@@ -3339,6 +3340,7 @@
             // 
             this.gAdvancedMisc.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.gAdvancedMisc.Controls.Add(this.xAutoRank);
             this.gAdvancedMisc.Controls.Add(this.nMaxUndoStates);
             this.gAdvancedMisc.Controls.Add(this.lMaxUndoStates);
             this.gAdvancedMisc.Controls.Add(this.lIPWarning);
@@ -3353,7 +3355,7 @@
             this.gAdvancedMisc.Controls.Add(this.xNoPartialPositionUpdates);
             this.gAdvancedMisc.Location = new System.Drawing.Point(8, 99);
             this.gAdvancedMisc.Name = "gAdvancedMisc";
-            this.gAdvancedMisc.Size = new System.Drawing.Size(636, 204);
+            this.gAdvancedMisc.Size = new System.Drawing.Size(636, 213);
             this.gAdvancedMisc.TabIndex = 1;
             this.gAdvancedMisc.TabStop = false;
             this.gAdvancedMisc.Text = "Miscellaneous";
@@ -3419,7 +3421,7 @@
             // lConsoleName
             // 
             this.lConsoleName.AutoSize = true;
-            this.lConsoleName.Location = new System.Drawing.Point(19, 164);
+            this.lConsoleName.Location = new System.Drawing.Point(6, 161);
             this.lConsoleName.Name = "lConsoleName";
             this.lConsoleName.Size = new System.Drawing.Size(87, 15);
             this.lConsoleName.TabIndex = 7;
@@ -3825,6 +3827,16 @@
             this.toolTip.IsBalloon = true;
             this.toolTip.ReshowDelay = 100;
             // 
+            // xAutoRank
+            // 
+            this.xAutoRank.AutoSize = true;
+            this.xAutoRank.Location = new System.Drawing.Point(9, 188);
+            this.xAutoRank.Name = "xAutoRank";
+            this.xAutoRank.Size = new System.Drawing.Size(121, 19);
+            this.xAutoRank.TabIndex = 24;
+            this.xAutoRank.Text = "Enable AutoRank";
+            this.xAutoRank.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -4226,5 +4238,6 @@
         private System.Windows.Forms.CheckBox xServPass;
         private System.Windows.Forms.TextBox tChanPass;
         private System.Windows.Forms.CheckBox xChanPass;
+        private System.Windows.Forms.CheckBox xAutoRank;
     }
 }

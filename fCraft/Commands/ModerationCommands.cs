@@ -81,6 +81,7 @@ namespace fCraft {
             CommandManager.RegisterCommand(CdFreezeBring);
             CommandManager.RegisterCommand(CdTempRank);
             CommandManager.RegisterCommand(CdSetClickDistance);
+            CommandManager.RegisterCommand(CdAutoRank);
             //CommandManager.RegisterCommand(CdTPA);
 
         }
@@ -104,6 +105,111 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
         
+         static readonly CommandDescriptor CdAutoRank = new CommandDescriptor 
+        {
+            Name = "AutoRank",
+            IsConsoleSafe = true,
+            Category = CommandCategory.Moderation,
+            Permissions = new[] { Permission.EditPlayerDB },
+            Help = "&SManagement commands for running Autorank. Type '/help AutoRank [option]' for details.",
+            Usage = "&S/AutoRank [enable/disable/force/exempt/unexempt]",
+            HelpSections = new Dictionary<string, string>{
+                { "enable", "&H/AutoRank enable\n&S" +
+                                "Enables the autorank system on the server." },
+                { "disable", "&H/AutoRank disable\n&S" +
+                                "Disables the autorank system on the server." },
+                { "force", "&H/AutoRank force\n&S" +
+                                "Forces the server to check all online players if they are due for an autorank. Works even if autorank is disabled."},
+                { "exempt", "&H/AutoRank exempt [player]\n&S" +
+                                "Exempts a player from autorank. Even if the player is due for an autorank promotion or demotion, they will not be ranked."},
+                { "unexempt", "&H/AutoRank unexempt [player]\n&S" +
+                                "Lifts the exemption on the target player. Target player can now be autoranked." },               
+            },
+            Handler = AutoRankHandler
+        };
+
+         private static void AutoRankHandler(Player player, Command cmd)
+         {
+             string option = cmd.Next();
+             if (string.IsNullOrEmpty(option))
+             {
+                 CdAutoRank.PrintUsage(player);
+                 return;
+             }
+
+             switch (option)
+             {
+                 case "enable":
+                     if (Server.AutoRankEnabled)
+                     {
+                         player.Message("AutoRank is already enabled!");
+                         break;
+                     }
+                     Server.AutoRankEnabled = true;
+                     player.Message("AutoRank is now enabled on {0}!", ConfigKey.ServerName.GetString());
+                     break;
+
+                 case "disable":
+                     if (!Server.AutoRankEnabled)
+                     {
+                         player.Message("AutoRank is already disabled!");
+                         break;
+                     }
+                     Server.AutoRankEnabled = false;
+                     player.Message("AutoRank is now disabled on {0}!", ConfigKey.ServerName.GetString());
+                     break;
+
+                 case "force":
+                     player.Message("Checking for online players to force autorank...");
+
+                     foreach (Player p in Server.Players)
+                     {
+                         AutoRank.AutoRankManager.Check(p);
+                     }
+
+                     player.Message("AutoRank force check finished.");
+                     break;
+
+                 case "exempt":
+                     string target = cmd.Next();
+                     if (string.IsNullOrEmpty(target))
+                     {
+                         CdAutoRank.PrintUsage(player);
+                         break;
+                     }
+
+                     Player targetPlayer = Server.FindPlayerOrPrintMatches(player, target, false, true);
+                     if (targetPlayer == null)
+                     {
+                         return;
+                     }
+
+                     targetPlayer.IsAutoRankExempt = true;
+                     player.Message("{0} is now exempt from autorank rank changes.", targetPlayer.Name);
+                     break;
+
+                 case "unexempt":
+                     string target_ = cmd.Next();
+                     if (string.IsNullOrEmpty(target_))
+                     {
+                         CdAutoRank.PrintUsage(player);
+                         break;
+                     }
+
+                     Player targetPlayer_ = Server.FindPlayerOrPrintMatches(player, target_, false, true);
+                     if (targetPlayer_ == null)
+                     {
+                         return;
+                     }
+
+                     targetPlayer_.IsAutoRankExempt = true;
+                     player.Message("{0} is now exempt from autorank rank changes.", targetPlayer_.Name);
+                     break;
+                 default:
+                     CdAutoRank.PrintUsage(player);
+                     break;
+             }
+         }
         static readonly CommandDescriptor CdSetClickDistance = new CommandDescriptor 
         {
             Name = "SetClickDistance",

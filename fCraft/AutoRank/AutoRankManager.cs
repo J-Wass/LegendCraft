@@ -15,7 +15,7 @@ namespace fCraft.AutoRank
 
         private static void Load()
         {
-            if (File.Exists("Autorank.xml"))
+            if (!File.Exists("Autorank.xml"))
             {
                 //autorank was never set up
                 return;
@@ -192,7 +192,7 @@ namespace fCraft.AutoRank
                     }
                     if (rankUp)
                     {
-                        player.Info.ChangeRank(player, Rank.Parse(condTest.endingRank), "AutoRank System", true, true, true);
+                        player.Info.ChangeRank(Player.Console, Rank.Parse(condTest.endingRank), "AutoRank System", true, true, true);
                     }
                 }
             }
@@ -208,10 +208,10 @@ namespace fCraft.AutoRank
                 case ">": return x > y;
                 case "<": return x < y;
                 case "=": return x == y;
-                case "=>": return x >= y;
-                case "=<": return x <= y;
+                case ">=": return x >= y;
+                case "<=": return x <= y;
                 case "=/=": return x != y;
-                default: throw new Exception("Error: Unable to parse AutoRank logic. Make sure that Autorank.xml is not damaged or corrupted!");
+                default: throw new Exception("Error: Unable to parse AutoRank logic. Make sure that Autorank.xml is not damaged or corrupted!: " + str);
             }
         }
     }

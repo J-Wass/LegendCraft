@@ -65,6 +65,9 @@ namespace fCraft
         /// <summary> Whether the player name was verified at login. </summary>
         public bool IsVerified { get; private set; }
 
+        /// <summary> Whether the player is exempt from autorank rank changes. </summary>
+        public bool IsAutoRankExempt { get; set; }
+
         /// <summary> Persistent information record associated with this player. </summary>
         public PlayerInfo Info { get; private set; }
 

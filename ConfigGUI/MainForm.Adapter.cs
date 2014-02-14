@@ -493,6 +493,7 @@ namespace fCraft.ConfigGUI
 
             nThrottling.Value = ConfigKey.BlockUpdateThrottling.GetInt();
             xLowLatencyMode.Checked = ConfigKey.LowLatencyMode.Enabled();
+            xAutoRank.Checked = ConfigKey.AutoRankEnabled.Enabled();
 
 
             if (ConfigKey.MaxUndo.GetInt() > 0)
@@ -762,6 +763,8 @@ namespace fCraft.ConfigGUI
             ConfigKey.BlockUpdateThrottling.TrySetValue(Convert.ToInt32(nThrottling.Value));
 
             ConfigKey.LowLatencyMode.TrySetValue(xLowLatencyMode.Checked);
+
+            ConfigKey.AutoRankEnabled.TrySetValue(xAutoRank.Checked);
 
             if (xMaxUndo.Checked) ConfigKey.MaxUndo.TrySetValue(Convert.ToInt32(nMaxUndo.Value));
             else ConfigKey.MaxUndo.TrySetValue(0);

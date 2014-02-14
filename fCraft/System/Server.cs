@@ -37,6 +37,8 @@ namespace fCraft {
 
         public static List<Bot> Bots = new List<Bot>();
 
+        public static bool AutoRankEnabled = false;
+
         public static bool IsRestarting = false;
         public static bool HSaverOn = false;
 
@@ -482,6 +484,9 @@ namespace fCraft {
             Scheduler.Start();
             PortalHandler.GetInstance();
             PortalDB.Load();
+
+            //enable autorank
+            Server.AutoRankEnabled = ConfigKey.AutoRankEnabled.Enabled();
 
             //enable global chat
             GlobalChat.Init();

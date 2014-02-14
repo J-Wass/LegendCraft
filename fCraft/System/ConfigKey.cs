@@ -551,7 +551,7 @@ This config key is added in case alternative login/heartbeat services arise.")]
         HeartbeatUrl,
 
         [BoolKey( ConfigSection.Advanced, false,
-@"Enable autorank (experimental, unsupported, use at your own risk)" )]
+@"Enable AutoRank to run on the server." )]
         AutoRankEnabled,
 
         [BoolKey( ConfigSection.Advanced, true,
