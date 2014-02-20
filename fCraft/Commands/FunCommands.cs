@@ -257,7 +257,12 @@ THE SOFTWARE.*/
                         return;
                     }
 
-                    if(Server.Bots.Contains(bot))
+                    //if a botname has already been chosen, ask player for a new name
+                    var matchingNames = from b in Server.Bots
+                                   where b.Name == botName
+                                   select b;
+
+                    if (matchingNames.Count() > 0)
                     {
                         player.Message("A bot with that name already exists! To view all bots, type /bot list.");
                         return;

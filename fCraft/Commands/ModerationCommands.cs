@@ -203,7 +203,7 @@ THE SOFTWARE.*/
                      }
 
                      targetPlayer_.IsAutoRankExempt = true;
-                     player.Message("{0} is now exempt from autorank rank changes.", targetPlayer_.Name);
+                     player.Message("{0} is now unexempt from autorank rank changes.", targetPlayer_.Name);
                      break;
                  default:
                      CdAutoRank.PrintUsage(player);

@@ -176,14 +176,12 @@ namespace fCraft
                     }
 
                     //check for autorank conditions every 15 seconds
-                    if (Server.AutoRankEnabled && IsAutoRankExempt)
+                    if ((DateTime.Now - lastAutorankCheck).TotalSeconds > 15 && Server.AutoRankEnabled && !IsAutoRankExempt)
                     {
-                        if ((DateTime.Now - lastAutorankCheck).TotalSeconds > 15)
-                        {
-                            fCraft.AutoRank.AutoRankManager.Check(this);
-                            lastAutorankCheck = DateTime.Now;
-                        }
+                        AutoRankManager.Check(this);
+                        lastAutorankCheck = DateTime.Now;
                     }
+
 
                     // send output to player
                     while (canSend && packetsSent < Server.MaxSessionPacketsPerTick)
@@ -1057,6 +1055,7 @@ namespace fCraft
             State = SessionState.Online;
             Server.UpdatePlayerList();
             RaisePlayerReadyEvent(this);
+            AutoRankManager.Check(this);
 
             return true;
         }

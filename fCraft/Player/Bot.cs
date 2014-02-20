@@ -99,7 +99,7 @@ namespace fCraft
         {
             if (isMoving)
             {
-                if (timeCheck.ElapsedMilliseconds > ((1/(speed * 1000)) * 2.5))
+                if (timeCheck.ElapsedMilliseconds > ((1/(speed * 1000)) * 1.5)) 
                 {
                     Move();
                     timeCheck.Restart();
@@ -228,7 +228,7 @@ namespace fCraft
             //if player has not begun to move, create an IEnumerable of the path to take
             if (!beganMoving)
             {
-                Logger.LogToConsole("First move.");
+                Logger.LogToConsole("First move. Pos: " + this.Position.ToBlockCoords() + " to " + NewPosition.ToBlockCoords());
 
                 //create an IEnumerable list of all blocks that will be in the path between blocks
                 IEnumerable<Vector3I> positions = fCraft.Drawing.LineDrawOperation.LineEnumerator(Position.ToBlockCoords(), NewPosition.ToBlockCoords());
@@ -239,6 +239,8 @@ namespace fCraft
                 }
                 beganMoving = true;
             }
+
+            Logger.LogToConsole("Moving. Pos: " + this.Position.ToBlockCoords() + " to " + NewPosition.ToBlockCoords());
 
             //determine distance from the target player to the target bot
             double groundDistance = Math.Sqrt(Math.Pow((NewPosition.X - OldPosition.X),2) + Math.Pow((NewPosition.Y - OldPosition.Y),2));
@@ -278,9 +280,9 @@ namespace fCraft
             if ((World.Map.GetBlock(targetPosition.ToBlockCoords()) != Block.Air) || (World.Map.GetBlock(underPosition.ToBlockCoords()) != Block.Air))
             {
                 //if a non air-block is in the way, find the next open position and restart the move
-                FindNewPos();
                 isMoving = false;
                 beganMoving = false;
+                FindNewPos();
                 return;
             }
 
@@ -339,12 +341,11 @@ namespace fCraft
                     return;
                 }
                 teleportBot(testPosTwo);
-                Position = testPosOne;
+                Position = testPosTwo;
             }
 
             Logger.LogToConsole("Bot Teleported, back to Move() called.");
             isMoving = true;
-            Move();
             return;
         }
 

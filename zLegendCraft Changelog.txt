@@ -1,5 +1,7 @@
 LegendCraft Changelog v2.3.0
 Add: LegendCraft Webfront is now 500% better (thanks Liam Stanley)
+Add: AutoRank program
+Add: Bots
 Change: Better Auto-Updater is better
 Change: Huge improvements for mono users
 
