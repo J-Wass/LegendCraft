@@ -1,7 +1,7 @@
 ﻿// Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
 
 namespace fCraft {
-    /// <summary> Minecraft protocol's opcodes. </summary>
+    /// <summary> Minecraft/CPE protocol's opcodes. </summary>
     public enum OpCode {
         Handshake = 0,
         Ping = 1,

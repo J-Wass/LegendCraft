@@ -82,6 +82,8 @@ namespace fCraft {
             CommandManager.RegisterCommand(CdTempRank);
             CommandManager.RegisterCommand(CdSetClickDistance);
             CommandManager.RegisterCommand(CdAutoRank);
+            CommandManager.RegisterCommand(CdAnnounce);
+            CommandManager.RegisterCommand(CdForceHold);
             //CommandManager.RegisterCommand(CdTPA);
 
         }
@@ -105,6 +107,124 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
         
+        static readonly CommandDescriptor CdForceHold = new CommandDescriptor 
+        {
+            Name = "ForceHold",
+            IsConsoleSafe = false,
+            Category = CommandCategory.Moderation,
+            Permissions = new[] { Permission.Spectate },
+            Help = "&SForces a player to hold a certain block. Only use when needed!",
+            Usage = "&S/ForceHold [player] [block]",
+            Handler = FHHandler
+        };
+
+        private static void FHHandler(Player player, Command cmd)
+        {
+            if (!Heartbeat.ClassiCube() || !player.ClassiCube)
+            {
+                player.Message("This is a ClassiCube only command!");
+                return;
+            }
+            string target = cmd.Next();
+            if (String.IsNullOrEmpty(target))
+            {
+                CdForceHold.PrintUsage(player);
+                return;
+            }
+
+            Player p = Server.FindPlayerOrPrintMatches(player, target, false, true);
+            if (p == null)
+            {
+                return;
+            }
+
+            string blockStr = cmd.Next();
+            if (String.IsNullOrEmpty(blockStr))
+            {
+                CdForceHold.PrintUsage(player);
+                return;
+            }
+
+            //format blockname to be "Stone" instead of "STONE" or "stone"
+            blockStr = blockStr.Substring(0, 1).ToUpper() + blockStr.Substring(1).ToLower();
+            Block block;
+            try
+            {
+                block = (Block)Enum.Parse(typeof(Block), blockStr);
+            }
+            catch
+            {
+                player.Message("Sorry, that was not a valid block name!");
+                return;
+            }
+
+            p.Send(PacketWriter.MakeHoldThis((byte)block, false));
+
+
+        }
+        static readonly CommandDescriptor CdAnnounce = new CommandDescriptor //todo: make this work lol
+        {
+            Name = "Announce",
+            IsConsoleSafe = true,
+            Category = CommandCategory.Moderation,
+            Permissions = new[] { Permission.Say },
+            Help = "&SAnnounces a message at the top of every player's screen on a specified world. To send a server-wide announcement, use /Announce all [message].",
+            Usage = "&S/Announce [world] [message]",
+            Handler = AnnounceHandler
+        };
+
+        private static void AnnounceHandler(Player player, Command cmd)
+        {
+            if (!Heartbeat.ClassiCube() || !player.ClassiCube)
+            {
+                player.Message("This is a ClassiCube only command!");
+                return;
+            }
+
+            Player[] targetPlayers;
+            string world = cmd.Next();
+            if(string.IsNullOrEmpty(world))
+            {
+                CdAnnounce.PrintUsage(player);
+                return;
+            }
+
+            if (world == "all")
+            {
+                targetPlayers = Server.Players;
+            }
+            else
+            {
+                World[] targetWorlds = WorldManager.FindWorlds(player, world);
+                if (targetWorlds.Length > 1)
+                {
+                    player.MessageManyMatches("world", targetWorlds);
+                    return;
+                }
+                else if (targetWorlds.Length == 1)
+                {
+                    targetPlayers = targetWorlds[0].Players;
+                }
+                else
+                {
+                    player.Message("No worlds found matching {0}! Please check your spelling.", world);
+                    return;
+                }
+            }
+
+            string message = cmd.Next();
+            if (string.IsNullOrEmpty(message))
+            {
+                CdAnnounce.PrintUsage(player);
+                return;
+            }
+
+            Packet packet = PacketWriter.MakeSpecialMessage(100, message);
+            foreach (Player p in targetPlayers)
+            {
+                p.Send(packet);
+            }
+        }
          static readonly CommandDescriptor CdAutoRank = new CommandDescriptor 
         {
             Name = "AutoRank",

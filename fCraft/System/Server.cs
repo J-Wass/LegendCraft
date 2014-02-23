@@ -37,6 +37,8 @@ namespace fCraft {
 
         public static List<Bot> Bots = new List<Bot>();
 
+        public static List<int> HighlightIDs = new List<int>();
+
         public static bool AutoRankEnabled = false;
 
         public static bool IsRestarting = false;

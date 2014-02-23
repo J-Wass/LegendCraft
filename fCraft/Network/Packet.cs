@@ -74,7 +74,8 @@ namespace fCraft
             4,      //SetBlockPermissions (28)
             66,     //ChangeModel (29)
             69,     //EnvSetMapAppearance (30)
-            2       //EnvSetWeatherAppearance (31)
+            2,      //EnvSetWeatherAppearance (31)
+            8       //HackControl (32)
         };
     }
 }

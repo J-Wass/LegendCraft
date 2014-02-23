@@ -33,7 +33,7 @@ namespace fCraft
             writer.Write(Packet.MakeExtEntry(CustomBlocksExtName, CustomBlocksExtVersion).Data);
             writer.Write(Packet.MakeExtEntry(BlockPermissionsExtName, BlockPermissionsExtVersion).Data);
 
-            Logger.Log(LogType.SystemActivity, "Sent ExtInfo and entry packets");
+            Logger.Log(LogType.Debug, "Sent ExtInfo and entry packets");
 
             // Expect ExtInfo reply from the client
             OpCode extInfoReply = (OpCode)reader.ReadByte();
@@ -82,7 +82,7 @@ namespace fCraft
             // log client's capabilities
             if (clientExts.Count > 0)
             {
-                Logger.Log(LogType.SystemActivity, "Player {0} is using \"{1}\", supporting: {2}",
+                Logger.Log(LogType.Debug, "Player {0} is using \"{1}\", supporting: {2}",
                             Name,
                             ClientName,
                             clientExts.JoinToString(", "));

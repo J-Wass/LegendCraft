@@ -103,6 +103,7 @@ namespace fCraft {
             CommandManager.RegisterCommand(CdDoubleStair);
             CommandManager.RegisterCommand(CdAbortAll);
             CommandManager.RegisterCommand(Cdzz);
+            CommandManager.RegisterCommand(CdHighlight);
         }
         #region LegendCraft
         /* Copyright (c) <2012-2014> <LeChosenOne, DingusBungus>
@@ -124,6 +125,74 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
         
+        static readonly CommandDescriptor CdHighlight = new CommandDescriptor //todo: add names and way to remove, also fix positioning
+        {
+            Name = "Highlight",
+            IsConsoleSafe = false,
+            Permissions = new[] { Permission.DrawAdvanced },
+            Category = CommandCategory.Building,
+            Help = "Highlights a specific location of the world.",
+            Usage = "/Highlight [color or #htmlcolor] [Percent Opacity]",
+            Handler = HighlightHandler
+        };
+
+        static void HighlightHandler(Player player, Command cmd)
+        {
+            System.Drawing.Color systemColor;
+
+            string color = cmd.Next();
+            if (String.IsNullOrEmpty(color))
+            {
+                CdHighlight.PrintUsage(player);
+                return;
+            }
+
+            if (color.Contains('#'))
+            {
+                try
+                {
+                    systemColor = System.Drawing.ColorTranslator.FromHtml(color);
+                }
+                catch
+                {
+                    player.Message("Unrecognized color! Please use a valid color name or html color code.");
+                    return;
+                }
+            }
+            else
+            {
+                try
+                {
+                    systemColor = System.Drawing.Color.FromName(color);
+                }
+                catch
+                {
+                    player.Message("Unrecognized color! Please use a valid color name or html color code.");
+                    return;
+                }
+            }
+
+            string opacity = cmd.Next();
+            int percentOpacity;
+            if (String.IsNullOrEmpty(opacity))
+            {
+                CdHighlight.PrintUsage(player);
+                return;
+            }
+
+            if(!Int32.TryParse(opacity, out percentOpacity))
+            {
+                player.Message("Percent opacity must be from 0-100, where 0 would be transparent, and 100 would be completely opaque.");
+                return;
+            }
+
+            player.cmd = cmd.Name;
+            player.color = systemColor;
+            player.percentOpacity = percentOpacity;
+            player.SelectMarks();
+            
+        }
+
         static readonly CommandDescriptor Cdzz = new CommandDescriptor
         {
             Name = "zz",
@@ -2046,12 +2115,20 @@ THE SOFTWARE.*/
             }
             coords.X = Math.Min( map.Width - 1, Math.Max( 0, coords.X ) );
             coords.Y = Math.Min( map.Length - 1, Math.Max( 0, coords.Y ) );
-            coords.Z = Math.Min( map.Height - 1, Math.Max( 0, coords.Z ) );
+            coords.Z = Math.Min(map.Height - 1, Math.Max(0, coords.Z));
 
-            if( player.SelectionMarksExpected > 0 ) {
-                player.SelectionAddMark( coords, true );
-            } else {
-                player.MessageNow( "Cannot mark - no selection in progress." );
+            if (player.SelectionMarksExpected > 0)
+            {
+                player.SelectionAddMark(coords, true);
+            }
+            else if(player.markSet > 0)
+            {
+                player.selectedMarks.Add(coords);
+                player.SelectMarks();
+            }
+            else
+            {
+                player.MessageNow("Cannot mark - no selection in progress.");
             }
         }
 

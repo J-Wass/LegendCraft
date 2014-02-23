@@ -54,6 +54,24 @@ namespace fCraft
             }
             return i;
         }
+
+        //generates a new ID for new highlights
+        public static int getNewHighlightID()
+        {
+            int i = 0;
+            foreach (int testInt in Server.HighlightIDs)
+            {
+                if (testInt == i)
+                {
+                    i++;
+                }
+                else
+                {
+                    return i;
+                }
+            }
+            return i;
+        }
     }
 }
 

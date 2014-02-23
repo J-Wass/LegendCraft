@@ -794,7 +794,48 @@ namespace fCraft
             }
         }
 
+        #region selection
 
+        public int markSet = 0;
+
+        //create and set vector array to a size of 2
+        public List<Vector3I> selectedMarks = new List<Vector3I>();
+        public DateTime selectionTime;//add a timer for when selections expire
+
+        public string cmd = "";
+        public int percentOpacity = 0;
+        public System.Drawing.Color color = new System.Drawing.Color();
+
+
+        public void SelectMarks()
+        {
+
+            if (markSet == 0)//first corner
+            {
+                Message("Use /mark or place/break a block at the location of the first corner of your selection.");
+                selectionTime = DateTime.Now;
+                markSet++;
+                return;
+            }
+            if (markSet == 1)//second corner
+            {
+                Message("Use /mark or place/break a block at the location of the second corner of your selection.");
+                selectionTime = DateTime.Now;
+                markSet++;
+                return;
+            }
+            else//finish
+            {
+                Message("Selection finished.");
+                int ID = LegendCraft.getNewHighlightID();
+                World.Players.Send(PacketWriter.MakeSelectionCuboid((byte)ID, ID.ToString(), selectedMarks[0], selectedMarks[1], color, percentOpacity));
+                Server.HighlightIDs.Add(ID);
+                selectedMarks.Clear();
+                markSet = 0;
+            }
+        }
+
+        #endregion
         public void SendToSpectators([NotNull] string message, [NotNull] params object[] args)
         {
             if (message == null) throw new ArgumentNullException("message");
@@ -1275,6 +1316,20 @@ namespace fCraft
             {
                 RevertBlockNow(coord);
                 return false;
+            }
+
+            //if in a command using markSets
+            if (markSet > 0)
+            {
+                if (markSet == 1)
+                {
+                    selectedMarks.Add(coord);
+                }
+                else
+                {
+                    selectedMarks.Add(coord);
+                }
+                SelectMarks();
             }
 
             if (IsSpectating)

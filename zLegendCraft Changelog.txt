@@ -2,6 +2,9 @@ LegendCraft Changelog v2.3.0
 Add: LegendCraft Webfront is now 500% better (thanks Liam Stanley)
 Add: AutoRank program
 Add: Bots
+Add: /highlight (known as "selection cuboid" in cpe) [unfinished]
+Add: /forcehold
+Add: /Announce (message types in cpe) [unfinished]
 Change: Better Auto-Updater is better
 Change: Huge improvements for mono users
 
