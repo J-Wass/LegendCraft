@@ -59,11 +59,11 @@ namespace fCraft
         public static int getNewHighlightID()
         {
             int i = 0;
-            foreach (Tuple<int, Vector3I, Vector3I> tuple in Server.Highlights.Values)
+            foreach (Tuple<int, Vector3I, Vector3I, System.Drawing.Color, int> tuple in Server.Highlights.Values)
             {
-                if (tuple.Item1 > i)
+                if (tuple.Item1 >= i)
                 {
-                    i++;
+                    i = tuple.Item1 + 1;
                 }
             }
             return i;

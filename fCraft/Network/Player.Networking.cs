@@ -1410,6 +1410,12 @@ namespace fCraft
                         }
                     }
                 }
+
+                //update highlights
+                foreach(var entry in World.Highlights)
+                {
+                    Send(PacketWriter.MakeSelectionCuboid((byte)entry.Value.Item1, entry.Key, entry.Value.Item2, entry.Value.Item3, entry.Value.Item4, entry.Value.Item5));
+                }
             }
 
             // Done.

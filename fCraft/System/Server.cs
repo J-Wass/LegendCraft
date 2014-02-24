@@ -37,8 +37,8 @@ namespace fCraft {
 
         public static List<Bot> Bots = new List<Bot>();
 
-        //order: highlight name, id, first position, second position
-        public static Dictionary<string, Tuple<int, Vector3I, Vector3I>> Highlights = new Dictionary<string, Tuple<int, Vector3I, Vector3I>>();
+        //order: highlight name, id, first position, second position, color, percent opaque
+        public static Dictionary<string, Tuple<int, Vector3I, Vector3I, System.Drawing.Color, int>> Highlights = new Dictionary<string, Tuple<int, Vector3I, Vector3I, System.Drawing.Color, int>>();
 
         public static bool AutoRankEnabled = false;
 

@@ -164,7 +164,13 @@ THE SOFTWARE.*/
                     string name = cmd.Next();
                     if (String.IsNullOrEmpty(name))
                     {
-                        CdHighlight.PrintUsage(player);
+                        player.Message("Usage is /Highlight create [highlight name]");
+                        return;
+                    }
+
+                    if (Server.Highlights.Keys.Contains(name))
+                    {
+                        player.Message("A highlight with that name already exists!");
                         return;
                     }
                     System.Drawing.Color systemColor;
@@ -172,7 +178,7 @@ THE SOFTWARE.*/
                     string color = cmd.Next();
                     if (String.IsNullOrEmpty(color))
                     {
-                        CdHighlight.PrintUsage(player);
+                        player.Message("Usage is /Highlight create [highlight name] [color or #htmlcolor] [Percent Opaque]");
                         return;
                     }
 
@@ -205,7 +211,7 @@ THE SOFTWARE.*/
                     int percentOpacity;
                     if (String.IsNullOrEmpty(opacity))
                     {
-                        CdHighlight.PrintUsage(player);
+                        player.Message("Usage is /Highlight create [highlight name] [color or #htmlcolor] [Percent Opaque]");
                         return;
                     }
 
@@ -235,7 +241,7 @@ THE SOFTWARE.*/
                         return;
                     }
 
-                    Tuple<int, Vector3I, Vector3I> ID;
+                    Tuple<int, Vector3I, Vector3I, System.Drawing.Color, int> ID;
                     Server.Highlights.TryGetValue(targetHighlight, out ID);
 
                     player.World.Players.Send(PacketWriter.RemoveSelectionCuboid((byte)ID.Item1));
@@ -247,6 +253,7 @@ THE SOFTWARE.*/
                     if (String.IsNullOrEmpty(worldName))
                     {
                         CdHighlight.PrintUsage(player);
+                        return;
                     }
 
                     if (worldName == "all")
@@ -278,6 +285,7 @@ THE SOFTWARE.*/
                     if (String.IsNullOrEmpty(worldTarget))
                     {
                         CdHighlight.PrintUsage(player);
+                        return;
                     }
 
                     if (worldTarget == "all")
@@ -285,8 +293,28 @@ THE SOFTWARE.*/
                         player.Message("_Removing all highlights {0}_", ConfigKey.ServerName.GetString());
                         foreach (Player p in Server.Players)
                         {
-                            //send packet to all players on each world to remove the highlights in their world, then dump each highlight dictionary and the Server dictionary for highlights
+                            //physically remove all highlights where players are connected to specific worlds
+                            if (p.World.Highlights.Count > 0)
+                            {
+                                foreach (var i in p.World.Highlights.Values)
+                                {
+                                    p.Send(PacketWriter.RemoveSelectionCuboid((byte)i.Item1));
+                                }
+                            }
                         }
+
+                        //remove all traces of highlights on each world
+                        var worldWithHighlights = from w in WorldManager.Worlds
+                                                  where w.Highlights.Count > 0
+                                                  select w;
+
+                        foreach (World world in worldWithHighlights)
+                        {
+                            world.Highlights.Clear();
+                        }
+
+                        //remove all traces of highlights on the server
+                        Server.Highlights.Clear();
                     }
                     else
                     {
@@ -299,11 +327,17 @@ THE SOFTWARE.*/
                         player.Message("_Removing all highlights on {0}_", targetWorld.Name);
                         foreach (Player p  in targetWorld.Players)
                         {
-                            //send packet for each player to remove highlight, then dump that world's dictionary for highlights
+                            foreach (var i in targetWorld.Highlights.Values)
+                            {
+                                p.Send(PacketWriter.RemoveSelectionCuboid((byte)i.Item1));
+                            }
                         }
+
+                        targetWorld.Highlights.Clear();
                     }
                     break;
                 default:
+                    CdHighlight.PrintUsage(player);
                     break;
             }
 

@@ -31,8 +31,8 @@ namespace fCraft {
 
         //custom
 
-        //order: highlight name, id, first position, second position
-        public Dictionary<string, Tuple<int, Vector3I, Vector3I>> Highlights = new Dictionary<string, Tuple<int, Vector3I, Vector3I>>();
+        //order: highlight name, id, first position, second position, color, percentOpaque
+        public Dictionary<string, Tuple<int, Vector3I, Vector3I, System.Drawing.Color, int>> Highlights = new Dictionary<string, Tuple<int, Vector3I, Vector3I, System.Drawing.Color, int>>();
 
         public bool IsRealm { get; set; }
 

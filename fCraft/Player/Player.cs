@@ -807,20 +807,22 @@ namespace fCraft
         public int percentOpacity = 0;
         public System.Drawing.Color color = new System.Drawing.Color();
 
-
+        /// <summary>
+        /// Used to return two points select by the player, only supports selection cuboid(aka highlight), but was created to support other commands if needed
+        /// </summary>
         public void SelectMarks()
         {
 
             if (markSet == 0)//first corner
             {
-                Message("Use /mark or place/break a block at the location of the first corner of your selection.");
+                Message(cmd + ": Use /mark or place/break a block at the location of the first corner of your selection.");
                 selectionTime = DateTime.Now;
                 markSet++;
                 return;
             }
             if (markSet == 1)//second corner
             {
-                Message("Use /mark or place/break a block at the location of the second corner of your selection.");
+                Message(cmd + ": Use /mark or place/break a block at the location of the second corner of your selection.");
                 selectionTime = DateTime.Now;
                 markSet++;
                 return;
@@ -828,16 +830,20 @@ namespace fCraft
             else//finish
             {
                 Message("Selection finished.");
-                int ID = LegendCraft.getNewHighlightID();
-                World.Players.Send(PacketWriter.MakeSelectionCuboid((byte)ID, ID.ToString(), selectedMarks[0], selectedMarks[1], color, percentOpacity));
-                Server.Highlights.Add(highlightName, new Tuple<int, Vector3I, Vector3I>(ID, selectedMarks[0], selectedMarks[1]));
-                World.Highlights.Add(highlightName, new Tuple<int, Vector3I, Vector3I>(ID, selectedMarks[0], selectedMarks[1]));
+                if (cmd.ToLower() == "highlight")
+                {
+                    int ID = LegendCraft.getNewHighlightID();
+                    World.Players.Send(PacketWriter.MakeSelectionCuboid((byte)ID, ID.ToString(), selectedMarks[0], selectedMarks[1], color, percentOpacity));
+                    Server.Highlights.Add(highlightName, new Tuple<int, Vector3I, Vector3I, System.Drawing.Color, int>(ID, selectedMarks[0], selectedMarks[1], color, percentOpacity));
+                    World.Highlights.Add(highlightName, new Tuple<int, Vector3I, Vector3I, System.Drawing.Color, int>(ID, selectedMarks[0], selectedMarks[1], color, percentOpacity));
+                }
                 selectedMarks.Clear();
                 markSet = 0;
             }
         }
 
         #endregion
+
         public void SendToSpectators([NotNull] string message, [NotNull] params object[] args)
         {
             if (message == null) throw new ArgumentNullException("message");
@@ -1323,15 +1329,20 @@ namespace fCraft
             //if in a command using markSets
             if (markSet > 0)
             {
-                if (markSet == 1)
+                //if it has been over 10 seconds, stop selection process
+                if ((DateTime.Now - selectionTime).TotalSeconds > 10)
                 {
-                    selectedMarks.Add(coord);
+                    markSet = 0;
+                    selectedMarks.Clear();
+
                 }
                 else
                 {
                     selectedMarks.Add(coord);
+                    RevertBlockNow(coord);
+
+                    SelectMarks();
                 }
-                SelectMarks();
             }
 
             if (IsSpectating)
