@@ -125,72 +125,188 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
         
-        static readonly CommandDescriptor CdHighlight = new CommandDescriptor //todo: add names and way to remove, also fix positioning
+        static readonly CommandDescriptor CdHighlight = new CommandDescriptor 
         {
             Name = "Highlight",
+            Aliases = new[] { "SelectionCuboid", "Select" },
             IsConsoleSafe = false,
             Permissions = new[] { Permission.DrawAdvanced },
             Category = CommandCategory.Building,
-            Help = "Highlights a specific location of the world.",
-            Usage = "/Highlight [color or #htmlcolor] [Percent Opacity]",
+            Help = "Highlights a specific location of the world. Use /help Highlight [option] for more options",
+            Usage = "/Highlight [Create | Remove | List | Clear][color or #htmlcolor] [Percent Opacity]",
+            HelpSections = new System.Collections.Generic.Dictionary<string, string>{
+                { "create", "&H/Highlight create [highlight name] [color or #htmlcolor] [Percent Opaque]\n&S" +
+                                "Creates a new highlighted zone with the given name, color (or html color), and percent opacity." },
+                { "remove", "&H/Highlight remove [highlight name]\n&S" +
+                                "Removes the given highlighted zone." },
+                { "list", "&H/Highlight list [world name]\n&S" +
+                                "Lists all highlighted zones in a world. Use 'all' for [world name] to list all highlights."},  
+                { "clear", "&H/Highlight clear [world name]\n&S" +
+                                "Removes all highlight from a given world. Use 'all' for [world name] to remove all highlights."}  
+            },
             Handler = HighlightHandler
         };
 
         static void HighlightHandler(Player player, Command cmd)
         {
-            System.Drawing.Color systemColor;
-
-            string color = cmd.Next();
-            if (String.IsNullOrEmpty(color))
+            string option = cmd.Next();
+            if (String.IsNullOrEmpty(option))
             {
                 CdHighlight.PrintUsage(player);
                 return;
             }
 
-            if (color.Contains('#'))
+            switch (option.ToLower())
             {
-                try
-                {
-                    systemColor = System.Drawing.ColorTranslator.FromHtml(color);
-                }
-                catch
-                {
-                    player.Message("Unrecognized color! Please use a valid color name or html color code.");
-                    return;
-                }
-            }
-            else
-            {
-                try
-                {
-                    systemColor = System.Drawing.Color.FromName(color);
-                }
-                catch
-                {
-                    player.Message("Unrecognized color! Please use a valid color name or html color code.");
-                    return;
-                }
+                case "create":
+                case "new":
+                case "add":
+                    string name = cmd.Next();
+                    if (String.IsNullOrEmpty(name))
+                    {
+                        CdHighlight.PrintUsage(player);
+                        return;
+                    }
+                    System.Drawing.Color systemColor;
+
+                    string color = cmd.Next();
+                    if (String.IsNullOrEmpty(color))
+                    {
+                        CdHighlight.PrintUsage(player);
+                        return;
+                    }
+
+                    if (color.Contains('#'))
+                    {
+                        try
+                        {
+                            systemColor = System.Drawing.ColorTranslator.FromHtml(color);
+                        }
+                        catch
+                        {
+                            player.Message("Unrecognized color! Please use a valid color name or html color code.");
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        try
+                        {
+                            systemColor = System.Drawing.Color.FromName(color);
+                        }
+                        catch
+                        {
+                            player.Message("Unrecognized color! Please use a valid color name or html color code.");
+                            return;
+                        }
+                    }
+
+                    string opacity = cmd.Next();
+                    int percentOpacity;
+                    if (String.IsNullOrEmpty(opacity))
+                    {
+                        CdHighlight.PrintUsage(player);
+                        return;
+                    }
+
+                    if (!Int32.TryParse(opacity, out percentOpacity))
+                    {
+                        player.Message("Percent opacity must be from 0-100, where 0 would be transparent, and 100 would be completely opaque.");
+                        return;
+                    }
+
+                    player.highlightName = name;
+                    player.cmd = cmd.Name;
+                    player.color = systemColor;
+                    player.percentOpacity = percentOpacity;
+                    player.SelectMarks();
+                    break;
+                case "remove":
+                case "delete":
+                    string targetHighlight = cmd.Next();
+                    if (String.IsNullOrEmpty(targetHighlight))
+                    {
+                        CdHighlight.PrintUsage(player);
+                            return;
+                    }
+                    if(!Server.Highlights.Keys.Contains(targetHighlight))
+                    {
+                        player.Message("That highlight zone was not found! Please make sure you spelled it correctly!");
+                        return;
+                    }
+
+                    Tuple<int, Vector3I, Vector3I> ID;
+                    Server.Highlights.TryGetValue(targetHighlight, out ID);
+
+                    player.World.Players.Send(PacketWriter.RemoveSelectionCuboid((byte)ID.Item1));
+
+                    break;
+                case "list":
+                case "show":
+                    string worldName = cmd.Next();
+                    if (String.IsNullOrEmpty(worldName))
+                    {
+                        CdHighlight.PrintUsage(player);
+                    }
+
+                    if (worldName == "all")
+                    {
+                        player.Message("_Listing all the highlights on {0}_", ConfigKey.ServerName.GetString());
+                        foreach (string s in Server.Highlights.Keys)
+                        {
+                            player.Message(s);
+                        }
+                    }
+                    else
+                    {
+                        World targetWorld = WorldManager.FindWorldOrPrintMatches(player, worldName);
+                        if (targetWorld == null)
+                        {
+                            return;
+                        }
+
+                        player.Message("_Listing all highlights on {0}_", targetWorld.Name);
+                        foreach (string s in targetWorld.Highlights.Keys)
+                        {
+                            player.Message(s);
+                        }
+                    }
+                    break;
+                case "clear":
+                case "empty":
+                    string worldTarget = cmd.Next();
+                    if (String.IsNullOrEmpty(worldTarget))
+                    {
+                        CdHighlight.PrintUsage(player);
+                    }
+
+                    if (worldTarget == "all")
+                    {
+                        player.Message("_Removing all highlights {0}_", ConfigKey.ServerName.GetString());
+                        foreach (Player p in Server.Players)
+                        {
+                            //send packet to all players on each world to remove the highlights in their world, then dump each highlight dictionary and the Server dictionary for highlights
+                        }
+                    }
+                    else
+                    {
+                        World targetWorld = WorldManager.FindWorldOrPrintMatches(player, worldTarget);
+                        if (targetWorld == null)
+                        {
+                            return;
+                        }
+
+                        player.Message("_Removing all highlights on {0}_", targetWorld.Name);
+                        foreach (Player p  in targetWorld.Players)
+                        {
+                            //send packet for each player to remove highlight, then dump that world's dictionary for highlights
+                        }
+                    }
+                    break;
+                default:
+                    break;
             }
 
-            string opacity = cmd.Next();
-            int percentOpacity;
-            if (String.IsNullOrEmpty(opacity))
-            {
-                CdHighlight.PrintUsage(player);
-                return;
-            }
-
-            if(!Int32.TryParse(opacity, out percentOpacity))
-            {
-                player.Message("Percent opacity must be from 0-100, where 0 would be transparent, and 100 would be completely opaque.");
-                return;
-            }
-
-            player.cmd = cmd.Name;
-            player.color = systemColor;
-            player.percentOpacity = percentOpacity;
-            player.SelectMarks();
-            
         }
 
         static readonly CommandDescriptor Cdzz = new CommandDescriptor

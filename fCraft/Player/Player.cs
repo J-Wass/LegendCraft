@@ -802,6 +802,7 @@ namespace fCraft
         public List<Vector3I> selectedMarks = new List<Vector3I>();
         public DateTime selectionTime;//add a timer for when selections expire
 
+        public string highlightName = "";
         public string cmd = "";
         public int percentOpacity = 0;
         public System.Drawing.Color color = new System.Drawing.Color();
@@ -829,7 +830,8 @@ namespace fCraft
                 Message("Selection finished.");
                 int ID = LegendCraft.getNewHighlightID();
                 World.Players.Send(PacketWriter.MakeSelectionCuboid((byte)ID, ID.ToString(), selectedMarks[0], selectedMarks[1], color, percentOpacity));
-                Server.HighlightIDs.Add(ID);
+                Server.Highlights.Add(highlightName, new Tuple<int, Vector3I, Vector3I>(ID, selectedMarks[0], selectedMarks[1]));
+                World.Highlights.Add(highlightName, new Tuple<int, Vector3I, Vector3I>(ID, selectedMarks[0], selectedMarks[1]));
                 selectedMarks.Clear();
                 markSet = 0;
             }

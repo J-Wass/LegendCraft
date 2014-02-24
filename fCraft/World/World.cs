@@ -30,6 +30,10 @@ namespace fCraft {
         public bool IsHidden { get; set; }
 
         //custom
+
+        //order: highlight name, id, first position, second position
+        public Dictionary<string, Tuple<int, Vector3I, Vector3I>> Highlights = new Dictionary<string, Tuple<int, Vector3I, Vector3I>>();
+
         public bool IsRealm { get; set; }
 
         public float VisitCount { get; set; }

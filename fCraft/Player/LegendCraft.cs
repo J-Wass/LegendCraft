@@ -55,19 +55,15 @@ namespace fCraft
             return i;
         }
 
-        //generates a new ID for new highlights
+        //generates a new ID for new highlights, force a new int that is greater than the largest ID in Server.Highlights
         public static int getNewHighlightID()
         {
             int i = 0;
-            foreach (int testInt in Server.HighlightIDs)
+            foreach (Tuple<int, Vector3I, Vector3I> tuple in Server.Highlights.Values)
             {
-                if (testInt == i)
+                if (tuple.Item1 > i)
                 {
                     i++;
-                }
-                else
-                {
-                    return i;
                 }
             }
             return i;

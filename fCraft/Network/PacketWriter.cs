@@ -351,6 +351,7 @@ namespace fCraft {
         {
             if (message == null) throw new ArgumentNullException("message");
 
+            Logger.LogToConsole(messageType.ToString() + message);
             Packet packet = new Packet(OpCode.Message);
             packet.Data[1] = messageType;
             Encoding.ASCII.GetBytes(message.PadRight(64), 0, 64, packet.Data, 2);
@@ -360,22 +361,28 @@ namespace fCraft {
         internal static Packet MakeSelectionCuboid(byte ID, string label, Vector3I start, Vector3I end, System.Drawing.Color color, int percentOpacity)
         {
             double opacity = Math.Round(255 * ((double)percentOpacity * 0.01), 1); //apply percent opaque to total opaque, create a whole number
-            Logger.LogToConsole(start.ToString() + end.ToString() + opacity.ToString());
 
             Packet packet = new Packet(OpCode.SelectionCuboid);
             packet.Data[1] = ID;
             Encoding.ASCII.GetBytes(label.PadRight(64), 0, 64, packet.Data, 2);
-            ToNetOrder(start.X, packet.Data, 66);
-            ToNetOrder(start.Y, packet.Data, 68);
-            ToNetOrder(start.Z, packet.Data, 70);
-            ToNetOrder(end.X, packet.Data, 72);
-            ToNetOrder(end.Y, packet.Data, 74);
-            ToNetOrder(end.Z, packet.Data, 76);
+            ToNetOrder(end.X, packet.Data, 66);
+            ToNetOrder(end.Z, packet.Data, 68);
+            ToNetOrder(end.Y, packet.Data, 70);
+            ToNetOrder(start.X, packet.Data, 72);
+            ToNetOrder(start.Z, packet.Data, 74);
+            ToNetOrder(start.Y, packet.Data, 76);
             ToNetOrder(color.R, packet.Data, 78);
             ToNetOrder(color.G, packet.Data, 80);
             ToNetOrder(color.B, packet.Data, 82);
             ToNetOrder((int)opacity, packet.Data, 84);
+            return packet;
+        }
 
+        //easiest packet I ever made
+        internal static Packet RemoveSelectionCuboid(byte ID)
+        {
+            Packet packet = new Packet(OpCode.RemoveSelectionCuboid);
+            packet.Data[1] = ID;
             return packet;
         }
 
