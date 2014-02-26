@@ -199,7 +199,7 @@ namespace fCraft.AutoRank
         }
 
         /// <summary>
-        /// Expertly parse a string into an int
+        /// Parse a string into a bool like a boss
         /// </summary>
         public static bool Operator(this string str, long x, long y)
         {

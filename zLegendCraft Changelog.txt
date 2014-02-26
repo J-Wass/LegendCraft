@@ -4,7 +4,8 @@ Add: AutoRank program
 Add: Bots
 Add: /highlight (known as "selection cuboid" in cpe) [unfinished]
 Add: /forcehold
-Add: /Announce (message types in cpe) [unfinished]
+Add: /Announce (message types in cpe)
+Add: /getblock (held block in cpe)
 Change: Better Auto-Updater is better
 Change: Huge improvements for mono users
 

@@ -84,6 +84,7 @@ namespace fCraft {
             CommandManager.RegisterCommand(CdAutoRank);
             CommandManager.RegisterCommand(CdAnnounce);
             CommandManager.RegisterCommand(CdForceHold);
+            CommandManager.RegisterCommand(CdGetBlock);
             //CommandManager.RegisterCommand(CdTPA);
 
         }
@@ -106,7 +107,36 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
-        
+
+        static readonly CommandDescriptor CdGetBlock = new CommandDescriptor
+        {
+            Name = "GetBlock",
+            IsConsoleSafe = true,
+            Category = CommandCategory.Moderation,
+            Permissions = new[] { Permission.Spectate },
+            Help = "&SReturns the block that the player is currently holding.",
+            Usage = "&S/GetBlock [player]",
+            Handler = GetBlockHandler
+        };
+
+        private static void GetBlockHandler(Player player, Command cmd)
+        {
+            string target = cmd.Next();
+            if (String.IsNullOrEmpty(target))
+            {
+                CdGetBlock.PrintUsage(player);
+                return;
+            }
+
+            Player targetPlayer = Server.FindPlayerOrPrintMatches(player, target, false, true);
+            if (targetPlayer == null)
+            {
+                return;
+            }
+
+            player.Message("{0} is currently holding {1}.", targetPlayer.Name, targetPlayer.Info.HeldBlock.ToString() );
+        }
+
         static readonly CommandDescriptor CdForceHold = new CommandDescriptor 
         {
             Name = "ForceHold",

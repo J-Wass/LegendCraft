@@ -353,7 +353,7 @@ namespace fCraft
             }
             catch (Exception ex)
             {
-                Logger.LogAndReportCrash("Error while parsing player's message", "800Craft", ex, false);
+                Logger.LogAndReportCrash("Error while parsing player's message", "LegendCraft", ex, false);
                 MessageNow("&WError while handling your message ({0}: {1})." +
                             "It is recommended that you reconnect to the server.",
                             ex.GetType().Name, ex.Message);
@@ -366,7 +366,21 @@ namespace fCraft
         void ProcessMovementPacket()
         {
             BytesReceived += 10;
-            reader.ReadByte();
+            byte me = reader.ReadByte();
+            if (ClassiCube)
+            {
+                try
+                {
+                    //check if all the requested byte exists as a block, if it does create a block
+                    Info.HeldBlock = (Block)me;
+                }
+                catch(Exception ex)
+                {
+                    Logger.LogToConsole(ex.Data + ex.Message);
+                    Info.HeldBlock = Block.Stone;
+                }
+            }
+
             Position newPos = new Position
             {
                 X = IPAddress.NetworkToHostOrder(reader.ReadInt16()),
@@ -1412,10 +1426,18 @@ namespace fCraft
                 }
 
                 //update highlights
+                if (oldWorld != null)
+                {
+                    foreach (var highlightsToRemove in oldWorld.Highlights)
+                    {
+                        Send(PacketWriter.RemoveSelectionCuboid((byte)highlightsToRemove.Value.Item1));
+                    }
+                }
                 foreach(var entry in World.Highlights)
                 {
                     Send(PacketWriter.MakeSelectionCuboid((byte)entry.Value.Item1, entry.Key, entry.Value.Item2, entry.Value.Item3, entry.Value.Item4, entry.Value.Item5));
                 }
+
             }
 
             // Done.

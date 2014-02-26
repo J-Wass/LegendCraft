@@ -214,6 +214,7 @@ namespace fCraft
 
         #region Private Methods
 
+        #region movement
         /// <summary>
         /// Called from NetworkLoop. Bot will gradually move to a position
         /// </summary>
@@ -266,26 +267,6 @@ namespace fCraft
                 L = (byte)(lAngle)
             };
 
-            //create a new position one block under targetPos
-            Position underPosition = new Position
-            {
-                X = (short)(targetPosition.X),
-                Y = (short)(targetPosition.Y),
-                Z = (short)(targetPosition.Z - 32),
-                R = (byte)(rAngle),
-                L = (byte)(lAngle)
-            };
-
-            //check whether the next block + the block under it are air
-            if ((World.Map.GetBlock(targetPosition.ToBlockCoords()) != Block.Air) || (World.Map.GetBlock(underPosition.ToBlockCoords()) != Block.Air))
-            {
-                //if a non air-block is in the way, find the next open position and restart the move
-                isMoving = false;
-                beganMoving = false;
-                FindNewPos();
-                return;
-            }
-
             posList.Remove(posList.First());
 
             //once the posList is empty, we have reached the final point
@@ -298,56 +279,74 @@ namespace fCraft
             }       
 
             Logger.LogToConsole("Teleporting bot.");
-            teleportBot(targetPosition);
+            AttemptMove(targetPosition);
+            
             Position = targetPosition;                
         }
 
-        private void FindNewPos()
+        /// <summary>
+        /// Attempt for the bot to move into a position, if blocked, find and teleport to a new position
+        /// </summary>
+        /// <param name="pos"></param>
+        private void AttemptMove(Position pos)
         {
-            Logger.LogToConsole("FindNewPos() called.");
-            Position testPosOne = new Position
+            //create a new position one block under targetPos
+            Position underPosition = new Position
             {
-                X = (short)(Position.X),
-                Y = (short)(Position.Y + 64),
-                Z = (short)(Position.Z)
+                X = (short)(pos.X),
+                Y = (short)(pos.Y),
+                Z = (short)(pos.Z - 32)
             };
 
-            Position testPosTwo = new Position
+            //check whether the next block + the block under it are air
+            if ((World.Map.GetBlock(pos.ToBlockCoords()) != Block.Air) || (World.Map.GetBlock(underPosition.ToBlockCoords()) != Block.Air))
             {
-                X = (short)(Position.X + 64),
-                Y = (short)(Position.Y),
-                Z = (short)(Position.Z)
-            };
-
-            Random rand = new Random();
-            int randInt = rand.Next(0, 1);
-            if (randInt == 1)
-            {
-                if (World.Map.GetBlock(testPosOne.ToBlockCoords()) != Block.Air)
-                {
-                    Logger.LogToConsole("Stopped.");
-                    //give up for now, will actual create a solution later
-                    return;
-                }
-                teleportBot(testPosOne);
-                Position = testPosOne;
+                //if a non air-block is in the way, find the next open position and restart the move
+                beganMoving = false;
+                pos = FindNewPos(pos);
             }
             else
             {
-                if (World.Map.GetBlock(testPosTwo.ToBlockCoords()) != Block.Air)
+                teleportBot(pos);
+            }
+        }
+        private Position FindNewPos(Position pos)
+        {
+            //create a position list and add all 4 cardinalin directions, plus a possibility for stepping up one block in any direction
+            List<Position> positionList = new List<Position>();
+            List<Position> validPositions = new List<Position>();
+            positionList.Add(new Position(pos.X + 32, pos.Y, pos.Z));
+            positionList.Add(new Position(pos.X - 32, pos.Y, pos.Z));
+            positionList.Add(new Position(pos.X, pos.Y + 32, pos.Z));
+            positionList.Add(new Position(pos.X, pos.Y - 32, pos.Z));
+
+            positionList.Add(new Position(pos.X + 32, pos.Y, pos.Z + 32));
+            positionList.Add(new Position(pos.X - 32, pos.Y, pos.Z + 32));
+            positionList.Add(new Position(pos.X, pos.Y + 32, pos.Z + 32));
+            positionList.Add(new Position(pos.X, pos.Y - 32, pos.Z + 32));
+
+            //using linq to select all the positions that are air blocks, with an air block beneath them (probably a better way to do this but w/e)
+            foreach (Position p in positionList)
+            {
+                if (World.Map.GetBlock(p.X, p.Y, p.Z) == Block.Air && World.Map.GetBlock(new Vector3I(p.X, p.Y, p.Z - 32)) == Block.Air)
                 {
-                    Logger.LogToConsole("Stopped.");
-                    //give up for now, will actual create a solution later
-                    return;
+                    validPositions.Add(p);
                 }
-                teleportBot(testPosTwo);
-                Position = testPosTwo;
             }
 
-            Logger.LogToConsole("Bot Teleported, back to Move() called.");
-            isMoving = true;
-            return;
-        }
+            if (validPositions.Count() == 0)
+            {
+                //bot got trapped, stop moving
+                Logger.LogToConsole("Bot stopped moving");
+                isMoving = false;
+            }
+
+            //select a random position from the position list and return it
+            Random rand = new Random();
+            return validPositions[rand.Next(validPositions.Count())];
+        } 
+
+        #endregion
 
         /// <summary>
         /// Emulates a small explosion at a specific location

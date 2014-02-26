@@ -43,6 +43,11 @@ namespace fCraft
         /// <summary> Player's unique numeric ID. Issued on first join. </summary>
         public int ID;
 
+        /// <summary>
+        /// Block currently being held by the player
+        /// </summary>
+        public Block HeldBlock;
+
         /// <summary> First time the player ever logged in, UTC.
         /// May be DateTime.MinValue if player has never been online. </summary>
         public DateTime FirstLoginDate;

@@ -833,9 +833,9 @@ namespace fCraft
                 if (cmd.ToLower() == "highlight")
                 {
                     int ID = LegendCraft.getNewHighlightID();
-                    World.Players.Send(PacketWriter.MakeSelectionCuboid((byte)ID, ID.ToString(), selectedMarks[0], selectedMarks[1], color, percentOpacity));
+                    this.World.Players.Send(PacketWriter.MakeSelectionCuboid((byte)ID, ID.ToString(), selectedMarks[0], selectedMarks[1], color, percentOpacity));
                     Server.Highlights.Add(highlightName, new Tuple<int, Vector3I, Vector3I, System.Drawing.Color, int>(ID, selectedMarks[0], selectedMarks[1], color, percentOpacity));
-                    World.Highlights.Add(highlightName, new Tuple<int, Vector3I, Vector3I, System.Drawing.Color, int>(ID, selectedMarks[0], selectedMarks[1], color, percentOpacity));
+                    this.World.Highlights.Add(highlightName, new Tuple<int, Vector3I, Vector3I, System.Drawing.Color, int>(ID, selectedMarks[0], selectedMarks[1], color, percentOpacity));
                 }
                 selectedMarks.Clear();
                 markSet = 0;

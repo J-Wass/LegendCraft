@@ -664,6 +664,7 @@ namespace fCraft {
             BlockNames["foliage"] = Block.Leaves;
 
             BlockNames["cheese"] = Block.Sponge;
+            BlockNames["spoiled_milk"] = Block.Sponge;
 
             BlockNames["redcloth"] = Block.Red;
             BlockNames["redwool"] = Block.Red;
