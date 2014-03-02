@@ -69,7 +69,8 @@ namespace fCraft
         public Position OldPosition;
         public Position NewPosition;
         public Stopwatch timeCheck = new Stopwatch();
-        public static readonly double speed = 4.3 * 32; //player moves at 4.3 blocks per second, convert it into player position per second
+        public static readonly double speed = 4.3 * 32; //speed of bot
+        public static readonly double frequency = 1 / (speed * 1000); //frequency, in Hz of the bot
         public bool beganMoving;
         public List<Vector3I> posList = new List<Vector3I>();
 
@@ -99,7 +100,7 @@ namespace fCraft
         {
             if (isMoving)
             {
-                if (timeCheck.ElapsedMilliseconds > ((1/(speed * 1000)) * 1.5)) 
+                if (timeCheck.ElapsedMilliseconds > frequency) 
                 {
                     Move();
                     timeCheck.Restart();
@@ -287,9 +288,10 @@ namespace fCraft
         /// <summary>
         /// Attempt for the bot to move into a position, if blocked, find and teleport to a new position
         /// </summary>
-        /// <param name="pos"></param>
         private void AttemptMove(Position pos)
         {
+            Logger.LogToConsole("Attempting to move.");
+
             //create a new position one block under targetPos
             Position underPosition = new Position
             {
@@ -310,8 +312,13 @@ namespace fCraft
                 teleportBot(pos);
             }
         }
+
+        /// <summary>
+        /// Generates a new position for the bot to take when path is blocked
+        /// </summary>
         private Position FindNewPos(Position pos)
         {
+            Logger.LogToConsole("Finding new position");
             //create a position list and add all 4 cardinalin directions, plus a possibility for stepping up one block in any direction
             List<Position> positionList = new List<Position>();
             List<Position> validPositions = new List<Position>();
@@ -325,13 +332,15 @@ namespace fCraft
             positionList.Add(new Position(pos.X, pos.Y + 32, pos.Z + 32));
             positionList.Add(new Position(pos.X, pos.Y - 32, pos.Z + 32));
 
-            //using linq to select all the positions that are air blocks, with an air block beneath them (probably a better way to do this but w/e)
             foreach (Position p in positionList)
             {
-                if (World.Map.GetBlock(p.X, p.Y, p.Z) == Block.Air && World.Map.GetBlock(new Vector3I(p.X, p.Y, p.Z - 32)) == Block.Air)
+                Vector3I vect = p.ToBlockCoords();
+                if (World.Map.GetBlock(vect) == Block.Air && World.Map.GetBlock(new Vector3I(p.X, p.Y, p.Z - 32)) == Block.Air)
                 {
                     validPositions.Add(p);
                 }
+                Logger.LogToConsole( vect.ToString() + " is " + World.Map.GetBlock(p.X, p.Y, p.Z).ToString());
+                Logger.LogToConsole( new Vector3I(vect.X, vect.Y, vect.Z - 1).ToString() + " is " + World.Map.GetBlock(p.X, p.Y, p.Z).ToString()); 
             }
 
             if (validPositions.Count() == 0)
@@ -339,6 +348,7 @@ namespace fCraft
                 //bot got trapped, stop moving
                 Logger.LogToConsole("Bot stopped moving");
                 isMoving = false;
+                return Position;
             }
 
             //select a random position from the position list and return it

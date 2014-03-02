@@ -69,6 +69,10 @@ namespace fCraft
         public static void Start()
         {
             world_.Hax = false;
+            foreach (Player pl in world_.Players)
+            {
+                pl.JoinWorld(world_, WorldChangeReason.Rejoin);
+            }
             world_.gameMode = GameMode.FFA; //set the game mode
             delayTask = Scheduler.NewTask(t => world_.Players.Message("&WFFA &fwill be starting in {0} seconds: &WGet ready!", (timeDelay - (DateTime.Now - startTime).ToSeconds())));
             delayTask.RunRepeating(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(10), (timeDelay / 10));
@@ -77,7 +81,10 @@ namespace fCraft
         public static void Stop(Player p) //for stopping the game early
         {
             world_.Hax = true;
-
+            foreach (Player pl in world_.Players)
+            {
+                pl.JoinWorld(world_, WorldChangeReason.Rejoin);
+            }
             //unhook event handlers
             if (world_ == null) return;                                                     
             if (world_ != null && world_.Players.Count() > 0 && stoppedEarly)               

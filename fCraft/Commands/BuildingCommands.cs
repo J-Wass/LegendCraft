@@ -133,7 +133,7 @@ THE SOFTWARE.*/
             Permissions = new[] { Permission.DrawAdvanced },
             Category = CommandCategory.Building,
             Help = "Highlights a specific location of the world. Use /help Highlight [option] for more options",
-            Usage = "/Highlight [Create | Remove | List | Clear][color or #htmlcolor] [Percent Opacity]",
+            Usage = "/Highlight [Create | Remove | List | Clear]",
             HelpSections = new System.Collections.Generic.Dictionary<string, string>{
                 { "create", "&H/Highlight create [highlight name] [color or #htmlcolor] [Percent Opaque]\n&S" +
                                 "Creates a new highlighted zone with the given name, color (or html color), and percent opacity." },

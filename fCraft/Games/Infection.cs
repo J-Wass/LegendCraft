@@ -63,7 +63,11 @@ namespace fCraft.Games
             timeDelay = 20;
 
             world_.Hax = false;
-            world_.Players.Send(PacketWriter.MakeHackControl(0,0,0,0,0,-1));//disable hax
+            foreach (Player pl in world_.Players)
+            {
+                pl.JoinWorld(world_, WorldChangeReason.Rejoin);
+            }
+            //world_.Players.Send(PacketWriter.MakeHackControl(0,0,0,0,0,-1)); Commented out until classicube clients support hax packet
             stopwatch.Reset();
             stopwatch.Start();
             world_.gameMode = GameMode.Infection;
@@ -78,7 +82,11 @@ namespace fCraft.Games
         public static void Stop(Player p) //for stopping the game early
         {
             world_.Hax = true;
-            world_.Players.Send(PacketWriter.MakeHackControl(1, 1, 1, 1, 1, -1));
+            foreach (Player pl in world_.Players)
+            {
+                pl.JoinWorld(world_, WorldChangeReason.Rejoin);
+            }
+            //world_.Players.Send(PacketWriter.MakeHackControl(1, 1, 1, 1, 1, -1)); Commented out until classicube clients support hax packet
             if (p != null && world_ != null)
             {
                 world_.Players.Message("{0}&S stopped the game of Infection on world {1}", p.ClassyName, world_.ClassyName);                    
@@ -95,7 +103,11 @@ namespace fCraft.Games
         public static void Custom(int limit, int delay)
         {
             world_.Hax = false;
-            world_.Players.Send(PacketWriter.MakeHackControl(0, 0, 0, 0, 0, -1));//disable hax
+            foreach (Player pl in world_.Players)
+            {
+                pl.JoinWorld(world_, WorldChangeReason.Rejoin);
+            }
+            // world_.Players.Send(PacketWriter.MakeHackControl(0, 0, 0, 0, 0, -1)); Commented out until classicube clients support hax packet
             timeDelay = delay;
             timeLimit = limit;
 
@@ -142,8 +154,7 @@ namespace fCraft.Games
                                 break;
                             }
                         }
-
-                        //reset world settings and disable hax requires the player to rejoin the world since the motd must update                        
+                       
                         p.TeleportTo(new Position(x, y, z1 + 2).ToVector3I().ToPlayerCoords()); //teleport players to a random position
                         beginGame(p);
 
@@ -231,14 +242,18 @@ namespace fCraft.Games
             world_.Players.Message("&c{0} has infected {1}!", player.Name, target.Name);
             target.Info.isInfected = true;
             target.iName = "_Infected_";
-            target.Info.tempDisplayedName = "_Infected_";
+            target.Info.tempDisplayedName = "&f_Infected_";
             target.entityChanged = true;
         }
 
         public static void RevertGame() //Reset game bools/stats and stop timers
         {
             world_.Hax = true;
-            world_.Players.Send(PacketWriter.MakeHackControl(1, 1, 1, 1, 1, -1));//disable hax
+            foreach (Player pl in world_.Players)
+            {
+                pl.JoinWorld(world_, WorldChangeReason.Rejoin);
+            }
+            //world_.Players.Send(PacketWriter.MakeHackControl(1, 1, 1, 1, 1, -1)); Commented out until classicube clients support hax packet
 
             foreach (Player p in world_.Players)
             {

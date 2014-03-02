@@ -365,12 +365,12 @@ namespace fCraft {
             Packet packet = new Packet(OpCode.SelectionCuboid);
             packet.Data[1] = ID;
             Encoding.ASCII.GetBytes(label.PadRight(64), 0, 64, packet.Data, 2);
-            ToNetOrder(start.X + 1, packet.Data, 66);
-            ToNetOrder(start.Z + 1, packet.Data, 68);
+            ToNetOrder(start.X, packet.Data, 66);
+            ToNetOrder(start.Z, packet.Data, 68);
             ToNetOrder(start.Y, packet.Data, 70);
             ToNetOrder(end.X, packet.Data, 72);
             ToNetOrder(end.Z, packet.Data, 74);
-            ToNetOrder(end.Y + 1, packet.Data, 76);
+            ToNetOrder(end.Y, packet.Data, 76);
             ToNetOrder(color.R, packet.Data, 78);
             ToNetOrder(color.G, packet.Data, 80);
             ToNetOrder(color.B, packet.Data, 82);

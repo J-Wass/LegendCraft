@@ -1405,7 +1405,7 @@ namespace fCraft
 
                 if (!World.Hax)
                 {
-                    Send(PacketWriter.MakeHackControl(1, 1, 1, 1, 1, -1)); //re-enable hax to the player if the world has hax on
+                    //Send(PacketWriter.MakeHackControl(1, 1, 1, 1, 1, -1)); Commented out until classicube clients support hax packet
                 }
 
                 //update bots

@@ -81,6 +81,10 @@ namespace fCraft
         public static void Start()
         {
             world_.Hax = false;
+            foreach (Player pl in world_.Players)
+            {
+                pl.JoinWorld(world_, WorldChangeReason.Rejoin);
+            }
             world_.gameMode = GameMode.TeamDeathMatch; //set the game mode
             delayTask = Scheduler.NewTask(t => world_.Players.Message("&WTEAM DEATHMATCH &fwill be starting in {0} seconds: &WGet ready!", timeDelay));
             delayTask.RunRepeating(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(10), 1);                  
@@ -90,6 +94,10 @@ namespace fCraft
         {
 
             world_.Hax = true;
+            foreach (Player pl in world_.Players)
+            {
+                pl.JoinWorld(world_, WorldChangeReason.Rejoin);
+            }
             if (p != null && world_ != null)
             {
                 world_.Players.Message("{0}&S stopped the game of Team Deathmatch early on world {1}",
@@ -345,8 +353,6 @@ namespace fCraft
                     pI.isOnBlueTeam = false;
                     pI.isPlayingTD = false;
                     p.entityChanged = true;
-
-                    p.JoinWorld(p.World, WorldChangeReason.Rejoin);//rejoin world for hax changes to take effect
                     
                     //undo gunmode (taken from GunHandler.cs)
                     p.GunMode = false;
@@ -404,7 +410,7 @@ namespace fCraft
             string sbName = p.Name;
             p.Message("Let the games Begin!");
             p.Message("You are on the &cRed Team");
-            p.iName = Color.Red + sbName;
+            p.iName = "TeamRed";
             p.Info.tempDisplayedName = "&f(" + redTeam + "&f) " + Color.Red + sbName;
             p.Info.isOnRedTeam = true;
             p.Info.isOnBlueTeam = false;
@@ -420,7 +426,7 @@ namespace fCraft
             string sbName = p.Name;
             p.Message("Let the games Begin!");
             p.Message("You are on the &1Blue Team");
-            p.iName = Color.Navy + sbName;
+            p.iName = "TeamBlue";
             p.Info.tempDisplayedName = "&f(" + blueTeam + "&f) " + Color.Navy + sbName;
             p.Info.isOnBlueTeam = true;
             p.Info.isOnRedTeam = false;
