@@ -1222,7 +1222,7 @@ namespace fCraft {
         {
             var bot =
                from b in Bots
-               where b.Name == name
+               where b.Name.ToLower() == name.ToLower()
                select b;
 
             if (bot.Count() != 1)

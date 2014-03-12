@@ -60,6 +60,7 @@ namespace fCraft
                 "creeper",
                 "croc",
                 "humanoid",
+                "human",
                 "pig",
                 "printer",
                 "sheep",
@@ -129,7 +130,7 @@ THE SOFTWARE.*/
             Permissions = new Permission[] { Permission.Bots },
             Category = CommandCategory.Fun,
             IsConsoleSafe = false,
-            Usage = "/Bot <create / remove / removeAll / model / close / explode / list / summon / roam / stop>",
+            Usage = "/Bot <create / remove / removeAll / model / close / explode / list / summon / stop>", //add /bot move and /bot fly
             Help = "Commands for manipulating bots. For help and usage for the individual options, use /help bot <option>.",
             HelpSections = new Dictionary<string, string>{
                 { "create", "&H/Bot create <botname> <model>\n&S" +
@@ -148,8 +149,10 @@ THE SOFTWARE.*/
                                 "Prints out a list of all the bots on the server."},             
                 { "summon", "&H/Bot summon <botname>\n&S" +
                                 "Summons a bot from anywhere to your current position."},
-                { "move", "&H/Bot move <botname> <player>\n&S" +
+                /*{ "move", "&H/Bot move <botname> <player>\n&S" +
                                 "Moves the bot to a specific player."},
+                { "fly", "&H/Bot fly <botname>\n&S" +
+                                "Toggles whether the bot can fly or not."},*/
                 { "stop", "&H/Bot stop <botname>\n&S" +
                                 "Stops the bot from doing any of its movement actions."}
             },
@@ -189,7 +192,7 @@ THE SOFTWARE.*/
                 player.Message("All bots removed from the server.");
                 return;
             }
-            else if (option.ToLower() == "move")
+            /*else if (option.ToLower() == "move")
             {
                 string targetBot = cmd.Next();
                 if (string.IsNullOrEmpty(targetBot))
@@ -206,7 +209,13 @@ THE SOFTWARE.*/
 
                 Bot targetB = player.World.FindBot(targetBot);
                 Player targetP = player.World.FindPlayerExact(targetPlayer);
+
                 if (targetP == null)
+                {
+                    player.Message("Could not find {0} on {1}! Please make sure you spelled their name correctly.", targetPlayer, player.World);
+                    return;
+                }
+                if (targetB == null)
                 {
                     player.Message("Could not find {0} on {1}! Please make sure you spelled their name correctly.", targetBot, player.World);
                     return;
@@ -218,7 +227,7 @@ THE SOFTWARE.*/
                 targetB.OldPosition = targetB.Position;
                 targetB.timeCheck.Start();
                 return;
-            }
+            } */
 
             //finally away from the special cases
             string botName = cmd.Next(); //take in bot name arg
@@ -259,7 +268,7 @@ THE SOFTWARE.*/
 
                     //if a botname has already been chosen, ask player for a new name
                     var matchingNames = from b in Server.Bots
-                                   where b.Name == botName
+                                   where b.Name.ToLower() == botName.ToLower()
                                    select b;
 
                     if (matchingNames.Count() > 0)
@@ -278,6 +287,18 @@ THE SOFTWARE.*/
                     player.Message("{0} was removed from the server.", bot.Name);
                     bot.removeBot();
                     break;
+                /*case "fly":
+
+                    if (bot.isFlying)
+                    {
+                        player.Message("{0} can no longer fly.", bot.Name);
+                        bot.isFlying = false;
+                        break;
+                    }
+
+                    player.Message("{0} can now fly!", bot.Name);
+                    bot.isFlying = true;
+                    break;*/
                 case "model":
                     
                     if (bot.Skin != "steve")

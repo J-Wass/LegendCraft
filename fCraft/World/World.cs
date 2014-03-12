@@ -729,7 +729,7 @@ namespace fCraft {
         {
             var bot =
                from b in Server.Bots
-               where b.Name == name
+               where b.Name.ToLower() == name.ToLower()
                select b;
 
             if (bot.Count() != 1)
@@ -737,7 +737,12 @@ namespace fCraft {
                 return null;
             }
 
-            return bot.First();
+            Bot bot_ = bot.First();
+            if (bot_.World.Name == Name)
+            {
+                return bot.First();
+            }
+            return null;
         }
 
         /// <summary>
@@ -755,7 +760,12 @@ namespace fCraft {
                 return null;
             }
 
-            return bot.First(); 
+            Bot bot_ = bot.First();
+            if (bot_.World.Name == Name)
+            {
+                return bot.First();
+            }
+            return null;
         }
 
         public Player[] FindPlayers( [NotNull] Player player, [NotNull] string playerName ) {

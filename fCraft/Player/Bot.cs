@@ -66,14 +66,14 @@ namespace fCraft
 
         //movement
         public bool isMoving = false;
+        public bool isFlying = false;
         public Position OldPosition;
         public Position NewPosition;
         public Stopwatch timeCheck = new Stopwatch();
-        public static readonly double speed = 4.3 * 32; //speed of bot
-        public static readonly double frequency = 1 / (speed * 1000); //frequency, in Hz of the bot
+        public static readonly double speed = 4 * 32; //speed of bot
+        public static readonly double frequency = 1 / (speed * 1000); //frequency, in Block Hz of the bot
         public bool beganMoving;
         public List<Vector3I> posList = new List<Vector3I>();
-
 
         #region Public Methods
 
@@ -105,6 +105,12 @@ namespace fCraft
                     Move();
                     timeCheck.Restart();
                 }
+            }
+
+            //If bot is not flying, drop down to nearest solid block
+            if (!isFlying)
+            {
+                Drop();
             }
         }
 
@@ -211,11 +217,48 @@ namespace fCraft
             explode(new Vector3I(vector.X - 1, vector.Y - 1, vector.Z + 1), 0.5, 0.5);
             explode(new Vector3I(vector.X - 1, vector.Y - 1, vector.Z - 1), 0.5, 0.5);
         }
+
+        /// <summary>
+        /// Basic information about the bot
+        /// </summary>
+        public override string ToString()
+        {
+            return String.Format("{0} on {1} at {2}, Id: {3}", Name, World, Position.ToString(), ID.ToString());
+        }
+
         #endregion
 
         #region Private Methods
 
         #region movement
+
+        /// <summary>
+        /// Called from NetworkLoop. Intended to act like gravity and pull bot down
+        /// </summary>
+        private void Drop()
+        {
+            //generate vector at block coord under the feet of the bot
+            Vector3I pos = new Vector3I
+            {
+                X = (short)(Position.X / 32),
+                Y = (short)(Position.Y / 32),
+                Z = (short)(Position.Z / 32 - 2)
+            };
+
+            Vector3I newPos = new Vector3I
+            {
+                X = (short)(Position.X / 32),
+                Y = (short)(Position.Y / 32),
+                Z = (short)(Position.Z / 32 - 1)
+            };
+
+            //I'm so good at C#
+            if (World.Map.GetBlock(pos) == Block.Air || World.Map.GetBlock(pos) == Block.Water || World.Map.GetBlock(pos) == Block.Water || World.Map.GetBlock(pos) == Block.StillWater || World.Map.GetBlock(pos) == Block.StillLava)
+            {
+                teleportBot(new Position(newPos.ToPlayerCoords().X, newPos.ToPlayerCoords().Y, newPos.ToPlayerCoords().Z));
+            }
+        }
+
         /// <summary>
         /// Called from NetworkLoop. Bot will gradually move to a position
         /// </summary>
@@ -271,7 +314,7 @@ namespace fCraft
             posList.Remove(posList.First());
 
             //once the posList is empty, we have reached the final point
-            if (posList.Count() == 0)
+            if (posList.Count() == 0 || Position == NewPosition)
             {
                 Logger.LogToConsole("Final Position reached.");
                 isMoving = false;
@@ -280,9 +323,7 @@ namespace fCraft
             }       
 
             Logger.LogToConsole("Teleporting bot.");
-            AttemptMove(targetPosition);
-            
-            Position = targetPosition;                
+            AttemptMove(targetPosition);                       
         }
 
         /// <summary>
@@ -298,49 +339,50 @@ namespace fCraft
                 X = (short)(pos.X),
                 Y = (short)(pos.Y),
                 Z = (short)(pos.Z - 32)
-            };
+            };         
 
             //check whether the next block + the block under it are air
             if ((World.Map.GetBlock(pos.ToBlockCoords()) != Block.Air) || (World.Map.GetBlock(underPosition.ToBlockCoords()) != Block.Air))
             {
                 //if a non air-block is in the way, find the next open position and restart the move
                 beganMoving = false;
-                pos = FindNewPos(pos);
+                pos = FindNewPos();
             }
-            else
-            {
-                teleportBot(pos);
-            }
+
+            teleportBot(pos);
+            Position = pos;
+            
         }
 
         /// <summary>
         /// Generates a new position for the bot to take when path is blocked
         /// </summary>
-        private Position FindNewPos(Position pos)
+        private Position FindNewPos()
         {
             Logger.LogToConsole("Finding new position");
-            //create a position list and add all 4 cardinalin directions, plus a possibility for stepping up one block in any direction
-            List<Position> positionList = new List<Position>();
-            List<Position> validPositions = new List<Position>();
-            positionList.Add(new Position(pos.X + 32, pos.Y, pos.Z));
-            positionList.Add(new Position(pos.X - 32, pos.Y, pos.Z));
-            positionList.Add(new Position(pos.X, pos.Y + 32, pos.Z));
-            positionList.Add(new Position(pos.X, pos.Y - 32, pos.Z));
+            Vector3I pos = Position.ToBlockCoords();
 
-            positionList.Add(new Position(pos.X + 32, pos.Y, pos.Z + 32));
-            positionList.Add(new Position(pos.X - 32, pos.Y, pos.Z + 32));
-            positionList.Add(new Position(pos.X, pos.Y + 32, pos.Z + 32));
-            positionList.Add(new Position(pos.X, pos.Y - 32, pos.Z + 32));
+            //create a position list and add all 4 cardinal directions, plus a possibility for stepping up one block in any direction
+            List<Vector3I> positionList = new List<Vector3I>();
+            List<Vector3I> validPositions = new List<Vector3I>();
+            positionList.Add(new Vector3I(pos.X + 1, pos.Y, pos.Z));
+            positionList.Add(new Vector3I(pos.X - 1, pos.Y, pos.Z));
+            positionList.Add(new Vector3I(pos.X, pos.Y + 1, pos.Z));
+            positionList.Add(new Vector3I(pos.X, pos.Y - 1, pos.Z));
 
-            foreach (Position p in positionList)
+            positionList.Add(new Vector3I(pos.X + 1, pos.Y, pos.Z + 1));
+            positionList.Add(new Vector3I(pos.X - 1, pos.Y, pos.Z + 1));
+            positionList.Add(new Vector3I(pos.X, pos.Y + 1, pos.Z + 1));
+            positionList.Add(new Vector3I(pos.X, pos.Y - 1, pos.Z + 1));
+
+            foreach (Vector3I v in positionList)
             {
-                Vector3I vect = p.ToBlockCoords();
-                if (World.Map.GetBlock(vect) == Block.Air && World.Map.GetBlock(new Vector3I(p.X, p.Y, p.Z - 32)) == Block.Air)
+                if (World.Map.GetBlock(v) == Block.Air && World.Map.GetBlock(new Vector3I(v.X, v.Y, v.Z - 1)) == Block.Air)
                 {
-                    validPositions.Add(p);
+                    validPositions.Add(v);
                 }
-                Logger.LogToConsole( vect.ToString() + " is " + World.Map.GetBlock(p.X, p.Y, p.Z).ToString());
-                Logger.LogToConsole( new Vector3I(vect.X, vect.Y, vect.Z - 1).ToString() + " is " + World.Map.GetBlock(p.X, p.Y, p.Z).ToString()); 
+                Logger.LogToConsole( v.ToString() + " is " + World.Map.GetBlock(v.X, v.Y, v.Z).ToString());
+                Logger.LogToConsole( new Vector3I(v.X, v.Y, v.Z - 1).ToString() + " is " + World.Map.GetBlock(v.X,v.Y, v.Z - 1).ToString() + "\n"); 
             }
 
             if (validPositions.Count() == 0)
@@ -351,9 +393,13 @@ namespace fCraft
                 return Position;
             }
 
-            //select a random position from the position list and return it
+            //select a random vector from the validPositions list, return as player pos
             Random rand = new Random();
-            return validPositions[rand.Next(validPositions.Count())];
+            Position p = (validPositions[rand.Next(validPositions.Count())]).ToPlayerCoords();
+            Logger.LogToConsole("Going to " + p.ToBlockCoords().ToString());
+            return p;
+
+            //TODO: Instead of randomly choosing a block, choose the one closest to the final target block
         } 
 
         #endregion

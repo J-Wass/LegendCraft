@@ -1,13 +1,17 @@
-LegendCraft Changelog v2.3.0
+LegendCraft Changelog v2.3.0 (in progress)
 Add: LegendCraft Webfront is now 500% better (thanks Liam Stanley)
 Add: AutoRank program
-Add: Bots
+Add: /Autorank
+Add: Bot system
+Add: /bot
 Add: /highlight (known as "selection cuboid" in cpe) [unfinished]
 Add: /forcehold
+Add: /setmodel
 Add: /Announce (message types in cpe)
 Add: /getblock (held block in cpe)
 Change: Better Auto-Updater is better
 Change: Huge improvements for mono users
+Change: Server now forces host to use ipv4 instead of ipv6 to prevent heartbeat issues
 
 LegendCraft Changelog v2.2.1
 Change: Auto updater works with github instead of mediafire
