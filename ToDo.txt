@@ -1,8 +1,5 @@
-LegendCraft v2.3.0 Roadmap
-[x]Possibly create autorank system
-[x]Create Bots
-[]Support CPE extensions of MessageType, HackControl, BlockPermission and SelectionCuboid
-[]If Bots can be made, do cool things with bots
+LegendCraft v2.4.0 Roadmap
+[]Finish adding in all CPE optionals
+[]Work on bots
 [x]Seduce Women, Obtain Currency
-[x]Convert downloads from mediafire over to github
 []More to come

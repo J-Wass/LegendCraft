@@ -1,4 +1,6 @@
-LegendCraft Changelog v2.3.0 (in progress)
+LegendCraft Changelog v2.4.0 (In progress)
+
+LegendCraft Changelog v2.3.0
 Add: LegendCraft Webfront is now 500% better (thanks Liam Stanley)
 Add: AutoRank program
 Add: /Autorank

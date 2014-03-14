@@ -30,7 +30,7 @@ namespace fCraft {
             get { return "LegendCraft " + LatestStable; }
         }
 
-        public const string LatestStable = "2.2.1";
+        public const string LatestStable = "2.3.0";
 
         public static string UpdateUrl { get; set; }
 

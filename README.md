@@ -3,7 +3,7 @@
 ![LegendCraft](http://i.imgur.com/YNPR6p0.png "Ya it's a logo deal with it")<br />
 
 Dowload the latest LegendCraft release here: 
-https://github.com/LeChosenOne/LegendCraft/releases/tag/2.2.1
+https://github.com/LeChosenOne/LegendCraft/releases/tag/2.3.0
 
 View all LegendCraft releases:
 https://github.com/LeChosenOne/LegendCraft/releases
@@ -132,6 +132,8 @@ or any other files from Minecraft... neither does 800Craft or LegendCraft.
 
 LegendCraft was developed by LeChosenOne, and DingusBungus <br />
 -With code contribution by Jonty800(who lifts) and Eeyle.
+
+LegendCraft webend was developed by Liam Stanley <br />
 
 Thanks to 800Craft code contributers:<br />
 -Rebelliousdude, boblol0909, WaterGod469 and Maicke98 for trying. 
