@@ -68,7 +68,11 @@ namespace fCraft {
         public bool GameOn = false;
         public GameMode gameMode = GameMode.NULL;
         public Vector3I footballPos;
-        public Player[, ,] positions; 
+        public Player[, ,] positions;
+        public Vector3I redFlag;
+        public Vector3I blueFlag;
+        public Vector3I redCTFSpawn;
+        public Vector3I blueCTFSpawn;
 
         /// <summary> Whether this world is currently pending unload 
         /// (waiting for block updates to finish processing before unloading). </summary>

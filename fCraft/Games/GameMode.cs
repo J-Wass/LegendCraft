@@ -17,6 +17,6 @@ namespace fCraft
         MineChallenge,
         TeamDeathMatch,
         Infection,
-        NULL //needed? lol
+        NULL 
     }
 }

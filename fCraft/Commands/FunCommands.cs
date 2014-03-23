@@ -130,7 +130,7 @@ THE SOFTWARE.*/
             Permissions = new Permission[] { Permission.Bots },
             Category = CommandCategory.Fun,
             IsConsoleSafe = false,
-            Usage = "/Bot <create / remove / removeAll / model / close / explode / list / summon / stop>", //add /bot move and /bot fly
+            Usage = "/Bot <create / remove / removeAll / model / close / explode / list / summon / stop / move / fly>",
             Help = "Commands for manipulating bots. For help and usage for the individual options, use /help bot <option>.",
             HelpSections = new Dictionary<string, string>{
                 { "create", "&H/Bot create <botname> <model>\n&S" +
@@ -149,10 +149,10 @@ THE SOFTWARE.*/
                                 "Prints out a list of all the bots on the server."},             
                 { "summon", "&H/Bot summon <botname>\n&S" +
                                 "Summons a bot from anywhere to your current position."},
-                /*{ "move", "&H/Bot move <botname> <player>\n&S" +
+                { "move", "&H/Bot move <botname> <player>\n&S" +
                                 "Moves the bot to a specific player."},
                 { "fly", "&H/Bot fly <botname>\n&S" +
-                                "Toggles whether the bot can fly or not."},*/
+                                "Toggles whether the bot can fly or not."},
                 { "stop", "&H/Bot stop <botname>\n&S" +
                                 "Stops the bot from doing any of its movement actions."}
             },
@@ -192,7 +192,7 @@ THE SOFTWARE.*/
                 player.Message("All bots removed from the server.");
                 return;
             }
-            /*else if (option.ToLower() == "move")
+            else if (option.ToLower() == "move")
             {
                 string targetBot = cmd.Next();
                 if (string.IsNullOrEmpty(targetBot))
@@ -227,7 +227,43 @@ THE SOFTWARE.*/
                 targetB.OldPosition = targetB.Position;
                 targetB.timeCheck.Start();
                 return;
-            } */
+            }
+            else if (option.ToLower() == "follow")
+            {
+                string targetBot = cmd.Next();
+                if (string.IsNullOrEmpty(targetBot))
+                {
+                    CdBot.PrintUsage(player);
+                    return;
+                }
+                string targetPlayer = cmd.Next();
+                if (string.IsNullOrEmpty(targetPlayer))
+                {
+                    CdBot.PrintUsage(player);
+                    return;
+                }
+
+                Bot targetB = player.World.FindBot(targetBot);
+                Player targetP = player.World.FindPlayerExact(targetPlayer);
+
+                if (targetP == null)
+                {
+                    player.Message("Could not find {0} on {1}! Please make sure you spelled their name correctly.", targetPlayer, player.World);
+                    return;
+                }
+                if (targetB == null)
+                {
+                    player.Message("Could not find {0} on {1}! Please make sure you spelled their name correctly.", targetBot, player.World);
+                    return;
+                }
+
+                player.Message("{0} is now following {1}!", targetB.Name, targetP.Name);
+                targetB.isMoving = true;
+                targetB.followTarget = targetP;
+                targetB.OldPosition = targetB.Position;
+                targetB.timeCheck.Start();
+                return;
+            }
 
             //finally away from the special cases
             string botName = cmd.Next(); //take in bot name arg
@@ -287,7 +323,7 @@ THE SOFTWARE.*/
                     player.Message("{0} was removed from the server.", bot.Name);
                     bot.removeBot();
                     break;
-                /*case "fly":
+                case "fly":
 
                     if (bot.isFlying)
                     {
@@ -298,7 +334,7 @@ THE SOFTWARE.*/
 
                     player.Message("{0} can now fly!", bot.Name);
                     bot.isFlying = true;
-                    break;*/
+                    break;
                 case "model":
                     
                     if (bot.Skin != "steve")
@@ -388,6 +424,7 @@ THE SOFTWARE.*/
                     bot.isMoving = false;
                     bot.timeCheck.Stop();
                     bot.timeCheck.Reset();
+                    bot.followTarget = null;
                     break;
                 default:
                     CdBot.PrintUsage(player);
@@ -530,6 +567,126 @@ THE SOFTWARE.*/
             return;
         }
 
+        #region Gamemodes
+
+        static readonly CommandDescriptor CdCTF = new CommandDescriptor
+        {
+            Name = "CTF",
+            Aliases = new[] { "CaptureTheFlag" },
+            Category = CommandCategory.World,
+            Permissions = new Permission[] { Permission.Games },
+            IsConsoleSafe = false,
+            Usage = "/CTF [Start | Stop | SetSpawn | SetFlag | Help]",
+            Help = "Manage the CTF Gamemode!",
+            Handler = CTFHandler
+        };
+
+        private static void CTFHandler(Player player, Command cmd)
+        {
+            string option = cmd.Next();
+            if (String.IsNullOrEmpty(option))
+            {
+                player.Message("Please select an option in the CTF menu!");
+                return;
+            }
+
+            World world = player.World;
+
+            switch (option.ToLower())
+            {
+                case "begin":
+                case "start":
+
+                    try
+                    {
+                        world.Hax = false;
+                        foreach (Player p in player.World.Players)
+                        {
+                            p.JoinWorld(world, WorldChangeReason.Rejoin);
+                        }
+
+                        CTF.GetInstance(world);
+                        CTF.Start();
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Log(LogType.Error, "Error: " + e + e.Message);
+                    }
+                    break;
+                case "end":
+                case "stop":
+                    if (world.gameMode != GameMode.CaptureTheFlag)
+                    {
+                        player.Message("There is no game of CTF currently going on!");
+                        break;
+                    }
+
+                    CTF.Stop(player);
+                    break;
+                case "setspawn":
+                    string team = cmd.Next();
+                    if (String.IsNullOrEmpty(team))
+                    {
+                        player.Message("Please select a team to set a spawn for!");
+                        break;
+                    }
+
+                    if (team.ToLower() == "red")
+                    {
+                        //set spawn to 2 block beneath the player
+                        Vector3I vector = player.Position.ToBlockCoords();
+                        world.redCTFSpawn = new Vector3I(vector.X, vector.Y, vector.Z - 2);
+                        player.Message("Red team spawn set.");
+                        break;
+                    }
+                    else if (team.ToLower() == "blue")
+                    {
+                        //set spawn to 2 block beneath the player
+                        Vector3I vector = player.Position.ToBlockCoords();
+                        world.blueCTFSpawn = new Vector3I(vector.X, vector.Y, vector.Z - 2);
+                        player.Message("Blue team spawn set.");
+                        break;
+                    }
+                    else
+                    {
+                        player.Message("You may only select the 'Blue' or 'Red' team!");
+                        break;
+                    }
+                case "setflag":
+                    string flag = cmd.Next();
+                    if (String.IsNullOrEmpty(flag))
+                    {
+                        player.Message("Please select a flag color to set!");
+                        break;
+                    }
+
+                    if (flag.ToLower() == "red")
+                    {
+                        //select red flag
+                        break;
+                    }
+                    else if (flag.ToLower() == "blue")
+                    {
+                        //select blue flag
+                        break;
+                    }
+                    else
+                    {
+                        player.Message("You may only select a 'Blue' or 'Red' colored flag!");
+                        break;
+                    }
+                case "help":
+                case "rules":
+                    player.Message("Start: Starts the CTF game.");
+                    player.Message("Stop: Ends the CTF game.");
+                    player.Message("SetSpawn: Usage is /CTF SetSpawn <Red|Blue>. The spawn for each team will be set at your feet. Both spawns must be set for the game to begin.");
+                    player.Message("SetFlag: Usage is /CTF SetFlag <Red|Blue>. The next block clicked will be the corresponding team's flag. The blue flag must be a blue wool block, and the red flag must be a red wool block.");
+                    break;
+                default:
+                    CdCTF.PrintUsage(player);
+                    break;
+            }
+        }
 
         static readonly CommandDescriptor CdInfection = new CommandDescriptor
         {
@@ -717,7 +874,7 @@ THE SOFTWARE.*/
                     player.Message("TDM games cannot be played on the main world");
                     return;
                 }
-                if (world.gameMode == GameMode.TeamDeathMatch)
+                if (world.gameMode != GameMode.NULL)
                 {
                     player.Message("There is already a game going on");
                     return;
@@ -1105,7 +1262,7 @@ THE SOFTWARE.*/
                     player.Message("FFA games cannot be played on the main world");
                     return;
                 }
-                if (world.gameMode == GameMode.FFA)
+                if (world.gameMode != GameMode.NULL)
                 {
                     player.Message("There is already a game of FFA going on");
                     return;
@@ -1814,7 +1971,7 @@ THE SOFTWARE.*/
             }
         }
 
-
+        #endregion
 
         static readonly CommandDescriptor CdInsult = new CommandDescriptor
         {

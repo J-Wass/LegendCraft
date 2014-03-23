@@ -1,4 +1,4 @@
-﻿/* Copyright (c) <2014> <LeChosenOne, DingusBungus>
+﻿﻿/* Copyright (c) <2014> <LeChosenOne, DingusBungus>
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -109,11 +109,17 @@ namespace AutoRank
         {
             bool layered = false;
             //since Load() is more complicated than Save(), i'll use XDocument instead of XMLReader
+
+            if (!File.Exists("Autorank.xml"))
+            {
+                MessageBox.Show("Autorank.xml not found, using defaults. Ignore this message if this is your first time running autorank.");
+                return;
+            }
             XDocument doc = XDocument.Load("Autorank.xml");
             XElement docConfig = doc.Root;
 
             //load each rank change
-            foreach(XElement mainElement in docConfig.Elements())
+            foreach (XElement mainElement in docConfig.Elements())
             {
                 //load each condition in each rank change
                 foreach (XAttribute conditional in mainElement.Attributes())
@@ -140,6 +146,11 @@ namespace AutoRank
         /// </summary>
         public static void LoadRankList()
         {
+            if (!File.Exists("config.xml"))
+            {
+                MessageBox.Show("Error, config.xml is either missing or damaged. Please make sure configGUI.exe was run prior to autorank. Program will now close.");
+                Application.Exit();
+            }
             XDocument doc = XDocument.Load("config.xml");
             XElement docConfig = doc.Root;
             XElement rankList = docConfig.Element("Ranks");

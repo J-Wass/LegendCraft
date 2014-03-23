@@ -87,7 +87,6 @@ namespace fCraft
         //For CoolDown Timers 
         public DateTime LastUsedSlap;
         public DateTime LastUsedKill;
-        public DateTime LastUsedLeBot;
         public DateTime LastUsedInsult;
         public DateTime LastUsedSwag;
         public DateTime LastUsedDingusInfo;
@@ -123,6 +122,14 @@ namespace fCraft
         public bool isPlayingInfection = false;
         public bool isInfected = false;
 
+        //Capture The Flag
+        public bool isPlayingCTF = false;
+        public bool hasBlueFlag = false;
+        public bool hasRedFlag = false;
+        public bool CTFRedTeam = false;
+        public bool CTFBlueTeam = false;
+        public short CTFKills = 0;
+        public short CTFCaptures = 0;
 
         #region Rank
 

@@ -65,6 +65,7 @@ namespace fCraft
         private SchedulerTask thread;
 
         //movement
+        public Player followTarget = null;
         public bool isMoving = false;
         public bool isFlying = false;
         public Position OldPosition;
@@ -100,6 +101,13 @@ namespace fCraft
         {
             if (isMoving)
             {
+                if (followTarget != null)
+                {
+                    Player p = Server.FindPlayers(followTarget.Name, false)[0];
+                    Logger.LogToConsole("Chaning pos to " + p.Name + " at " + p.Position.ToString());
+                    NewPosition = p.Position;
+                    beganMoving = false;
+                }
                 if (timeCheck.ElapsedMilliseconds > frequency) 
                 {
                     Move();
@@ -218,6 +226,7 @@ namespace fCraft
             explode(new Vector3I(vector.X - 1, vector.Y - 1, vector.Z - 1), 0.5, 0.5);
         }
 
+
         /// <summary>
         /// Basic information about the bot
         /// </summary>
@@ -278,6 +287,7 @@ namespace fCraft
                 //create an IEnumerable list of all blocks that will be in the path between blocks
                 IEnumerable<Vector3I> positions = fCraft.Drawing.LineDrawOperation.LineEnumerator(Position.ToBlockCoords(), NewPosition.ToBlockCoords());
 
+                //edit IEnumarable into List
                 foreach(Vector3I v in positions)
                 {
                     posList.Add(v);

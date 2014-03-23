@@ -81,8 +81,8 @@ namespace AutoRank
                 MessageBox.Show(String.Format("You cannot rank yourself from {0} to {0}!", prevRank.Text));
                 return;
             }
-            if(string.IsNullOrEmpty(prevRank.Text) || string.IsNullOrEmpty(newRank.Text) || string.IsNullOrEmpty(value.Text) ||
-               string.IsNullOrEmpty(condition.Text) || string.IsNullOrEmpty(op.Text) || string.IsNullOrEmpty(option.Text))                            
+            if (string.IsNullOrEmpty(prevRank.Text) || string.IsNullOrEmpty(newRank.Text) || string.IsNullOrEmpty(value.Text) ||
+               string.IsNullOrEmpty(condition.Text) || string.IsNullOrEmpty(op.Text) || string.IsNullOrEmpty(option.Text))
             {
                 MessageBox.Show("Oops... One or more of the fields were not filled out!");
                 return;
@@ -136,7 +136,7 @@ namespace AutoRank
                     Settings.tempChildNodes.Add(new TreeNode("AND: If " + condition.Text + " " + op.Text + " " + value.Text));
                     TreeNode[] MultiChildNode = Settings.tempChildNodes.ToArray();
                     TreeNode MultiFinalNode = new TreeNode(prevRank.Text + "-" + newRank.Text, MultiChildNode);
-                    Settings.multiLayered = false;                 
+                    Settings.multiLayered = false;
                     TreeList.Nodes.Add(MultiFinalNode);
                 }
                 //only 1 condition

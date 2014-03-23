@@ -1,4 +1,6 @@
 LegendCraft Changelog v2.4.0 (In progress)
+Change: Fixes to autorank.xml throwing errors when files are missing
+Remove: LeBot (HelperBot taking over)
 
 LegendCraft Changelog v2.3.0
 Add: LegendCraft Webfront is now 500% better (thanks Liam Stanley)
