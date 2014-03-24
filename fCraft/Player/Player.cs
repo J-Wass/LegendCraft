@@ -1326,6 +1326,61 @@ namespace fCraft
                 return false;
             }
 
+            #region CaptureTheFlag
+            if (Info.placingBlueFlag)
+            {
+                Info.placingBlueFlag = false;
+                if (World.Map.GetBlock(coord) != Block.Blue)
+                {
+                    Message("The blue flag must be placed on blue wool! You are trying to place the flag on {0}.", World.Map.GetBlock(coord).ToString());
+                    RevertBlockNow(coord);
+                    return false;
+                }
+
+                World.blueFlag = coord;
+                Message("Blue flag placed!");
+                RevertBlockNow(coord);
+            }
+            if (Info.placingRedFlag)
+            {
+                Info.placingRedFlag = false;
+                if (World.Map.GetBlock(coord) != Block.Red)
+                {
+                    Message("The red flag must be placed on red wool! You are trying to place the flag on {0}.", World.Map.GetBlock(coord).ToString());
+                    RevertBlockNow(coord);
+                    return false;
+                }
+
+                World.redFlag = coord;
+                Message("Red flag placed!");
+                RevertBlockNow(coord);
+            }
+
+            if (Info.isPlayingCTF)
+            {
+                if (Info.CTFRedTeam)
+                {
+                    if (coord == World.blueFlag)
+                    {
+                        //at this point, the player is on the red team and has stolen the blue team flag
+                        World.Players.Message("{0} has stolen the blue flag!", Name);
+                        Info.hasBlueFlag = true;
+                    }
+                }
+
+                if (Info.CTFBlueTeam)
+                {
+                    if (coord == World.redFlag)
+                    {
+                        //at this point, the player is on the blue team and has stolen the red team flag
+                        World.Players.Message("{0} has stolen the red flag!", Name);
+                        Info.hasRedFlag = true;
+                    }
+                }
+            }
+
+            #endregion
+
             //if in a command using markSets
             if (markSet > 0)
             {

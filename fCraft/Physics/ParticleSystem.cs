@@ -12,6 +12,9 @@
 
 //You should have received a copy of the GNU General Public License
 //along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+//Modified LegendCraft Team <2013-2014>
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -398,6 +401,67 @@ namespace fCraft
 
 		public void HitPlayer(World world, Vector3I pos, Player hitted, Player by, ref int restDistance, IList<BlockUpdate> updates)
 		{
+            //Capture the flag
+            if (by.Info.isPlayingCTF)
+            {
+                //Friendly fire
+                if ((hitted.Info.CTFBlueTeam && by.Info.CTFRedTeam) || (hitted.Info.CTFBlueTeam && by.Info.CTFRedTeam))
+                {
+                    by.Message("{0} is on your team!", hitted.Name);
+                    return;
+                }
+
+                //Take the hit, one in ten chance of a critical hit which does 50 damage instead of 25
+                int critical = (new Random()).Next(0, 9);
+
+                if (critical == 0)
+                {
+                    hitted.Info.CTFHealth -= 50;
+                    world.Players.Message("{0} landed a critical shot on {1}!", by.Name, hitted.Name);
+                }
+                else
+                {
+                    hitted.Info.CTFHealth -= 25;
+                }
+
+                //If the hit player's health is 0 or less, they die
+                if (hitted.Info.CTFHealth <= 0)
+                {
+
+                    hitted.Kill(world, String.Format("{0}&S was shot by {1}", hitted.Name, by.Name));
+                    hitted.Info.CTFKills++;
+
+                    if (hitted.Info.hasRedFlag)
+                    {
+                        world.Players.Message("The red flag has been returned.");
+                        hitted.Info.hasRedFlag = false;
+
+                        //Put flag back
+                        BlockUpdate blockUpdate = new BlockUpdate(null, world.redFlag, Block.Red);
+                        foreach (Player p in world.Players)
+                        {
+                            p.World.Map.QueueUpdate(blockUpdate);
+                        }
+                    }
+
+                    if (hitted.Info.hasBlueFlag)
+                    {
+                        world.Players.Message("The blue flag has been returned.");
+                        hitted.Info.hasBlueFlag = false;
+
+                        //Put flag back
+                        BlockUpdate blockUpdate = new BlockUpdate(null, world.blueFlag, Block.Blue);
+                        foreach (Player p in world.Players)
+                        {
+                            p.World.Map.QueueUpdate(blockUpdate);
+                        }
+                    }
+                }
+
+                return;
+            }
+
+            //TDM and FFA
             if ((hitted.Info.isOnBlueTeam && by.Info.isOnBlueTeam) || (hitted.Info.isOnRedTeam && by.Info.isOnRedTeam))
             {
                 by.Message("{0} is on your team!", hitted.ClassyName);

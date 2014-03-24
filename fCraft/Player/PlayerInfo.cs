@@ -130,6 +130,9 @@ namespace fCraft
         public bool CTFBlueTeam = false;
         public short CTFKills = 0;
         public short CTFCaptures = 0;
+        public bool placingRedFlag = false;
+        public bool placingBlueFlag = false;
+        public short CTFHealth = 100;
 
         #region Rank
 

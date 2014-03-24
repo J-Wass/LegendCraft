@@ -36,20 +36,14 @@ namespace fCraft
             CommandManager.RegisterCommand(CdThrow);
             CommandManager.RegisterCommand(CdInsult);
 
-            //FFA
             CommandManager.RegisterCommand(CdFFAStatistics);
             CommandManager.RegisterCommand(CdFreeForAll);
-            //TDM
             CommandManager.RegisterCommand(CdTDStatistics);
             CommandManager.RegisterCommand(CdTeamDeathMatch);
-            //Infection
             CommandManager.RegisterCommand(CdInfection);
-
-            //SetModel
             CommandManager.RegisterCommand(CdSetModel);
-
-            //Bot
             CommandManager.RegisterCommand(CdBot);
+            CommandManager.RegisterCommand(CdCTF);
 
             Player.Moving += PlayerMoved;
         }
@@ -624,6 +618,12 @@ THE SOFTWARE.*/
                     CTF.Stop(player);
                     break;
                 case "setspawn":
+                    if (world.gameMode != GameMode.NULL)
+                    {
+                        player.Message("You cannot change spawns during the game!");
+                        return;
+                    }
+
                     string team = cmd.Next();
                     if (String.IsNullOrEmpty(team))
                     {
@@ -653,6 +653,12 @@ THE SOFTWARE.*/
                         break;
                     }
                 case "setflag":
+                    if (world.gameMode != GameMode.NULL)
+                    {
+                        player.Message("You cannot change flags during the game!");
+                        return;
+                    }
+
                     string flag = cmd.Next();
                     if (String.IsNullOrEmpty(flag))
                     {
@@ -663,11 +669,14 @@ THE SOFTWARE.*/
                     if (flag.ToLower() == "red")
                     {
                         //select red flag
+                        player.Message("Please select where you wish to place the red flag. The red flag must be red wool.");
+                        player.Info.placingRedFlag = true;
                         break;
                     }
                     else if (flag.ToLower() == "blue")
                     {
-                        //select blue flag
+                        player.Message("Please select where you wish to place the blue flag. The blue flag must be blue wool.");
+                        player.Info.placingBlueFlag = true;
                         break;
                     }
                     else

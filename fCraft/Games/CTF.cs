@@ -17,7 +17,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
 
-//ToDo: Killing someone with a gun who has a flag removed the flag, setting flags
+//Todo: backstabs and stats
 
 using System;
 using System.Collections.Generic;
@@ -66,7 +66,7 @@ namespace fCraft
                 world_ = world;
                 instance = new CTF();
                 startTime = DateTime.Now;
-                task_ = new SchedulerTask(Interval, true).RunForever(TimeSpan.FromSeconds(1));
+                task_ = new SchedulerTask(Interval, true).RunForever(TimeSpan.FromSeconds(1));//run game loop every second
             }
             return instance;
         }
@@ -86,12 +86,11 @@ namespace fCraft
 
         public static void Stop(Player p) //for stopping the game early
         {
+            //unhook moving event
+            Player.Moving -= PlayerMoving;
 
             world_.Hax = true;
-            foreach (Player pl in world_.Players)
-            {
-                pl.JoinWorld(world_, WorldChangeReason.Rejoin);
-            }
+
             if (p != null && world_ != null)
             {
                 world_.Players.Message("{0}&S stopped the game of CTF early on world {1}",
@@ -114,7 +113,7 @@ namespace fCraft
                 task.Stop();
                 return;
             }
-            if (world_.gameMode != GameMode.TeamDeathMatch)
+            if (world_.gameMode != GameMode.CaptureTheFlag)
             {
                 task.Stop();
                 world_ = null;
@@ -122,15 +121,23 @@ namespace fCraft
             }
             if (!started)
             {
+                //create a player moving event
+                Player.Moving += PlayerMoving;
+
                 if (world_.Players.Count() < 2) //in case players leave the world or disconnect during the start delay
                 {
                     world_.Players.Message("&WCTF&s requires at least 2 people to play.");
                     return;
                 }
+
+                //once timedelay is up, we start
                 if (startTime != null && (DateTime.Now - startTime).TotalSeconds > timeDelay)
                 {
                     foreach (Player p in world_.Players)
                     {
+                        assignTeams(p);
+
+                        p.JoinWorld(world_, WorldChangeReason.Rejoin);
                         if (p.Info.isOnRedTeam) { p.TeleportTo(world_.redCTFSpawn.ToPlayerCoords()); } //teleport players to the team spawn
                         if (p.Info.isOnBlueTeam) { p.TeleportTo(world_.blueCTFSpawn.ToPlayerCoords()); }
 
@@ -411,5 +418,58 @@ namespace fCraft
             return;
         }
 
+        //check if player tagged another player
+        public static void PlayerMoving(object poo, fCraft.Events.PlayerMovingEventArgs e)
+        {
+            //If the player has the red flag
+            if (e.Player.Info.hasRedFlag)
+            {
+                Vector3I oldPos = new Vector3I(e.OldPosition.X / 32, e.OldPosition.Y / 32, e.OldPosition.Z / 32); //get positions as block coords
+                Vector3I newPos = new Vector3I(e.NewPosition.X / 32, e.NewPosition.Y / 32, e.NewPosition.Z / 32);
+
+                if (oldPos.X != newPos.X || oldPos.Y != newPos.Y || oldPos.Z != newPos.Z) //check if player has moved at least one block
+                {
+                    //If the player is near enough to the blue spawn
+                    if (e.NewPosition.DistanceSquaredTo(world_.blueCTFSpawn.ToPlayerCoords()) <= 42 * 42)
+                    {
+                        world_.Players.Message("{0} has successfully capped the red flag. The score is now Red:{1} and Blue {2}.", e.Player.Name, redScore, blueScore);
+                        e.Player.Info.hasRedFlag = false;
+                        e.Player.Info.CTFCaptures++;
+
+                        //Replace red block as flag
+                        BlockUpdate blockUpdate = new BlockUpdate(null, world_.redFlag, Block.Red);
+                        foreach (Player p in world_.Players)
+                        {
+                            p.World.Map.QueueUpdate(blockUpdate);
+                        }
+                    }
+                }
+            }
+
+            //If the player has the blue flag
+            if (e.Player.Info.hasBlueFlag)
+            {
+                Vector3I oldPos = new Vector3I(e.OldPosition.X / 32, e.OldPosition.Y / 32, e.OldPosition.Z / 32); //get positions as block coords
+                Vector3I newPos = new Vector3I(e.NewPosition.X / 32, e.NewPosition.Y / 32, e.NewPosition.Z / 32);
+
+                if (oldPos.X != newPos.X || oldPos.Y != newPos.Y || oldPos.Z != newPos.Z) //check if player has moved at least one block
+                {
+                    //If the player is near enough to the red spawn
+                    if (e.NewPosition.DistanceSquaredTo(world_.redCTFSpawn.ToPlayerCoords()) <= 42 * 42)
+                    {
+                        world_.Players.Message("{0} has successfully capped the blue flag. The score is now Red:{1} and Blue {2}.", e.Player.Name, redScore, blueScore);
+                        e.Player.Info.hasBlueFlag = false;
+                        e.Player.Info.CTFCaptures++;
+
+                        //Replace blue block as flag
+                        BlockUpdate blockUpdate = new BlockUpdate(null, world_.blueFlag, Block.Blue);
+                        foreach (Player p in world_.Players)
+                        {
+                            p.World.Map.QueueUpdate(blockUpdate);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
