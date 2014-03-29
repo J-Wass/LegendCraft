@@ -74,8 +74,8 @@ namespace fCraft
         public Position OldPosition;
         public Position NewPosition;
         public Stopwatch timeCheck = new Stopwatch();
-        public static readonly double speed = 4 * 32; //speed of bot
-        public static readonly double frequency = 1 / (speed * 1000); //frequency, in Block Hz of the bot
+        public static readonly double speed = 6.14; //Measured frequency at 6.14 blocks per second
+        public static readonly double period = 1 / ((speed) * 1000); //Invert speed and multiply by 1000 to get period
         public bool beganMoving;
         public List<Vector3I> PositionList = new List<Vector3I>();//Vectors in this list are connected, but not neccessarily in a line
 
@@ -111,7 +111,9 @@ namespace fCraft
                     NewPosition = p.Position;
                     beganMoving = false;
                 }
-                if (timeCheck.ElapsedMilliseconds > frequency) 
+
+                //once the period is up, move the bot
+                if (timeCheck.ElapsedMilliseconds > period) 
                 {
                     Move();
                     timeCheck.Restart();
@@ -121,7 +123,7 @@ namespace fCraft
             //If bot is not flying, drop down to nearest solid block
             if (!isFlying)
             {
-                Drop();
+                //Drop();
             }
         }
 
@@ -268,7 +270,7 @@ namespace fCraft
         }
 
         /// <summary>
-        /// Bot will determine the shortest route to a position and take it. Use Move() when the bot is needed to move in a straight line.
+        /// Creates the shortest route between two points, used in Move()
         /// </summary>
         private void Path(Vector3I targetPosition)
         {
@@ -277,18 +279,20 @@ namespace fCraft
             PathFinder pathFinder;
 
             Vector3I botPos = Position.ToBlockCoords();
-            for (int z = 0; z < World.Map.Length; z++)
+
+            //Loop through all XZ coordinates of the map
+            for (int y = 0; y < World.Map.Length; y++)
             {
                 for (int x = 0; x < World.Map.Width; x++)
                 {
                     //Find all valid positions, set as either an available tile or blocked tile
-                    if (ValidBlock(new Vector3I(x, botPos.Y, z)) && ValidBlock(new Vector3I(x, botPos.Y - 1, z)))
+                    if (ValidBlock(new Vector3I(x, y, botPos.Z)) && ValidBlock(new Vector3I(x, y, botPos.Z - 1)))
                     {
-                        grid[x, z] = PathFinderHelper.EMPTY_TILE;
+                        grid[x, y] = PathFinderHelper.EMPTY_TILE;
                     }
                     else
                     {
-                        grid[x, z] = PathFinderHelper.BLOCKED_TILE;
+                        grid[x, y] = PathFinderHelper.BLOCKED_TILE;
                     }
                 }
             }
@@ -296,11 +300,15 @@ namespace fCraft
             //set pathFinder to the grid just created, disallow diagonals
             pathFinder = new PathFinder(grid);
             pathFinder.Diagonals = false;
-            pathFinder.PunishChangeDirection = true;
+            pathFinder.PunishChangeDirection = false;
+            
 
-            Point botInitPoint = new Point(botPos.X, Position.Z);
-            Point botFinalPoint = new Point(NewPosition.ToBlockCoords().X, NewPosition.ToBlockCoords().Z);
-            List<PathFinderNode> path = pathFinder.FindPath(botInitPoint, botFinalPoint);
+            Point botInitPoint = new Point(botPos.X, botPos.Y);
+            Point botFinalPoint = new Point(NewPosition.ToBlockCoords().X, NewPosition.ToBlockCoords().Y);
+
+            //Implement A* to determine optimal path between two spots
+            List<PathFinderNode> path = new PathFinderFast(grid).FindPath(botInitPoint, botFinalPoint);
+
             if (path == null)
             {
                 //There is no path, stop moving
@@ -312,22 +320,26 @@ namespace fCraft
             //Convert node to block positions
             foreach(PathFinderNode node in path)
             {
-                PositionList.Add(new Vector3I(node.X, botPos.Y, node.Y));
+                PositionList.Add(new Vector3I(node.X, node.Y, botPos.Z));
             }
+
+            //A* returns points in the opposite order needed, reverse in order to get proper order
+            PositionList.Reverse();
+
 
         }
 
         /// <summary>
-        /// Called from NetworkLoop. Intended to act like gravity and pull bot down
+        /// Intended to act like gravity and pull bot down
         /// </summary>
         private void Drop()
         {
             //generate vector at block coord under the feet of the bot
             Vector3I pos = Position.ToBlockCoords();
 
-            Vector3I under1 = new Vector3I(pos.X, pos.Y - 1, pos.Z);
+            Vector3I under1 = new Vector3I(pos.X, pos.Y, pos.Z - 1);
 
-            Vector3I under2 = new Vector3I(pos.X, pos.Y - 2, pos.Z);
+            Vector3I under2 = new Vector3I(pos.X, pos.Y, pos.Z - 2);
 
             if (ValidBlock(under1) && ValidBlock(under2))
             {
@@ -336,7 +348,7 @@ namespace fCraft
         }
 
         /// <summary>
-        /// Moves the bot in a straight line to a location. Use Path() when the bot can't move in a straight line.
+        /// Attempts to move bot between two lines, will use a straight line if possible
         /// </summary>
         private void Move()
         {
@@ -344,9 +356,12 @@ namespace fCraft
             {
                 return;
             }
-            //if player has not begun to move, create an IEnumerable of the path to take
+
+            //Create vector list of positions
             if (!beganMoving)
             {
+                beganMoving = true;
+
                 //create an IEnumerable list of all blocks that will be in the path between blocks
                 IEnumerable<Vector3I> positions = fCraft.Drawing.LineDrawOperation.LineEnumerator(Position.ToBlockCoords(), NewPosition.ToBlockCoords());
 
@@ -361,20 +376,29 @@ namespace fCraft
                 //Make sure that each block in the line is a fluid
                 foreach (Vector3I vect in PositionList)
                 {
-                    if (!ValidBlock(vect))
+                    Vector3I underVect = new Vector3I(vect.X, vect.Y, vect.Z - 1);
+
+                    if (!ValidBlock(vect) || !ValidBlock(underVect))
                     {
                         clear = false;
                     }
                 }
 
+                //if list contains blocks that aren't air blocks, bot cannot make a direct line to target, need a path
                 if (!clear)
                 {
                     PositionList.Clear();
                     Path(NewPosition.ToBlockCoords());
                 }
-
-                beganMoving = true;
             }
+
+            //once the posList is empty, we have reached the final point
+            if (PositionList.Count() == 0 || Position == NewPosition)
+            {
+                isMoving = false;
+                beganMoving = false;
+                return;
+            }       
 
             //determine distance from the target player to the target bot
             double groundDistance = Math.Sqrt(Math.Pow((NewPosition.X - OldPosition.X),2) + Math.Pow((NewPosition.Y - OldPosition.Y),2));
@@ -397,16 +421,9 @@ namespace fCraft
                 L = (byte)(lAngle)
             };
 
+            //Remove the position the bot just went to in the list, teleport to that created position, change position to created position
             PositionList.Remove(PositionList.First());
-
-            //once the posList is empty, we have reached the final point
-            if (PositionList.Count() == 0 || Position == NewPosition)
-            {
-                isMoving = false;
-                beganMoving = false;
-                return;
-            }       
-
+            Position = targetPosition;
             teleportBot(targetPosition);                       
         }
  
