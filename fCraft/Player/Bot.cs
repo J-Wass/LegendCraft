@@ -74,7 +74,8 @@ namespace fCraft
         public static readonly double speed = 4 * 32; //speed of bot
         public static readonly double frequency = 1 / (speed * 1000); //frequency, in Block Hz of the bot
         public bool beganMoving;
-        public List<Vector3I> posList = new List<Vector3I>();
+        public List<Vector3I> PositionLine = new List<Vector3I>();
+        public List<Vector3I> ValidPositions = new List<Vector3I>();
 
         #region Public Methods
 
@@ -159,7 +160,7 @@ namespace fCraft
         }
 
         /// <summary>
-        /// Updates the position and world of the bot for everyone in the world, used to replace the tempRemoveBot() method
+        /// Updates the position and world of the bot for everyone in the world, used to replace bot from the tempRemoveBot() method
         /// </summary>
         public void updateBotPosition()
         {
@@ -241,6 +242,56 @@ namespace fCraft
 
         #region movement
 
+        //Set the valid block positions that a bot can walk through
+        private void SetBlocks()
+        {
+            Vector3I botPos = Position.ToBlockCoords();
+
+            //loop through all z and x coordinates to get a list of all blocks on the 2d plane
+            for (int z = 0; z < World.Map.Length; z++)
+            {
+                for (int x = 0; x < World.Map.Length; x++)
+                {
+                    //If position is a fluid block, add position (Also make sure that feet don't go through blocks, so check head Y's position - 1
+                    if (ValidBlock(new Vector3I(x, botPos.Y, z)) && ValidBlock(new Vector3I(x, botPos.Y - 1, z)))
+                    {
+                        ValidPositions.Add(new Vector3I(x, botPos.Y, z));
+                    }
+                }
+            }
+        }
+
+        //If vector is a fluid block, return true
+        private bool ValidBlock(Vector3I vector)
+        {
+            switch(World.Map.GetBlock(vector))
+            {
+                case Block.Air:
+                case Block.Water:
+                case Block.StillWater:
+                case Block.Lava:
+                case Block.StillLava:
+                case Block.RedFlower:
+                case Block.YellowFlower:
+                case Block.RedMushroom:
+                case Block.BrownMushroom:
+                case Block.Plant:
+                case Block.Fire: //only epic bots can walk through fire
+                case Block.Snow:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        /// <summary>
+        /// Bot will determine the shortest route to a position and take it. Use Move() when the bot is needed to move in a straight line.
+        /// </summary>
+        private void Path()
+        {
+            //AI here lol
+        }
+
         /// <summary>
         /// Called from NetworkLoop. Intended to act like gravity and pull bot down
         /// </summary>
@@ -269,33 +320,27 @@ namespace fCraft
         }
 
         /// <summary>
-        /// Called from NetworkLoop. Bot will gradually move to a position
+        /// Moves the bot in a straight line to a location. Use Path() when the bot can't move in a straight line.
         /// </summary>
         private void Move()
         {
-            Logger.LogToConsole("Move() called.");
             if (!isMoving)
             {
-                Logger.LogToConsole("Move() canceled.");
                 return;
             }
             //if player has not begun to move, create an IEnumerable of the path to take
             if (!beganMoving)
             {
-                Logger.LogToConsole("First move. Pos: " + this.Position.ToBlockCoords() + " to " + NewPosition.ToBlockCoords());
-
                 //create an IEnumerable list of all blocks that will be in the path between blocks
                 IEnumerable<Vector3I> positions = fCraft.Drawing.LineDrawOperation.LineEnumerator(Position.ToBlockCoords(), NewPosition.ToBlockCoords());
 
                 //edit IEnumarable into List
                 foreach(Vector3I v in positions)
                 {
-                    posList.Add(v);
+                    PositionLine.Add(v);
                 }
                 beganMoving = true;
             }
-
-            Logger.LogToConsole("Moving. Pos: " + this.Position.ToBlockCoords() + " to " + NewPosition.ToBlockCoords());
 
             //determine distance from the target player to the target bot
             double groundDistance = Math.Sqrt(Math.Pow((NewPosition.X - OldPosition.X),2) + Math.Pow((NewPosition.Y - OldPosition.Y),2));
@@ -307,110 +352,30 @@ namespace fCraft
             //use arctan to find appropriate angles (doesn't work yet)
             double rAngle = Math.Atan((double)zDisplacement / groundDistance);//pitch
             double lAngle = Math.Atan((double)xDisplacement / yDisplacement);//yaw
-
-
-            Logger.LogToConsole("Creating Position.");
         
             //create a new position with the next pos list in the posList, then remove that pos
             Position targetPosition = new Position
             {
-                X = (short)(posList.First().X * 32 + 16),
-                Y = (short)(posList.First().Y * 32 + 16),
-                Z = (short)(posList.First().Z * 32 + 16),
+                X = (short)(PositionLine.First().X * 32 + 16),
+                Y = (short)(PositionLine.First().Y * 32 + 16),
+                Z = (short)(PositionLine.First().Z * 32 + 16),
                 R = (byte)(rAngle),
                 L = (byte)(lAngle)
             };
 
-            posList.Remove(posList.First());
+            PositionLine.Remove(PositionLine.First());
 
             //once the posList is empty, we have reached the final point
-            if (posList.Count() == 0 || Position == NewPosition)
+            if (PositionLine.Count() == 0 || Position == NewPosition)
             {
-                Logger.LogToConsole("Final Position reached.");
                 isMoving = false;
                 beganMoving = false;
                 return;
             }       
 
-            Logger.LogToConsole("Teleporting bot.");
-            AttemptMove(targetPosition);                       
+            teleportBot(targetPosition);                       
         }
-
-        /// <summary>
-        /// Attempt for the bot to move into a position, if blocked, find and teleport to a new position
-        /// </summary>
-        private void AttemptMove(Position pos)
-        {
-            Logger.LogToConsole("Attempting to move.");
-
-            //create a new position one block under targetPos
-            Position underPosition = new Position
-            {
-                X = (short)(pos.X),
-                Y = (short)(pos.Y),
-                Z = (short)(pos.Z - 32)
-            };         
-
-            //check whether the next block + the block under it are air
-            if ((World.Map.GetBlock(pos.ToBlockCoords()) != Block.Air) || (World.Map.GetBlock(underPosition.ToBlockCoords()) != Block.Air))
-            {
-                //if a non air-block is in the way, find the next open position and restart the move
-                beganMoving = false;
-                pos = FindNewPos();
-            }
-
-            teleportBot(pos);
-            Position = pos;
-            
-        }
-
-        /// <summary>
-        /// Generates a new position for the bot to take when path is blocked
-        /// </summary>
-        private Position FindNewPos()
-        {
-            Logger.LogToConsole("Finding new position");
-            Vector3I pos = Position.ToBlockCoords();
-
-            //create a position list and add all 4 cardinal directions, plus a possibility for stepping up one block in any direction
-            List<Vector3I> positionList = new List<Vector3I>();
-            List<Vector3I> validPositions = new List<Vector3I>();
-            positionList.Add(new Vector3I(pos.X + 1, pos.Y, pos.Z));
-            positionList.Add(new Vector3I(pos.X - 1, pos.Y, pos.Z));
-            positionList.Add(new Vector3I(pos.X, pos.Y + 1, pos.Z));
-            positionList.Add(new Vector3I(pos.X, pos.Y - 1, pos.Z));
-
-            positionList.Add(new Vector3I(pos.X + 1, pos.Y, pos.Z + 1));
-            positionList.Add(new Vector3I(pos.X - 1, pos.Y, pos.Z + 1));
-            positionList.Add(new Vector3I(pos.X, pos.Y + 1, pos.Z + 1));
-            positionList.Add(new Vector3I(pos.X, pos.Y - 1, pos.Z + 1));
-
-            foreach (Vector3I v in positionList)
-            {
-                if (World.Map.GetBlock(v) == Block.Air && World.Map.GetBlock(new Vector3I(v.X, v.Y, v.Z - 1)) == Block.Air)
-                {
-                    validPositions.Add(v);
-                }
-                Logger.LogToConsole( v.ToString() + " is " + World.Map.GetBlock(v.X, v.Y, v.Z).ToString());
-                Logger.LogToConsole( new Vector3I(v.X, v.Y, v.Z - 1).ToString() + " is " + World.Map.GetBlock(v.X,v.Y, v.Z - 1).ToString() + "\n"); 
-            }
-
-            if (validPositions.Count() == 0)
-            {
-                //bot got trapped, stop moving
-                Logger.LogToConsole("Bot stopped moving");
-                isMoving = false;
-                return Position;
-            }
-
-            //select a random vector from the validPositions list, return as player pos
-            Random rand = new Random();
-            Position p = (validPositions[rand.Next(validPositions.Count())]).ToPlayerCoords();
-            Logger.LogToConsole("Going to " + p.ToBlockCoords().ToString());
-            return p;
-
-            //TODO: Instead of randomly choosing a block, choose the one closest to the final target block
-        } 
+ 
 
         #endregion
 
