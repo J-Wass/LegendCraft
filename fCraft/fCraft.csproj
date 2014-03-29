@@ -90,6 +90,9 @@
     <DocumentationFile>..\bin\Debug\fCraft.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AStarPathFinder">
+      <HintPath>.\AStarPathFinder.dll</HintPath>
+    </Reference>
     <Reference Include="ServiceStack.Text">
       <HintPath>.\ServiceStack.Text.dll</HintPath>
     </Reference>

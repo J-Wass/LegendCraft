@@ -24,11 +24,14 @@ using System.Text;
 using System.Threading;
 using System.Diagnostics;
 
+//AStarPathFinder (c) http://www.csharpcity.com/reusable-code/a-path-finding-library/
+using DeenGames.Utils;
+using DeenGames.Utils.AStarPathFinder;
+
 namespace fCraft
 {
     public class Bot
     {
-
         /// <summary>
         /// Name of the bot. 
         /// </summary>
@@ -74,8 +77,7 @@ namespace fCraft
         public static readonly double speed = 4 * 32; //speed of bot
         public static readonly double frequency = 1 / (speed * 1000); //frequency, in Block Hz of the bot
         public bool beganMoving;
-        public List<Vector3I> PositionLine = new List<Vector3I>();
-        public List<Vector3I> ValidPositions = new List<Vector3I>();
+        public List<Vector3I> PositionList = new List<Vector3I>();//Vectors in this list are connected, but not neccessarily in a line
 
         #region Public Methods
 
@@ -242,25 +244,6 @@ namespace fCraft
 
         #region movement
 
-        //Set the valid block positions that a bot can walk through
-        private void SetBlocks()
-        {
-            Vector3I botPos = Position.ToBlockCoords();
-
-            //loop through all z and x coordinates to get a list of all blocks on the 2d plane
-            for (int z = 0; z < World.Map.Length; z++)
-            {
-                for (int x = 0; x < World.Map.Length; x++)
-                {
-                    //If position is a fluid block, add position (Also make sure that feet don't go through blocks, so check head Y's position - 1
-                    if (ValidBlock(new Vector3I(x, botPos.Y, z)) && ValidBlock(new Vector3I(x, botPos.Y - 1, z)))
-                    {
-                        ValidPositions.Add(new Vector3I(x, botPos.Y, z));
-                    }
-                }
-            }
-        }
-
         //If vector is a fluid block, return true
         private bool ValidBlock(Vector3I vector)
         {
@@ -287,9 +270,51 @@ namespace fCraft
         /// <summary>
         /// Bot will determine the shortest route to a position and take it. Use Move() when the bot is needed to move in a straight line.
         /// </summary>
-        private void Path()
+        private void Path(Vector3I targetPosition)
         {
-            //AI here lol
+            //create a grid with all blocks in the 2d plane
+            byte[,] grid = new byte[World.Map.Width, World.Map.Length];
+            PathFinder pathFinder;
+
+            Vector3I botPos = Position.ToBlockCoords();
+            for (int z = 0; z < World.Map.Length; z++)
+            {
+                for (int x = 0; x < World.Map.Width; x++)
+                {
+                    //Find all valid positions, set as either an available tile or blocked tile
+                    if (ValidBlock(new Vector3I(x, botPos.Y, z)) && ValidBlock(new Vector3I(x, botPos.Y - 1, z)))
+                    {
+                        grid[x, z] = PathFinderHelper.EMPTY_TILE;
+                    }
+                    else
+                    {
+                        grid[x, z] = PathFinderHelper.BLOCKED_TILE;
+                    }
+                }
+            }
+
+            //set pathFinder to the grid just created, disallow diagonals
+            pathFinder = new PathFinder(grid);
+            pathFinder.Diagonals = false;
+            pathFinder.PunishChangeDirection = true;
+
+            Point botInitPoint = new Point(botPos.X, Position.Z);
+            Point botFinalPoint = new Point(NewPosition.ToBlockCoords().X, NewPosition.ToBlockCoords().Z);
+            List<PathFinderNode> path = pathFinder.FindPath(botInitPoint, botFinalPoint);
+            if (path == null)
+            {
+                //There is no path, stop moving
+                beganMoving = false;
+                isMoving = false;
+                return;
+            }
+
+            //Convert node to block positions
+            foreach(PathFinderNode node in path)
+            {
+                PositionList.Add(new Vector3I(node.X, botPos.Y, node.Y));
+            }
+
         }
 
         /// <summary>
@@ -298,24 +323,15 @@ namespace fCraft
         private void Drop()
         {
             //generate vector at block coord under the feet of the bot
-            Vector3I pos = new Vector3I
-            {
-                X = (short)(Position.X / 32),
-                Y = (short)(Position.Y / 32),
-                Z = (short)(Position.Z / 32 - 2)
-            };
+            Vector3I pos = Position.ToBlockCoords();
 
-            Vector3I newPos = new Vector3I
-            {
-                X = (short)(Position.X / 32),
-                Y = (short)(Position.Y / 32),
-                Z = (short)(Position.Z / 32 - 1)
-            };
+            Vector3I under1 = new Vector3I(pos.X, pos.Y - 1, pos.Z);
 
-            //I'm so good at C#
-            if (World.Map.GetBlock(pos) == Block.Air || World.Map.GetBlock(pos) == Block.Water || World.Map.GetBlock(pos) == Block.Water || World.Map.GetBlock(pos) == Block.StillWater || World.Map.GetBlock(pos) == Block.StillLava)
+            Vector3I under2 = new Vector3I(pos.X, pos.Y - 2, pos.Z);
+
+            if (ValidBlock(under1) && ValidBlock(under2))
             {
-                teleportBot(new Position(newPos.ToPlayerCoords().X, newPos.ToPlayerCoords().Y, newPos.ToPlayerCoords().Z));
+                teleportBot(under1.ToPlayerCoords());
             }
         }
 
@@ -337,8 +353,26 @@ namespace fCraft
                 //edit IEnumarable into List
                 foreach(Vector3I v in positions)
                 {
-                    PositionLine.Add(v);
+                    PositionList.Add(v);
                 }
+
+                bool clear = true;
+
+                //Make sure that each block in the line is a fluid
+                foreach (Vector3I vect in PositionList)
+                {
+                    if (!ValidBlock(vect))
+                    {
+                        clear = false;
+                    }
+                }
+
+                if (!clear)
+                {
+                    PositionList.Clear();
+                    Path(NewPosition.ToBlockCoords());
+                }
+
                 beganMoving = true;
             }
 
@@ -356,17 +390,17 @@ namespace fCraft
             //create a new position with the next pos list in the posList, then remove that pos
             Position targetPosition = new Position
             {
-                X = (short)(PositionLine.First().X * 32 + 16),
-                Y = (short)(PositionLine.First().Y * 32 + 16),
-                Z = (short)(PositionLine.First().Z * 32 + 16),
+                X = (short)(PositionList.First().X * 32 + 16),
+                Y = (short)(PositionList.First().Y * 32 + 16),
+                Z = (short)(PositionList.First().Z * 32 + 16),
                 R = (byte)(rAngle),
                 L = (byte)(lAngle)
             };
 
-            PositionLine.Remove(PositionLine.First());
+            PositionList.Remove(PositionList.First());
 
             //once the posList is empty, we have reached the final point
-            if (PositionLine.Count() == 0 || Position == NewPosition)
+            if (PositionList.Count() == 0 || Position == NewPosition)
             {
                 isMoving = false;
                 beganMoving = false;
