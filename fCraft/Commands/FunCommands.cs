@@ -571,7 +571,7 @@ THE SOFTWARE.*/
             Permissions = new Permission[] { Permission.Games },
             IsConsoleSafe = false,
             Usage = "/CTF [Start | Stop | SetSpawn | SetFlag | Help]",
-            Help = "Manage the CTF Gamemode!",
+            Help = "Manage the CTF Game!",
             Handler = CTFHandler
         };
 
@@ -590,6 +590,17 @@ THE SOFTWARE.*/
             {
                 case "begin":
                 case "start":
+
+                    if (world.blueCTFSpawn  == null|| world.redCTFSpawn == null)
+                    {
+                        player.Message("&cYou must assign spawn points before the game starts! Use /CTF SetSpawn <red | blue>");
+                        return;
+                    }
+                    if (world.blueFlag == null || world.redFlag == null)
+                    {
+                        player.Message("&cYou must set the flags before play! Use /CTF SetFlag <red | blue>");
+                        return;
+                    }
 
                     try
                     {
@@ -611,7 +622,7 @@ THE SOFTWARE.*/
                 case "stop":
                     if (world.gameMode != GameMode.CaptureTheFlag)
                     {
-                        player.Message("There is no game of CTF currently going on!");
+                        player.Message("&cThere is no game of CTF currently going on!");
                         break;
                     }
 
@@ -620,68 +631,64 @@ THE SOFTWARE.*/
                 case "setspawn":
                     if (world.gameMode != GameMode.NULL)
                     {
-                        player.Message("You cannot change spawns during the game!");
+                        player.Message("&cYou cannot change spawns during the game!");
                         return;
                     }
 
                     string team = cmd.Next();
                     if (String.IsNullOrEmpty(team))
                     {
-                        player.Message("Please select a team to set a spawn for!");
+                        player.Message("&cPlease select a team to set a spawn for!");
                         break;
                     }
 
                     if (team.ToLower() == "red")
                     {
-                        //set spawn to 2 block beneath the player
-                        Vector3I vector = player.Position.ToBlockCoords();
-                        world.redCTFSpawn = new Vector3I(vector.X, vector.Y, vector.Z - 2);
-                        player.Message("Red team spawn set.");
+                        world.redCTFSpawn = player.Position.ToBlockCoords();
+                        player.Message("&aRed team spawn set.");
                         break;
                     }
                     else if (team.ToLower() == "blue")
                     {
-                        //set spawn to 2 block beneath the player
-                        Vector3I vector = player.Position.ToBlockCoords();
-                        world.blueCTFSpawn = new Vector3I(vector.X, vector.Y, vector.Z - 2);
-                        player.Message("Blue team spawn set.");
+                        world.blueCTFSpawn = player.Position.ToBlockCoords();
+                        player.Message("&aBlue team spawn set.");
                         break;
                     }
                     else
                     {
-                        player.Message("You may only select the 'Blue' or 'Red' team!");
+                        player.Message("&cYou may only select the 'Blue' or 'Red' team!");
                         break;
                     }
                 case "setflag":
                     if (world.gameMode != GameMode.NULL)
                     {
-                        player.Message("You cannot change flags during the game!");
+                        player.Message("&cYou cannot change flags during the game!");
                         return;
                     }
 
                     string flag = cmd.Next();
                     if (String.IsNullOrEmpty(flag))
                     {
-                        player.Message("Please select a flag color to set!");
+                        player.Message("&cPlease select a flag color to set!");
                         break;
                     }
 
                     if (flag.ToLower() == "red")
                     {
                         //select red flag
-                        player.Message("Please select where you wish to place the red flag. The red flag must be red wool.");
+                        player.Message("&fPlease select where you wish to place the &cred&f flag. The &cred&f flag must be red wool.");
                         player.Info.placingRedFlag = true;
                         break;
                     }
                     else if (flag.ToLower() == "blue")
                     {
-                        player.Message("Please select where you wish to place the blue flag. The blue flag must be blue wool.");
+                        player.Message("&fPlease select where you wish to place the &9blue&f flag. The &9blue&f flag must be blue wool.");
                         player.Info.placingBlueFlag = true;
                         break;
                     }
                     else
                     {
-                        player.Message("You may only select a 'Blue' or 'Red' colored flag!");
+                        player.Message("&cYou may only select a 'Blue' or 'Red' colored flag!");
                         break;
                     }
                 case "help":

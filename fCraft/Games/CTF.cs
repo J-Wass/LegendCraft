@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 using fCraft.Events;
 
 namespace fCraft
@@ -50,6 +51,7 @@ namespace fCraft
         public static int timeDelay = 20;
         public static int totalTime = timeLimit + timeDelay;
         public static int scoreCap = 5;
+        public static Stopwatch stopwatch = new Stopwatch();
 
         //Game Bools
         public static bool isOn = false;
@@ -61,45 +63,56 @@ namespace fCraft
 
         public static CTF GetInstance(World world)
         {
+            Logger.LogToConsole("1");
             if (instance == null)
             {
                 world_ = world;
                 instance = new CTF();
                 startTime = DateTime.Now;
-                task_ = new SchedulerTask(Interval, true).RunForever(TimeSpan.FromSeconds(1));//run game loop every second
+                task_ = new SchedulerTask(Interval, true).RunForever(TimeSpan.FromMilliseconds(250)); //run loop every quarter second
             }
             return instance;
         }
 
         public static void Start()
         {
+            Logger.LogToConsole("2");
             world_.Hax = false;
+
+            //world_.Players.Send(PacketWriter.MakeHackControl(0,0,0,0,0,-1)); Commented out until classicube clients support hax packet
+            stopwatch.Reset();
+            stopwatch.Start();
+            world_.gameMode = GameMode.CaptureTheFlag;
+            delayTask = Scheduler.NewTask(t => world_.Players.Message("&WCTF &fwill be starting in {0} seconds: &WGet ready!", (timeDelay - stopwatch.Elapsed.Seconds)));
+            delayTask.RunRepeating(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(10), (int)Math.Floor((double)(timeDelay / 10)));//Start task immediately, send message every 10s
+            if (stopwatch.Elapsed.Seconds > 11)
+            {
+                stopwatch.Stop();
+            }
+        }
+
+        public static void Stop(Player p) //for stopping the game early
+        {
+            Logger.LogToConsole("3");
+
+            //unhook moving event
+            Player.Moving -= PlayerMoving;
+
+            world_.Hax = true;
             foreach (Player pl in world_.Players)
             {
                 pl.JoinWorld(world_, WorldChangeReason.Rejoin);
             }
 
-            world_.gameMode = GameMode.CaptureTheFlag; //set the game mode
-            delayTask = Scheduler.NewTask(t => world_.Players.Message("&WCTF &fwill be starting in {0} seconds: &WGet ready!", timeDelay));
-            delayTask.RunRepeating(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(10), 1);
-        }
-
-        public static void Stop(Player p) //for stopping the game early
-        {
-            //unhook moving event
-            Player.Moving -= PlayerMoving;
-
-            world_.Hax = true;
-
             if (p != null && world_ != null)
             {
-                world_.Players.Message("{0}&S stopped the game of CTF early on world {1}",
-                    p.ClassyName, world_.ClassyName);
+                world_.Players.Message("{0}&S stopped the game of CTF early on world {1}", p.ClassyName, world_.ClassyName);               
             }
             RevertGame();
 
             if (!delayTask.IsStopped)//if stop is called when the delayTask is still going, stop the delayTask
             {
+                Logger.LogToConsole("4");
                 delayTask.Stop();
             }
             return;
@@ -107,6 +120,7 @@ namespace fCraft
 
         public static void Interval(SchedulerTask task)
         {
+            Logger.LogToConsole("5");
             //check to stop Interval
             if (world_ == null)
             {
@@ -121,6 +135,7 @@ namespace fCraft
             }
             if (!started)
             {
+                Logger.LogToConsole("6");
                 //create a player moving event
                 Player.Moving += PlayerMoving;
 
@@ -133,13 +148,17 @@ namespace fCraft
                 //once timedelay is up, we start
                 if (startTime != null && (DateTime.Now - startTime).TotalSeconds > timeDelay)
                 {
+                    if (!world_.gunPhysics)
+                    {
+                        world_.EnableGunPhysics(Player.Console, true); //enables gun physics if they are not already on
+                    }
+
+                    Logger.LogToConsole("7");
                     foreach (Player p in world_.Players)
                     {
                         assignTeams(p);
 
                         p.JoinWorld(world_, WorldChangeReason.Rejoin);
-                        if (p.Info.isOnRedTeam) { p.TeleportTo(world_.redCTFSpawn.ToPlayerCoords()); } //teleport players to the team spawn
-                        if (p.Info.isOnBlueTeam) { p.TeleportTo(world_.blueCTFSpawn.ToPlayerCoords()); }
 
                         if (!p.GunMode)
                         {
@@ -153,13 +172,23 @@ namespace fCraft
                             p.Info.IsHidden = false;
                             Player.RaisePlayerHideChangedEvent(p);
                         }
+
+                        Logger.LogToConsole(world_.redCTFSpawn.ToString() + " " + world_.blueCTFSpawn.ToString());
+                        Logger.LogToConsole(world_.redCTFSpawn.ToPlayerCoords().ToString() + " " + world_.blueCTFSpawn.ToPlayerCoords().ToString());
+                        if (p.Info.isOnRedTeam)
+                        {
+                            p.TeleportTo(world_.redCTFSpawn.ToPlayerCoords());
+                        }
+
+                        if (p.Info.isOnBlueTeam)
+                        {
+                            p.TeleportTo(world_.blueCTFSpawn.ToPlayerCoords());
+                        }
+
+                        p.GunMode = true; 
                     }
                     started = true;   //the game has officially started
                     isOn = true;
-                    if (!world_.gunPhysics)
-                    {
-                        world_.EnableGunPhysics(Player.Console, true); //enables gun physics if they are not already on
-                    }
                     lastChecked = DateTime.Now;     //used for intervals
                     return;
                 }
@@ -194,6 +223,7 @@ namespace fCraft
             }
 
             //Check victory conditions
+            Logger.LogToConsole("8");
             if (blueScore == 5)
             {
                 world_.Players.Message("&fThe blue team has won {0} to {1}!", blueScore, redScore);
@@ -210,6 +240,7 @@ namespace fCraft
 
             if (started && startTime != null && (DateTime.Now - startTime).TotalSeconds >= (totalTime))
             {
+                Logger.LogToConsole("9");
                 if (redScore != blueScore)
                 {
                     Stop(null);
@@ -231,9 +262,8 @@ namespace fCraft
             //Check for forfeits
             if (started && (DateTime.Now - lastChecked).TotalSeconds > 10)
             {
-                int redCount = world_.Players.Where(p => p.Info.CTFRedTeam).ToArray().Count();
-                int blueCount = world_.Players.Where(p => p.Info.CTFBlueTeam).ToArray().Count();
-                if (blueCount < 1 || redCount < 1)
+                Logger.LogToConsole("10 " + blueTeamCount + " " + redTeamCount);
+                if (blueTeamCount < 1 || redTeamCount < 1)
                 {
                     if (blueTeamCount == 0)
                     {
@@ -260,6 +290,8 @@ namespace fCraft
                     }
                 }
             }
+
+            Logger.LogToConsole("11");
             timeLeft = Convert.ToInt16(((timeDelay + timeLimit) - (DateTime.Now - startTime).TotalSeconds));
             //Keep the players updated about the score
             if (lastChecked != null && (DateTime.Now - lastChecked).TotalSeconds > 29.8 && timeLeft <= timeLimit)
@@ -289,6 +321,7 @@ namespace fCraft
 
         static public void assignTeams(Player p)    //Assigns teams to all players in the world
         {
+            Logger.LogToConsole("12");
             //if there are no players assigned to any team yet
             if (redTeamCount == 0) { AssignRed(p); return; }
             //if the red team has more players and the red team has already been assigned at least one player
@@ -299,6 +332,7 @@ namespace fCraft
 
         public static void RevertGame() //Reset game bools/stats and stop timers
         {
+            Logger.LogToConsole("13");
             task_.Stop();
             world_.gameMode = GameMode.NULL;
             isOn = false;
@@ -318,6 +352,7 @@ namespace fCraft
 
         public static void RevertNames()    //reverts names for online players. offline players get reverted upon leaving the game
         {
+            Logger.LogToConsole("14");
             List<PlayerInfo> TDPlayers = new List<PlayerInfo>(PlayerDB.PlayerInfoList.Where(r => (r.isOnBlueTeam || r.isOnRedTeam) && r.IsOnline).ToArray());
             for (int i = 0; i < TDPlayers.Count(); i++)
             {
@@ -379,7 +414,7 @@ namespace fCraft
                     }
                     if (p.IsOnline)
                     {
-                        p.Message("Your status has been reverted.");
+                        p.Message("&aYour status has been reverted.");
                     }
                 }
             }
@@ -387,6 +422,7 @@ namespace fCraft
 
         public static void AssignRed(Player p)
         {
+            Logger.LogToConsole("15");
             string sbName = p.Name;
             p.Message("Let the games Begin!");
             p.Message("You are on the &cRed Team");
@@ -403,9 +439,10 @@ namespace fCraft
         }
         public static void AssignBlue(Player p)
         {
+            Logger.LogToConsole("16");
             string sbName = p.Name;
             p.Message("Let the games Begin!");
-            p.Message("You are on the &1Blue Team");
+            p.Message("You are on the &9Blue Team");
             p.iName = "TeamBlue";
             p.Info.tempDisplayedName = "&f(" + blueTeam + "&f) " + Color.Navy + sbName;
             p.Info.isOnBlueTeam = true;
@@ -432,7 +469,7 @@ namespace fCraft
                     //If the player is near enough to the blue spawn
                     if (e.NewPosition.DistanceSquaredTo(world_.blueCTFSpawn.ToPlayerCoords()) <= 42 * 42)
                     {
-                        world_.Players.Message("{0} has successfully capped the red flag. The score is now Red:{1} and Blue {2}.", e.Player.Name, redScore, blueScore);
+                        world_.Players.Message("&f{0} has successfully capped the &cred &fflag. The score is now &cRed&f:{1} and &9Blue&f:{2}.", e.Player.Name, redScore, blueScore);
                         e.Player.Info.hasRedFlag = false;
                         e.Player.Info.CTFCaptures++;
 
@@ -457,7 +494,7 @@ namespace fCraft
                     //If the player is near enough to the red spawn
                     if (e.NewPosition.DistanceSquaredTo(world_.redCTFSpawn.ToPlayerCoords()) <= 42 * 42)
                     {
-                        world_.Players.Message("{0} has successfully capped the blue flag. The score is now Red:{1} and Blue {2}.", e.Player.Name, redScore, blueScore);
+                        world_.Players.Message("&f{0} has successfully capped the &9blue &fflag. The score is now &cRed:&f{1} and &9Blue:&f{2}.", e.Player.Name, redScore, blueScore);
                         e.Player.Info.hasBlueFlag = false;
                         e.Player.Info.CTFCaptures++;
 
