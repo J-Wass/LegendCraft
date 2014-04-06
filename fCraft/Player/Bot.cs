@@ -74,7 +74,7 @@ namespace fCraft
         public Position OldPosition;
         public Position NewPosition;
         public Stopwatch timeCheck = new Stopwatch();
-        public static readonly double speed = 6.14; //Measured frequency at 6.14 blocks per second
+        public static readonly double speed = 12.28; //Measured frequency in blocks per second
         public static readonly double period = 1 / ((speed) * 1000); //Invert speed and multiply by 1000 to get period
         public bool beganMoving;
         public List<Vector3I> PositionList = new List<Vector3I>();//Vectors in this list are connected, but not neccessarily in a line

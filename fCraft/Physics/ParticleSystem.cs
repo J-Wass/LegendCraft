@@ -399,6 +399,7 @@ namespace fCraft
 			get { return true; }
 		}
 
+        //hitted? ding I thought you were better than that :(
 		public void HitPlayer(World world, Vector3I pos, Player hitted, Player by, ref int restDistance, IList<BlockUpdate> updates)
 		{
             //Capture the flag
@@ -416,16 +417,16 @@ namespace fCraft
 
                 if (critical == 0)
                 {
-                    hitted.Info.CTFHealth -= 50;
+                    hitted.Info.Health -= 50;
                     world.Players.Message("{0} landed a critical shot on {1}!", by.Name, hitted.Name);
                 }
                 else
                 {
-                    hitted.Info.CTFHealth -= 25;
+                    hitted.Info.Health -= 25;
                 }
 
                 //If the hit player's health is 0 or less, they die
-                if (hitted.Info.CTFHealth <= 0)
+                if (hitted.Info.Health <= 0)
                 {
 
                     hitted.Kill(world, String.Format("{0}&S was shot by {1}", hitted.Name, by.Name));
@@ -468,37 +469,89 @@ namespace fCraft
             }
             else
             {
-                hitted.Kill(world, String.Format("{0}&S was shot by {1}", hitted.ClassyName, hitted.ClassyName == by.ClassyName ? "theirself" : by.ClassyName));
-                updates.Add(new BlockUpdate(null, pos, Block.Air));
-                restDistance = 0;
-                if (fCraft.TeamDeathMatch.isOn)
+
+                //Take the hit, one in ten chance of a critical hit which does 50 damage instead of 25
+                int critical = (new Random()).Next(0, 9);
+
+                if (critical == 0)
                 {
-                    if (hitted.Info.isPlayingTD && hitted.Info.isOnBlueTeam && by.Info.isPlayingTD) //if the player is playing TD and on blue team, +1 for Red Team Score
-                    {
-                        fCraft.TeamDeathMatch.redScore++;
-                        hitted.Info.gameDeaths++;
-                        hitted.Info.totalDeathsTDM++;
-                        by.Info.gameKills++;
-                        by.Info.totalKillsTDM++;
-                    }
-                    if (hitted.Info.isPlayingTD && hitted.Info.isOnRedTeam && by.Info.isPlayingTD) //if the player is playing TD and on blue team, +1 for Red Team Score
-                    {
-                        fCraft.TeamDeathMatch.blueScore++;
-                        hitted.Info.gameDeaths++;       //counts the individual players deaths
-                        hitted.Info.totalDeathsTDM++;   //tallies total TDM deaths (never gets reset)
-                        by.Info.gameKills++;            //counts the individual players amount of kills
-                        by.Info.totalKillsTDM++;        //tallies total TDM kills
-                    }
+                    hitted.Info.Health -= 50;
+                    world.Players.Message("{0} landed a critical shot on {1}!", by.Name, hitted.Name);
                 }
-                if (FFA.isOn())
+                else
                 {
-                    if (hitted.Info.isPlayingFFA && by.Info.isPlayingFFA) //if the player is playing FFA and the person they hit is also playing
+                    hitted.Info.Health -= 25;
+                }
+
+                if (hitted.Info.Health < 0)
+                {
+                    hitted.Info.Health = 0;
+                }
+
+                //Create epic ASCII Health Bar
+
+                string healthBar = "&f[&a--------&f]";
+                if (hitted.Info.Health == 75)
+                {
+                    healthBar = "&f[&a------&8--&f]";
+                }
+                else if (hitted.Info.Health == 50)
+                {
+                    healthBar = "&f[&e----&8----&f]";
+                }
+                else if (hitted.Info.Health == 25)
+                {
+                    healthBar = "&f[&c--&8------&f]";
+                }
+                else
+                {
+                    healthBar = "&f[&8--------&f]";
+                }
+                hitted.Send(PacketWriter.MakeSpecialMessage((byte)2, healthBar));
+
+                if (hitted.Info.Health == 0)
+                {
+
+                    hitted.Kill(world, String.Format("{0}&S was shot by {1}", hitted.ClassyName, hitted.ClassyName == by.ClassyName ? "theirself" : by.ClassyName));
+                    updates.Add(new BlockUpdate(null, pos, Block.Air));
+                    restDistance = 0;
+
+                    //TDM
+                    if (fCraft.TeamDeathMatch.isOn)
                     {
-                        hitted.Info.gameDeathsFFA++;
-                        hitted.Info.totalDeathsFFA++;
-                        by.Info.gameKillsFFA++;
-                        by.Info.totalKillsFFA++;
+                        if (hitted.Info.isPlayingTD && hitted.Info.isOnBlueTeam && by.Info.isPlayingTD) //if the player is playing TD and on blue team, +1 for Red Team Score
+                        {
+                            fCraft.TeamDeathMatch.redScore++;
+                            hitted.Info.gameDeaths++;
+                            hitted.Info.totalDeathsTDM++;
+                            by.Info.gameKills++;
+                            by.Info.totalKillsTDM++;
+                        }
+                        if (hitted.Info.isPlayingTD && hitted.Info.isOnRedTeam && by.Info.isPlayingTD) //if the player is playing TD and on blue team, +1 for Red Team Score
+                        {
+                            fCraft.TeamDeathMatch.blueScore++;
+                            hitted.Info.gameDeaths++;       //counts the individual players deaths
+                            hitted.Info.totalDeathsTDM++;   //tallies total TDM deaths (never gets reset)
+                            by.Info.gameKills++;            //counts the individual players amount of kills
+                            by.Info.totalKillsTDM++;        //tallies total TDM kills
+                        }
                     }
+
+                    //FFA
+                    if (FFA.isOn())
+                    {
+                        if (hitted.Info.isPlayingFFA && by.Info.isPlayingFFA) //if the player is playing FFA and the person they hit is also playing
+                        {
+                            hitted.Info.gameDeathsFFA++;
+                            hitted.Info.totalDeathsFFA++;
+                            by.Info.gameKillsFFA++;
+                            by.Info.totalKillsFFA++;
+                        }
+                    }
+
+                    //revive dead players with 100% health
+                    hitted.Info.Health = 100;
+                    hitted.Send(PacketWriter.MakeSpecialMessage((byte)2, "&f[&a--------&f]"));
                 }
             }
 		}

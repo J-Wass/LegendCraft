@@ -160,6 +160,8 @@ namespace fCraft
                             p.Info.IsHidden = false;
                             Player.RaisePlayerHideChangedEvent(p);
                         }
+
+                        p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&f[&a--------&f]"));
                     }
                     started = true;   //the game has officially started
                     isOn = true;
@@ -346,12 +348,13 @@ namespace fCraft
                 Player p = pI.PlayerObject;
 
                 if (p != null)
-                {
+                {                 
                     p.iName = null;
                     pI.tempDisplayedName = null;
                     pI.isOnRedTeam = false;
                     pI.isOnBlueTeam = false;
                     pI.isPlayingTD = false;
+                    pI.Health = 100;
                     p.entityChanged = true;
                     
                     //undo gunmode (taken from GunHandler.cs)

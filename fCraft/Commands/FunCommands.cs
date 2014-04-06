@@ -591,12 +591,12 @@ THE SOFTWARE.*/
                 case "begin":
                 case "start":
 
-                    if (world.blueCTFSpawn  == null|| world.redCTFSpawn == null)
+                    if (world.blueCTFSpawn == new Vector3I(0, 0, 0) || world.redCTFSpawn == new Vector3I(0, 0, 0))
                     {
                         player.Message("&cYou must assign spawn points before the game starts! Use /CTF SetSpawn <red | blue>");
                         return;
                     }
-                    if (world.blueFlag == null || world.redFlag == null)
+                    if (world.blueFlag == new Vector3I(0, 0, 0) || world.redFlag == new Vector3I(0, 0, 0))
                     {
                         player.Message("&cYou must set the flags before play! Use /CTF SetFlag <red | blue>");
                         return;
@@ -604,12 +604,6 @@ THE SOFTWARE.*/
 
                     try
                     {
-                        world.Hax = false;
-                        foreach (Player p in player.World.Players)
-                        {
-                            p.JoinWorld(world, WorldChangeReason.Rejoin);
-                        }
-
                         CTF.GetInstance(world);
                         CTF.Start();
                     }

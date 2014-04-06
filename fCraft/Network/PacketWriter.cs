@@ -351,7 +351,6 @@ namespace fCraft {
         {
             if (message == null) throw new ArgumentNullException("message");
 
-            Logger.LogToConsole(messageType.ToString() + message);
             Packet packet = new Packet(OpCode.Message);
             packet.Data[1] = messageType;
             Encoding.ASCII.GetBytes(message.PadRight(64), 0, 64, packet.Data, 2);

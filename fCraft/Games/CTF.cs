@@ -34,7 +34,7 @@ namespace fCraft
         public const string redTeam = "&C-Red-";
         public const string blueTeam = "&1*Blue*";
 
-        //TDM stats
+        //CTF stats
         public static int blueScore = 0;
         public static int redScore = 0;
         public static int redTeamCount = 0;
@@ -158,20 +158,13 @@ namespace fCraft
                     {
                         assignTeams(p);
 
-                        p.JoinWorld(world_, WorldChangeReason.Rejoin);
-
-                        if (!p.GunMode)
-                        {
-                            p.GunMode = true; //turns on gunMode automatically if not already on
-                            GunGlassTimer timer = new GunGlassTimer(p);
-                            timer.Start();
-                        }
-
                         if (p.Info.IsHidden) //unhides players automatically if hidden (cannot shoot guns while hidden)
                         {
                             p.Info.IsHidden = false;
                             Player.RaisePlayerHideChangedEvent(p);
                         }
+
+                        p.JoinWorld(world_, WorldChangeReason.Rejoin);
 
                         Logger.LogToConsole(world_.redCTFSpawn.ToString() + " " + world_.blueCTFSpawn.ToString());
                         Logger.LogToConsole(world_.redCTFSpawn.ToPlayerCoords().ToString() + " " + world_.blueCTFSpawn.ToPlayerCoords().ToString());
@@ -185,7 +178,9 @@ namespace fCraft
                             p.TeleportTo(world_.blueCTFSpawn.ToPlayerCoords());
                         }
 
-                        p.GunMode = true; 
+                        p.GunMode = true;
+                        GunGlassTimer timer = new GunGlassTimer(p);
+                        timer.Start();
                     }
                     started = true;   //the game has officially started
                     isOn = true;
@@ -353,10 +348,10 @@ namespace fCraft
         public static void RevertNames()    //reverts names for online players. offline players get reverted upon leaving the game
         {
             Logger.LogToConsole("14");
-            List<PlayerInfo> TDPlayers = new List<PlayerInfo>(PlayerDB.PlayerInfoList.Where(r => (r.isOnBlueTeam || r.isOnRedTeam) && r.IsOnline).ToArray());
-            for (int i = 0; i < TDPlayers.Count(); i++)
+            List<PlayerInfo> CTFPlayers = new List<PlayerInfo>(PlayerDB.PlayerInfoList.Where(r => (r.CTFBlueTeam || r.CTFRedTeam) && r.IsOnline).ToArray());
+            for (int i = 0; i < CTFPlayers.Count(); i++)
             {
-                string p1 = TDPlayers[i].Name.ToString();
+                string p1 = CTFPlayers[i].Name.ToString();
                 PlayerInfo pI = PlayerDB.FindPlayerInfoExact(p1);
                 Player p = pI.PlayerObject;
 
@@ -430,7 +425,7 @@ namespace fCraft
             p.Info.tempDisplayedName = "&f(" + redTeam + "&f) " + Color.Red + sbName;
             p.Info.isOnRedTeam = true;
             p.Info.isOnBlueTeam = false;
-            p.Info.isPlayingTD = true;
+            p.Info.isPlayingCTF = true;
             p.entityChanged = true;
             p.Info.gameKills = 0;
             p.Info.gameDeaths = 0;
@@ -447,7 +442,7 @@ namespace fCraft
             p.Info.tempDisplayedName = "&f(" + blueTeam + "&f) " + Color.Navy + sbName;
             p.Info.isOnBlueTeam = true;
             p.Info.isOnRedTeam = false;
-            p.Info.isPlayingTD = true;
+            p.Info.isPlayingCTF = true;
             p.entityChanged = true;
             p.Info.gameKills = 0;
             p.Info.gameDeaths = 0;
@@ -455,7 +450,6 @@ namespace fCraft
             return;
         }
 
-        //check if player tagged another player
         public static void PlayerMoving(object poo, fCraft.Events.PlayerMovingEventArgs e)
         {
             //If the player has the red flag
