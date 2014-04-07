@@ -36,6 +36,7 @@ namespace fCraft
         public static FFA instance;
         public static DateTime startTime;
         public static DateTime lastChecked;
+        public static DateTime announced;
 
         //Customization (initialized as defaults)
         public static int timeLimit = 300;
@@ -69,10 +70,6 @@ namespace fCraft
         public static void Start()
         {
             world_.Hax = false;
-            foreach (Player pl in world_.Players)
-            {
-                pl.JoinWorld(world_, WorldChangeReason.Rejoin);
-            }
             world_.gameMode = GameMode.FFA; //set the game mode
             delayTask = Scheduler.NewTask(t => world_.Players.Message("&WFFA &fwill be starting in {0} seconds: &WGet ready!", (timeDelay - (DateTime.Now - startTime).ToSeconds())));
             delayTask.RunRepeating(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(10), (timeDelay / 10));
@@ -131,6 +128,16 @@ namespace fCraft
                 world_ = null;
                 return;
             }
+
+            //remove announcement after 5 seconds
+            if ((DateTime.Now - announced).TotalSeconds >= 5)
+            {
+                foreach (Player p in world_.Players)
+                {
+                    p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));//super hacky way to remove announcement, simply send a color code and call it a day
+                }
+            }
+
             if (!started)//first time running the interval
             {
                 if (world_.Players.Count() < 2) //in case players leave the world or disconnect during the start delay
@@ -163,13 +170,20 @@ namespace fCraft
                             timer.Start();
                         }
 
-                        //hook up handlers
-
                         if (p.Info.IsHidden) //unhides players automatically if hidden (cannot shoot guns while hidden)
                         {
                             p.Info.IsHidden = false;
                             Player.RaisePlayerHideChangedEvent(p);
                         }
+
+                        //send an announcement
+                        p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&cLet the Games Begin!"));
+
+                        //set player health
+                        p.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f[&a--------&f]"));
+
+                        //set leader
+                        p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&eCurrent Leader&f: None"));
                     }
                     started = true;   //the game has officially started
                     if (!world_.gunPhysics)
@@ -177,6 +191,7 @@ namespace fCraft
                         world_.EnableGunPhysics(Player.Console, true); //enables gun physics if they are not already on
                     }
                     lastChecked = DateTime.Now;     //used for intervals
+                    announced = DateTime.Now; //set when the announcement was launched
                     return;
                 }
             }
@@ -286,6 +301,12 @@ namespace fCraft
             {               
                 Player p = pI.PlayerObject;
                 p.JoinWorld(p.World, WorldChangeReason.Rejoin);
+
+                //reset all special messages
+                p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));
+                p.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f"));
+                p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&f"));
+
                 pI.isPlayingFFA = false;
                 if (pI != null)
                 {                    
@@ -334,7 +355,7 @@ namespace fCraft
                     }
                     if (p.IsOnline)
                     {
-                        p.Message("Your status has been reverted. (Left Server)");
+                        p.Message("Your status has been reverted.");
                     }
                 }
             }
@@ -343,7 +364,6 @@ namespace fCraft
         public static void InitializePlayer(Player p)
         {
             string sbName = p.Info.Name;
-            p.Message("Let the games Begin!");
             if (p.Name.Contains('@'))
             {
                 sbName = p.Info.Name.Split('@')[0];

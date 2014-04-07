@@ -406,7 +406,7 @@ namespace fCraft
             if (by.Info.isPlayingCTF)
             {
                 //Friendly fire
-                if ((hitted.Info.CTFBlueTeam && by.Info.CTFRedTeam) || (hitted.Info.CTFBlueTeam && by.Info.CTFRedTeam))
+                if ((hitted.Info.CTFBlueTeam && by.Info.CTFBlueTeam) || (hitted.Info.CTFRedTeam && by.Info.CTFRedTeam))
                 {
                     by.Message("{0} is on your team!", hitted.Name);
                     return;
@@ -424,6 +424,27 @@ namespace fCraft
                 {
                     hitted.Info.Health -= 25;
                 }
+
+                //Create epic ASCII Health Bar
+
+                string healthBar = "&f[&a--------&f]";
+                if (hitted.Info.Health == 75)
+                {
+                    healthBar = "&f[&a------&8--&f]";
+                }
+                else if (hitted.Info.Health == 50)
+                {
+                    healthBar = "&f[&e----&8----&f]";
+                }
+                else if (hitted.Info.Health == 25)
+                {
+                    healthBar = "&f[&c--&8------&f]";
+                }
+                else
+                {
+                    healthBar = "&f[&8--------&f]";
+                }
+                hitted.Send(PacketWriter.MakeSpecialMessage((byte)1, healthBar));
 
                 //If the hit player's health is 0 or less, they die
                 if (hitted.Info.Health <= 0)
@@ -457,6 +478,10 @@ namespace fCraft
                             p.World.Map.QueueUpdate(blockUpdate);
                         }
                     }
+
+                    //revive dead players with 100% health
+                    hitted.Info.Health = 100;
+                    hitted.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f[&a--------&f]"));
                 }
 
                 return;
@@ -507,7 +532,7 @@ namespace fCraft
                 {
                     healthBar = "&f[&8--------&f]";
                 }
-                hitted.Send(PacketWriter.MakeSpecialMessage((byte)2, healthBar));
+                hitted.Send(PacketWriter.MakeSpecialMessage((byte)1, healthBar));
 
                 if (hitted.Info.Health == 0)
                 {
@@ -535,6 +560,12 @@ namespace fCraft
                             by.Info.gameKills++;            //counts the individual players amount of kills
                             by.Info.totalKillsTDM++;        //tallies total TDM kills
                         }
+
+                        //update scoreboard for all players
+                        foreach (Player p in hitted.World.Players)
+                        {
+                            p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&cRed&f: " + fCraft.TeamDeathMatch.redScore + ",&1 Blue&f: " + fCraft.TeamDeathMatch.blueScore));
+                        }
                     }
 
                     //FFA
@@ -547,11 +578,28 @@ namespace fCraft
                             by.Info.gameKillsFFA++;
                             by.Info.totalKillsFFA++;
                         }
+
+                        //find current kill leader
+                        Player leader = new Player("");//create a temp pseudo player
+                        int kills = 0;
+
+                        foreach (Player p in hitted.World.Players)
+                        {
+                            if (p.Info.gameKillsFFA > kills)
+                            {
+                                kills = p.Info.gameKillsFFA;
+                                leader = p;
+                            }
+                        }                      
+                        foreach (Player p in hitted.World.Players)
+                        {
+                            p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&eCurrent Leader&f: " + leader.Name + ", Kills: " + leader.Info.gameKillsFFA));
+                        }
                     }
 
                     //revive dead players with 100% health
                     hitted.Info.Health = 100;
-                    hitted.Send(PacketWriter.MakeSpecialMessage((byte)2, "&f[&a--------&f]"));
+                    hitted.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f[&a--------&f]"));
                 }
             }
 		}

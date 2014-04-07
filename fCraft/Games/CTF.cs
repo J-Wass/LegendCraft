@@ -52,6 +52,7 @@ namespace fCraft
         public static int totalTime = timeLimit + timeDelay;
         public static int scoreCap = 5;
         public static Stopwatch stopwatch = new Stopwatch();
+        public static DateTime announced;
 
         //Game Bools
         public static bool isOn = false;
@@ -63,7 +64,6 @@ namespace fCraft
 
         public static CTF GetInstance(World world)
         {
-            Logger.LogToConsole("1");
             if (instance == null)
             {
                 world_ = world;
@@ -76,7 +76,6 @@ namespace fCraft
 
         public static void Start()
         {
-            Logger.LogToConsole("2");
             world_.Hax = false;
 
             //world_.Players.Send(PacketWriter.MakeHackControl(0,0,0,0,0,-1)); Commented out until classicube clients support hax packet
@@ -93,7 +92,6 @@ namespace fCraft
 
         public static void Stop(Player p) //for stopping the game early
         {
-            Logger.LogToConsole("3");
 
             //unhook moving event
             Player.Moving -= PlayerMoving;
@@ -112,7 +110,6 @@ namespace fCraft
 
             if (!delayTask.IsStopped)//if stop is called when the delayTask is still going, stop the delayTask
             {
-                Logger.LogToConsole("4");
                 delayTask.Stop();
             }
             return;
@@ -120,7 +117,6 @@ namespace fCraft
 
         public static void Interval(SchedulerTask task)
         {
-            Logger.LogToConsole("5");
             //check to stop Interval
             if (world_ == null)
             {
@@ -133,9 +129,18 @@ namespace fCraft
                 world_ = null;
                 return;
             }
+
+            //remove announcements after 5 seconds
+            if ((DateTime.Now - announced).TotalSeconds >= 5)
+            {
+                foreach (Player p in world_.Players)
+                {
+                    p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));//super hacky way to remove announcements, simply send a color code and call it a day
+                }
+            }
+
             if (!started)
             {
-                Logger.LogToConsole("6");
                 //create a player moving event
                 Player.Moving += PlayerMoving;
 
@@ -152,8 +157,6 @@ namespace fCraft
                     {
                         world_.EnableGunPhysics(Player.Console, true); //enables gun physics if they are not already on
                     }
-
-                    Logger.LogToConsole("7");
                     foreach (Player p in world_.Players)
                     {
                         assignTeams(p);
@@ -164,16 +167,14 @@ namespace fCraft
                             Player.RaisePlayerHideChangedEvent(p);
                         }
 
-                        p.JoinWorld(world_, WorldChangeReason.Rejoin);
-
                         Logger.LogToConsole(world_.redCTFSpawn.ToString() + " " + world_.blueCTFSpawn.ToString());
                         Logger.LogToConsole(world_.redCTFSpawn.ToPlayerCoords().ToString() + " " + world_.blueCTFSpawn.ToPlayerCoords().ToString());
-                        if (p.Info.isOnRedTeam)
+                        if (p.Info.CTFRedTeam)
                         {
                             p.TeleportTo(world_.redCTFSpawn.ToPlayerCoords());
                         }
 
-                        if (p.Info.isOnBlueTeam)
+                        if (p.Info.CTFRedTeam)
                         {
                             p.TeleportTo(world_.blueCTFSpawn.ToPlayerCoords());
                         }
@@ -181,10 +182,32 @@ namespace fCraft
                         p.GunMode = true;
                         GunGlassTimer timer = new GunGlassTimer(p);
                         timer.Start();
+
+                        //send an announcement
+                        p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&cLet the Games Begin!"));
+
+                        //set player health
+                        p.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f[&a--------&f]"));
+
+                        //set game score
+                        p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&cRed&f: 0,&1 Blue&f: 0"));
                     }
+
+                    //check that the flags haven't been misplaced during startup
+                    if (world_.Map.GetBlock(world_.redFlag) != Block.Red)
+                    {
+                        world_.Map.QueueUpdate(new BlockUpdate(null, world_.redFlag, Block.Red));
+                    }
+
+                    if (world_.Map.GetBlock(world_.blueFlag) != Block.Blue)
+                    {
+                        world_.Map.QueueUpdate(new BlockUpdate(null, world_.blueFlag, Block.Blue));
+                    }
+
                     started = true;   //the game has officially started
                     isOn = true;
                     lastChecked = DateTime.Now;     //used for intervals
+                    announced = DateTime.Now;
                     return;
                 }
             }
@@ -218,7 +241,6 @@ namespace fCraft
             }
 
             //Check victory conditions
-            Logger.LogToConsole("8");
             if (blueScore == 5)
             {
                 world_.Players.Message("&fThe blue team has won {0} to {1}!", blueScore, redScore);
@@ -235,7 +257,6 @@ namespace fCraft
 
             if (started && startTime != null && (DateTime.Now - startTime).TotalSeconds >= (totalTime))
             {
-                Logger.LogToConsole("9");
                 if (redScore != blueScore)
                 {
                     Stop(null);
@@ -257,7 +278,6 @@ namespace fCraft
             //Check for forfeits
             if (started && (DateTime.Now - lastChecked).TotalSeconds > 10)
             {
-                Logger.LogToConsole("10 " + blueTeamCount + " " + redTeamCount);
                 if (blueTeamCount < 1 || redTeamCount < 1)
                 {
                     if (blueTeamCount == 0)
@@ -286,7 +306,6 @@ namespace fCraft
                 }
             }
 
-            Logger.LogToConsole("11");
             timeLeft = Convert.ToInt16(((timeDelay + timeLimit) - (DateTime.Now - startTime).TotalSeconds));
             //Keep the players updated about the score
             if (lastChecked != null && (DateTime.Now - lastChecked).TotalSeconds > 29.8 && timeLeft <= timeLimit)
@@ -316,7 +335,6 @@ namespace fCraft
 
         static public void assignTeams(Player p)    //Assigns teams to all players in the world
         {
-            Logger.LogToConsole("12");
             //if there are no players assigned to any team yet
             if (redTeamCount == 0) { AssignRed(p); return; }
             //if the red team has more players and the red team has already been assigned at least one player
@@ -327,7 +345,6 @@ namespace fCraft
 
         public static void RevertGame() //Reset game bools/stats and stop timers
         {
-            Logger.LogToConsole("13");
             task_.Stop();
             world_.gameMode = GameMode.NULL;
             isOn = false;
@@ -347,7 +364,6 @@ namespace fCraft
 
         public static void RevertNames()    //reverts names for online players. offline players get reverted upon leaving the game
         {
-            Logger.LogToConsole("14");
             List<PlayerInfo> CTFPlayers = new List<PlayerInfo>(PlayerDB.PlayerInfoList.Where(r => (r.CTFBlueTeam || r.CTFRedTeam) && r.IsOnline).ToArray());
             for (int i = 0; i < CTFPlayers.Count(); i++)
             {
@@ -362,7 +378,18 @@ namespace fCraft
                     pI.CTFBlueTeam = false;
                     pI.CTFRedTeam = false;
                     pI.isPlayingCTF = false;
+                    pI.placingBlueFlag = false;
+                    pI.placingRedFlag = false;
+                    pI.hasRedFlag = false;
+                    pI.hasBlueFlag = false;
+                    pI.CTFCaptures = 0;
+                    pI.CTFKills = 0;
                     p.entityChanged = true;
+
+                    //reset all special messages
+                    p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));
+                    p.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f"));
+                    p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&f"));
 
                     //undo gunmode (taken from GunHandler.cs)
                     p.GunMode = false;
@@ -417,35 +444,26 @@ namespace fCraft
 
         public static void AssignRed(Player p)
         {
-            Logger.LogToConsole("15");
-            string sbName = p.Name;
-            p.Message("Let the games Begin!");
             p.Message("You are on the &cRed Team");
             p.iName = "TeamRed";
-            p.Info.tempDisplayedName = "&f(" + redTeam + "&f) " + Color.Red + sbName;
-            p.Info.isOnRedTeam = true;
-            p.Info.isOnBlueTeam = false;
+            p.Info.tempDisplayedName = "&f(" + redTeam + "&f) " + Color.Red + p.Name;
+            p.Info.CTFRedTeam = true;
+            p.Info.CTFBlueTeam = false;
             p.Info.isPlayingCTF = true;
             p.entityChanged = true;
-            p.Info.gameKills = 0;
-            p.Info.gameDeaths = 0;
+            p.Info.CTFKills = 0;
             redTeamCount++;
             return;
         }
         public static void AssignBlue(Player p)
         {
-            Logger.LogToConsole("16");
-            string sbName = p.Name;
-            p.Message("Let the games Begin!");
             p.Message("You are on the &9Blue Team");
             p.iName = "TeamBlue";
-            p.Info.tempDisplayedName = "&f(" + blueTeam + "&f) " + Color.Navy + sbName;
-            p.Info.isOnBlueTeam = true;
-            p.Info.isOnRedTeam = false;
+            p.Info.tempDisplayedName = "&f(" + blueTeam + "&f) " + Color.Navy + p.Name;
+            p.Info.CTFBlueTeam = true;
+            p.Info.CTFRedTeam = false;
             p.Info.isPlayingCTF = true;
             p.entityChanged = true;
-            p.Info.gameKills = 0;
-            p.Info.gameDeaths = 0;
             blueTeamCount++;
             return;
         }
@@ -463,7 +481,8 @@ namespace fCraft
                     //If the player is near enough to the blue spawn
                     if (e.NewPosition.DistanceSquaredTo(world_.blueCTFSpawn.ToPlayerCoords()) <= 42 * 42)
                     {
-                        world_.Players.Message("&f{0} has successfully capped the &cred &fflag. The score is now &cRed&f:{1} and &9Blue&f:{2}.", e.Player.Name, redScore, blueScore);
+                        blueScore++;
+                        world_.Players.Message("&f{0} has successfully capped the &cred &fflag. The score is now &cRed&f:{1} and &1Blue&f:{2}.", e.Player.Name, redScore, blueScore);
                         e.Player.Info.hasRedFlag = false;
                         e.Player.Info.CTFCaptures++;
 
@@ -472,7 +491,12 @@ namespace fCraft
                         foreach (Player p in world_.Players)
                         {
                             p.World.Map.QueueUpdate(blockUpdate);
+
+                            //set game score
+                            p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&cRed&f: " + redScore + ",&1 Blue&f: " + blueScore));
+                            p.Send(PacketWriter.MakeSpecialMessage((byte)100, e.Player.Name + " has successfully capped the &cred &fflag"));
                         }
+                        announced = DateTime.Now; 
                     }
                 }
             }
@@ -488,7 +512,8 @@ namespace fCraft
                     //If the player is near enough to the red spawn
                     if (e.NewPosition.DistanceSquaredTo(world_.redCTFSpawn.ToPlayerCoords()) <= 42 * 42)
                     {
-                        world_.Players.Message("&f{0} has successfully capped the &9blue &fflag. The score is now &cRed:&f{1} and &9Blue:&f{2}.", e.Player.Name, redScore, blueScore);
+                        redScore++;
+                        world_.Players.Message("&f{0} has successfully capped the &1blue &fflag. The score is now &cRed:&f {1} and &1Blue:&f {2}.", e.Player.Name, redScore, blueScore);
                         e.Player.Info.hasBlueFlag = false;
                         e.Player.Info.CTFCaptures++;
 
@@ -497,7 +522,12 @@ namespace fCraft
                         foreach (Player p in world_.Players)
                         {
                             p.World.Map.QueueUpdate(blockUpdate);
+
+                            //set game scorecb
+                            p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&cRed&f: " + redScore + ",&1 Blue&f: " + blueScore));
+                            p.Send(PacketWriter.MakeSpecialMessage((byte)100, e.Player.Name + " has successfully capped the &cred &fflag"));
                         }
+                        announced = DateTime.Now; 
                     }
                 }
             }

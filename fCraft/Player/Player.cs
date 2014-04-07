@@ -1366,6 +1366,12 @@ namespace fCraft
                         World.Players.Message("{0} has stolen the blue flag!", Name);
                         Info.hasBlueFlag = true;
                     }
+
+                    if (coord == World.redFlag)
+                    {
+                        Message("&eYou cannot steal your own flag!");
+                        RevertBlockNow(coord);
+                    }
                 }
 
                 if (Info.CTFBlueTeam)
@@ -1375,6 +1381,12 @@ namespace fCraft
                         //at this point, the player is on the blue team and has stolen the red team flag
                         World.Players.Message("{0} has stolen the red flag!", Name);
                         Info.hasRedFlag = true;
+                    }
+
+                    if (coord == World.blueFlag)
+                    {
+                        Message("&eYou cannot steal your own flag!");
+                        RevertBlockNow(coord);
                     }
                 }
             }

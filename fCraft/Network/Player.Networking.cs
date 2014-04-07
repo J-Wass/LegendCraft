@@ -1380,26 +1380,54 @@ namespace fCraft
 
             //revert game values if a player leaves a world
             RaisePlayerJoinedWorldEvent(this, oldWorld, reason);
-            Info.isPlayingFFA = false;
-            Info.isPlayingInfection = false;
-            Info.isPlayingTD = false;
             Info.tempDisplayedName = null;
-            Info.isOnRedTeam = false;
-            Info.isOnBlueTeam = false;
-            Info.isPlayingTD = false;
-            entityChanged = false;
             iName = null;
             GunMode = false;
+            entityChanged = false;
+
+            //FFA
+            Info.isPlayingFFA = false;
+            Info.gameDeathsFFA = 0;
+            Info.gameKillsFFA = 0;
+
+            //Infection
+            Info.isPlayingInfection = false;
+            Info.isInfected = false;
+
+            //TDM
+            Info.isPlayingTD = false;
+            Info.isOnRedTeam = false;
+            Info.isOnBlueTeam = false;
+            Info.gameKills = 0;
+            Info.gameDeaths = 0;
+
+            //CTF
+            Info.isPlayingCTF = false;
+            Info.CTFRedTeam = false;
+            Info.CTFBlueTeam = false;
+            Info.CTFCaptures = 0;
+            Info.CTFKills = 0;
+            Info.hasRedFlag = false;
+            Info.hasBlueFlag = false;
+            Info.placingBlueFlag = false;
+            Info.placingRedFlag = false;
+
+            //reset all special messages
+            Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));
+            Send(PacketWriter.MakeSpecialMessage((byte)1, "&f"));
+            Send(PacketWriter.MakeSpecialMessage((byte)2, "&f"));
+
+
 
             if (Heartbeat.ClassiCube() && ClassiCube)
             {
                 //update mapedit values
-                Packet envSetMapAppearance = PacketWriter.MakeEnvSetMapAppearance(World.textureURL, World.sideBlock, World.edgeBlock, World.sideLevel);
+                //Packet envSetMapAppearance = PacketWriter.MakeEnvSetMapAppearance(World.textureURL, World.sideBlock, World.edgeBlock, World.sideLevel);
                 Packet sky = PacketWriter.MakeEnvSetColor((byte)0, World.SkyColorCC);
                 Packet cloud = PacketWriter.MakeEnvSetColor((byte)1, World.CloudColorCC);
                 Packet fog = PacketWriter.MakeEnvSetColor((byte)2, World.FogColorCC);
                 Packet weather = PacketWriter.MakeEnvWeatherAppearance((byte)World.WeatherCC);
-                Send(envSetMapAppearance);
+
                 Send(sky);
                 Send(cloud);
                 Send(fog);

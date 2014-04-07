@@ -132,6 +132,10 @@ namespace fCraft
         public short CTFCaptures = 0;
         public bool placingRedFlag = false;
         public bool placingBlueFlag = false;
+
+        /// <summary>
+        /// Health var used in several gamemodes
+        /// </summary>
         public short Health = 100;
 
         #region Rank

@@ -74,8 +74,8 @@ namespace fCraft
         public Position OldPosition;
         public Position NewPosition;
         public Stopwatch timeCheck = new Stopwatch();
-        public static readonly double speed = 12.28; //Measured frequency in blocks per second
-        public static readonly double period = 1 / ((speed) * 1000); //Invert speed and multiply by 1000 to get period
+        public static readonly double speed = 5.2; //Measured frequency in blocks per second
+        public static readonly double period = (1 / (speed)) * 1000; //Invert speed and multiply by 1000 to get period in milliseconds
         public bool beganMoving;
         public List<Vector3I> PositionList = new List<Vector3I>();//Vectors in this list are connected, but not neccessarily in a line
 
@@ -112,7 +112,7 @@ namespace fCraft
                     beganMoving = false;
                 }
 
-                //once the period is up, move the bot
+                //move bot 1 block after every period
                 if (timeCheck.ElapsedMilliseconds > period) 
                 {
                     Move();

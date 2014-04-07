@@ -166,7 +166,7 @@ THE SOFTWARE.*/
             Category = CommandCategory.World,
             Permissions = new[] { Permission.ManageWorlds },
             Help = "&SPrints or changes the environmental variables for a given world. " +
-                   "Variables are: clouds, fog, sky, level, edge, side, texture and weather. " +
+                   "Variables are: clouds, fog, sky, and weather. " +//add level, edge, side, and texture once supported
                    "See &H/Help MapEdit <Variable>&S for details about each variable. " +
                    "Type &H/MapEdit <WorldName> normal&S to reset everything for a world. " +
                    "All Color formats should be in hexcode. \n Ex: #ffffff",
@@ -181,7 +181,7 @@ THE SOFTWARE.*/
                 { "sky", "&H/MapEdit <WorldName> sky <Color>\n&S" +
                                 "Sets color of the sky. Sky color blends with fog color in the distance. " +
                                 "Use \"normal\" instead of color to reset." },
-                { "level", "&H/MapEdit <WorldName> level <#>\n&S" +
+                /*{ "level", "&H/MapEdit <WorldName> level <#>\n&S" +
                                 "Sets height of the map edges/water level, in terms of blocks from the bottom of the map. " +
                                 "Use \"normal\" instead of a number to reset to default (middle of the map)." },
                 { "edge", "&H/MapEdit <WorldName> edge <BlockType>\n&S" +
@@ -192,7 +192,7 @@ THE SOFTWARE.*/
                                 "Use \"normal\" instead of a number to reset to default (admincrete)." },
                 { "texture", "&H/MapEdit <WorldName> texture url\n&S" +
                                 "Retextures the blocks of the map to a specific texture pack. "+
-                                "Use \"normal\" instead of a url to reset to default." },
+                                "Use \"normal\" instead of a url to reset to default." },*/
                 { "weather", "&H/MapEdit <WorldName> weather <Normal/Rain/Snow>\n&S" +
                                 "Sets the default weather of the map. " +
                                 "Use \"normal\" instead of a number to reset to default (Clear)" },
@@ -259,7 +259,7 @@ THE SOFTWARE.*/
                     Packet fog = PacketWriter.MakeEnvSetColor((byte)2, (world.FogColorCC));
                     Packet cloud = PacketWriter.MakeEnvSetColor((byte)1, (world.CloudColorCC));
                     Packet sky = PacketWriter.MakeEnvSetColor((byte)0, (world.SkyColorCC));
-                    Packet appearence = PacketWriter.MakeEnvSetMapAppearance("", world.sideBlock, world.edgeBlock, world.sideLevel);
+                    //Packet appearence = PacketWriter.MakeEnvSetMapAppearance("", world.sideBlock, world.edgeBlock, world.sideLevel); update once supported
                     Packet weather = PacketWriter.MakeEnvWeatherAppearance((byte)world.WeatherCC);
 
                     foreach (Player p in world.Players.Where(p => p.ClassiCube))
@@ -267,11 +267,11 @@ THE SOFTWARE.*/
                         p.Send(sky);
                         p.Send(cloud);
                         p.Send(fog);
-                        p.Send(appearence);
+                        //p.Send(appearence);
                         p.Send(weather);
                     }
                     break;
-                case "texture":
+                /*case "texture":
                     if (string.IsNullOrEmpty(setting))
                     {
                         player.Message("Please specify the url of the texture pack.");
@@ -279,7 +279,7 @@ THE SOFTWARE.*/
                     }
                     if (setting == "normal")
                     {
-                        player.Message("Reset texture pack to defaul minecraft.");
+                        player.Message("Reset texture pack to default minecraft.");
                         world.textureURL = "";
 
                         Packet textNormal = PacketWriter.MakeEnvSetMapAppearance(world.textureURL, world.sideBlock, world.edgeBlock, world.sideLevel);
@@ -427,7 +427,7 @@ THE SOFTWARE.*/
                     {
                         player.Message("Please choose a number between 0 and {0}.", world.Map.Height.ToString());
                     }
-                    break;
+                    break;*/
 
                 case "clouds":
                     if (string.IsNullOrEmpty(setting))

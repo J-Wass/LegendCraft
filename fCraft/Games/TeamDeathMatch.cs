@@ -46,6 +46,7 @@ namespace fCraft
         public static TeamDeathMatch instance;
         public static DateTime startTime;
         public static DateTime lastChecked;
+        public static DateTime announced;
 
         //customization (initialized as defaults)
         public static int timeLimit = 300; 
@@ -81,10 +82,6 @@ namespace fCraft
         public static void Start()
         {
             world_.Hax = false;
-            foreach (Player pl in world_.Players)
-            {
-                pl.JoinWorld(world_, WorldChangeReason.Rejoin);
-            }
             world_.gameMode = GameMode.TeamDeathMatch; //set the game mode
             delayTask = Scheduler.NewTask(t => world_.Players.Message("&WTEAM DEATHMATCH &fwill be starting in {0} seconds: &WGet ready!", timeDelay));
             delayTask.RunRepeating(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(10), 1);                  
@@ -130,6 +127,16 @@ namespace fCraft
                 world_ = null;
                 return;
             }
+
+            //remove announcement after 5 seconds
+            if ((DateTime.Now - announced).TotalSeconds >= 5)
+            {
+                foreach (Player p in world_.Players)
+                {
+                    p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));//super hacky way to remove announcement, simply send a color code and call it a day
+                }
+            }
+
             if (!started)
             {
                 if (world_.Players.Count() < 2) //in case players leave the world or disconnect during the start delay
@@ -141,6 +148,7 @@ namespace fCraft
                 {
                     foreach (Player p in world_.Players)
                     {
+
                         if (!manualTeams)
                         {
                             assignTeams(p); //assigns teams (who knew?)
@@ -161,7 +169,14 @@ namespace fCraft
                             Player.RaisePlayerHideChangedEvent(p);
                         }
 
-                        p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&f[&a--------&f]"));
+                        //send an announcement
+                        p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&cLet the Games Begin!"));
+
+                        //set player's health
+                        p.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f[&a--------&f]"));
+
+                        //set game score
+                        p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&cRed&f: 0,&1 Blue&f: 0"));
                     }
                     started = true;   //the game has officially started
                     isOn = true;
@@ -170,9 +185,10 @@ namespace fCraft
                         world_.EnableGunPhysics(Player.Console, true); //enables gun physics if they are not already on
                     }
                     lastChecked = DateTime.Now;     //used for intervals
+                    announced = DateTime.Now; //set when the announcement was launched
                     return;
                 }   
-            }
+            }          
 
             //check if one of the teams have won
             if (redScore >= scoreLimit || blueScore >= scoreLimit)
@@ -356,6 +372,11 @@ namespace fCraft
                     pI.isPlayingTD = false;
                     pI.Health = 100;
                     p.entityChanged = true;
+
+                    //reset all special messages
+                    p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));
+                    p.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f"));
+                    p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&f"));
                     
                     //undo gunmode (taken from GunHandler.cs)
                     p.GunMode = false;

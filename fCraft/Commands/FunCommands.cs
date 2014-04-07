@@ -602,8 +602,19 @@ THE SOFTWARE.*/
                         return;
                     }
 
+                    if (world.Players.Count() < 2)
+                    {
+                        player.Message("&cYou need at least 2 players to play CTF");
+                        return;
+                    }
+
                     try
                     {
+                        foreach (Player p in player.World.Players)
+                        {
+                            p.JoinWorld(player.World, WorldChangeReason.Rejoin);
+                        }
+
                         CTF.GetInstance(world);
                         CTF.Start();
                     }
