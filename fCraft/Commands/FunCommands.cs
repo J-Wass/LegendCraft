@@ -649,13 +649,13 @@ THE SOFTWARE.*/
 
                     if (team.ToLower() == "red")
                     {
-                        world.redCTFSpawn = player.Position.ToBlockCoords();
+                        world.redCTFSpawn = new Vector3I(player.Position.ToBlockCoords().X, player.Position.ToBlockCoords().Y + 2, player.Position.ToBlockCoords().Z);
                         player.Message("&aRed team spawn set.");
                         break;
                     }
                     else if (team.ToLower() == "blue")
                     {
-                        world.blueCTFSpawn = player.Position.ToBlockCoords();
+                        world.blueCTFSpawn = new Vector3I(player.Position.ToBlockCoords().X, player.Position.ToBlockCoords().Y + 2, player.Position.ToBlockCoords().Z);
                         player.Message("&aBlue team spawn set.");
                         break;
                     }

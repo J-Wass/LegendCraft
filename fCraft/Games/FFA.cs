@@ -134,7 +134,10 @@ namespace fCraft
             {
                 foreach (Player p in world_.Players)
                 {
-                    p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));//super hacky way to remove announcement, simply send a color code and call it a day
+                    if (p.ClassiCube && Heartbeat.ClassiCube())
+                    {
+                        p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));//super hacky way to remove announcement, simply send a color code and call it a day
+                    }
                 }
             }
 
@@ -303,9 +306,12 @@ namespace fCraft
                 p.JoinWorld(p.World, WorldChangeReason.Rejoin);
 
                 //reset all special messages
-                p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));
-                p.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f"));
-                p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&f"));
+                if (p.ClassiCube && Heartbeat.ClassiCube())
+                {
+                    p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));
+                    p.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f"));
+                    p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&f"));
+                }
 
                 pI.isPlayingFFA = false;
                 if (pI != null)

@@ -30,7 +30,7 @@ namespace fCraft
     class TeamDeathMatch
     {
         //Team Tags
-        public const string redTeam = "&C-Red-";
+        public const string redTeam = "&c-Red-";
         public const string blueTeam = "&1*Blue*";
 
         //TDM stats
@@ -133,7 +133,10 @@ namespace fCraft
             {
                 foreach (Player p in world_.Players)
                 {
-                    p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));//super hacky way to remove announcement, simply send a color code and call it a day
+                    if (p.ClassiCube && Heartbeat.ClassiCube())
+                    {
+                        p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));//super hacky way to remove announcement, simply send a color code and call it a day
+                    }
                 }
             }
 
@@ -172,11 +175,14 @@ namespace fCraft
                         //send an announcement
                         p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&cLet the Games Begin!"));
 
-                        //set player's health
-                        p.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f[&a--------&f]"));
+                        if (p.ClassiCube && Heartbeat.ClassiCube())
+                        {
+                            //set player's health
+                            p.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f[&a--------&f]"));
 
-                        //set game score
-                        p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&cRed&f: 0,&1 Blue&f: 0"));
+                            //set game score
+                            p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&cRed&f: 0,&1 Blue&f: 0"));
+                        }
                     }
                     started = true;   //the game has officially started
                     isOn = true;
@@ -374,9 +380,12 @@ namespace fCraft
                     p.entityChanged = true;
 
                     //reset all special messages
-                    p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));
-                    p.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f"));
-                    p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&f"));
+                    if (p.ClassiCube && Heartbeat.ClassiCube())
+                    {
+                        p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));
+                        p.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f"));
+                        p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&f"));
+                    }
                     
                     //undo gunmode (taken from GunHandler.cs)
                     p.GunMode = false;

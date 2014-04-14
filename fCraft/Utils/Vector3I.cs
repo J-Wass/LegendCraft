@@ -10,7 +10,21 @@ namespace fCraft {
         public static readonly Vector3I Up = new Vector3I( 0, 0, 1 );
         public static readonly Vector3I Down = new Vector3I( 0, 0, -1 );
 
-        public int X, Y, Z;
+        /// <summary>
+        /// Depth and Length Axis
+        /// </summary>
+        public int X;
+
+        /// <summary>
+        /// Height Axis
+        /// </summary>
+        public int Y;
+
+        /// <summary>
+        /// Depth and Length Axis
+        /// </summary>
+        public int Z;
+
         public int X2 { get { return X * X; } }
         public int Y2 { get { return Y * Y; } }
         public int Z2 { get { return Z * Z; } }

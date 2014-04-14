@@ -1363,7 +1363,6 @@ namespace fCraft
                     if (coord == World.blueFlag)
                     {
                         //at this point, the player is on the red team and has stolen the blue team flag
-                        World.Players.Message("{0} has stolen the blue flag!", Name);
                         Info.hasBlueFlag = true;
                     }
 
@@ -1379,7 +1378,6 @@ namespace fCraft
                     if (coord == World.redFlag)
                     {
                         //at this point, the player is on the blue team and has stolen the red team flag
-                        World.Players.Message("{0} has stolen the red flag!", Name);
                         Info.hasRedFlag = true;
                     }
 
@@ -1591,6 +1589,25 @@ namespace fCraft
             LastTimeKilled = DateTime.UtcNow;
             inWorld.Players.Message(message);
             TeleportTo(inWorld.Map.Spawn);
+        }
+
+        public void KillCTF(World inWorld, string message)
+        {
+            LastTimeKilled = DateTime.UtcNow;
+            inWorld.Players.Message(message);
+
+            if (Info.CTFRedTeam)
+            {
+                TeleportTo(inWorld.redCTFSpawn.ToPlayerCoords());
+            }
+            else if (Info.CTFBlueTeam)
+            {
+                TeleportTo(inWorld.blueCTFSpawn.ToPlayerCoords());
+            }
+            else
+            {
+                TeleportTo(inWorld.Map.Spawn);
+            }
         }
 
         /// <summary>  Gets the block from given location in player's world, and sends it (sync) to the player.

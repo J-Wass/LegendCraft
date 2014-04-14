@@ -444,13 +444,21 @@ namespace fCraft
                 {
                     healthBar = "&f[&8--------&f]";
                 }
-                hitted.Send(PacketWriter.MakeSpecialMessage((byte)1, healthBar));
+
+                if (hitted.ClassiCube && Heartbeat.ClassiCube())
+                {
+                    hitted.Send(PacketWriter.MakeSpecialMessage((byte)1, healthBar));
+                }
+                else
+                {
+                    hitted.Message("You have " + hitted.Info.Health.ToString() + " health.");
+                }
 
                 //If the hit player's health is 0 or less, they die
                 if (hitted.Info.Health <= 0)
                 {
 
-                    hitted.Kill(world, String.Format("{0}&S was shot by {1}", hitted.Name, by.Name));
+                    hitted.KillCTF(world, String.Format("&f{0}&S was shot by &f{1}", hitted.Name, by.Name));
                     hitted.Info.CTFKills++;
 
                     if (hitted.Info.hasRedFlag)
@@ -464,6 +472,7 @@ namespace fCraft
                         {
                             p.World.Map.QueueUpdate(blockUpdate);
                         }
+                      
                     }
 
                     if (hitted.Info.hasBlueFlag)
@@ -481,7 +490,15 @@ namespace fCraft
 
                     //revive dead players with 100% health
                     hitted.Info.Health = 100;
-                    hitted.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f[&a--------&f]"));
+
+                    if (hitted.ClassiCube && Heartbeat.ClassiCube())
+                    {
+                        hitted.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f[&a--------&f]"));
+                    }
+                    else
+                    {
+                        hitted.Message("You have 100 health.");
+                    }
                 }
 
                 return;
@@ -533,6 +550,14 @@ namespace fCraft
                     healthBar = "&f[&8--------&f]";
                 }
                 hitted.Send(PacketWriter.MakeSpecialMessage((byte)1, healthBar));
+                if (hitted.ClassiCube && Heartbeat.ClassiCube())
+                {
+                    hitted.Send(PacketWriter.MakeSpecialMessage((byte)1, healthBar));
+                }
+                else
+                {
+                    hitted.Message("You have " + hitted.Info.Health.ToString() + " health.");
+                }
 
                 if (hitted.Info.Health == 0)
                 {
@@ -564,7 +589,14 @@ namespace fCraft
                         //update scoreboard for all players
                         foreach (Player p in hitted.World.Players)
                         {
-                            p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&cRed&f: " + fCraft.TeamDeathMatch.redScore + ",&1 Blue&f: " + fCraft.TeamDeathMatch.blueScore));
+                            if (p.ClassiCube && Heartbeat.ClassiCube())
+                            {
+                                p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&cRed&f: " + fCraft.TeamDeathMatch.redScore + ",&1 Blue&f: " + fCraft.TeamDeathMatch.blueScore));
+                            }
+                            else
+                            {
+                                p.Message("The score is now &cRed&f: " + fCraft.TeamDeathMatch.redScore + ",&1 Blue&f: " + fCraft.TeamDeathMatch.blueScore);
+                            }
                         }
                     }
 
@@ -593,13 +625,24 @@ namespace fCraft
                         }                      
                         foreach (Player p in hitted.World.Players)
                         {
-                            p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&eCurrent Leader&f: " + leader.Name + ", Kills: " + leader.Info.gameKillsFFA));
+                            if (p.ClassiCube && Heartbeat.ClassiCube())
+                            {
+                                p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&eCurrent Leader&f: " + leader.Name + ", Kills: " + leader.Info.gameKillsFFA));
+                            }
                         }
                     }
 
                     //revive dead players with 100% health
                     hitted.Info.Health = 100;
-                    hitted.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f[&a--------&f]"));
+
+                    if (hitted.ClassiCube && Heartbeat.ClassiCube())
+                    {
+                        hitted.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f[&a--------&f]"));
+                    }
+                    else
+                    {
+                        hitted.Message("You have " + hitted.Info.Health.ToString() + "health.");
+                    }
                 }
             }
 		}
