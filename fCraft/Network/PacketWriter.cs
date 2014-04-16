@@ -328,9 +328,9 @@ namespace fCraft {
         public static Packet MakeSetBlockPermissions(byte BlockType, bool AllowPlacement, bool AllowDeletion)
         {
             Packet packet = new Packet(OpCode.SetBlockPermissions);
-            ToNetOrder(BlockType, packet.Data, 1);
-            ToNetOrder(AllowPlacement ? (byte)1 : (byte)0, packet.Data, 2);
-            ToNetOrder(AllowDeletion ? (byte)1 : (byte)0, packet.Data, 3);
+            packet.Data[1] = BlockType;
+            packet.Data[2] = (AllowPlacement ? (byte)1 : (byte)0);
+            packet.Data[3] = (AllowDeletion ? (byte)1 : (byte)0);
             return packet;
         }
 

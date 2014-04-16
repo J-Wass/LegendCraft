@@ -472,6 +472,7 @@ namespace fCraft
                         {
                             p.World.Map.QueueUpdate(blockUpdate);
                         }
+                        world.redFlagTaken = false;
                       
                     }
 
@@ -486,6 +487,7 @@ namespace fCraft
                         {
                             p.World.Map.QueueUpdate(blockUpdate);
                         }
+                        world.blueFlagTaken = false;
                     }
 
                     //revive dead players with 100% health

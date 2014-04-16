@@ -34,6 +34,8 @@ namespace fCraft {
         //order: highlight name, id, first position, second position, color, percentOpaque
         public Dictionary<string, Tuple<int, Vector3I, Vector3I, System.Drawing.Color, int>> Highlights = new Dictionary<string, Tuple<int, Vector3I, Vector3I, System.Drawing.Color, int>>();
 
+        public List<Block> DisallowedBlocks = new List<Block>();
+
         public bool IsRealm { get; set; }
 
         public float VisitCount { get; set; }
@@ -73,6 +75,8 @@ namespace fCraft {
         public Vector3I blueFlag = new Vector3I(0, 0, 0);
         public Vector3I redCTFSpawn = new Vector3I(0, 0, 0);
         public Vector3I blueCTFSpawn = new Vector3I(0, 0, 0);
+        public bool blueFlagTaken = false;
+        public bool redFlagTaken = false;
 
         /// <summary> Whether this world is currently pending unload 
         /// (waiting for block updates to finish processing before unloading). </summary>

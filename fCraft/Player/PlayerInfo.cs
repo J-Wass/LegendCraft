@@ -132,6 +132,9 @@ namespace fCraft
         public short CTFCaptures = 0;
         public bool placingRedFlag = false;
         public bool placingBlueFlag = false;
+        public bool gunDisarmed = false;
+        public bool stabDisarmed = false;
+        public bool stabAnywhere = false;
 
         /// <summary>
         /// Health var used in several gamemodes

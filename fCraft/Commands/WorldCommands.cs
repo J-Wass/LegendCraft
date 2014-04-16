@@ -3647,6 +3647,10 @@ THE SOFTWARE.*/
         static void SpawnHandler(Player player, Command cmd)
         {
             if (player.World == null) PlayerOpException.ThrowNoWorld(player);
+            if (player.Info.isPlayingCTF)
+            {
+                return;
+            }
             player.previousLocation = player.Position;
             player.previousWorld = null;
             player.TeleportTo(player.World.LoadMap().Spawn);

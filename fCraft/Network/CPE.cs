@@ -34,6 +34,8 @@ namespace fCraft
         const int MessageTypesExtVersion = 1;
         const string EnvWeatherTypeExtName = "EnvWeatherType";
         const int EnvWeatherTypeExtVersion = 1;
+        const string HackControlExtName = "HackControl";
+        const int HackControlExtVersion = 1;
 
         // Note: if more levels are added, change UsesCustomBlocks from bool to int
         public bool SelectionBoxExt { get; set; }
@@ -47,6 +49,7 @@ namespace fCraft
         public bool SupportsExtPlayerList = false;
         public bool SupportsSelectionCuboid = false;
         public bool SupportsMessageTypes = false;
+        public bool SupportsHackControl = false;
 
         string ClientName { get; set; }
 
@@ -64,6 +67,7 @@ namespace fCraft
             writer.Write(Packet.MakeExtEntry(ExtPlayerListExtName, ExtPlayerListExtVersion).Data);
             writer.Write(Packet.MakeExtEntry(SelectionCuboidExtName, SelectionCuboidExtVersion).Data);
             writer.Write(Packet.MakeExtEntry(MessageTypesExtName, MessageTypesExtVersion).Data);
+            writer.Write(Packet.MakeExtEntry(HackControlExtName, HackControlExtVersion).Data);
 
             Logger.Log(LogType.Debug, "Sent ExtInfo and entry packets");
 
@@ -158,6 +162,12 @@ namespace fCraft
                 if (extName == EnvWeatherTypeExtName && extVersion == EnvWeatherTypeExtVersion)
                 {
                     SupportsEnvWeatherType = true;
+                    //Logger.Log(LogType.Debug, "{0} true", extName);
+                    clientExts.Add(extName + " " + extVersion);
+                }
+                if (extName == HackControlExtName && extVersion == HackControlExtVersion)
+                {
+                    SupportsHackControl = true;
                     //Logger.Log(LogType.Debug, "{0} true", extName);
                     clientExts.Add(extName + " " + extVersion);
                 }

@@ -53,6 +53,8 @@ namespace fCraft
         public static int scoreCap = 5;
         public static Stopwatch stopwatch = new Stopwatch();
         public static DateTime announced;
+        public static DateTime RedDisarmed;
+        public static DateTime BlueDisarmed;
 
         //Game Bools
         public static bool isOn = false;
@@ -131,7 +133,7 @@ namespace fCraft
             }
 
             //remove announcements after 5 seconds
-            if ((DateTime.Now - announced).TotalSeconds >= 5)
+            if (announced != DateTime.MaxValue && (DateTime.Now - announced).TotalSeconds >= 5)
             {
                 foreach (Player p in world_.Players)
                 {
@@ -140,6 +142,34 @@ namespace fCraft
                         p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));//super hacky way to remove announcements, simply send a color code and call it a day
                     }
                 }
+                announced = DateTime.MaxValue;
+            }
+
+            //remove disarm after 30s
+            if ((RedDisarmed != DateTime.MaxValue && (DateTime.Now - RedDisarmed).TotalSeconds >= 30))
+            {
+                foreach (Player p in world_.Players)
+                {
+                    if (p.Info.CTFRedTeam)
+                    {
+                        p.GunMode = true;
+                        p.Info.gunDisarmed = false;
+                    }
+                }
+                RedDisarmed = DateTime.MaxValue;
+            }
+
+            if ((BlueDisarmed != DateTime.MaxValue && (DateTime.Now - BlueDisarmed).TotalSeconds >= 30))
+            {
+                foreach (Player p in world_.Players)
+                {
+                    if (p.Info.CTFBlueTeam)
+                    {
+                        p.GunMode = true;
+                        p.Info.gunDisarmed = false;
+                    }
+                }
+                BlueDisarmed = DateTime.MaxValue;
             }
 
             if (!started)
@@ -162,6 +192,31 @@ namespace fCraft
                     }
                     foreach (Player p in world_.Players)
                     {
+                        if (p.ClassiCube && Heartbeat.ClassiCube())
+                        {
+                            //loop through each block ID
+                            for (int i = 1; i < 65; i++)
+                            {
+                                //allow player to break glass block in order to shoot gun, disallow all other blocks except flags
+                                if (i.Equals(20))
+                                {
+                                    p.Send(PacketWriter.MakeSetBlockPermissions((byte)20, false, true));
+                                }
+                                else if (i.Equals(21))
+                                {
+                                    p.Send(PacketWriter.MakeSetBlockPermissions((byte)21, false, true));
+                                }
+                                else if (i.Equals(29))
+                                {
+                                    p.Send(PacketWriter.MakeSetBlockPermissions((byte)29, false, true));
+                                }
+                                else
+                                {
+                                    p.Send(PacketWriter.MakeSetBlockPermissions((byte)i, false, false));
+                                }
+                            }
+                        }
+
                         assignTeams(p);
 
                         if (p.Info.IsHidden) //unhides players automatically if hidden (cannot shoot guns while hidden)
@@ -170,8 +225,6 @@ namespace fCraft
                             Player.RaisePlayerHideChangedEvent(p);
                         }
 
-                        Logger.LogToConsole(world_.redCTFSpawn.ToString() + " " + world_.blueCTFSpawn.ToString());
-                        Logger.LogToConsole(world_.redCTFSpawn.ToPlayerCoords().ToString() + " " + world_.blueCTFSpawn.ToPlayerCoords().ToString());
                         if (p.Info.CTFRedTeam)
                         {
                             p.TeleportTo(world_.redCTFSpawn.ToPlayerCoords());
@@ -217,6 +270,23 @@ namespace fCraft
                     return;
                 }
             }
+
+            //update blue team and red team counts
+            redTeamCount =
+            (
+                from red in world_.Players
+                where red.Info.CTFRedTeam
+                select red
+            ).Count();
+
+            blueTeamCount =
+            (
+                from blue in world_.Players
+                where blue.Info.CTFBlueTeam
+                select blue
+            ).Count();
+
+
 
             //Announce flag holder
             if (String.IsNullOrEmpty(redFlagHolder))
@@ -284,16 +354,24 @@ namespace fCraft
                 return;
             }
 
+            //if time is up
             if (started && startTime != null && (DateTime.Now - startTime).TotalSeconds >= (totalTime))
             {
-                if (redScore != blueScore)
+                if (redScore > blueScore)
                 {
+                    world_.Players.Message("&fThe &cRed&f Team won {0} to {1}!", redScore, blueScore);
+                    Stop(null);
+                    return;
+                }
+                if (redScore < blueScore)
+                {
+                    world_.Players.Message("&fThe &1Blue&f Team won {0} to {1}!", blueScore, redScore);
                     Stop(null);
                     return;
                 }
                 if (redScore == blueScore)
                 {
-                    world_.Players.Message("&fThe teams tied {0} to {1}!", blueScore, redScore);
+                    world_.Players.Message("&fThe teams tied {0} to {0}!", blueScore);
                     Stop(null);
                     return;
                 }
@@ -327,6 +405,7 @@ namespace fCraft
                         Stop(null);
                         return;
                     }
+                    //lol, everyone left
                     else
                     {
                         Stop(null);
@@ -391,7 +470,7 @@ namespace fCraft
             RevertNames();
         }       
 
-        public static void RevertNames()    //reverts names for online players. offline players get reverted upon leaving the game
+        public static void RevertNames()    //reverts names and vars for online players. offline players get reverted upon leaving the game
         {
             List<PlayerInfo> CTFPlayers = new List<PlayerInfo>(PlayerDB.PlayerInfoList.Where(r => (r.CTFBlueTeam || r.CTFRedTeam) && r.IsOnline).ToArray());
             for (int i = 0; i < CTFPlayers.Count(); i++)
@@ -418,6 +497,7 @@ namespace fCraft
                     //reset all special messages
                     if (p.ClassiCube && Heartbeat.ClassiCube())
                     {
+                        p.Send(PacketWriter.MakeSetBlockPermissions((byte)0, true, true));
                         p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));
                         p.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f"));
                         p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&f"));
@@ -500,6 +580,135 @@ namespace fCraft
             return;
         }
 
+        public static void PowerUp(Player p)
+        {
+            Random r = new Random();
+            int i = r.Next(1, 18);
+
+            //decide which powerup to use, certain powerups have a higher chance such as first aid kit and dodge as opposed to rarer ones like holy blessing
+            switch (i)
+            {
+                case 1:
+                case 2:
+                case 3:
+                    //first aid kit - heal user for 50 hp
+                    world_.Players.Message("&f{0} has discovered a &aFirst Aid Kit&f!", p.Name);
+                    world_.Players.Message("&f{0} has been healed for 50 hp.", p.Name);
+
+                    //set health to 100, make sure it doesn't overflow
+                    p.Info.Health += 50;
+                    if (p.Info.Health > 100)
+                    {
+                        p.Info.Health = 100;
+                    }
+
+                    string healthBar = "&f[&a--------&f]";
+                    if (p.Info.Health == 75)
+                    {
+                        healthBar = "&f[&a------&8--&f]";
+                    }
+                    else if (p.Info.Health == 50)
+                    {
+                        healthBar = "&f[&e----&8----&f]";
+                    }
+                    else if (p.Info.Health == 25)
+                    {
+                        healthBar = "&f[&c--&8------&f]";
+                    }
+                    else
+                    {
+                        healthBar = "&f[&8--------&f]";
+                    }
+
+                    if (p.ClassiCube && Heartbeat.ClassiCube())
+                    {
+                        p.Send(PacketWriter.MakeSpecialMessage((byte)1, healthBar));
+                    }
+                    else
+                    {
+                        p.Message("You have " + p.Info.Health.ToString() + " health.");
+                    }
+
+                    break;
+                case 4:
+                case 5:
+                    //penicillin - heal user for 100 hp
+                    world_.Players.Message("&f{0} has discovered a &aPenicillin Case&f!", p.Name);
+                    world_.Players.Message("&f{0} has been healed for 100 hp.", p.Name);
+                    p.Info.Health = 100;
+
+                    if (p.ClassiCube && Heartbeat.ClassiCube())
+                    {
+                        p.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f[&8--------&f]"));
+                    }
+                    else
+                    {
+                        p.Message("You have " + p.Info.Health.ToString() + " health.");
+                    }
+
+                    break;
+                case 6:
+                case 7:
+                    //disarm
+                    world_.Players.Message("&f{0} has discovered a &aDisarm Spell&f!", p.Name);
+                    if (p.Info.CTFBlueTeam)
+                    {
+                        world_.Players.Message("The red team has lost all weaponry for 30 seconds!");
+                        foreach (Player pl in world_.Players)
+                        {
+                            if (pl.Info.CTFRedTeam)
+                            {
+                                pl.Info.gunDisarmed = true;
+                                pl.Info.stabDisarmed = true;
+                                pl.GunMode = false;                             
+                            }
+                        }
+                        RedDisarmed = DateTime.Now;
+                    }
+                    else
+                    {
+                        world_.Players.Message("The blue team has lost all weaponry for 30 seconds!");
+                        foreach (Player pl in world_.Players)
+                        {
+                            if (pl.Info.CTFBlueTeam)
+                            {
+                                pl.Info.gunDisarmed = true;
+                                pl.Info.stabDisarmed = true;
+                                pl.GunMode = false;
+                            }
+                        }
+                        BlueDisarmed = DateTime.Now;
+                    }
+
+                    break;
+                case 8:
+                case 9:
+                    //blades of fury
+                    world_.Players.Message("&f{0} has discovered the &aBlades of Fury&f!", p.Name);
+                    break;
+                case 10:
+                case 11:
+                    //war cry
+                    break;
+                case 12:
+                case 13:
+                case 14:
+                    //strengthen
+                    break;
+                case 15:
+                case 16:
+                case 17:
+                    //dodge
+                    break;
+                case 18:
+                    //holy blessing
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
         public static void PlayerMoving(object poo, fCraft.Events.PlayerMovingEventArgs e)
         {
             if (!started)
@@ -536,6 +745,7 @@ namespace fCraft
                                 p.Send(PacketWriter.MakeSpecialMessage((byte)100, e.Player.Name + " has successfully capped the &cred &fflag"));
                             }
                         }
+                        world_.redFlagTaken = false;
                         announced = DateTime.Now;
                         return;
                     }
@@ -553,7 +763,7 @@ namespace fCraft
                     if (e.NewPosition.DistanceSquaredTo(world_.redCTFSpawn.ToPlayerCoords()) <= 42 * 42)
                     {
                         redScore++;
-                        world_.Players.Message("&f{0} has successfully capped the &1blue &fflag. The score is now &cRed:&f {1} and &1Blue:&f {2}.", e.Player.Name, redScore, blueScore);
+                        world_.Players.Message("&f{0} has capped the &1blue &fflag. The score is now &cRed&f: {1} and &1Blue&f: {2}.", e.Player.Name, redScore, blueScore);
                         e.Player.Info.hasBlueFlag = false;
                         blueFlagHolder = null;
                         e.Player.Info.CTFCaptures++;
@@ -571,6 +781,7 @@ namespace fCraft
                                 p.Send(PacketWriter.MakeSpecialMessage((byte)100, e.Player.Name + " has successfully capped the &cred &fflag"));
                             }
                         }
+                        world_.blueFlagTaken = false;
                         announced = DateTime.Now;
                         return;
                     }
@@ -610,61 +821,39 @@ namespace fCraft
                             }
 
                             //if upper limit is 450 degrees for example, convert to 320 - 256 = 54 bytes (450 degrees translates to 320 bytes, 360 degrees translates to 256 bytes)
-                            if (upperLimit > 128)
+                            if (upperLimit > 256)
                             {
                                 upperLimit = (short)(upperLimit - 256);
                             }
 
-                            Logger.LogToConsole(upperLimit.ToString() + " " + lowerLimit.ToString() + " " + e.Player.Position.R.ToString() + " " + p.Position.R);
+                            //Logger.LogToConsole(upperLimit.ToString() + " " + lowerLimit.ToString() + " " + e.Player.Position.R.ToString() + " " + p.Position.R);
 
-                            //if target player is not looking at R = 0, then we can use just check the range
-                            if (upperLimit - lowerLimit < 128)
+                            bool kill = false;
+
+                            //if target's line of sight contains 0
+                            if (p.Position.R > 192 && p.Position.R < 64)
                             {
-                                //if (Enumerable.Range(lowerLimit, upperLimit).Contains(e.Player.Position.R))
-                                if(false)
+                                if (Enumerable.Range(lowerLimit, 255).Contains(e.Player.Position.R) || Enumerable.Range(0, upperLimit).Contains(e.Player.Position.R))
                                 {
-                                    e.Player.KillCTF(world_, String.Format("&f{0}&S was backstabbed by &f{1}", p.Name, e.Player.Name));
-
-                                    if (p.Info.hasRedFlag)
-                                    {
-                                        world_.Players.Message("The red flag has been returned.");
-                                        p.Info.hasRedFlag = false;
-                                        redFlagHolder = null;
-
-                                        //Put flag back
-                                        BlockUpdate blockUpdate = new BlockUpdate(null, world_.redFlag, Block.Red);
-                                        foreach (Player pl in world_.Players)
-                                        {
-                                            pl.World.Map.QueueUpdate(blockUpdate);
-                                        }
-                                    }
-
-                                    if (p.Info.hasBlueFlag)
-                                    {
-                                        world_.Players.Message("The blue flag has been returned.");
-                                        p.Info.hasBlueFlag = false;
-                                        blueFlagHolder = null;
-
-                                        //Put flag back
-                                        BlockUpdate blockUpdate = new BlockUpdate(null, world_.blueFlag, Block.Blue);
-                                        foreach (Player pl in world_.Players)
-                                        {
-                                            pl.World.Map.QueueUpdate(blockUpdate);
-                                        }
-                                    }
-                                    return;
+                                    kill = true;
+                                }
+                            }
+                            else
+                            {
+                                if (Enumerable.Range(lowerLimit, upperLimit).Contains(e.Player.Position.R))
+                                {
+                                    kill = true;
                                 }
                             }
 
-                            //since target player's range contains R=0, check from upper limit to 255, or 0 to the lower limit and see if player's view fits
-                            //if (Enumerable.Range(upperLimit, 255).Contains(e.Player.Position.R) || Enumerable.Range(0, lowerLimit).Contains(e.Player.Position.R))
-                            if(false)
+                            if (kill)
                             {
-                                e.Player.KillCTF(world_, String.Format("{0}&S was backstabbed by {1}", p.Name, e.Player.Name));
+                                p.KillCTF(world_, String.Format("&f{0}&S was backstabbed by &f{1}", p.Name, e.Player.Name));
 
                                 if (p.Info.hasRedFlag)
                                 {
                                     world_.Players.Message("The red flag has been returned.");
+                                    e.Player.Info.CTFKills++;
                                     p.Info.hasRedFlag = false;
                                     redFlagHolder = null;
 
@@ -674,11 +863,14 @@ namespace fCraft
                                     {
                                         pl.World.Map.QueueUpdate(blockUpdate);
                                     }
+                                    world_.redFlagTaken = false;
+
                                 }
 
                                 if (p.Info.hasBlueFlag)
                                 {
                                     world_.Players.Message("The blue flag has been returned.");
+                                    e.Player.Info.CTFKills++;
                                     p.Info.hasBlueFlag = false;
                                     blueFlagHolder = null;
 
@@ -688,10 +880,9 @@ namespace fCraft
                                     {
                                         pl.World.Map.QueueUpdate(blockUpdate);
                                     }
+                                    world_.blueFlagTaken = false;
                                 }
-                                return;
-                            }
-
+                            }                         
                             //target player can see player, do not stab
                         }
                     }

@@ -113,6 +113,12 @@ namespace fCraft
                 player.Message("Players who are not playing Team DeathMatch can only spectate.");
                 return;
             }
+
+            if (player.Info.isPlayingCTF && player.Info.gunDisarmed)
+            {
+                player.Message("You are currently disarmed. You cannot use a gun until the disarm powerup has worn off.");
+                return;
+            }
             if (player.GunMode)
             {
                 player.GunMode = false;

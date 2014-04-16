@@ -612,8 +612,16 @@ namespace fCraft
                     GentlyKickBetaClients();
                     return false;
 
+                //GET request, check if ServeCfg or WebPanelConfig
                 case (byte)'G':
-                    ServeCfg();
+                    if (reader.ReadString().Contains("action"))
+                    {
+                        WebPanelConfig();
+                    }
+                    else
+                    {
+                        ServeCfg();
+                    }
                     return false;
 
                 default:
@@ -1112,6 +1120,43 @@ namespace fCraft
 
         static readonly Regex HttpFirstLine = new Regex("GET /([a-zA-Z0-9_]{1,16})(~motd)? .+", RegexOptions.Compiled);
         void ServeCfg()
+        {
+            using (StreamReader textReader = new StreamReader(stream))
+            {
+                using (StreamWriter textWriter = new StreamWriter(stream))
+                {
+                    string firstLine = "G" + textReader.ReadLine();
+                    var match = HttpFirstLine.Match(firstLine);
+                    if (match.Success)
+                    {
+                        string worldName = match.Groups[1].Value;
+                        bool firstTime = match.Groups[2].Success;
+                        World world = WorldManager.FindWorldExact(worldName);
+                        if (world != null)
+                        {
+                            string cfg = world.GenerateWoMConfig(firstTime);
+                            byte[] content = Encoding.UTF8.GetBytes(cfg);
+                            textWriter.WriteLine("HTTP/1.1 200 OK");
+                            textWriter.WriteLine("Date: " + DateTime.UtcNow.ToString("R"));
+                            textWriter.WriteLine("Content-Type: text/plain");
+                            textWriter.WriteLine("Content-Length: " + content.Length);
+                            textWriter.WriteLine();
+                            textWriter.WriteLine(cfg);
+                        }
+                        else
+                        {
+                            textWriter.WriteLine("HTTP/1.1 404 Not Found");
+                        }
+                    }
+                    else
+                    {
+                        textWriter.WriteLine("HTTP/1.1 400 Bad Request");
+                    }
+                }
+            }
+        }
+
+        void WebPanelConfig()
         {
             using (StreamReader textReader = new StreamReader(stream))
             {

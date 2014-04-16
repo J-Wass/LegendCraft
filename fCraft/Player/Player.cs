@@ -892,9 +892,14 @@ namespace fCraft
         public void Message([NotNull] string message)
         {
             if (message == null) throw new ArgumentNullException("message");
+
+            //if is console
             if (IsSuper)
             {
                 Logger.LogToConsole(message);
+
+                //if webpanel activated
+
             }
             else
             {
@@ -1362,8 +1367,15 @@ namespace fCraft
                 {
                     if (coord == World.blueFlag)
                     {
+                        if (World.blueFlagTaken)
+                        {
+                            //flag already taken, ignore this block
+                            return false;
+                        }
+
                         //at this point, the player is on the red team and has stolen the blue team flag
                         Info.hasBlueFlag = true;
+                        World.blueFlagTaken = true;
                     }
 
                     if (coord == World.redFlag)
@@ -1377,8 +1389,15 @@ namespace fCraft
                 {
                     if (coord == World.redFlag)
                     {
+                        if (World.redFlagTaken)
+                        {
+                            //flag already taken, ignore this block
+                            return false;
+                        }
+
                         //at this point, the player is on the blue team and has stolen the red team flag
                         Info.hasRedFlag = true;
+                        World.redFlagTaken = true;
                     }
 
                     if (coord == World.blueFlag)

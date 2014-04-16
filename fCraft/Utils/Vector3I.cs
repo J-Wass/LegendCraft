@@ -16,12 +16,12 @@ namespace fCraft {
         public int X;
 
         /// <summary>
-        /// Height Axis
+        /// Depth and Length Axis
         /// </summary>
         public int Y;
 
         /// <summary>
-        /// Depth and Length Axis
+        /// Height Axis
         /// </summary>
         public int Z;
 
