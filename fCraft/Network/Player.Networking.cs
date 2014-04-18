@@ -614,14 +614,8 @@ namespace fCraft
 
                 //GET request, check if ServeCfg or WebPanelConfig
                 case (byte)'G':
-                    if (reader.ReadString().Contains("action"))
-                    {
-                        WebPanelConfig();
-                    }
-                    else
-                    {
-                        ServeCfg();
-                    }
+                   
+                    ServeCfg();         
                     return false;
 
                 default:
@@ -1117,8 +1111,8 @@ namespace fCraft
             }
         }
 
-
         static readonly Regex HttpFirstLine = new Regex("GET /([a-zA-Z0-9_]{1,16})(~motd)? .+", RegexOptions.Compiled);
+       
         void ServeCfg()
         {
             using (StreamReader textReader = new StreamReader(stream))
@@ -1126,6 +1120,62 @@ namespace fCraft
                 using (StreamWriter textWriter = new StreamWriter(stream))
                 {
                     string firstLine = "G" + textReader.ReadLine();
+
+                    //get webpanel request (not working yet)
+                    if (firstLine.Contains("LC"))
+                    {
+                        string message = firstLine.Substring(15); //grab action
+                        string salt = "", user = "", action = "";
+
+                        try
+                        {
+                            string[] tokens = message.Split('&');
+                            salt = tokens[0].Substring(4);
+                            user = tokens[1].Substring(4);
+                            action = (tokens[2].Remove(tokens[2].LastIndexOf(' '))).Replace("%20", " ").Substring(6);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (ex is IndexOutOfRangeException)
+                            {
+                                textWriter.WriteLine("HTTP/1.1 400 Bad Request: Incorrect syntax");
+                                return;
+                            }
+                            textWriter.WriteLine("HTTP/1.1 400 Bad Request: Something went wrong!");
+                            return;
+                        }
+
+                        if (String.IsNullOrEmpty(salt))
+                        {
+                            textWriter.WriteLine("HTTP/1.1 400 Bad Request: Missing Salt");
+                            return;
+                        }
+                        if (String.IsNullOrEmpty(user))
+                        {
+                            textWriter.WriteLine("HTTP/1.1 400 Bad Request: Missing User");
+                            return;
+                        }
+
+                        if (salt != Heartbeat.Salt)
+                        {
+                            textWriter.WriteLine("HTTP/1.1 404 Not Found: Salt Not Found- Invalid Salt");
+                            return;
+                        }
+
+                        if (user != Server.VerifiedUser)
+                        {
+                            textWriter.WriteLine("HTTP/1.1 404 Not Found: User Not Found- Invalid User");
+                            return;
+                        }
+
+                        Player.Console.sendToWebPanel = true;
+                        Player.Console.ParseMessage("/" + action, true, false);
+                        textWriter.Write(Player.Console.WebPanelData);
+
+                        Player.Console.sendToWebPanel = false;
+                        Player.Console.WebPanelData = "";
+                    }
+
                     var match = HttpFirstLine.Match(firstLine);
                     if (match.Success)
                     {
@@ -1156,42 +1206,6 @@ namespace fCraft
             }
         }
 
-        void WebPanelConfig()
-        {
-            using (StreamReader textReader = new StreamReader(stream))
-            {
-                using (StreamWriter textWriter = new StreamWriter(stream))
-                {
-                    string firstLine = "G" + textReader.ReadLine();
-                    var match = HttpFirstLine.Match(firstLine);
-                    if (match.Success)
-                    {
-                        string worldName = match.Groups[1].Value;
-                        bool firstTime = match.Groups[2].Success;
-                        World world = WorldManager.FindWorldExact(worldName);
-                        if (world != null)
-                        {
-                            string cfg = world.GenerateWoMConfig(firstTime);
-                            byte[] content = Encoding.UTF8.GetBytes(cfg);
-                            textWriter.WriteLine("HTTP/1.1 200 OK");
-                            textWriter.WriteLine("Date: " + DateTime.UtcNow.ToString("R"));
-                            textWriter.WriteLine("Content-Type: text/plain");
-                            textWriter.WriteLine("Content-Length: " + content.Length);
-                            textWriter.WriteLine();
-                            textWriter.WriteLine(cfg);
-                        }
-                        else
-                        {
-                            textWriter.WriteLine("HTTP/1.1 404 Not Found");
-                        }
-                    }
-                    else
-                    {
-                        textWriter.WriteLine("HTTP/1.1 400 Bad Request");
-                    }
-                }
-            }
-        }
 
 
         #region Joining Worlds

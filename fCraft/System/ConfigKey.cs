@@ -571,7 +571,7 @@ If disabled, heartbeat data is written to heartbeatdata.txt." )]
         [IPKey( ConfigSection.Advanced, IPKeyAttribute.BlankValueMeaning.Any,
 @"If the machine has more than one available IP address (for example
 if you have more than one NIC) you can use this setting to make
-800Craft bind to the same IP every time." )]
+LegendCraft bind to the same IP every time." )]
         IP,
 
         [EnumKey( ConfigSection.Advanced, fCraft.BandwidthUseMode.Normal,

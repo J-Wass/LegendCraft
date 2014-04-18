@@ -55,6 +55,8 @@ namespace fCraft
         public static DateTime announced;
         public static DateTime RedDisarmed;
         public static DateTime BlueDisarmed;
+        public static DateTime RedBOFdebuff;
+        public static DateTime BlueBOFdebuff;
 
         //Game Bools
         public static bool isOn = false;
@@ -117,6 +119,7 @@ namespace fCraft
             return;
         }
 
+        #region MainInterval
         public static void Interval(SchedulerTask task)
         {
             //check to stop Interval
@@ -145,6 +148,73 @@ namespace fCraft
                 announced = DateTime.MaxValue;
             }
 
+            //remove dodge after 1m
+            foreach (Player p in world_.Players)
+            {
+                if (p.Info.canDodge)
+                {
+                    if (p.Info.dodgeTime != DateTime.MaxValue && (DateTime.Now - p.Info.dodgeTime).TotalSeconds >= 60)
+                    {
+                        p.Info.canDodge = false;
+                        p.Info.dodgeTime = DateTime.MaxValue;
+
+                        world_.Players.Message(p.Name + " is no longer able to dodge.");
+                    }
+                }
+            }
+
+            //remove strengthen after 1m
+            foreach (Player p in world_.Players)
+            {
+                if (p.Info.strengthened)
+                {
+                    if (p.Info.strengthTime != DateTime.MaxValue && (DateTime.Now - p.Info.strengthTime).TotalSeconds >= 60)
+                    {
+                        p.Info.strengthened = false;
+                        p.Info.strengthTime = DateTime.MaxValue;
+
+                        world_.Players.Message(p.Name + " is no longer dealing 2x damage.");
+                    }
+                }
+            }
+
+            //remove Blades of Fury after 1m
+            if ((BlueBOFdebuff != DateTime.MaxValue && (DateTime.Now - BlueBOFdebuff).TotalSeconds >= 60))
+            {
+                foreach (Player p in world_.Players)
+                {
+                    if (p.Info.CTFBlueTeam)
+                    {
+                        p.Info.stabDisarmed = false;
+                    }
+                    else
+                    {
+                        p.Info.stabAnywhere = false;
+                    }
+                }
+                RedDisarmed = DateTime.MaxValue;
+
+                world_.Players.Message("Blades of Fury has ended.");
+            }
+
+            if ((RedBOFdebuff != DateTime.MaxValue && (DateTime.Now - RedBOFdebuff).TotalSeconds >= 60))
+            {
+                foreach (Player p in world_.Players)
+                {
+                    if (p.Info.CTFRedTeam)
+                    {
+                        p.Info.stabDisarmed = false;
+                    }
+                    else
+                    {
+                        p.Info.stabAnywhere = false;
+                    }
+                }
+                RedDisarmed = DateTime.MaxValue;
+
+                world_.Players.Message("Blades of Fury has ended.");
+            }
+
             //remove disarm after 30s
             if ((RedDisarmed != DateTime.MaxValue && (DateTime.Now - RedDisarmed).TotalSeconds >= 30))
             {
@@ -157,6 +227,8 @@ namespace fCraft
                     }
                 }
                 RedDisarmed = DateTime.MaxValue;
+
+                world_.Players.Message("The Disarm Spell has ended.");
             }
 
             if ((BlueDisarmed != DateTime.MaxValue && (DateTime.Now - BlueDisarmed).TotalSeconds >= 30))
@@ -170,6 +242,8 @@ namespace fCraft
                     }
                 }
                 BlueDisarmed = DateTime.MaxValue;
+
+                world_.Players.Message("The Disarm Spell has ended.");
             }
 
             if (!started)
@@ -440,7 +514,9 @@ namespace fCraft
                 world_.Players.Message("&WOnly 10 seconds left!");
             }
         }
+        #endregion
 
+        #region SeperateVoids
         static public void assignTeams(Player p)    //Assigns teams to all players in the world
         {
             //if there are no players assigned to any team yet
@@ -579,7 +655,9 @@ namespace fCraft
             blueTeamCount++;
             return;
         }
+        #endregion
 
+        #region PowerUps
         public static void PowerUp(Player p)
         {
             Random r = new Random();
@@ -685,30 +763,119 @@ namespace fCraft
                 case 9:
                     //blades of fury
                     world_.Players.Message("&f{0} has discovered the &aBlades of Fury&f!", p.Name);
+                    if (p.Info.CTFBlueTeam)
+                    {
+                        world_.Players.Message("The red team is unable to backstab for 1 minute!");
+                        world_.Players.Message("The blue team can now stab the red team from any angle for 1 minute!");
+                        foreach (Player pl in world_.Players)
+                        {
+                            if (pl.Info.CTFBlueTeam)
+                            {
+                                pl.Info.stabAnywhere = true;
+                            }
+                            else
+                            {
+                                pl.Info.stabDisarmed = true;
+                            }
+                        }
+                        RedBOFdebuff = DateTime.Now;
+                    }
+                    else
+                    {
+                        world_.Players.Message("The blue team is unable to backstab for 1 minute!");
+                        world_.Players.Message("The red team can now stab the blue team from any angle for 1 minute!");
+                        foreach (Player pl in world_.Players)
+                        {
+                            if (pl.Info.CTFRedTeam)
+                            {
+                                pl.Info.stabAnywhere = true;
+                            }
+                            else
+                            {
+                                pl.Info.stabDisarmed = true;
+                            }
+                        }
+                        RedBOFdebuff = DateTime.Now;
+                    }
                     break;
                 case 10:
                 case 11:
                     //war cry
+                    world_.Players.Message("&f{0} has discovered their &aWar Cry&f!", p.Name);
+                    if (p.Info.CTFBlueTeam)
+                    {
+                        world_.Players.Message("The red team has been frightened back into their spawn!");
+                        foreach (Player pl in world_.Players)
+                        {
+                            if (pl.Info.CTFRedTeam)
+                            {
+                                pl.TeleportTo(world_.redCTFSpawn.ToPlayerCoords());
+                            }
+                        }
+                    }
+                    else
+                    {
+                        world_.Players.Message("The blue team has been frightened back into their spawn!");
+                        foreach (Player pl in world_.Players)
+                        {
+                            if (pl.Info.CTFBlueTeam)
+                            {
+                                pl.TeleportTo(world_.blueCTFSpawn.ToPlayerCoords());
+                            }
+                        }
+                    }
                     break;
                 case 12:
                 case 13:
                 case 14:
                     //strengthen
+                    world_.Players.Message("&f{0} has discovered a &aStrength Pack&f!", p.Name);
+                    world_.Players.Message("&f{0}'s gun now deals twice the damage for the next minute!", p.Name);
+                    p.Info.strengthened = true;
+                    p.Info.strengthTime = DateTime.Now;
                     break;
                 case 15:
                 case 16:
                 case 17:
                     //dodge
+                    world_.Players.Message("&f{0} has discovered a new &aDodging Technique&f!", p.Name);
+                    world_.Players.Message("&f{0}'s has a 50% chance to dodge incomming gun attacks for the next minute!", p.Name);
+                    p.Info.canDodge = true;
+                    p.Info.dodgeTime = DateTime.Now;
                     break;
                 case 18:
-                    //holy blessing
+                    //holy blessing (rarest and most treasured power up, yet easiest to code :P )
+                    world_.Players.Message("&f{0} has discovered the rare &aHoly Blessing&f!!!", p.Name);
+                    if (p.Info.CTFBlueTeam)
+                    {
+                        world_.Players.Message("The Blue Team has been granted 1 point.");
+                        redScore++;
+                    }
+                    else
+                    {
+                        world_.Players.Message("The Red Team has been granted 1 point.");
+                        blueScore++;
+                    }
+                    foreach (Player pl in world_.Players)
+                    {
+                        if (pl.ClassiCube && Heartbeat.ClassiCube())
+                        {
+                            pl.Send(PacketWriter.MakeSpecialMessage((byte)2, "&cRed&f: " + redScore + ",&1 Blue&f: " + blueScore));
+                        }
+                        else
+                        {
+                            pl.Message("The score is now &cRed&f: {0} and &1Blue&f: {1}.", redScore, blueScore);
+                        }
+                    }
                     break;
                 default:
                     break;
             }
 
         }
+        #endregion
 
+        #region MovingEvent
         public static void PlayerMoving(object poo, fCraft.Events.PlayerMovingEventArgs e)
         {
             if (!started)
@@ -791,6 +958,11 @@ namespace fCraft
             //backstabbing, player with a flag cannot backstab an enemy player
             else
             {
+                if (e.Player.Info.stabDisarmed)
+                {
+                    return;
+                }
+
                 Vector3I oldPos = e.OldPosition.ToBlockCoords(); //get positions as block coords
                 Vector3I newPos = e.NewPosition.ToBlockCoords();
 
@@ -846,6 +1018,11 @@ namespace fCraft
                                 }
                             }
 
+                            if (e.Player.Info.stabAnywhere)
+                            {
+                                kill = true;
+                            }
+
                             if (kill)
                             {
                                 p.KillCTF(world_, String.Format("&f{0}&S was backstabbed by &f{1}", p.Name, e.Player.Name));
@@ -889,5 +1066,6 @@ namespace fCraft
                 }
             }
         }
+        #endregion
     }
 }

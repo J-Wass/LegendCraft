@@ -58,10 +58,9 @@ namespace fCraft {
         static TcpListener listener;
         public static IPAddress InternalIP { get; private set; }
         public static IPAddress ExternalIP { get; private set; }
+        public static string VerifiedUser = "";
 
-        public static int Port { get; private set; }
-
-        
+        public static int Port { get; private set; }      
 
         public static Uri Uri { get; internal set; }
 

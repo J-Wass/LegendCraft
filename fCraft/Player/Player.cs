@@ -221,6 +221,10 @@ namespace fCraft
 
         public bool SpeedMode = false;
 
+        //For console, decides on if to send response to webpanel or not
+        public bool sendToWebPanel = false;
+        public string WebPanelData = "";
+
         //general purpose state storage for plugins
         private readonly ConcurrentDictionary<string, object> _publicAuxStateObjects = new ConcurrentDictionary<string, object>();
         public IDictionary<string, object> PublicAuxStateObjects { get { return _publicAuxStateObjects; } }
@@ -898,7 +902,10 @@ namespace fCraft
             {
                 Logger.LogToConsole(message);
 
-                //if webpanel activated
+                if (sendToWebPanel)
+                {
+                    WebPanelData += message;
+                }
 
             }
             else

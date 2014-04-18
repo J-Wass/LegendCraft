@@ -135,6 +135,10 @@ namespace fCraft
         public bool gunDisarmed = false;
         public bool stabDisarmed = false;
         public bool stabAnywhere = false;
+        public bool strengthened = false;
+        public DateTime strengthTime;
+        public bool canDodge = false;
+        public DateTime dodgeTime;
 
         /// <summary>
         /// Health var used in several gamemodes

@@ -1,5 +1,9 @@
 LegendCraft Changelog v2.4.0 (In progress)
+Add: LegendCraft WebPanel (unfinished)
+Add: CTF Gamemode
+Add: Bot AI
 Change: Fixes to autorank.xml throwing errors when files are missing
+Change: General bug fixes and stability improvements
 Remove: LeBot (HelperBot taking over)
 
 LegendCraft Changelog v2.3.0

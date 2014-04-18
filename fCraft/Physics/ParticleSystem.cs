@@ -399,7 +399,7 @@ namespace fCraft
 			get { return true; }
 		}
 
-        //hitted? ding I thought you were better than that :(
+        //hitted? jonty I thought you were better than that :(
 		public void HitPlayer(World world, Vector3I pos, Player hitted, Player by, ref int restDistance, IList<BlockUpdate> updates)
 		{
             //Capture the flag
@@ -412,17 +412,40 @@ namespace fCraft
                     return;
                 }
 
+                if (hitted.Info.canDodge)
+                {
+                    int dodgeChance = (new Random()).Next(0, 1);
+                    if (dodgeChance == 0)
+                    {
+                        by.Message("{0} dodged your attack!", hitted.Name);
+                        return;
+                    }
+                }
                 //Take the hit, one in ten chance of a critical hit which does 50 damage instead of 25
                 int critical = (new Random()).Next(0, 9);
 
                 if (critical == 0)
                 {
-                    hitted.Info.Health -= 50;
+                    if (by.Info.strengthened)//critical by a strengthened enemy instantly kills
+                    {
+                        hitted.Info.Health = 0;
+                    }
+                    else
+                    {
+                        hitted.Info.Health -= 50;
+                    }
                     world.Players.Message("{0} landed a critical shot on {1}!", by.Name, hitted.Name);
                 }
                 else
                 {
-                    hitted.Info.Health -= 25;
+                    if (by.Info.strengthened)
+                    {
+                        hitted.Info.Health -= 50;
+                    }
+                    else
+                    {
+                        hitted.Info.Health -= 25;
+                    }
                 }
 
                 //Create epic ASCII Health Bar
@@ -440,7 +463,7 @@ namespace fCraft
                 {
                     healthBar = "&f[&c--&8------&f]";
                 }
-                else
+                else if(hitted.Info.Health <= 0)
                 {
                     healthBar = "&f[&8--------&f]";
                 }

@@ -34,7 +34,7 @@ namespace fCraft
 
         /// <summary> Secret string used to verify players' names.
         /// Randomly generated at startup.
-        /// Known only to this server and to heartbeat servers. </summary>
+        /// Known only to this server, heartbeat servers, and webpanel. </summary>
         public static string Salt { get; internal set; }
 
         // Dns lookup, to make sure that IPv4 is preferred for heartbeats
