@@ -74,7 +74,6 @@
             this.bRules = new System.Windows.Forms.Button();
             this.bAnnouncements = new System.Windows.Forms.Button();
             this.tabChat = new System.Windows.Forms.TabPage();
-            this.chatPreview = new fCraft.ConfigGUI.ChatPreview();
             this.gAppearence = new System.Windows.Forms.GroupBox();
             this.xShowConnectionMessages = new System.Windows.Forms.CheckBox();
             this.xShowJoinedWorldMessages = new System.Windows.Forms.CheckBox();
@@ -277,6 +276,7 @@
             this.lThrottling = new System.Windows.Forms.Label();
             this.lThrottlingUnits = new System.Windows.Forms.Label();
             this.gAdvancedMisc = new System.Windows.Forms.GroupBox();
+            this.xAutoRank = new System.Windows.Forms.CheckBox();
             this.nMaxUndoStates = new System.Windows.Forms.NumericUpDown();
             this.lMaxUndoStates = new System.Windows.Forms.Label();
             this.lIPWarning = new System.Windows.Forms.Label();
@@ -317,7 +317,8 @@
             this.bApply = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.xAutoRank = new System.Windows.Forms.CheckBox();
+            this.chatPreview = new fCraft.ConfigGUI.ChatPreview();
+            this.xWebPanel = new System.Windows.Forms.CheckBox();
             this.tabs.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.gBasic.SuspendLayout();
@@ -426,6 +427,7 @@
             // 
             // gBasic
             // 
+            this.gBasic.Controls.Add(this.xWebPanel);
             this.gBasic.Controls.Add(this.label6);
             this.gBasic.Controls.Add(this.HeartBeatUrlComboBox);
             this.gBasic.Controls.Add(this.nMaxPlayersPerWorld);
@@ -969,13 +971,6 @@
             this.tabChat.Size = new System.Drawing.Size(652, 482);
             this.tabChat.TabIndex = 10;
             this.tabChat.Text = "Chat";
-            // 
-            // chatPreview
-            // 
-            this.chatPreview.Location = new System.Drawing.Point(8, 256);
-            this.chatPreview.Name = "chatPreview";
-            this.chatPreview.Size = new System.Drawing.Size(636, 213);
-            this.chatPreview.TabIndex = 2;
             // 
             // gAppearence
             // 
@@ -3360,6 +3355,16 @@
             this.gAdvancedMisc.TabStop = false;
             this.gAdvancedMisc.Text = "Miscellaneous";
             // 
+            // xAutoRank
+            // 
+            this.xAutoRank.AutoSize = true;
+            this.xAutoRank.Location = new System.Drawing.Point(9, 188);
+            this.xAutoRank.Name = "xAutoRank";
+            this.xAutoRank.Size = new System.Drawing.Size(121, 19);
+            this.xAutoRank.TabIndex = 24;
+            this.xAutoRank.Text = "Enable AutoRank";
+            this.xAutoRank.UseVisualStyleBackColor = true;
+            // 
             // nMaxUndoStates
             // 
             this.nMaxUndoStates.Location = new System.Drawing.Point(115, 71);
@@ -3827,15 +3832,22 @@
             this.toolTip.IsBalloon = true;
             this.toolTip.ReshowDelay = 100;
             // 
-            // xAutoRank
+            // chatPreview
             // 
-            this.xAutoRank.AutoSize = true;
-            this.xAutoRank.Location = new System.Drawing.Point(9, 188);
-            this.xAutoRank.Name = "xAutoRank";
-            this.xAutoRank.Size = new System.Drawing.Size(121, 19);
-            this.xAutoRank.TabIndex = 24;
-            this.xAutoRank.Text = "Enable AutoRank";
-            this.xAutoRank.UseVisualStyleBackColor = true;
+            this.chatPreview.Location = new System.Drawing.Point(8, 256);
+            this.chatPreview.Name = "chatPreview";
+            this.chatPreview.Size = new System.Drawing.Size(636, 213);
+            this.chatPreview.TabIndex = 2;
+            // 
+            // xWebPanel
+            // 
+            this.xWebPanel.AutoSize = true;
+            this.xWebPanel.Location = new System.Drawing.Point(440, 162);
+            this.xWebPanel.Name = "xWebPanel";
+            this.xWebPanel.Size = new System.Drawing.Size(125, 19);
+            this.xWebPanel.TabIndex = 21;
+            this.xWebPanel.Text = "Enable WebPanel";
+            this.xWebPanel.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -4239,5 +4251,6 @@
         private System.Windows.Forms.TextBox tChanPass;
         private System.Windows.Forms.CheckBox xChanPass;
         private System.Windows.Forms.CheckBox xAutoRank;
+        private System.Windows.Forms.CheckBox xWebPanel;
     }
 }

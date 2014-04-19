@@ -52,11 +52,11 @@ namespace fCraft
         public static int totalTime = timeLimit + timeDelay;
         public static int scoreCap = 5;
         public static Stopwatch stopwatch = new Stopwatch();
-        public static DateTime announced;
-        public static DateTime RedDisarmed;
-        public static DateTime BlueDisarmed;
-        public static DateTime RedBOFdebuff;
-        public static DateTime BlueBOFdebuff;
+        public static DateTime announced = DateTime.MaxValue;
+        public static DateTime RedDisarmed = DateTime.MaxValue;
+        public static DateTime BlueDisarmed = DateTime.MaxValue;
+        public static DateTime RedBOFdebuff = DateTime.MaxValue;
+        public static DateTime BlueBOFdebuff = DateTime.MaxValue;
 
         //Game Bools
         public static bool isOn = false;
@@ -192,7 +192,7 @@ namespace fCraft
                         p.Info.stabAnywhere = false;
                     }
                 }
-                RedDisarmed = DateTime.MaxValue;
+                BlueBOFdebuff = DateTime.MaxValue;
 
                 world_.Players.Message("Blades of Fury has ended.");
             }
@@ -210,7 +210,7 @@ namespace fCraft
                         p.Info.stabAnywhere = false;
                     }
                 }
-                RedDisarmed = DateTime.MaxValue;
+                RedBOFdebuff = DateTime.MaxValue;
 
                 world_.Players.Message("Blades of Fury has ended.");
             }
@@ -660,11 +660,16 @@ namespace fCraft
         #region PowerUps
         public static void PowerUp(Player p)
         {
-            Random r = new Random();
-            int i = r.Next(1, 18);
+            int GetPowerUp = (new Random()).Next(1, 4);
+            if (GetPowerUp < 3)
+            {
+                return;
+            }
+
+            int choosePowerUp = (new Random()).Next(1, 19);
 
             //decide which powerup to use, certain powerups have a higher chance such as first aid kit and dodge as opposed to rarer ones like holy blessing
-            switch (i)
+            switch (choosePowerUp)
             {
                 case 1:
                 case 2:
@@ -869,6 +874,7 @@ namespace fCraft
                     }
                     break;
                 default:
+                    //no power up 4 u
                     break;
             }
 
@@ -894,7 +900,7 @@ namespace fCraft
                     if (e.NewPosition.DistanceSquaredTo(world_.blueCTFSpawn.ToPlayerCoords()) <= 42 * 42)
                     {
                         blueScore++;
-                        world_.Players.Message("&f{0} has successfully capped the &cred &fflag. The score is now &cRed&f: {1} and &1Blue&f: {2}.", e.Player.Name, redScore, blueScore);
+                        world_.Players.Message("&f{0} has capped the &cred &fflag. The score is now &cRed&f: {1} and &1Blue&f: {2}.", e.Player.Name, redScore, blueScore);
                         e.Player.Info.hasRedFlag = false;
                         redFlagHolder = null;
                         e.Player.Info.CTFCaptures++;
@@ -1026,11 +1032,12 @@ namespace fCraft
                             if (kill)
                             {
                                 p.KillCTF(world_, String.Format("&f{0}&S was backstabbed by &f{1}", p.Name, e.Player.Name));
+                                e.Player.Info.CTFKills++;
+                                PowerUp(e.Player);
 
                                 if (p.Info.hasRedFlag)
                                 {
                                     world_.Players.Message("The red flag has been returned.");
-                                    e.Player.Info.CTFKills++;
                                     p.Info.hasRedFlag = false;
                                     redFlagHolder = null;
 
@@ -1047,7 +1054,6 @@ namespace fCraft
                                 if (p.Info.hasBlueFlag)
                                 {
                                     world_.Players.Message("The blue flag has been returned.");
-                                    e.Player.Info.CTFKills++;
                                     p.Info.hasBlueFlag = false;
                                     blueFlagHolder = null;
 

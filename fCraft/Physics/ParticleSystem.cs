@@ -414,7 +414,7 @@ namespace fCraft
 
                 if (hitted.Info.canDodge)
                 {
-                    int dodgeChance = (new Random()).Next(0, 1);
+                    int dodgeChance = (new Random()).Next(0, 2);
                     if (dodgeChance == 0)
                     {
                         by.Message("{0} dodged your attack!", hitted.Name);
@@ -482,6 +482,7 @@ namespace fCraft
                 {
 
                     hitted.KillCTF(world, String.Format("&f{0}&S was shot by &f{1}", hitted.Name, by.Name));
+                    CTF.PowerUp(by);
                     hitted.Info.CTFKills++;
 
                     if (hitted.Info.hasRedFlag)

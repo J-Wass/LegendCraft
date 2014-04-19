@@ -152,20 +152,20 @@ namespace fCraft {
     /// <summary> Updater behavior. </summary>
     public enum UpdaterMode {
         /// <summary> Does not check for updates. </summary>
-        Disabled,
+        Disabled = 0,
 
         /// <summary> Checks for updates and notifies of availability (in console/log). </summary>
-        Notify,
+        Notify = 1,
 
         /// <summary> Checks for updates, downloads them if available, and prompts to install.
         /// Behavior is frontend-specific: in ServerGUI, a dialog is shown with the list of changes and
         /// options to update immediately or next time. In ServerCLI, asks to type in 'y' to confirm updating
         /// or press any other key to skip. '''Note: Requires user interaction
         /// (if you restart the server remotely while unattended, it may get stuck on this dialog).''' </summary>
-        Prompt,
+        Prompt = 2,
 
         /// <summary> Checks for updates, automatically downloads and installs the updates, and restarts the server. </summary>
-        Auto,
+        Auto = 3,
     }
 
 

@@ -165,6 +165,19 @@ namespace fCraft.ConfigGUI
                 checkUpdate.Checked = false;
             }
 
+            if (!ConfigKey.WebPanelEnabled.IsBlank())
+            {
+                if (ConfigKey.WebPanelEnabled.GetString() == "True")
+                {
+                    xWebPanel.Checked = true;
+                }
+                else
+                {
+                    xWebPanel.Checked = false;
+                }
+            }
+
+
             FillRankList(cDefaultRank, "(lowest rank)");
             if (ConfigKey.DefaultRank.IsBlank())
             {
@@ -560,6 +573,7 @@ namespace fCraft.ConfigGUI
             ConfigKey.CustomChatName.TrySetValue(CustomName.Text);
             ConfigKey.SwearName.TrySetValue(SwearBox.Text);
             ConfigKey.CheckForUpdates.TrySetValue(checkUpdate.Checked.ToString());
+            ConfigKey.WebPanelEnabled.TrySetValue(xWebPanel.Checked.ToString());
             ConfigKey.WebsiteURL.TrySetValue(websiteURL.Text);
             ConfigKey.HeartbeatUrl.TrySetValue(HeartBeatUrlComboBox.SelectedItem);
             ConfigKey.CustomAliasName.TrySetValue(CustomAliases.Text);

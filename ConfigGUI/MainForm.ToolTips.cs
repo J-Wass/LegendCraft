@@ -845,6 +845,7 @@ or type in address/port manually below.";
             toolTip.SetToolTip(xIP, ConfigKey.IP.GetDescription());
             toolTip.SetToolTip(tIP, ConfigKey.IP.GetDescription());
 
+            toolTip.SetToolTip(xWebPanel, "If enabled, allows the server to respond to connect to online WebPanel at http://legend-craft.tk");
 
         }
     }

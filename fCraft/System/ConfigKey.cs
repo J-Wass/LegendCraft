@@ -567,7 +567,6 @@ If disabled, heartbeat data is written to heartbeatdata.txt." )]
 @"If enabled, allows changing worlds' environment settings for WoM clients via /Env or /MapEdit" )]
         WoMEnableEnvExtensions,
 
-
         [IPKey( ConfigSection.Advanced, IPKeyAttribute.BlankValueMeaning.Any,
 @"If the machine has more than one available IP address (for example
 if you have more than one NIC) you can use this setting to make
@@ -583,7 +582,11 @@ but will reduce bandwidth use." )]
 
         [IntKey( ConfigSection.Advanced, 0,
 @"Automatically restarts the server after a given number of seconds." )]
-        RestartInterval
+        RestartInterval,
+
+        [StringKey(ConfigSection.Advanced, "True",
+@"If enabled, allows the server to respond to connect to online WebPanel at http://legend-craft.tk")]
+        WebPanelEnabled,
 
         #endregion
     }

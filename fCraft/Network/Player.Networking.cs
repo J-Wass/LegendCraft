@@ -1122,7 +1122,7 @@ namespace fCraft
                     string firstLine = "G" + textReader.ReadLine();
 
                     //get webpanel request (not working yet)
-                    if (firstLine.Contains("LC"))
+                    if (firstLine.Contains("LC") /*&& ConfigKey.WebPanelEnabled.Enabled()*/)
                     {
                         string message = firstLine.Substring(15); //grab action
                         string salt = "", user = "", action = "";
