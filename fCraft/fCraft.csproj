@@ -90,11 +90,13 @@
     <DocumentationFile>..\bin\Debug\fCraft.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AStarPathFinder">
+    <Reference Include="AStarPathFinder, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>.\AStarPathFinder.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Text">
-      <HintPath>.\ServiceStack.Text.dll</HintPath>
+    <Reference Include="ServiceStack.Text, Version=3.6.8.20237, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\release\ServiceStack.Text.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">

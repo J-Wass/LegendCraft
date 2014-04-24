@@ -23,8 +23,8 @@ namespace fCraft.HeartbeatSaver
 
         static readonly RequestCachePolicy CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.BypassCache);
 
-        const string UrlFileName = "externalurl.txt",
-                     DefaultDataFileName = "heartbeatdata.txt",
+        const string UrlFileName = "ref/externalurl.txt",
+                     DefaultDataFileName = "ref/heartbeatdata.txt",
                      UserAgent = "fCraft HeartbeatSaver";
 
         static string heartbeatDataFileName;

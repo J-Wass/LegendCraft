@@ -24,7 +24,7 @@ using System.Text;
 using System.Threading;
 using System.Diagnostics;
 
-//AStarPathFinder (c) http://www.csharpcity.com/reusable-code/a-path-finding-library/
+//AStarPathFinder - A* algorithm encoded in C# (c) http://www.csharpcity.com/reusable-code/a-path-finding-library/
 using DeenGames.Utils;
 using DeenGames.Utils.AStarPathFinder;
 

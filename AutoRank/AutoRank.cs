@@ -44,7 +44,7 @@ namespace AutoRank
 
         private void AutoRank_Load(object sender, EventArgs e)
         {
-            if (!File.Exists("config.xml"))
+            if (!File.Exists("ref/config.xml"))
             {
                 MessageBox.Show("Warning, config.xml not found. Closing Autorank program.");
                 this.Close();

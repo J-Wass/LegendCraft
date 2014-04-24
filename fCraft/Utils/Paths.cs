@@ -66,7 +66,7 @@ namespace fCraft {
 
         public const string MapPathDefault = "maps",
                             LogPathDefault = "logs",
-                            ConfigFileNameDefault = "config.xml";
+                            ConfigFileNameDefault = "ref/config.xml";
 
         public static readonly string WorkingPathDefault;
 
@@ -88,35 +88,35 @@ namespace fCraft {
         public static string ConfigFileName { get; set; }
 
 
-        public const string PlayerDBFileName = "PlayerDB.txt";
+        public const string PlayerDBFileName = "ref/PlayerDB.txt";
 
-        public const string IPBanListFileName = "ipbans.txt";
+        public const string IPBanListFileName = "ref/ipbans.txt";
 
-        public const string GreetingFileName = "greeting.txt";
+        public const string GreetingFileName = "ref/greeting.txt";
 
-        public const string AnnouncementsFileName = "announcements.txt";
+        public const string AnnouncementsFileName = "ref/announcements.txt";
 
-        public const string RulesFileName = "rules.txt";
+        public const string RulesFileName = "ref/rules.txt";
 
-        public const string RulesDirectory = "rules";
+        public const string RulesDirectory = "ref/rules";
 
-        public const string ShoutsFileName = "shouts.txt";
+        public const string ShoutsFileName = "ref/shouts.txt";//wot is this?
 
-        public const string HeartbeatDataFileName = "heartbeatdata.txt";
+        public const string HeartbeatDataFileName = "ref/heartbeatdata.txt";
 
-        public const string UpdaterFileName = "UpdateInstaller.exe";
+        public const string UpdaterFileName = "ref/UpdateInstaller.exe";
 
-        public const string WorldListFileName = "worlds.xml";
+        public const string WorldListFileName = "ref/worlds.xml";
 
-        public const string AutoRankFileName = "autorank.xml";
+        public const string AutoRankFileName = "ref/autorank.xml";
 
-        public const string BlockDBDirectory = "blockdb";
+        public const string BlockDBDirectory = "ref/blockdb";
 
-        public const string ReqDirectory = "requirements";
-        public const string ReqFileName = "requirements.txt";
-        public const string BasscannonFileName = "basscannon.txt";
-        public const string PortalDBFileName = "PortalDB.txt";
-        public const string SwearWordsFileName = "swearwords.txt";
+        public const string ReqDirectory = "ref/requirements";
+        public const string ReqFileName = "ref/requirements.txt";
+        public const string BasscannonFileName = "ref/basscannon.txt";
+        public const string PortalDBFileName = "ref/PortalDB.txt";
+        public const string SwearWordsFileName = "ref/swearwords.txt";
 
 
         public static string BlockDBPath {
@@ -134,7 +134,7 @@ namespace fCraft {
 
         public static string ReqTextPath
         {
-            get { return Path.Combine(ReqDirectory, "requirements.txt"); }
+            get { return Path.Combine(ReqDirectory, "ref/requirements.txt"); }
         }
 
         /// <summary> Path where map backups are stored </summary>

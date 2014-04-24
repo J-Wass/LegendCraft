@@ -143,35 +143,35 @@ THE SOFTWARE.*/
                 switch (target.ToLower())
                 {
                     case "swears":
-                        if (File.Exists("swearwords.txt"))
+                        if (File.Exists(Paths.SwearWordsFileName))
                         {
-                            File.Delete("swearwords.txt");
+                            File.Delete(Paths.SwearWordsFileName);
                         }
-                        File.Create("swearwords.txt").Dispose();
+                        File.Create(Paths.SwearWordsFileName).Dispose();
                         player.Message("&eThe swear words for the server has been wiped.");
                         break;
                     case "rules":
-                        if (File.Exists("rules.txt"))
+                        if (File.Exists(Paths.RulesFileName))
                         {
-                            File.Delete("rules.txt");
+                            File.Delete(Paths.RulesFileName);
                         }
-                        File.Create("rules.txt").Dispose();
+                        File.Create(Paths.RulesFileName).Dispose();
                         player.Message("&eThe rules for the server has been wiped.");
                         break;
                     case "greeting":  
-                        if (File.Exists("greeting.txt"))
+                        if (File.Exists(Paths.GreetingFileName))
                         {
-                            File.Delete("greeting.txt");
+                            File.Delete(Paths.GreetingFileName);
                         }
-                        File.Create("greeting.txt").Dispose();
+                        File.Create(Paths.GreetingFileName).Dispose();
                         player.Message("&eThe greeting for the server has been wiped.");
                         break;
                     case "announcements":
-                        if (File.Exists("announcements.txt"))
+                        if (File.Exists(Paths.AnnouncementsFileName))
                         {
-                            File.Delete("announcements.txt");
+                            File.Delete(Paths.AnnouncementsFileName);
                         }
-                        File.Create("announcements.txt").Dispose();
+                        File.Create(Paths.AnnouncementsFileName).Dispose();
                         player.Message("&eThe announcements for the server has been wiped.");
                         break;
                     default:
@@ -203,11 +203,11 @@ THE SOFTWARE.*/
                     case "swearwords":
                     case "swearword":
                     case "swears":
-                        if (!File.Exists("swearwords.txt"))
+                        if (!File.Exists(Paths.SwearWordsFileName))
                         {
-                            File.Create("swearwords.txt").Dispose();
+                            File.Create(Paths.SwearWordsFileName).Dispose();
                         }
-                        using (StreamWriter sw = File.AppendText("swearwords.txt"))
+                        using (StreamWriter sw = File.AppendText(Paths.SwearWordsFileName))
                         {
                             player.Message("&eAdded &c'{0}'&e to the list of swear words.", newItem);
                             sw.WriteLine(newItem);
@@ -217,11 +217,11 @@ THE SOFTWARE.*/
                         break;
                     case "rule":
                     case "rules":
-                        if (!File.Exists("rules.txt"))
+                        if (!File.Exists(Paths.RulesFileName))
                         {
-                            File.Create("rules.txt").Dispose();
+                            File.Create(Paths.RulesFileName).Dispose();
                         }
-                        using (StreamWriter sw = File.AppendText("rules.txt"))
+                        using (StreamWriter sw = File.AppendText(Paths.RulesFileName))
                         {
                             player.Message("&eAdded &c'{0}'&e to the /rules.", newItem);
                             sw.WriteLine(newItem);
@@ -230,11 +230,11 @@ THE SOFTWARE.*/
                         break;
                     case "announcement":
                     case "announcements":
-                        if (!File.Exists("announcements.txt"))
+                        if (!File.Exists(Paths.AnnouncementsFileName))
                         {
-                            File.Create("announcements.txt").Dispose();
+                            File.Create(Paths.AnnouncementsFileName).Dispose();
                         }
-                        using (StreamWriter sw = File.AppendText("announcements.txt"))
+                        using (StreamWriter sw = File.AppendText(Paths.AnnouncementsFileName))
                         {
                             player.Message("&eAdded &c'{0}'&e to the announcements.", newItem);
                             sw.WriteLine(newItem);
@@ -242,8 +242,12 @@ THE SOFTWARE.*/
                         }
                         break;
                     case "greeting":
-                        File.Create("greeting.txt").Close();
-                        using (StreamWriter sw = File.AppendText("greeting.txt"))
+                        if (!File.Exists(Paths.GreetingFileName))
+                        {
+                            File.Create(Paths.GreetingFileName).Dispose();
+                        }
+                        //File.Create(Paths.GreetingFileName).Close();
+                        using (StreamWriter sw = File.AppendText(Paths.GreetingFileName))
                         {
                             player.Message("&eChanged greeting to {0}.", newItem);
                             sw.WriteLine(newItem);
@@ -251,7 +255,7 @@ THE SOFTWARE.*/
                         }
                         break;
                     default:
-                        player.Message("&ePlease choose either greeting, rules, or swears as an option to add to.");
+                        player.Message("&ePlease choose either 'greeting', 'announcements', 'rules', or 'swears' as an option to add to.");
                         break;
                 }
             }

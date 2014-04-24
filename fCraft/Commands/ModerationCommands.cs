@@ -1502,11 +1502,6 @@ THE SOFTWARE.*/
                 return;
             }
 
-            if (target == player)
-            {
-                player.Message("You suicidal bro?");
-                return;
-            }
             double time = (DateTime.Now - player.Info.LastUsedKill).TotalSeconds;
             if (time < 10)
             {
@@ -1520,6 +1515,14 @@ THE SOFTWARE.*/
             }
             else 
             {
+                if (target == player)
+                {
+                    player.TeleportTo(player.World.Map.Spawn);
+                    player.Info.LastUsedKill = DateTime.Now;
+                    Server.Players.CanSee(target).Message("{0}&C killed itself in confusion!", player);
+                    return;
+                }
+
                 if (player.Can(Permission.Kill, target.Info.Rank) && reason.Length < 1)
                 {
                     target.TeleportTo(player.World.Map.Spawn);

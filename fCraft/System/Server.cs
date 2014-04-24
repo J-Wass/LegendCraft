@@ -13,7 +13,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using fCraft.AutoRank;
 using fCraft.Drawing;
 using fCraft.Events;
 using JetBrains.Annotations;

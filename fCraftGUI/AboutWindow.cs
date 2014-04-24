@@ -28,7 +28,7 @@ namespace fCraft.GUI {
         {
             try
             {
-                Process.Start("http://legendcraft.webuda.com/");
+                Process.Start("https://github.com/LegendCraft/LegendCraft");
             }
             catch { }
 
