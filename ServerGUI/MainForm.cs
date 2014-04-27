@@ -136,19 +136,41 @@ namespace fCraft.ServerGUI
                                 DialogResult answer = MessageBox.Show("Would you like to download the latest LegendCraft Version? (" + version + ")", "LegendCraft Updater", MessageBoxButtons.YesNo);
                                 if (answer == DialogResult.Yes)
                                 {
-                                    using (var client = new WebClient())
+                                    //update!
+                                    if (!File.Exists("AutoUpdater.exe"))
+                                    {
+                                        Logger.Log(LogType.Warning, "AutoUpdater.exe does not exist and failed to launch!");
+                                        Logger.Log(LogType.Warning, "Please manually update at http://legend-craft.tk/download/latest/!");
+                                        return;
+                                    }
+
+                                    if (!MonoCompat.IsMono)
+                                    {
+                                        Process Updater = new Process();
+                                        Logger.Log(LogType.SystemActivity, "Starting the AutoUpdater");
+                                        Updater.StartInfo.FileName = "AutoUpdater.exe";
+                                        Updater.Start();
+                                    }
+                                    else
                                     {
                                         try
                                         {
-                                            Process.Start("http://www.legend-craft.tk/download/latest");
-                                            Logger.Log(LogType.SystemActivity, "Downloading the latest LegendCraft Version. Please replace all the files (not folders) in your current folder with the new ones after shutting down.");
+                                            Logger.Log(LogType.SystemActivity, "Starting the AutoUpdater");
+                                            ProcessStartInfo proc = new ProcessStartInfo("mono");
+                                            proc.Arguments = "AutoUpdater.exe";
+                                            proc.UseShellExecute = true;
+                                            proc.CreateNoWindow = true;
+                                            Process.Start(proc);
                                         }
-                                        catch (Exception ex)
+                                        catch (Exception e)
                                         {
-                                            Logger.Log(LogType.Error, "Update error: " + ex);
+                                            Logger.Log(LogType.Warning, e.ToString());
+                                            return;
                                         }
-
                                     }
+
+                                    Logger.LogToConsole("Updater is running, server will now shutdown to update.");
+                                    fCraft.Server.Shutdown(new ShutdownParams(ShutdownReason.ShuttingDown, TimeSpan.Zero, true, false),false);
 
                                 }
                                 else
