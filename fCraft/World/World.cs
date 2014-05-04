@@ -34,6 +34,9 @@ namespace fCraft {
         //order: highlight name, id, first position, second position, color, percentOpaque
         public Dictionary<string, Tuple<int, Vector3I, Vector3I, System.Drawing.Color, int>> Highlights = new Dictionary<string, Tuple<int, Vector3I, Vector3I, System.Drawing.Color, int>>();
 
+        //order: block name, position, message
+        public Dictionary<string, Tuple<Vector3I, string>> MessageBlocks = new Dictionary<string, Tuple<Vector3I, string>>();
+
         public List<Block> DisallowedBlocks = new List<Block>();
 
         public bool IsRealm { get; set; }

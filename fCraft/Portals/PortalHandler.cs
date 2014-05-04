@@ -88,6 +88,26 @@ namespace fCraft.Portals
 
         static void Player_Moved(object sender, Events.PlayerMovedEventArgs e)
         {
+            //abuse portal moved event and add in message blocks right here
+            Vector3I oldPos = new Vector3I(e.OldPosition.X / 32, e.OldPosition.Y / 32, e.OldPosition.Z / 32); //get positions as block coords
+            Vector3I newPos = new Vector3I(e.NewPosition.X / 32, e.NewPosition.Y / 32, e.NewPosition.Z / 32);
+
+            if (oldPos.X != newPos.X || oldPos.Y != newPos.Y || oldPos.Z != newPos.Z) //check if player has moved at least one block
+            {
+                //loop through all message blocks and check if we triggered one
+                foreach (var messageBlock in e.Player.World.MessageBlocks)
+                {
+                    Tuple<Vector3I, string> tuple = messageBlock.Value;
+
+                    //player is sitting on the message block, play the message
+                    if (newPos == tuple.Item1)
+                    {
+                        e.Player.Message("__" + messageBlock.Key + "__");
+                        e.Player.Message(messageBlock.Value.Item2);
+                    }
+                }
+            }
+
             try
             {
                 if (e.Player.PortalsEnabled)

@@ -256,7 +256,7 @@ namespace fCraft {
                 Logger.Log( LogType.Warning,
                             "You are using an unreleased developer version of LegendCraft. " +
                             "Do not use this version unless you are ready to deal with bugs and potential data loss. " +
-                            "Consider using the latest stable version instead, available from http://github.com/LeChosenOne/LegendCraft" );
+                            "Consider using the latest stable version instead, available from http://github.com/LeChosenOne/LegendCraft/releases" );
             }
 
             if( Updater.CurrentRelease.IsFlagged( ReleaseFlags.Unstable ) ) {
@@ -287,7 +287,7 @@ namespace fCraft {
 
             // try to load the config
             if( !Config.Load( false, false ) ) {
-                throw new Exception( "800Craft Config failed to initialize" );
+                throw new Exception( "Legend Craft Config failed to initialize" );
             }
 
             if( ConfigKey.VerifyNames.GetEnum<NameVerificationMode>() == NameVerificationMode.Never ) {

@@ -114,7 +114,7 @@ namespace fCraft.Portals
             }
             catch (FileNotFoundException)
             {
-                Logger.Log(LogType.Warning, "PortalDB file does not exist.");
+                Logger.Log(LogType.Warning, "PortalDB file does not exist. Ignore this message if you have not created any portals yet.");
             }
             catch (Exception ex)
             {

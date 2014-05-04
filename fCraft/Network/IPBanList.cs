@@ -86,7 +86,7 @@ namespace fCraft {
                             "IPBanList.Load: Done loading IP ban list ({0} records).", Bans.Count );
             } else {
                 Logger.Log( LogType.Warning,
-                            "IPBanList.Load: No IP ban file found." );
+                            "IPBanList.Load: No IP ban file found. Ignore this message if this is your first time running LegendCraft." );
             }
             IsLoaded = true;
         }

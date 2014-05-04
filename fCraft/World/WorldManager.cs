@@ -104,9 +104,9 @@ namespace fCraft {
                 }
 
                 if( newMainWorld == null ) {
-                    Logger.Log( LogType.Error,
+                    Logger.Log( LogType.Warning,
                                 "Server.Start: Could not load any of the specified worlds, or no worlds were specified. " +
-                                "Creating default \"main\" world." );
+                                "Creating default \"main\" world. Ignore this message if this is your first time running LegendCraft." );
                     newMainWorld = AddWorld( null, "main", MapGenerator.GenerateFlatgrass( 128, 128, 64 ), true );
                 }
 

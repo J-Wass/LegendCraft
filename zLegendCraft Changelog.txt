@@ -2,6 +2,9 @@ LegendCraft Changelog v2.4.0 (In progress)
 Add: LegendCraft WebPanel (unfinished)
 Add: CTF Gamemode
 Add: Bot AI
+Add: MessageBlocks
+Add: /DoorList and /DoorCheck
+Change: Players can have multiple doors
 Change: Fixes to autorank.xml throwing errors when files are missing
 Change: General bug fixes and stability improvements
 Remove: LeBot (HelperBot taking over)

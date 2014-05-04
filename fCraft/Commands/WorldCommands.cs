@@ -71,6 +71,7 @@ namespace fCraft
             CommandManager.RegisterCommand(CdJump);
             CommandManager.RegisterCommand(CdMapEdit);
             CommandManager.RegisterCommand(CdHax);
+            CommandManager.RegisterCommand(CdMessageBlock);
         }
 
         #region LegendCraft
@@ -92,8 +93,115 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
-        
-        
+
+        static readonly CommandDescriptor CdMessageBlock = new CommandDescriptor
+        {
+            Name = "MessageBlock",
+            Aliases = new[] { "messageblocks" },
+            Category = CommandCategory.World,
+            IsConsoleSafe = false,
+            Permissions = new[] { Permission.ManageWorlds },
+            Usage = "/MessageBlock [List / Remove (name) / Create (name) (message) / Edit (name) (message)]",
+            Help = "Manages the MessageBlocks on the current world.",
+            Handler = MessageBlockH
+        };
+
+        private static void MessageBlockH(Player player, Command cmd)
+        {
+            string option = cmd.Next();
+            if (String.IsNullOrEmpty(option))
+            {
+                CdMessageBlock.PrintUsage(player);
+                return;
+            }
+
+            switch (option.ToLower())
+            {
+                case "list":
+                    player.Message("__MessageBlocks on {0}__", player.World.Name);
+                    foreach (string messageblock in player.World.MessageBlocks.Keys)
+                    {
+                        player.Message(messageblock);
+                    }
+                    break;
+                case "remove":
+                    string removeTarget = cmd.Next();
+                    if (String.IsNullOrEmpty(removeTarget))
+                    {
+                        player.Message("&ePlease identify which MessageBlock you want to remove.");
+                        return;
+                    }
+
+                    if (!player.World.MessageBlocks.Keys.Contains(removeTarget))
+                    {
+                        player.Message("&c{0} was not found! Use '/MessageBlock List' to view all MessageBlocks on your world.", removeTarget);
+                        return;
+                    }
+
+                    player.Message("&a{0} was removed from {1}.", removeTarget, player.World.Name);
+                    player.World.MessageBlocks.Remove(removeTarget);
+                    break;
+                case "create":
+                     string addTarget = cmd.Next();
+                    if (String.IsNullOrEmpty(addTarget))
+                    {
+                        player.Message("&ePlease identify the name of the MessageBlock you want to create.");
+                        return;
+                    }
+
+                    if (player.World.MessageBlocks.Keys.Contains(addTarget))
+                    {
+                        player.Message("&c{0} is already the name of a current MessageBlock on this world! Use '/MessageBlock List' to view all MessageBlocks on your world.", addTarget);
+                        return;
+                    }
+
+                    string message = cmd.Next();
+                    if (String.IsNullOrEmpty(message))
+                    {
+                        player.Message("&ePlease choose the message for your MessageBlock!");
+                        return;
+                    }
+
+                    Vector3I pos = player.Position.ToBlockCoords();
+
+                    //tell the user that the message block is created on the block they are standing on, but the message block is actually on their head
+                    player.Message("&a{0} was added.", addTarget);
+                    player.World.MessageBlocks.Add(addTarget, new Tuple<Vector3I, string>(pos, message)); 
+
+                    break;
+                case "edit":
+                    string editTarget = cmd.Next();
+                    if (String.IsNullOrEmpty(editTarget))
+                    {
+                        player.Message("&ePlease identify which MessageBlock you want to edit.");
+                        return;
+                    }
+
+                    if (!player.World.MessageBlocks.Keys.Contains(editTarget))
+                    {
+                        player.Message("&c{0} was not found! Use '/MessageBlock List' to view all MessageBlocks on your world.", editTarget);
+                        return;
+                    }
+
+                    string editMessage = cmd.Next();
+                    if (String.IsNullOrEmpty(editMessage))
+                    {
+                        player.Message("&ePlease choose the message for your MessageBlock!");
+                        return;
+                    }
+
+                    //get the block coord of the message block being edited by finding the tuple of the key
+                    Tuple<Vector3I, string> tuple = new Tuple<Vector3I,string>(player.Position.ToBlockCoords(), "");
+                    player.World.MessageBlocks.TryGetValue(editMessage, out tuple);
+
+                    player.Message("&a{0} was successfully edited.", editTarget);
+                    player.World.MessageBlocks.Remove(editTarget);
+                    player.World.MessageBlocks.Add(editTarget, new Tuple<Vector3I, string>(tuple.Item1, editMessage));
+                    break;
+                default:
+                    break;
+            }
+        }
         static readonly CommandDescriptor CdHax = new CommandDescriptor
         {
             Name = "Hax",

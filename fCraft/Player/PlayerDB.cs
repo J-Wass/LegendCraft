@@ -135,7 +135,7 @@ namespace fCraft
                 }
                 else
                 {
-                    Logger.Log(LogType.Warning, "PlayerDB.Load: No player DB file found.");
+                    Logger.Log(LogType.Warning, "PlayerDB.Load: No player DB file found. Ignore this message if this is your first time running the server.");
                 }
                 UpdateCache();
                 IsLoaded = true;
