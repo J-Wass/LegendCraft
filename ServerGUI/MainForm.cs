@@ -8,6 +8,8 @@ using System.Windows.Forms;
 using System.Threading;
 using System.Net;
 using System.IO;
+using System.IO.Compression;
+using System.Linq;
 using fCraft.Events;
 using fCraft.GUI;
 using fCraft.ServerGUI;
@@ -136,41 +138,64 @@ namespace fCraft.ServerGUI
                                 DialogResult answer = MessageBox.Show("Would you like to download the latest LegendCraft Version? (" + version + ")", "LegendCraft Updater", MessageBoxButtons.YesNo);
                                 if (answer == DialogResult.Yes)
                                 {
-                                    //update!
-                                    if (!File.Exists("AutoUpdater.exe"))
+
+                                    if (File.Exists("UPDATE.zip"))
                                     {
-                                        Logger.Log(LogType.Warning, "AutoUpdater.exe does not exist and failed to launch!");
-                                        Logger.Log(LogType.Warning, "Please manually update at http://legend-craft.tk/download/latest/!");
-                                        return;
+                                        File.Delete("UPDATE.zip");
                                     }
 
-                                    if (!MonoCompat.IsMono)
-                                    {
-                                        Process Updater = new Process();
-                                        Logger.Log(LogType.SystemActivity, "Starting the AutoUpdater");
-                                        Updater.StartInfo.FileName = "AutoUpdater.exe";
-                                        Updater.Start();
-                                    }
-                                    else
+                                    //Download newest update
+                                    using (var client = new WebClient())
                                     {
                                         try
                                         {
-                                            Logger.Log(LogType.SystemActivity, "Starting the AutoUpdater");
-                                            ProcessStartInfo proc = new ProcessStartInfo("mono");
-                                            proc.Arguments = "AutoUpdater.exe";
-                                            proc.UseShellExecute = true;
-                                            proc.CreateNoWindow = true;
-                                            Process.Start(proc);
+                                            if (File.Exists(Directory.GetCurrentDirectory() + "\\UPDATE.zip"))
+                                            {
+                                                File.Delete(Directory.GetCurrentDirectory() + "\\UPDATE.zip");
+                                            }
+                                            //download new zip in current directory
+                                            client.DownloadFile("http://legend-craft.tk/download/latest", "UPDATE.zip");
+
                                         }
-                                        catch (Exception e)
+                                        catch (Exception ex)
                                         {
-                                            Logger.Log(LogType.Warning, e.ToString());
+                                            Logger.LogToConsole("Update error: " + ex);
+
+                                        }
+                                    }
+                                    
+                                    //extract
+                                    ZipStorer zip = ZipStorer.Open(Directory.GetCurrentDirectory() + "\\UPDATE.zip", FileAccess.ReadWrite);
+                                    System.Collections.Generic.List<ZipStorer.ZipFileEntry> zipList = zip.ReadCentralDir();
+
+                                    //loop through all files
+                                    Logger.LogToConsole("");
+                                    Logger.LogToConsole("Extracting server update... please wait.");
+                                    foreach (ZipStorer.ZipFileEntry fileEntry in zipList)
+                                    {
+                                        if (zip.ExtractFile(fileEntry, fileEntry.ToString().Replace(' ', '_')))
+                                        {
+                                           //noice
+                                        }
+                                        else
+                                        {
+                                            Logger.LogToConsole("");
+                                            Logger.LogToConsole("Error with file extraction. Please update server manually from UPDATE.zip in server folder.");
                                             return;
                                         }
                                     }
 
-                                    Logger.LogToConsole("Updater is running, server will now shutdown to update.");
-                                    fCraft.Server.Shutdown(new ShutdownParams(ShutdownReason.ShuttingDown, TimeSpan.Zero, true, false),false);
+                                    if (File.Exists("UPDATE.zip"))
+                                    {
+                                        File.Delete("UPDATE.zip");
+                                    }
+
+                                    String updateDir = (zipList.First().ToString()).Split('/')[0].Replace(' ', '_');
+                                    Logger.LogToConsole("");
+                                    Logger.LogToConsole("Download complete. Please replace your server files with the updated files found at " + Directory.GetCurrentDirectory() + "\\" + updateDir);
+                                    Logger.LogToConsole("");
+                                    Logger.LogToConsole("Server will now shutdown for you to update.");
+                                    fCraft.Server.Shutdown(new ShutdownParams(ShutdownReason.ShuttingDown, TimeSpan.FromSeconds(5), true, false), false);
 
                                 }
                                 else

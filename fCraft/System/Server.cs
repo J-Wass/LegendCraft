@@ -496,7 +496,7 @@ namespace fCraft {
             //send webpanel salt (unfinished)
             try
             {
-                WebRequest request = WebRequest.Create("http://legend-craft.tk/heartbeat?salt=" + Heartbeat.Salt +"&server=" + ConfigKey.ServerName.GetString() + "&user=" );
+                WebRequest request = WebRequest.Create("http://legend-craft.tk/heartbeat?salt=" + Heartbeat.Salt);
                 StreamReader readStream = new StreamReader(request.GetResponse().GetResponseStream(), Encoding.UTF8);
                 string response = readStream.ReadLine();
                 Server.VerifiedUser = response;

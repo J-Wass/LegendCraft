@@ -39,6 +39,8 @@ namespace fCraft.Physics
     //░░░░░░░░░░▀▀▄▄░▒▒▒▒▒▒▒▒▒▒░█
     //░░░░░░░░░░░░░░▀▄▄▄▄▄░░░░░█
     // Trollphysics, incoming? Admit it, you just laughed.
+    // I laughed a little
+
     /// </summary>
     public static class Physics
     {

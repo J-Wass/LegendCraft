@@ -1338,6 +1338,10 @@ namespace fCraft
                 return false;
             }
 
+            if (Info.isDoorChecking)
+            {
+                RevertBlockNow(coord);
+            }
             #region CaptureTheFlag
             if (Info.placingBlueFlag)
             {

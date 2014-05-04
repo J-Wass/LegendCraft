@@ -140,6 +140,10 @@ namespace fCraft
         public bool canDodge = false;
         public DateTime dodgeTime;
 
+        //Door
+        public bool isDoorChecking = false;
+        public DateTime doorCheckTime = DateTime.MaxValue;
+
         /// <summary>
         /// Health var used in several gamemodes
         /// </summary>
