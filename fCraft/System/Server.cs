@@ -113,7 +113,7 @@ namespace fCraft {
         #endregion
 
 
-        #region Initialization and Startup
+        #region Initialization and Startup        
 
         // flags used to ensure proper initialization order
         static bool libraryInitialized,
@@ -132,6 +132,27 @@ namespace fCraft {
             if( rawArgs == null ) throw new ArgumentNullException( "rawArgs" );
             if( libraryInitialized ) {
                 throw new InvalidOperationException( "LegendCraft library is already initialized" );
+            }
+
+            //adjust files if in wrong location
+            if (!Directory.Exists("ref"))
+            {
+                Directory.CreateDirectory("ref");
+            }
+            DirectoryInfo dir = new DirectoryInfo(Directory.GetCurrentDirectory());
+            foreach (FileInfo file in dir.GetFiles())
+            {
+                if (file.Name.Contains(".txt") || file.Name.Contains(".xml"))
+                {
+                    try
+                    {
+                        file.MoveTo("ref/" + file.Name);
+                    }
+                    catch (System.IO.IOException)
+                    {
+                        continue;
+                    }
+                }
             }
 
             ServicePointManager.Expect100Continue = false;

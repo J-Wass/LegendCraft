@@ -97,7 +97,7 @@ THE SOFTWARE.*/
         static readonly CommandDescriptor CdMessageBlock = new CommandDescriptor
         {
             Name = "MessageBlock",
-            Aliases = new[] { "messageblocks" },
+            Aliases = new[] { "messageblocks", "mb" },
             Category = CommandCategory.World,
             IsConsoleSafe = false,
             Permissions = new[] { Permission.ManageWorlds },
@@ -119,9 +119,10 @@ THE SOFTWARE.*/
             {
                 case "list":
                     player.Message("__MessageBlocks on {0}__", player.World.Name);
-                    foreach (string messageblock in player.World.MessageBlocks.Keys)
+                    foreach (KeyValuePair<string, Tuple<Vector3I, string>> messageBlock in player.World.MessageBlocks)
                     {
-                        player.Message(messageblock);
+                        //block name and location
+                        player.Message(messageBlock.Key + " " + messageBlock.Value.Item1.ToString());
                     }
                     break;
                 case "remove":
@@ -134,7 +135,7 @@ THE SOFTWARE.*/
 
                     if (!player.World.MessageBlocks.Keys.Contains(removeTarget))
                     {
-                        player.Message("&c{0} was not found! Use '/MessageBlock List' to view all MessageBlocks on your world.", removeTarget);
+                        player.Message("&c'{0}' was not found! Use '/MessageBlock List' to view all MessageBlocks on your world.", removeTarget);
                         return;
                     }
 
@@ -155,14 +156,15 @@ THE SOFTWARE.*/
                         return;
                     }
 
-                    string message = cmd.Next();
+                    string message = cmd.NextAll();
                     if (String.IsNullOrEmpty(message))
                     {
                         player.Message("&ePlease choose the message for your MessageBlock!");
                         return;
                     }
 
-                    Vector3I pos = player.Position.ToBlockCoords();
+                    Vector3I pos = new Vector3I(player.Position.ToBlockCoords().X, player.Position.ToBlockCoords().Y, player.Position.ToBlockCoords().Z);
+
 
                     //tell the user that the message block is created on the block they are standing on, but the message block is actually on their head
                     player.Message("&a{0} was added.", addTarget);
@@ -179,11 +181,11 @@ THE SOFTWARE.*/
 
                     if (!player.World.MessageBlocks.Keys.Contains(editTarget))
                     {
-                        player.Message("&c{0} was not found! Use '/MessageBlock List' to view all MessageBlocks on your world.", editTarget);
+                        player.Message("&c'{0}' was not found! Use '/MessageBlock List' to view all MessageBlocks on your world.", editTarget);
                         return;
                     }
 
-                    string editMessage = cmd.Next();
+                    string editMessage = cmd.NextAll();
                     if (String.IsNullOrEmpty(editMessage))
                     {
                         player.Message("&ePlease choose the message for your MessageBlock!");
@@ -191,10 +193,10 @@ THE SOFTWARE.*/
                     }
 
                     //get the block coord of the message block being edited by finding the tuple of the key
-                    Tuple<Vector3I, string> tuple = new Tuple<Vector3I,string>(player.Position.ToBlockCoords(), "");
+                    Tuple<Vector3I, string> tuple;
                     player.World.MessageBlocks.TryGetValue(editMessage, out tuple);
 
-                    player.Message("&a{0} was successfully edited.", editTarget);
+                    //player.Message("&aMessageBlock was successfully edited.");
                     player.World.MessageBlocks.Remove(editTarget);
                     player.World.MessageBlocks.Add(editTarget, new Tuple<Vector3I, string>(tuple.Item1, editMessage));
                     break;

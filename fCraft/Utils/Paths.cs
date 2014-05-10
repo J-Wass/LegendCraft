@@ -110,7 +110,7 @@ namespace fCraft {
 
         public const string AutoRankFileName = "ref/autorank.xml";
 
-        public const string BlockDBDirectory = "ref/blockdb";
+        public const string BlockDBDirectory = "blockdb";
 
         public const string ReqDirectory = "ref/requirements";
         public const string ReqFileName = "ref/requirements.txt";
