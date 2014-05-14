@@ -177,8 +177,8 @@
             this.option.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.option.FormattingEnabled = true;
             this.option.Items.AddRange(new object[] {
-            "Continue",
-            "Finished"});
+            "Add Condition",
+            "Submit"});
             this.option.Location = new System.Drawing.Point(15, 265);
             this.option.Name = "option";
             this.option.Size = new System.Drawing.Size(121, 21);

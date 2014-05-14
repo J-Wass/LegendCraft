@@ -15,32 +15,46 @@ namespace fCraft.AutoRank
 
         private static void Load()
         {
-            if (!File.Exists("Autorank.xml"))
+            try
             {
-                //autorank was never set up
-                return;
-            }
-
-            XDocument doc = XDocument.Load("Autorank.xml");
-            XElement docConfig = doc.Root;
-
-            //load each rank change
-            foreach (XElement mainElement in docConfig.Elements())
-            {
-                string startingRank = mainElement.Name.ToString().Split('-')[0];
-                string endingRank = mainElement.Name.ToString().Split('-')[1];
-                foreach (XAttribute condition in mainElement.Attributes())
+                if (!File.Exists("ref/Autorank.xml"))
                 {
-                    string cond = condition.Name.ToString();
-                    string op = GetOperator(condition.Value);
-                    string value = GetValue(condition.Value);
-                    Condition generatedCondition = new Condition(startingRank, endingRank, cond, op, value);
-                    conditionList.Add(generatedCondition);
+                    //autorank was never set up
+                    return;
                 }
-                //load each condition in each rank change
-                foreach (XAttribute conditional in mainElement.Attributes())
+
+                XDocument doc = XDocument.Load("ref/Autorank.xml");
+                XElement docConfig = doc.Root;
+
+                //load each rank change
+                foreach (XElement mainElement in docConfig.Elements())
                 {
-                    //load the operator and the value
+                    string startingRank = mainElement.Name.ToString().Split('-')[0];
+                    string endingRank = mainElement.Name.ToString().Split('-')[1];
+                    foreach (XAttribute condition in mainElement.Attributes())
+                    {
+                        string cond = condition.Name.ToString();
+                        string op = GetOperator(condition.Value);
+                        string value = GetValue(condition.Value);
+                        Condition generatedCondition = new Condition(startingRank, endingRank, cond, op, value);
+                        conditionList.Add(generatedCondition);
+                    }
+                    //load each condition in each rank change
+                    foreach (XAttribute conditional in mainElement.Attributes())
+                    {
+                        //load the operator and the value
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (ex is IndexOutOfRangeException)
+                {
+                    //chill, autorank is just empty and stuff
+                }
+                else
+                {
+                    Logger.LogToConsole(ex.Message + " " + ex.Data);
                 }
             }
         }

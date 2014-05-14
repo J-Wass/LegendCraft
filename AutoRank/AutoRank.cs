@@ -34,6 +34,7 @@ namespace AutoRank
     /// <summary>
     /// Handles the UI of the program
     /// </summary>
+
     public partial class AutoRank : Form
     {
         public AutoRank()
@@ -113,7 +114,7 @@ namespace AutoRank
             //past this point, all fields are valid
 
             //add another condition
-            if (option.Text != "Finished")
+            if (option.Text != "Submit")
             {
                 Settings.multiLayered = true;
 
@@ -173,7 +174,7 @@ namespace AutoRank
 
         private void option_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (option.Text == "Finished")
+            if (option.Text == "Submit")
             {
                 bAdd.Text = "Add";
             }
