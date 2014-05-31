@@ -100,7 +100,7 @@ namespace fCraft.Portals
                     Tuple<Vector3I, string> tuple = messageBlock.Value;
 
                     //player is sitting on the message block, play the message
-                    if (newPos == tuple.Item1)
+                    if (e.Player.Position.ToBlockCoords() == tuple.Item1)
                     {
                         e.Player.Message("__" + messageBlock.Key + "__");
                         e.Player.Message(messageBlock.Value.Item2);

@@ -219,9 +219,8 @@ namespace fCraft.ServerCLI {
                                     {
                                         try
                                         {
-                                            //download new zip in current directory
-                                            Process.Start("http://www.legend-craft.tk/download/latest");
-                                            Console.WriteLine("Downloading the latest LegendCraft Version. Please replace all the files (not folders) in your current folder with the new ones after shutting down.");
+                                            Process.Start("https://github.com/LegendCraft/LegendCraft/releases");
+                                            Console.WriteLine("Downloading the latest LegendCraft Version. Please replace all the files in your current folder with the new ones after shutting down.");
                                         }
                                         catch(Exception ex)
                                         {

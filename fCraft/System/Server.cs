@@ -303,12 +303,12 @@ namespace fCraft {
 #else
             // delete the old updater, if exists
             File.Delete( Paths.UpdaterFileName );
-            File.Delete( "fCraftUpdater.exe" ); // pre-0.600
+            File.Delete( "fCraftUpdater.exe" ); // pre-0.600 (supar legacy)
 #endif
 
             // try to load the config
             if( !Config.Load( false, false ) ) {
-                throw new Exception( "Legend Craft Config failed to initialize" );
+                throw new Exception( "LegendCraft Config failed to initialize" );
             }
 
             if( ConfigKey.VerifyNames.GetEnum<NameVerificationMode>() == NameVerificationMode.Never ) {
@@ -348,7 +348,6 @@ namespace fCraft {
         /// <exception cref="System.InvalidOperationException"> Server is already running, or server/library have not been initailized. </exception>
         public static bool StartServer() 
         {
-            //Scheduler.NewTask(t => Network.ServerList.sendData()).RunOnce();
             
             if( IsRunning ) {
                 throw new InvalidOperationException( "Server is already running" );
@@ -515,7 +514,8 @@ namespace fCraft {
             GlobalChat.Start();
 
             //send webpanel salt (unfinished)
-            try
+           
+            /*try
             {
                 WebRequest request = WebRequest.Create("http://legend-craft.tk/heartbeat?salt=" + Heartbeat.Salt);
                 StreamReader readStream = new StreamReader(request.GetResponse().GetResponseStream(), Encoding.UTF8);
@@ -533,7 +533,7 @@ namespace fCraft {
                 {
                     Logger.LogToConsole("Error with web connection: " + ex);
                 }
-            }
+            }*/
 
             IsRunning = true;
             RaiseEvent( Started );
