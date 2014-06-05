@@ -126,7 +126,7 @@ namespace fCraft
                     Server.CountPlayers( false ).ToString(),
                     ConfigKey.MaxPlayers.GetString(),
                     ConfigKey.ServerName.GetString(),
-                    ConfigKey.IsPublic.GetString()
+                    ConfigKey.IsPublic.GetString(),
                 };
                 const string tempFile = Paths.HeartbeatDataFileName + ".tmp";
                 File.WriteAllLines(tempFile, data, Encoding.ASCII);
@@ -232,7 +232,7 @@ namespace fCraft
                     Server.CountPlayers( false ).ToString(),
                     ConfigKey.MaxPlayers.GetString(),
                     ConfigKey.ServerName.GetString(),
-                    ConfigKey.IsPublic.GetString()
+                    ConfigKey.IsPublic.GetString(),
                     };
 
                 //"port=" + Server.Port.ToString() + "&max=" + ConfigKey.MaxPlayers.GetString() + "&name=" +
@@ -403,21 +403,44 @@ namespace fCraft
         {
             UriBuilder ub = new UriBuilder(HeartbeatUri);
             StringBuilder sb = new StringBuilder();
-            sb.AppendFormat("public={0}&max={1}&users={2}&port={3}&version={4}&salt={5}&name={6}",
-                             IsPublic,
-                             MaxPlayers,
-                             PlayerCount,
-                             Port,
-                             ProtocolVersion,
-                             Uri.EscapeDataString(Salt),
-                             Uri.EscapeDataString(ServerName));
-            foreach (var pair in CustomData)
+
+            if (ConfigKey.HeartbeatUrl.GetString() == "ClassiCube.net")
             {
-                sb.AppendFormat("&{0}={1}",
-                                 Uri.EscapeDataString(pair.Key),
-                                 Uri.EscapeDataString(pair.Value));
+                sb.AppendFormat("public={0}&max={1}&users={2}&port={3}&software={7}&version={4}&salt={5}&name={6}",
+                 IsPublic,
+                 MaxPlayers,
+                 PlayerCount,
+                 Port,
+                 ProtocolVersion,
+                 Uri.EscapeDataString(Salt),
+                 Uri.EscapeDataString(ServerName),
+                 "LegendCraft v" + Updater.LatestStable);
+                foreach (var pair in CustomData)
+                {
+                    sb.AppendFormat("&{0}={1}",
+                                     Uri.EscapeDataString(pair.Key),
+                                     Uri.EscapeDataString(pair.Value));
+                }
+                ub.Query = sb.ToString();
             }
-            ub.Query = sb.ToString();
+            else
+            {
+                sb.AppendFormat("public={0}&max={1}&users={2}&port={3}&version={4}&salt={5}&name={6}",
+                                 IsPublic,
+                                 MaxPlayers,
+                                 PlayerCount,
+                                 Port,
+                                 ProtocolVersion,
+                                 Uri.EscapeDataString(Salt),
+                                 Uri.EscapeDataString(ServerName));
+                foreach (var pair in CustomData)
+                {
+                    sb.AppendFormat("&{0}={1}",
+                                     Uri.EscapeDataString(pair.Key),
+                                     Uri.EscapeDataString(pair.Value));
+                }
+                ub.Query = sb.ToString();
+            }
             return ub.Uri;
         }
     }

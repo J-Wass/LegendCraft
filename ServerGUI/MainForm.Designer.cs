@@ -78,7 +78,6 @@
             // 
             // bPlay
             // 
-            this.bPlay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bPlay.BackColor = System.Drawing.Color.WhiteSmoke;
             this.bPlay.Enabled = false;
             this.bPlay.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
@@ -94,6 +93,7 @@
             // 
             // SizeBox
             // 
+            this.SizeBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.SizeBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SizeBox.FormattingEnabled = true;
             this.SizeBox.Items.AddRange(new object[] {
@@ -109,6 +109,7 @@
             // 
             // ThemeBox
             // 
+            this.ThemeBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.ThemeBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ThemeBox.FormattingEnabled = true;
             this.ThemeBox.Items.AddRange(new object[] {
@@ -181,6 +182,7 @@
             // 
             // bVoice
             // 
+            this.bVoice.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.bVoice.BackColor = System.Drawing.Color.WhiteSmoke;
             this.bVoice.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
             this.bVoice.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
@@ -207,6 +209,7 @@
             // 
             // bReport
             // 
+            this.bReport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.bReport.BackColor = System.Drawing.Color.WhiteSmoke;
             this.bReport.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
             this.bReport.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
