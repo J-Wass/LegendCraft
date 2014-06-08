@@ -13,17 +13,17 @@ namespace fCraft.AutoRank
     {
         public static List<Condition> conditionList = new List<Condition>();
 
-        private static void Load()
+        public static void Load()
         {
             try
             {
-                if (!File.Exists("ref/Autorank.xml"))
+                if (!File.Exists(Paths.AutoRankFileName))
                 {
                     //autorank was never set up
                     return;
                 }
 
-                XDocument doc = XDocument.Load("ref/Autorank.xml");
+                XDocument doc = XDocument.Load(Paths.AutoRankFileName);
                 XElement docConfig = doc.Root;
 
                 //load each rank change
@@ -104,8 +104,6 @@ namespace fCraft.AutoRank
         /// </summary>
         public static void Check(Player player)
         {
-            Load();
-
             //loop through every condition in the conditions list
             foreach (Condition condTest in conditionList)
             {

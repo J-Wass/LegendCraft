@@ -104,6 +104,8 @@ namespace fCraft.Portals
                     {
                         e.Player.Message("__" + messageBlock.Key + "__");
                         e.Player.Message(messageBlock.Value.Item2);
+                        e.Player.Message(e.Player.Position.ToBlockCoords().ToString());
+                        e.Player.Message(tuple.Item1.ToString());
                     }
                 }
             }

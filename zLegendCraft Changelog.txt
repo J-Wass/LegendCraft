@@ -5,10 +5,12 @@ Add: Bot AI
 Add: MessageBlocks
 Add: /DoorList and /DoorCheck
 Change: ServerGUI expands much more fluidly, controls no longer overlap
+Change: LegendCraft now accepted fCraft Autorank XML scripts
 Change: Players can have multiple doors
 Change: Fixes to autorank.xml throwing errors when files are missing
 Change: Fixed bug where ServerGUI themes resulted in invisible text
 Change: General stability fixes
+Change: Updates to Helperbot
 Remove: LeBot (HelperBot taking over)
 
 LegendCraft Changelog v2.3.0

@@ -312,6 +312,8 @@ THE SOFTWARE.*/
                  case "force":
                      player.Message("Checking for online players to force autorank...");
 
+                     //refresh xml incase host updated autorank script, and then check each player
+                     AutoRank.AutoRankManager.Load();
                      foreach (Player p in Server.Players)
                      {
                          AutoRank.AutoRankManager.Check(p);

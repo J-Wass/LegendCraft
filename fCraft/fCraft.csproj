@@ -114,6 +114,9 @@
   <ItemGroup>
     <Compile Include="AutoRank\AutoRankManager.cs" />
     <Compile Include="AutoRank\Condition.cs" />
+    <Compile Include="AutoRank\fCraftAutoManager.cs" />
+    <Compile Include="AutoRank\fCraftConditions.cs" />
+    <Compile Include="AutoRank\fCraftCriterion.cs" />
     <Compile Include="Commands\Command Handlers\BroModeHandler.cs" />
     <Compile Include="Commands\Command Handlers\FlyHandler.cs" />
     <Compile Include="Commands\Command Handlers\GunHandler.cs" />
