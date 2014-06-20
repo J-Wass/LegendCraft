@@ -31,11 +31,12 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabs = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
             this.gBasic = new System.Windows.Forms.GroupBox();
+            this.xWebPanel = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.HeartBeatUrlComboBox = new System.Windows.Forms.ComboBox();
             this.nMaxPlayersPerWorld = new System.Windows.Forms.NumericUpDown();
@@ -74,6 +75,7 @@
             this.bRules = new System.Windows.Forms.Button();
             this.bAnnouncements = new System.Windows.Forms.Button();
             this.tabChat = new System.Windows.Forms.TabPage();
+            this.chatPreview = new fCraft.ConfigGUI.ChatPreview();
             this.gAppearence = new System.Windows.Forms.GroupBox();
             this.xShowConnectionMessages = new System.Windows.Forms.CheckBox();
             this.xShowJoinedWorldMessages = new System.Windows.Forms.CheckBox();
@@ -317,8 +319,6 @@
             this.bApply = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.chatPreview = new fCraft.ConfigGUI.ChatPreview();
-            this.xWebPanel = new System.Windows.Forms.CheckBox();
             this.tabs.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.gBasic.SuspendLayout();
@@ -456,6 +456,16 @@
             this.gBasic.TabStop = false;
             this.gBasic.Text = "Basic Settings";
             // 
+            // xWebPanel
+            // 
+            this.xWebPanel.AutoSize = true;
+            this.xWebPanel.Location = new System.Drawing.Point(440, 162);
+            this.xWebPanel.Name = "xWebPanel";
+            this.xWebPanel.Size = new System.Drawing.Size(125, 19);
+            this.xWebPanel.TabIndex = 21;
+            this.xWebPanel.Text = "Enable WebPanel";
+            this.xWebPanel.UseVisualStyleBackColor = true;
+            // 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -472,11 +482,13 @@
             this.HeartBeatUrlComboBox.FormattingEnabled = true;
             this.HeartBeatUrlComboBox.Items.AddRange(new object[] {
             "Minecraft.net",
-            "ClassiCube.net"});
+            "ClassiCube.net",
+            "Both"});
             this.HeartBeatUrlComboBox.Location = new System.Drawing.Point(123, 157);
             this.HeartBeatUrlComboBox.Name = "HeartBeatUrlComboBox";
             this.HeartBeatUrlComboBox.Size = new System.Drawing.Size(194, 23);
             this.HeartBeatUrlComboBox.TabIndex = 19;
+            this.HeartBeatUrlComboBox.SelectedIndexChanged += new System.EventHandler(this.HeartBeatUrlComboBox_SelectedIndexChanged);
             // 
             // nMaxPlayersPerWorld
             // 
@@ -972,6 +984,13 @@
             this.tabChat.TabIndex = 10;
             this.tabChat.Text = "Chat";
             // 
+            // chatPreview
+            // 
+            this.chatPreview.Location = new System.Drawing.Point(8, 256);
+            this.chatPreview.Name = "chatPreview";
+            this.chatPreview.Size = new System.Drawing.Size(636, 213);
+            this.chatPreview.TabIndex = 2;
+            // 
             // gAppearence
             // 
             this.gAppearence.Controls.Add(this.xShowConnectionMessages);
@@ -1385,8 +1404,8 @@
             this.dgvWorlds.MultiSelect = false;
             this.dgvWorlds.Name = "dgvWorlds";
             this.dgvWorlds.RowHeadersVisible = false;
-            dataGridViewCellStyle2.Padding = new System.Windows.Forms.Padding(0, 1, 0, 1);
-            this.dgvWorlds.RowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Padding = new System.Windows.Forms.Padding(0, 1, 0, 1);
+            this.dgvWorlds.RowsDefaultCellStyle = dataGridViewCellStyle4;
             this.dgvWorlds.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvWorlds.Size = new System.Drawing.Size(636, 325);
             this.dgvWorlds.TabIndex = 0;
@@ -1444,8 +1463,8 @@
             // dgvcBlockDB
             // 
             this.dgvcBlockDB.DataPropertyName = "BlockDBEnabled";
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.dgvcBlockDB.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.dgvcBlockDB.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgvcBlockDB.HeaderText = "BlockDB";
             this.dgvcBlockDB.Name = "dgvcBlockDB";
             this.dgvcBlockDB.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
@@ -3831,23 +3850,6 @@
             this.toolTip.InitialDelay = 500;
             this.toolTip.IsBalloon = true;
             this.toolTip.ReshowDelay = 100;
-            // 
-            // chatPreview
-            // 
-            this.chatPreview.Location = new System.Drawing.Point(8, 256);
-            this.chatPreview.Name = "chatPreview";
-            this.chatPreview.Size = new System.Drawing.Size(636, 213);
-            this.chatPreview.TabIndex = 2;
-            // 
-            // xWebPanel
-            // 
-            this.xWebPanel.AutoSize = true;
-            this.xWebPanel.Location = new System.Drawing.Point(440, 162);
-            this.xWebPanel.Name = "xWebPanel";
-            this.xWebPanel.Size = new System.Drawing.Size(125, 19);
-            this.xWebPanel.TabIndex = 21;
-            this.xWebPanel.Text = "Enable WebPanel";
-            this.xWebPanel.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 

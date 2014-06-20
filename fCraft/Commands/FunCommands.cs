@@ -124,7 +124,7 @@ THE SOFTWARE.*/
             Permissions = new Permission[] { Permission.Bots },
             Category = CommandCategory.Fun,
             IsConsoleSafe = false,
-            Usage = "/Bot <create / remove / removeAll / model / close / explode / list / summon / stop / move / fly>",
+            Usage = "/Bot <create / remove / removeAll / model / clone / explode / list / summon / stop / move>",
             Help = "Commands for manipulating bots. For help and usage for the individual options, use /help bot <option>.",
             HelpSections = new Dictionary<string, string>{
                 { "create", "&H/Bot create <botname> <model>\n&S" +
@@ -145,8 +145,6 @@ THE SOFTWARE.*/
                                 "Summons a bot from anywhere to your current position."},
                 { "move", "&H/Bot move <botname> <player>\n&S" +
                                 "Moves the bot to a specific player."},
-                { "fly", "&H/Bot fly <botname>\n&S" +
-                                "Toggles whether the bot can fly or not."},
                 { "stop", "&H/Bot stop <botname>\n&S" +
                                 "Stops the bot from doing any of its movement actions."}
             },
@@ -224,6 +222,8 @@ THE SOFTWARE.*/
             }
             else if (option.ToLower() == "follow")
             {
+                return; // not used for now
+
                 string targetBot = cmd.Next();
                 if (string.IsNullOrEmpty(targetBot))
                 {

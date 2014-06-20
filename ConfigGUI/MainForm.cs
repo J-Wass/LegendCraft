@@ -1731,6 +1731,11 @@ Your rank is {RANK}&S. Type &H/Help&S for help." );
 
         }
 
+        private void HeartBeatUrlComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
 
     }
 }

@@ -1299,6 +1299,7 @@ THE SOFTWARE.*/
 
                     case "salt":
                         Heartbeat.Salt = Server.GetRandomString( 32 );
+                        Heartbeat.Salt2 = Server.GetRandomString(32);
                         player.Message( "&WNote: Until server synchronizes with Minecraft.net, " +
                                         "connecting players may have trouble verifying names." );
                         success = true;

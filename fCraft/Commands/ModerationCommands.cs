@@ -134,6 +134,11 @@ THE SOFTWARE.*/
                 return;
             }
 
+            if (!targetPlayer.ClassiCube)
+            {
+                player.Message("You can only use /GetBlock on ClassiCube players!");
+            }
+
             player.Message("{0} is currently holding {1}.", targetPlayer.Name, targetPlayer.Info.HeldBlock.ToString() );
         }
 
@@ -166,6 +171,11 @@ THE SOFTWARE.*/
             if (p == null)
             {
                 return;
+            }
+
+            if (!p.ClassiCube)
+            {
+                player.Message("You can only use /ForceHold on ClassiCube players!");
             }
 
             string blockStr = cmd.Next();
@@ -252,7 +262,10 @@ THE SOFTWARE.*/
             Packet packet = PacketWriter.MakeSpecialMessage(100, message);
             foreach (Player p in targetPlayers)
             {
-                p.Send(packet);
+                if (p.ClassiCube)
+                {
+                    p.Send(packet);
+                }
             }
         }
          static readonly CommandDescriptor CdAutoRank = new CommandDescriptor 
@@ -390,8 +403,7 @@ THE SOFTWARE.*/
             }
             if (!target.ClassiCube)
             {
-                player.Message("Click distance can only be changed for people playing on ClassiCube");
-                return;
+                player.Message("You can only use /SetClickDistance on ClassiCube players!");
             }
             string number = cmd.Next();
             if (number == "normal")

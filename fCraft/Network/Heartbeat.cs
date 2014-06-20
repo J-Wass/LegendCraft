@@ -17,14 +17,27 @@ namespace fCraft
     {
         static readonly Uri MinecraftNetUri;
         static readonly Uri ClassiCubeNetUri;
+        private static bool sendBoth;
 
+        //if the server is classicube compatable
         public static bool ClassiCube()
         {
             if (ConfigKey.HeartbeatUrl.GetString() == "ClassiCube.net")
+            {
                 return true;
+            }
+            else if (ConfigKey.HeartbeatUrl.GetString() == "Both")
+            {
+                sendBoth = true;
+                return true;
+            }
             else
+            {
                 return false;
+            }
         }
+
+
 
         /// <summary> Delay between sending heartbeats. Default: 25s </summary>
         public static TimeSpan Delay { get; set; }
@@ -36,6 +49,10 @@ namespace fCraft
         /// Randomly generated at startup.
         /// Known only to this server, heartbeat servers, and webpanel. </summary>
         public static string Salt { get; internal set; }
+
+        /// <summary> Second salt
+        /// used if server is running a dual heartbeat</summary>
+        public static string Salt2 { get; internal set; }
 
         // Dns lookup, to make sure that IPv4 is preferred for heartbeats
         static readonly Dictionary<string, IPAddress> TargetAddresses = new Dictionary<string, IPAddress>();
@@ -84,6 +101,7 @@ namespace fCraft
             Delay = TimeSpan.FromSeconds(45);
             Timeout = TimeSpan.FromSeconds(10);
             Salt = Server.GetRandomString(32);
+            Salt2 = Server.GetRandomString(32);
             Server.ShutdownBegan += OnServerShutdown;
         }
 
@@ -108,10 +126,19 @@ namespace fCraft
 
             if (ConfigKey.HeartbeatEnabled.Enabled())
             {
-                if (ClassiCube())
-                    SendClassiCubeBeat();
+                if (!sendBoth)
+                {
+                    if (ClassiCube())
+                        SendClassiCubeBeat();
+                    else
+                        SendMinecraftNetBeat();
+                }
                 else
-                    SendMinecraftNetBeat();
+                {
+                    SendClassiCubeBeat();
+                    Scheduler.NewTask(t => SendMinecraftNetBeat()).RunManual(TimeSpan.FromSeconds(22));
+                }
+
                 SendLegendCraftNetBeat();
                 HbSave();
             }
@@ -233,6 +260,7 @@ namespace fCraft
                     ConfigKey.MaxPlayers.GetString(),
                     ConfigKey.ServerName.GetString(),
                     ConfigKey.IsPublic.GetString(),
+                    Salt2
                     };
 
                 //"port=" + Server.Port.ToString() + "&max=" + ConfigKey.MaxPlayers.GetString() + "&name=" +
@@ -382,6 +410,7 @@ namespace fCraft
             Port = Server.Port;
             ProtocolVersion = Config.ProtocolVersion;
             Salt = Heartbeat.Salt;
+            Salt2 = Heartbeat.Salt2;
             ServerName = ConfigKey.ServerName.GetString();
             CustomData = new Dictionary<string, string>();
             HeartbeatUri = heartbeatUri;
@@ -390,6 +419,7 @@ namespace fCraft
         [NotNull]
         public Uri HeartbeatUri { get; private set; }
         public string Salt { get; set; }
+        public string Salt2 { get; set; }
         public IPAddress ServerIP { get; set; }
         public int Port { get; set; }
         public int PlayerCount { get; set; }
@@ -412,7 +442,7 @@ namespace fCraft
                  PlayerCount,
                  Port,
                  ProtocolVersion,
-                 Uri.EscapeDataString(Salt),
+                 Uri.EscapeDataString(Salt2),
                  Uri.EscapeDataString(ServerName),
                  "LegendCraft v" + Updater.LatestStable);
                 foreach (var pair in CustomData)

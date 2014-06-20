@@ -642,6 +642,20 @@ namespace fCraft
             string packetPlayerName = givenName; //make a copy of the full name, in case Mojang support is needed
             bool UsedMojang = false;
 
+            string verificationCode = ReadString();
+            byte magicNum = reader.ReadByte(); //for ClassiCube protocol check (previously unused)
+            ClassiCube = (magicNum == 0x42);
+            BytesReceived += 131;
+
+            Logger.LogToConsole(ClassiCube.ToString());
+
+            //check if cc user is trying to connect to a dual heartbeat/CC heartbeat (crappy support is crappy)
+            if (ClassiCube)
+            {
+                givenName += "+";
+                Logger.Log(LogType.SystemActivity, "ClassiCube user connecting. Name changed to " + givenName + "+");
+            }
+
             // Check name for nonstandard characters
             if (!IsValidName(givenName))
             {
@@ -696,6 +710,10 @@ namespace fCraft
                         }
                     }
                 }
+                else if (ClassiCube)
+                {
+                    //empty lal
+                }
                 else
                 {
                     Logger.Log(LogType.SuspiciousActivity,
@@ -705,11 +723,6 @@ namespace fCraft
                     return false;
                 }
             }
-
-            string verificationCode = ReadString();
-            byte magicNum = reader.ReadByte(); //for ClassiCube protocol check (previously unused)
-            ClassiCube = (magicNum == 0x42);
-            BytesReceived += 131;
 
             // ReSharper disable PossibleNullReferenceException
             Position = WorldManager.MainWorld.Map.Spawn;
