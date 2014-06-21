@@ -344,6 +344,12 @@ namespace fCraft
             return FallbackBlocks[(int)block];
         }
 
+        public static byte GetFallbackBlock(byte bite)
+        {
+            int block = (int)bite;
+            return (byte)FallbackBlocks[block];
+        }
+
         public const Block MaxLegalBlockType = Block.Obsidian;
         public unsafe byte[] GetFallbackMap()
         {

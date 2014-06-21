@@ -314,7 +314,7 @@ THE SOFTWARE.*/
 
         static void MEditHandler(Player player, Command cmd)
         {
-            if (ConfigKey.HeartbeatUrl.GetString() == "https://minecraft.net/heartbeat.jsp")
+            if (!Heartbeat.ClassiCube())
             {
                 player.Message("/MapEdit only works for ClassiCube, not MineCraft! If you are playing on Minecraft.net, please use /Env.");
                 return;

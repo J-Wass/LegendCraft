@@ -128,6 +128,11 @@ namespace fCraft
         }
 
         /// <summary>
+        /// The name used when the server extracts the skin for a player
+        /// </summary>
+        public string Skinname { get; set; }
+
+        /// <summary>
         /// Model of a player, "humanoid" is the default
         /// </summary>
         public string Model = "humanoid";

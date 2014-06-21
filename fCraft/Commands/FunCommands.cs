@@ -429,7 +429,7 @@ THE SOFTWARE.*/
         static readonly CommandDescriptor CdSetModel = new CommandDescriptor
         {
             Name = "SetModel",
-            Permissions = new Permission[] { Permission.EditPlayerDB },
+            Permissions = new Permission[] { Permission.Troll },
             Category = CommandCategory.Fun,
             IsConsoleSafe = false,
             Usage = "/SetModel [Player] [Model]",

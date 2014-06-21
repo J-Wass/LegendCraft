@@ -645,9 +645,8 @@ namespace fCraft
             string verificationCode = ReadString();
             byte magicNum = reader.ReadByte(); //for ClassiCube protocol check (previously unused)
             ClassiCube = (magicNum == 0x42);
+            Skinname = givenName;
             BytesReceived += 131;
-
-            Logger.LogToConsole(ClassiCube.ToString());
 
             //check if cc user is trying to connect to a dual heartbeat/CC heartbeat (crappy support is crappy)
             if (ClassiCube)
@@ -712,7 +711,13 @@ namespace fCraft
                 }
                 else if (ClassiCube)
                 {
-                    //empty lal
+                    //if the name is still invalid with or without the +
+                    if (!IsValidName(givenName.Replace("+", "")))
+                    {
+                        Logger.Log(LogType.SuspiciousActivity, "Player.LoginSequence: Unacceptable player name: {0} ({1})", givenName, IP);                                     
+                        KickNow("Invalid characters in player name!", LeaveReason.ProtocolViolation);
+                        return false;
+                    }
                 }
                 else
                 {
@@ -1087,6 +1092,7 @@ namespace fCraft
             State = SessionState.Online;
             Server.UpdatePlayerList();
             RaisePlayerReadyEvent(this);
+            AutoRankManager.Load();
             AutoRankManager.Check(this);
 
             return true;
@@ -1385,6 +1391,21 @@ namespace fCraft
                         "Player.JoinWorldNow: Sending compressed map ({0} bytes) to {1}.",
                         blockData.Length, Name);
 
+            Map map_ = map;
+            //if not on CC, take all CC blocks (blocks with IDs over 49), and find the fallback version of that block
+            if (!ClassiCube)
+            {
+                for (int i = 0; i < map_.Blocks.Length; i++)
+                {
+                    if (map_.Blocks[i] > 49)
+                    {
+                        Logger.LogToConsole(map_.Blocks[i].ToString());
+                        map_.Blocks[i] = Map.GetFallbackBlock(map_.Blocks[i]);
+                        Logger.LogToConsole(map_.Blocks[i].ToString());
+                    }
+                }
+            }
+
             // Transfer the map copy
             while (mapBytesSent < blockData.Length)
             {
@@ -1414,11 +1435,11 @@ namespace fCraft
             client.NoDelay = ConfigKey.LowLatencyMode.Enabled();
 
             // Done sending over level copy
-            writer.WriteMapEnd(map);
+            writer.WriteMapEnd(map_);
             BytesSent += 7;
 
             // Sets player's spawn point to map spawn
-            writer.WriteAddEntity(255, this, map.Spawn);
+            writer.WriteAddEntity(255, this, map_.Spawn);
             BytesSent += 74;
 
             // Teleport player to the target location
@@ -1910,11 +1931,11 @@ namespace fCraft
             {
                 var pos = new VisibleEntity(newPos, freePlayerIDs.Pop(), player.Info.Rank);
                 entities.Add(player, pos);
-                SendNow(PacketWriter.MakeAddEntity(entities[player].Id, player.Info.Rank.Color + player.Name, newPos));
+                SendNow(PacketWriter.MakeAddEntity(entities[player].Id, player.Info.Rank.Color + player.Skinname, newPos));
                 if (ClassiCube && Heartbeat.ClassiCube())
                 {
-                    SendNow(PacketWriter.MakeExtAddEntity((byte)entities[player].Id, player.ListName, player.Name));
-                    SendNow(PacketWriter.MakeExtAddPlayerName((short)pos.Id, player.Name, player.ListName, player.Info.Rank.ClassyName, (byte)player.Info.Rank.Index));
+                    SendNow(PacketWriter.MakeExtAddEntity((byte)entities[player].Id, player.ListName, player.Skinname));
+                    SendNow(PacketWriter.MakeExtAddPlayerName((short)pos.Id, player.Skinname, player.ListName, player.Info.Rank.ClassyName, (byte)player.Info.Rank.Index));
                 }
             }
         }
@@ -1947,16 +1968,16 @@ namespace fCraft
             SendNow(PacketWriter.MakeRemoveEntity(entity.Id));
             if (ClassiCube && Heartbeat.ClassiCube())
                 SendNow(PacketWriter.MakeExtRemovePlayerName((short)entity.Id));
-            if (player.iName == null)
-                SendNow(PacketWriter.MakeAddEntity(entities[player].Id, player.Info.Rank.Color + player.Name, newPos));
+            if (player.iName == null)               
+                SendNow(PacketWriter.MakeAddEntity(entities[player].Id, player.Info.Rank.Color + player.Skinname, newPos));
             else
                 SendNow(PacketWriter.MakeAddEntity(entities[player].Id, player.iName, newPos));
             if (ClassiCube && Heartbeat.ClassiCube())
             {
                 if (player.iName == null)
-                    SendNow(PacketWriter.MakeExtAddEntity((byte)entities[player].Id, player.Name, player.Name));
+                    SendNow(PacketWriter.MakeExtAddEntity((byte)entities[player].Id, player.Skinname, player.Name));
                 else
-                    SendNow(PacketWriter.MakeExtAddEntity((byte)entities[player].Id, player.Name, player.iName));
+                    SendNow(PacketWriter.MakeExtAddEntity((byte)entities[player].Id, player.Skinname, player.iName));
                 SendNow(PacketWriter.MakeExtAddPlayerName((short)entity.Id, player.ListName, player.ClassyName, player.Info.Rank.ClassyName, (byte)player.Info.Rank.Index));
             }
             entity.LastKnownPosition = newPos;
