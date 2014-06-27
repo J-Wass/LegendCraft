@@ -153,11 +153,6 @@ THE SOFTWARE.*/
 
         static void BotHandler(Player player, Command cmd)
         {
-            if (!player.ClassiCube || !Heartbeat.ClassiCube())
-            {
-                player.Message("Bots can only be used on ClassiCube servers and clients!");
-                return;
-            }
             string option = cmd.Next(); //take in the option arg
             if (string.IsNullOrEmpty(option)) //empty? return, otherwise continue
             {

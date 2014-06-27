@@ -181,7 +181,7 @@ namespace fCraft
                 return; //something went wrong, model does not exist
             }
 
-            World.Players.Where(p => p.ClassiCube).Send(PacketWriter.MakeChangeModel((byte)ID, botModel));
+            World.Players.Where(p => p.CPE).Send(PacketWriter.MakeChangeModel((byte)ID, botModel));
             Model = botModel;
         }
 
@@ -196,7 +196,7 @@ namespace fCraft
                 //something went wrong, player doesn't exist
             }
 
-            World.Players.Where(p => p.ClassiCube).Send(PacketWriter.MakeExtAddEntity((byte)ID, targetSkin, targetSkin));
+            World.Players.Where(p => p.CPE).Send(PacketWriter.MakeExtAddEntity((byte)ID, targetSkin, targetSkin));
             Skin = targetSkin;
         }       
 

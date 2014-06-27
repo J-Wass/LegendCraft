@@ -45,7 +45,6 @@ namespace fCraft
             //CommandManager.RegisterCommand(CdJelly);
             CommandManager.RegisterCommand(CdMad);
             CommandManager.RegisterCommand(CdBanHammer);
-            CommandManager.RegisterCommand(CdCredits);
             CommandManager.RegisterCommand(CdSTFU);
             CommandManager.RegisterCommand(CdFortuneCookie);
             CommandManager.RegisterCommand(CdCalculator);
@@ -717,26 +716,6 @@ THE SOFTWARE.*/
             }
         }
 
-
-
-        static readonly CommandDescriptor CdCredits = new CommandDescriptor
-        {
-            Name = "Credits",
-            Aliases = new string[] { "credit" },
-            Category = CommandCategory.Chat,
-            Permissions = new[] { Permission.Chat },
-            IsConsoleSafe = true,
-            Usage = "/credits",
-            Help = "&8Displays the credits of LegendCraft",
-            NotRepeatable = true,
-            Handler = CreditsHandler,
-        };
-
-
-        public static void CreditsHandler(Player player, Command cmd)
-        {
-            player.Message(" LegendCraft was developed by LeChosenOne, DingusBungus and Eeyle. LegendCraft was based off of 800Craft developed by Jonty800, GlennMR, and Lao Tszy. 800Craft was based off of fCraft developed by fragmer. Thanks to everyone who contributed to these softwares. And thank you for using LegendCraft!");
-        }
         static readonly CommandDescriptor CdBanHammer = new CommandDescriptor
         {
             Name = "BanHammer",

@@ -316,9 +316,14 @@ namespace fCraft {
                 int blockIndex = Index( update.X, update.Y, update.Z );
                 Blocks[blockIndex] = (byte)update.BlockType;
 
-                if( !World.IsFlushing ) {
+                if( !World.IsFlushing ) 
+                {
+                    //non classicube players get fallbacks instead of the real blocks
                     Packet packet = PacketWriter.MakeSetBlock( update.X, update.Y, update.Z, update.BlockType );
-                    World.Players.SendLowPriority( update.Origin, packet );
+                    Packet packet2 = PacketWriter.MakeSetBlock(update.X, update.Y, update.Z, Map.GetFallbackBlock(update.BlockType));
+
+                    World.Players.Where(p => p.CPE).SendLowPriority(update.Origin, packet);
+                    World.Players.Where(p => !p.CPE).SendLowPriority(update.Origin, packet2);
                 }
                 packetsSent++;
             }

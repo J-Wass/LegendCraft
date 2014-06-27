@@ -372,7 +372,7 @@ THE SOFTWARE.*/
                     //Packet appearence = PacketWriter.MakeEnvSetMapAppearance("", world.sideBlock, world.edgeBlock, world.sideLevel); update once supported
                     Packet weather = PacketWriter.MakeEnvWeatherAppearance((byte)world.WeatherCC);
 
-                    foreach (Player p in world.Players.Where(p => p.ClassiCube))
+                    foreach (Player p in world.Players.Where(p => p.CPE))
                     {
                         p.Send(sky);
                         p.Send(cloud);
@@ -551,7 +551,7 @@ THE SOFTWARE.*/
                         world.CloudColorCC = "#ffffff";
 
                         Packet cloudPacketNormal = PacketWriter.MakeEnvSetColor((byte)1, (world.CloudColorCC));
-                        foreach (Player p in world.Players.Where(p => p.ClassiCube))
+                        foreach (Player p in world.Players.Where(p => p.CPE))
                         {
                             p.Send(cloudPacketNormal);
                         }
@@ -571,7 +571,7 @@ THE SOFTWARE.*/
                     world.CloudColorCC = setting;
                     player.Message("The map texture has been edited.");
                     Packet cloudPacket = PacketWriter.MakeEnvSetColor((byte)1, world.CloudColorCC);
-                    foreach (Player p in world.Players.Where(p => p.ClassiCube))
+                    foreach (Player p in world.Players.Where(p => p.CPE))
                     {
                         p.Send(cloudPacket);
                     }
@@ -589,7 +589,7 @@ THE SOFTWARE.*/
                         world.FogColorCC = "#ffffff";
 
                         Packet fogPacketNormal = PacketWriter.MakeEnvSetColor((byte)2, world.FogColorCC.Replace("#", ""));
-                        foreach (Player p in world.Players.Where(p => p.ClassiCube))
+                        foreach (Player p in world.Players.Where(p => p.CPE))
                         {
                             p.Send(fogPacketNormal);
                         }
@@ -609,7 +609,7 @@ THE SOFTWARE.*/
                     world.FogColorCC = setting;
                     player.Message("The map texture has been edited.");
                     Packet fogPacket = PacketWriter.MakeEnvSetColor((byte)2, world.FogColorCC);
-                    foreach (Player p in world.Players.Where(p => p.ClassiCube))
+                    foreach (Player p in world.Players.Where(p => p.CPE))
                     {
                         p.Send(fogPacket);
                     }
@@ -627,7 +627,7 @@ THE SOFTWARE.*/
                         world.SkyColorCC = "#99CCFF";
 
                         Packet skyPacketNormal = PacketWriter.MakeEnvSetColor((byte)0, world.SkyColorCC);
-                        foreach (Player p in world.Players.Where(p => p.ClassiCube))
+                        foreach (Player p in world.Players.Where(p => p.CPE))
                         {
                             p.Send(skyPacketNormal);
                         }
@@ -648,7 +648,7 @@ THE SOFTWARE.*/
                     world.SkyColorCC = setting;
                     player.Message("The map texture has been edited.");
                     Packet skyPacket = PacketWriter.MakeEnvSetColor((byte)0, world.SkyColorCC);
-                    foreach (Player p in world.Players.Where(p => p.ClassiCube))
+                    foreach (Player p in world.Players.Where(p => p.CPE))
                     {
                         p.Send(skyPacket);
                     }
@@ -670,7 +670,7 @@ THE SOFTWARE.*/
                             world.WeatherCC = 0;
 
                             Packet weatherPacketNormal = PacketWriter.MakeEnvWeatherAppearance((byte)world.WeatherCC);
-                            foreach (Player p in world.Players.Where(p => p.ClassiCube))
+                            foreach (Player p in world.Players.Where(p => p.CPE))
                             {
                                 p.Send(weatherPacketNormal);
                             }
@@ -682,7 +682,7 @@ THE SOFTWARE.*/
                             world.WeatherCC = 1;
 
                             Packet weatherPacketRain = PacketWriter.MakeEnvWeatherAppearance((byte)world.WeatherCC);
-                            foreach (Player p in world.Players.Where(p => p.ClassiCube))
+                            foreach (Player p in world.Players.Where(p => p.CPE))
                             {
                                 p.Send(weatherPacketRain);
                             }
@@ -695,7 +695,7 @@ THE SOFTWARE.*/
                             world.WeatherCC = 2;
 
                             Packet weatherPacketSnow = PacketWriter.MakeEnvWeatherAppearance((byte)world.WeatherCC);
-                            foreach (Player p in world.Players.Where(p => p.ClassiCube))
+                            foreach (Player p in world.Players.Where(p => p.CPE))
                             {
                                 p.Send(weatherPacketSnow);
                             }
@@ -2685,7 +2685,7 @@ THE SOFTWARE.*/
 
         static void EnvHandler(Player player, Command cmd)
         {
-            if (Heartbeat.ClassiCube() || player.ClassiCube)
+            if (Heartbeat.ClassiCube() || player.CPE)
             {
                 player.Message("/Env is a Minecraft.net only command.");//add reference /mapedit here once it works.
                 return;

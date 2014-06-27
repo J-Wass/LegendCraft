@@ -128,124 +128,136 @@ namespace fCraft {
         /// <param name="rawArgs"> string arguments passed to the frontend (if any). </param>
         /// <exception cref="System.InvalidOperationException"> If library is already initialized. </exception>
         /// <exception cref="System.IO.IOException"> Working path, log path, or map path could not be set. </exception>
-        public static void InitLibrary( [NotNull] IEnumerable<string> rawArgs ) {
-            if( rawArgs == null ) throw new ArgumentNullException( "rawArgs" );
-            if( libraryInitialized ) {
-                throw new InvalidOperationException( "LegendCraft library is already initialized" );
-            }
-
-            //adjust files if in wrong location
-            if (!Directory.Exists("ref"))
+        public static void InitLibrary([NotNull] IEnumerable<string> rawArgs)
+        {
+            if (rawArgs == null) throw new ArgumentNullException("rawArgs");
+            if (libraryInitialized)
             {
-                Directory.CreateDirectory("ref");
+                throw new InvalidOperationException("LegendCraft library is already initialized");
             }
-            DirectoryInfo dir = new DirectoryInfo(Directory.GetCurrentDirectory());
-            foreach (FileInfo file in dir.GetFiles())
-            {
-                if (file.Name.Contains(".txt") || file.Name.Contains(".xml"))
-                {
-                    try
-                    {
-                        file.MoveTo("ref/" + file.Name);
-                    }
-                    catch (System.IO.IOException)
-                    {
-                        continue;
-                    }
-                }
-            }
-
             ServicePointManager.Expect100Continue = false;
 
             // try to parse arguments
-            foreach( string arg in rawArgs ) {
-                if( arg.StartsWith( "--" ) ) {
+            foreach (string arg in rawArgs)
+            {
+                if (arg.StartsWith("--"))
+                {
                     string argKeyName, argValue;
-                    if( arg.Contains( '=' ) ) {
-                        argKeyName = arg.Substring( 2, arg.IndexOf( '=' ) - 2 ).ToLower().Trim();
-                        argValue = arg.Substring( arg.IndexOf( '=' ) + 1 ).Trim();
-                        if( argValue.StartsWith( "\"" ) && argValue.EndsWith( "\"" ) ) {
-                            argValue = argValue.Substring( 1, argValue.Length - 2 );
+                    if (arg.Contains('='))
+                    {
+                        argKeyName = arg.Substring(2, arg.IndexOf('=') - 2).ToLower().Trim();
+                        argValue = arg.Substring(arg.IndexOf('=') + 1).Trim();
+                        if (argValue.StartsWith("\"") && argValue.EndsWith("\""))
+                        {
+                            argValue = argValue.Substring(1, argValue.Length - 2);
                         }
 
-                    } else {
-                        argKeyName = arg.Substring( 2 );
+                    }
+                    else
+                    {
+                        argKeyName = arg.Substring(2);
                         argValue = null;
                     }
                     ArgKey key;
-                    if( EnumUtil.TryParse( argKeyName, out key, true ) ) {
-                        Args.Add( key, argValue );
-                    } else {
-                        Console.Error.WriteLine( "Unknown argument: {0}", arg );
+                    if (EnumUtil.TryParse(argKeyName, out key, true))
+                    {
+                        Args.Add(key, argValue);
                     }
-                } else {
-                    Console.Error.WriteLine( "Unknown argument: {0}", arg );
+                    else
+                    {
+                        Console.Error.WriteLine("Unknown argument: {0}", arg);
+                    }
+                }
+                else
+                {
+                    Console.Error.WriteLine("Unknown argument: {0}", arg);
                 }
             }
 
             // before we do anything, set path to the default location
-            Directory.SetCurrentDirectory( Paths.WorkingPath );
+            Directory.SetCurrentDirectory(Paths.WorkingPath);
 
             // set custom working path (if specified)
-            string path = GetArg( ArgKey.Path );
-            if( path != null && Paths.TestDirectory( "WorkingPath", path, true ) ) {
-                Paths.WorkingPath = Path.GetFullPath( path );
-                Directory.SetCurrentDirectory( Paths.WorkingPath );
-            } else if( Paths.TestDirectory( "WorkingPath", Paths.WorkingPathDefault, true ) ) {
-                Paths.WorkingPath = Path.GetFullPath( Paths.WorkingPathDefault );
-                Directory.SetCurrentDirectory( Paths.WorkingPath );
-            } else {
-                throw new IOException( "Could not set the working path." );
+            string path = GetArg(ArgKey.Path);
+            if (path != null && Paths.TestDirectory("WorkingPath", path, true))
+            {
+                Paths.WorkingPath = Path.GetFullPath(path);
+                Directory.SetCurrentDirectory(Paths.WorkingPath);
+            }
+            else if (Paths.TestDirectory("WorkingPath", Paths.WorkingPathDefault, true))
+            {
+                Paths.WorkingPath = Path.GetFullPath(Paths.WorkingPathDefault);
+                Directory.SetCurrentDirectory(Paths.WorkingPath);
+            }
+            else
+            {
+                throw new IOException("Could not set the working path.");
             }
 
             // set log path
-            string logPath = GetArg( ArgKey.LogPath );
-            if( logPath != null && Paths.TestDirectory( "LogPath", logPath, true ) ) {
-                Paths.LogPath = Path.GetFullPath( logPath );
-            } else if( Paths.TestDirectory( "LogPath", Paths.LogPathDefault, true ) ) {
-                Paths.LogPath = Path.GetFullPath( Paths.LogPathDefault );
-            } else {
-                throw new IOException( "Could not set the log path." );
+            string logPath = GetArg(ArgKey.LogPath);
+            if (logPath != null && Paths.TestDirectory("LogPath", logPath, true))
+            {
+                Paths.LogPath = Path.GetFullPath(logPath);
+            }
+            else if (Paths.TestDirectory("LogPath", Paths.LogPathDefault, true))
+            {
+                Paths.LogPath = Path.GetFullPath(Paths.LogPathDefault);
+            }
+            else
+            {
+                throw new IOException("Could not set the log path.");
             }
 
-            if( HasArg( ArgKey.NoLog ) ) {
+            if (HasArg(ArgKey.NoLog))
+            {
                 Logger.Enabled = false;
-            } else {
+            }
+            else
+            {
                 Logger.MarkLogStart();
             }
 
             // set map path
-            string mapPath = GetArg( ArgKey.MapPath );
-            if( mapPath != null && Paths.TestDirectory( "MapPath", mapPath, true ) ) {
-                Paths.MapPath = Path.GetFullPath( mapPath );
+            string mapPath = GetArg(ArgKey.MapPath);
+            if (mapPath != null && Paths.TestDirectory("MapPath", mapPath, true))
+            {
+                Paths.MapPath = Path.GetFullPath(mapPath);
                 Paths.IgnoreMapPathConfigKey = true;
-            } else if( Paths.TestDirectory( "MapPath", Paths.MapPathDefault, true ) ) {
-                Paths.MapPath = Path.GetFullPath( Paths.MapPathDefault );
-            } else {
-                throw new IOException( "Could not set the map path." );
+            }
+            else if (Paths.TestDirectory("MapPath", Paths.MapPathDefault, true))
+            {
+                Paths.MapPath = Path.GetFullPath(Paths.MapPathDefault);
+            }
+            else
+            {
+                throw new IOException("Could not set the map path.");
             }
 
             // set config path
             Paths.ConfigFileName = Paths.ConfigFileNameDefault;
-            string configFile = GetArg( ArgKey.Config );
-            if( configFile != null ) {
-                if( Paths.TestFile( "config.xml", configFile, false, FileAccess.Read ) ) {
-                    Paths.ConfigFileName = new FileInfo( configFile ).FullName;
+            string configFile = GetArg(ArgKey.Config);
+            if (configFile != null)
+            {
+                if (Paths.TestFile("config.xml", configFile, false, FileAccess.Read))
+                {
+                    Paths.ConfigFileName = new FileInfo(configFile).FullName;
                 }
             }
 
-            if( MonoCompat.IsMono ) {
-                Logger.Log( LogType.Debug, "Running on Mono {0}", MonoCompat.MonoVersion );
+            if (MonoCompat.IsMono)
+            {
+                Logger.Log(LogType.Debug, "Running on Mono {0}", MonoCompat.MonoVersion);
             }
 
 #if DEBUG_EVENTS
             Logger.PrepareEventTracing();
 #endif
 
-            Logger.Log( LogType.Debug, "Working directory: {0}", Directory.GetCurrentDirectory() );
-            Logger.Log( LogType.Debug, "Log path: {0}", Path.GetFullPath( Paths.LogPath ) );
-            Logger.Log( LogType.Debug, "Map path: {0}", Path.GetFullPath( Paths.MapPath ) );
-            Logger.Log( LogType.Debug, "Config path: {0}", Path.GetFullPath( Paths.ConfigFileName ) );
+            Logger.Log(LogType.Debug, "Working directory: {0}", Directory.GetCurrentDirectory());
+            Logger.Log(LogType.Debug, "Log path: {0}", Path.GetFullPath(Paths.LogPath));
+            Logger.Log(LogType.Debug, "Map path: {0}", Path.GetFullPath(Paths.MapPath));
+            Logger.Log(LogType.Debug, "Config path: {0}", Path.GetFullPath(Paths.ConfigFileName));
 
             libraryInitialized = true;
         }
@@ -320,6 +332,9 @@ namespace fCraft {
             // load player DB
             PlayerDB.Load();
             IPBanList.Load();
+
+            //define fallbacks
+            Map.DefineFallbackBlocks();
 
             // prepare the list of commands
             CommandManager.Init();
@@ -931,19 +946,26 @@ namespace fCraft {
             gcRequested = true;
         }
 
+        /// <summary>
+        /// Checks if the verification key from the player ID packet (client -> server) matches the server's salt
+        /// </summary>
         public static bool VerifyName( [NotNull] string name, [NotNull] string hash, [NotNull] string salt ) 
         {
             if( name == null ) throw new ArgumentNullException( "name" );
             if( hash == null ) throw new ArgumentNullException( "hash" );
             if( salt == null ) throw new ArgumentNullException( "salt" );
+            Logger.LogToConsole("n: " + name + " ver: " + hash + " s: " + salt);
             while( hash.Length < 32 ) {
                 hash = "0" + hash;
             }
             MD5 hasher = MD5.Create();
             StringBuilder sb = new StringBuilder( 32 );
-            foreach( byte b in hasher.ComputeHash( Encoding.ASCII.GetBytes( salt + name ) ) ) {
+            foreach( byte b in hasher.ComputeHash( Encoding.ASCII.GetBytes( salt + name ) ) ) 
+            {
                 sb.AppendFormat( "{0:x2}", b );
             }
+
+            Logger.LogToConsole("h: " + sb.ToString() + " ver: " + hash + "  CC: " + (salt == Heartbeat.Salt2));
             return sb.ToString().Equals( hash, StringComparison.OrdinalIgnoreCase );
         }
 

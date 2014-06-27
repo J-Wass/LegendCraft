@@ -282,14 +282,10 @@ THE SOFTWARE.*/
                         break;
                     }
                 case "server":
-                    {
-                        ServerInfoHandler(player, new Command("/sinfo"));
-                        break;
-                    }
                 case "software":
                 case "version":
                     {
-                        ChatCommands.CreditsHandler(player, new Command("/credits"));
+                        ServerInfoHandler(player, new Command("/sinfo"));
                         break;
                     }
                 case "rank":

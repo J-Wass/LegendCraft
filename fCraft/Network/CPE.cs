@@ -311,10 +311,10 @@ namespace fCraft
     public sealed partial class Map
     {
         public const Block MaxCustomBlockType = Block.StoneBrick;
-        readonly static Block[] FallbackBlocks = new Block[256];
+        public readonly static Block[] FallbackBlocks = new Block[256];
 
-
-        static void DefineFallbackBlocks()
+        //fallback for all blocks, blocks 49 (obsidian) and under (non cpe blocks) fallback to themselves
+        public static void DefineFallbackBlocks()
         {
             for (int i = 0; i <= (int)Block.Obsidian; i++)
             {
@@ -342,12 +342,6 @@ namespace fCraft
         public static Block GetFallbackBlock(Block block)
         {
             return FallbackBlocks[(int)block];
-        }
-
-        public static byte GetFallbackBlock(byte bite)
-        {
-            int block = (int)bite;
-            return (byte)FallbackBlocks[block];
         }
 
         public const Block MaxLegalBlockType = Block.Obsidian;

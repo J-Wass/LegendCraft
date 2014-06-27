@@ -80,6 +80,9 @@ namespace fCraft
 
         /// <summary>Determines whether or not a player is using a CC compatable client.</summary>       
         public bool ClassiCube = false;
+
+        /// <summary>Determines whether or not a player is using a CPE compatable client.</summary>       
+        public bool CPE = false;
         
         /// <summary> Has a custom click distance set by the server </summary>
         public bool hasCustomClickDistance { get; set; }
@@ -118,6 +121,11 @@ namespace fCraft
         /// <summary> Last command called by the player. </summary>
         [CanBeNull]
         public Command LastCommand { get; private set; }
+
+        /// <summary>
+        /// Array of players spying on this player
+        /// </summary>
+        public List<Player> Spies { get; private set; }
 
 
         /// <summary> Plain version of the name (no formatting). </summary>      
@@ -422,6 +430,8 @@ namespace fCraft
         public void ParseMessage([NotNull] string rawMessage, bool fromConsole, bool sendMessage)
         {
             if (rawMessage == null) throw new ArgumentNullException("rawMessage");
+            if (rawMessage == null) throw new ArgumentNullException("fromConsole");
+            if (rawMessage == null) throw new ArgumentNullException("sendMessage");
             if (rawMessage.Equals("/nvm", StringComparison.OrdinalIgnoreCase))
             {
                 if (partialMessage != null)
@@ -517,6 +527,11 @@ namespace fCraft
                             {
                                 LastCommand = cmd;
                             }
+
+                            foreach (Player spy in Spies)
+                            {
+                                spy.Message("SPY - {0}: " + rawMessage);
+                            }
                         }
                     } break;
 
@@ -608,6 +623,10 @@ namespace fCraft
                             {
                                 Chat.SendPM(this, target, messageText);
                                 SendToSpectators("to {0}&F: {1}", target.ClassyName, messageText);
+                                foreach (Player spy in Spies)
+                                {
+                                    spy.Message("SPY - {0} to {1}: " + messageText, this, target);
+                                }
                             }
 
                             if (!CanSee(target))
@@ -1347,6 +1366,7 @@ namespace fCraft
             {
                 RevertBlockNow(coord);
             }
+
             #region CaptureTheFlag
             if (Info.placingBlueFlag)
             {
@@ -1788,7 +1808,7 @@ namespace fCraft
             }
             
             //check classicube blocks and convert if necessary
-            if (!ClassiCube && newBlock > Block.Obsidian) 
+            if (!CPE && newBlock > Block.Obsidian) 
             {
                 newBlock = Map.GetFallbackBlock(newBlock);
                 result = CanPlaceResult.Allowed;

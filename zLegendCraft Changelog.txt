@@ -1,17 +1,20 @@
 LegendCraft Changelog v2.4.0 (In progress)
-Add: LegendCraft WebPanel (unfinished)
+Add: Dual Heartbeat Support
 Add: CTF Gamemode
 Add: Bot AI
+Add: /Spy
 Add: MessageBlocks
 Add: /DoorList and /DoorCheck
 Change: ServerGUI expands much more fluidly, controls no longer overlap
-Change: LegendCraft now accepted fCraft Autorank XML scripts
+Change: LegendCraft now accepts fCraft Autorank XML scripts
 Change: Players can have multiple doors
 Change: Fixes to autorank.xml throwing errors when files are missing
 Change: Fixed bug where ServerGUI themes resulted in invisible text
 Change: General stability fixes
 Change: Updates to Helperbot
+Change: Bug fixes with the TAB player list
 Remove: LeBot (HelperBot taking over)
+Remove: /Credits
 
 LegendCraft Changelog v2.3.0
 Add: LegendCraft Webfront is now 500% better (thanks Liam Stanley)

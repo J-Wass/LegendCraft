@@ -133,7 +133,7 @@ namespace fCraft
             {
                 foreach (Player p in world_.Players)
                 {
-                    if (p.ClassiCube && Heartbeat.ClassiCube())
+                    if (p.CPE && Heartbeat.ClassiCube())
                     {
                         p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));//super hacky way to remove announcement, simply send a color code and call it a day
                     }
@@ -175,7 +175,7 @@ namespace fCraft
                         //send an announcement
                         p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&cLet the Games Begin!"));
 
-                        if (p.ClassiCube && Heartbeat.ClassiCube())
+                        if (p.CPE && Heartbeat.ClassiCube())
                         {
                             //set player's health
                             p.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f[&a--------&f]"));
@@ -380,7 +380,7 @@ namespace fCraft
                     p.entityChanged = true;
 
                     //reset all special messages
-                    if (p.ClassiCube && Heartbeat.ClassiCube())
+                    if (p.CPE && Heartbeat.ClassiCube())
                     {
                         p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));
                         p.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f"));

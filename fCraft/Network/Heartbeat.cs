@@ -50,8 +50,8 @@ namespace fCraft
         /// Known only to this server, heartbeat servers, and webpanel. </summary>
         public static string Salt { get; internal set; }
 
-        /// <summary> Second salt
-        /// used if server is running a dual heartbeat</summary>
+        /// <summary> Second salt.
+        /// Used if server is running a dual heartbeat</summary>
         public static string Salt2 { get; internal set; }
 
         // Dns lookup, to make sure that IPv4 is preferred for heartbeats
@@ -170,7 +170,7 @@ namespace fCraft
             {
                 return;
             }
-            minecraftNetRequest = CreateRequest(data.CreateUri());
+            minecraftNetRequest = CreateRequest(data.CreateUri(Salt2));
             var state = new HeartbeatRequestState(minecraftNetRequest, data, true);
             minecraftNetRequest.BeginGetResponse(ResponseCallback, state);
         }
@@ -182,7 +182,7 @@ namespace fCraft
             {
                 return;
             }
-            minecraftNetRequest = CreateRequest(data.CreateUri());
+            minecraftNetRequest = CreateRequest(data.CreateUri(Salt));
             var state = new HeartbeatRequestState(minecraftNetRequest, data, true);
             minecraftNetRequest.BeginGetResponse(ResponseCallback, state);
         }
@@ -429,12 +429,13 @@ namespace fCraft
         public int ProtocolVersion { get; set; }
         public Dictionary<string, string> CustomData { get; private set; }
 
-        public Uri CreateUri()
+        public Uri CreateUri(string salt_)
         {
             UriBuilder ub = new UriBuilder(HeartbeatUri);
             StringBuilder sb = new StringBuilder();
 
-            if (ConfigKey.HeartbeatUrl.GetString() == "ClassiCube.net")
+            //if we are sending to CC
+            if (salt_ == Salt2)
             {
                 sb.AppendFormat("public={0}&max={1}&users={2}&port={3}&software={7}&version={4}&salt={5}&name={6}",
                  IsPublic,
@@ -442,7 +443,7 @@ namespace fCraft
                  PlayerCount,
                  Port,
                  ProtocolVersion,
-                 Uri.EscapeDataString(Salt2),
+                 Uri.EscapeDataString(salt_),
                  Uri.EscapeDataString(ServerName),
                  "LegendCraft v" + Updater.LatestStable);
                 foreach (var pair in CustomData)
@@ -461,7 +462,7 @@ namespace fCraft
                                  PlayerCount,
                                  Port,
                                  ProtocolVersion,
-                                 Uri.EscapeDataString(Salt),
+                                 Uri.EscapeDataString(salt_),
                                  Uri.EscapeDataString(ServerName));
                 foreach (var pair in CustomData)
                 {

@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.IO;
 using fCraft.Events;
 using JetBrains.Annotations;
-using System.IO;
 
 namespace fCraft {
     /// <summary>
@@ -86,6 +86,7 @@ namespace fCraft {
             CommandManager.RegisterCommand(CdForceHold);
             CommandManager.RegisterCommand(CdGetBlock);
             //CommandManager.RegisterCommand(CdTPA);
+            CommandManager.RegisterCommand(CdSpy);
 
         }
         #region LegendCraft
@@ -108,6 +109,46 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
 
+
+        static readonly CommandDescriptor CdSpy = new CommandDescriptor
+        {
+            Name = "Spy",
+            Aliases = new[] { "NSA" },
+            IsConsoleSafe = true,
+            Category = CommandCategory.Moderation,
+            Permissions = new[] { Permission.Spectate },
+            Help = "&SReturns all commands and PMs for a player. Use /spy [player] to toggle spying.",
+            Usage = "&S/Spy [player]",
+            Handler = SpyHandler
+        };
+
+        private static void SpyHandler(Player player, Command cmd)
+        {
+            string p = cmd.Next();
+            if (String.IsNullOrEmpty(p))
+            {
+                player.Message("Usage is /spy [player]! Use /spy [player] to toggle spying.");
+                return;
+            }
+
+            Player pPlayer = Server.FindPlayerOrPrintMatches(player, p, true, true);
+            if (pPlayer == null)
+            {
+                // no one found
+                return;
+            }
+
+            if (pPlayer.Spies.Contains(player))
+            {
+                player.Message("You are no longer spying on {0}!", p);
+                pPlayer.Spies.Remove(player);
+            }
+            else
+            {
+                player.Message("Now spying on {0}! Use /spy {0} to stop spying on them.", p);
+                pPlayer.Spies.Add(player);
+            }
+        }
         static readonly CommandDescriptor CdGetBlock = new CommandDescriptor
         {
             Name = "GetBlock",
@@ -134,7 +175,7 @@ THE SOFTWARE.*/
                 return;
             }
 
-            if (!targetPlayer.ClassiCube)
+            if (!targetPlayer.CPE)
             {
                 player.Message("You can only use /GetBlock on ClassiCube players!");
             }
@@ -155,7 +196,7 @@ THE SOFTWARE.*/
 
         private static void FHHandler(Player player, Command cmd)
         {
-            if (!Heartbeat.ClassiCube() || !player.ClassiCube)
+            if (!Heartbeat.ClassiCube() || !player.CPE)
             {
                 player.Message("This is a ClassiCube only command!");
                 return;
@@ -173,7 +214,7 @@ THE SOFTWARE.*/
                 return;
             }
 
-            if (!p.ClassiCube)
+            if (!p.CPE)
             {
                 player.Message("You can only use /ForceHold on ClassiCube players!");
             }
@@ -215,7 +256,7 @@ THE SOFTWARE.*/
 
         private static void AnnounceHandler(Player player, Command cmd)
         {
-            if (!Heartbeat.ClassiCube() || !player.ClassiCube)
+            if (!Heartbeat.ClassiCube() || !player.CPE)
             {
                 player.Message("This is a ClassiCube only command!");
                 return;
@@ -262,7 +303,7 @@ THE SOFTWARE.*/
             Packet packet = PacketWriter.MakeSpecialMessage(100, message);
             foreach (Player p in targetPlayers)
             {
-                if (p.ClassiCube)
+                if (p.CPE)
                 {
                     p.Send(packet);
                 }
@@ -389,6 +430,11 @@ THE SOFTWARE.*/
 
         private static void SetClickHandler(Player player, Command cmd)
         {
+            if (!Heartbeat.ClassiCube())
+            {
+                player.Message("This command can only be used on ClassiCube server!");
+                return;
+            }
             string targetName = cmd.Next();
             if (String.IsNullOrEmpty(targetName))
             {
@@ -401,7 +447,7 @@ THE SOFTWARE.*/
                 player.MessageNoPlayer(targetName);
                 return;
             }
-            if (!target.ClassiCube)
+            if (!target.CPE)
             {
                 player.Message("You can only use /SetClickDistance on ClassiCube players!");
             }

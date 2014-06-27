@@ -1,6 +1,0 @@
-LegendCraft v2.4.0 Roadmap
-[]Finish adding in all CPE optionals
-[]Work on bots
-[]Capture the Flag
-[x]Seduce Women, Obtain Currency
-[]More to come
