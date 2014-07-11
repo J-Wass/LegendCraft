@@ -324,7 +324,7 @@ namespace fCraft
             FallbackBlocks[(int)Block.Rope] = Block.BrownMushroom;
             FallbackBlocks[(int)Block.Sandstone] = Block.Sand;
             FallbackBlocks[(int)Block.Snow] = Block.Air;
-            FallbackBlocks[(int)Block.Fire] = Block.StillLava;
+            FallbackBlocks[(int)Block.Fire] = Block.Lava;
             FallbackBlocks[(int)Block.LightPink] = Block.Pink;
             FallbackBlocks[(int)Block.DarkGreen] = Block.Green;
             FallbackBlocks[(int)Block.Brown] = Block.Dirt;

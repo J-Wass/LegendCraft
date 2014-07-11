@@ -134,7 +134,7 @@ THE SOFTWARE.*/
             Player pPlayer = Server.FindPlayerOrPrintMatches(player, p, true, true);
             if (pPlayer == null)
             {
-                // no one found
+                player.Message("{0} was not found!", p);
                 return;
             }
 
@@ -175,7 +175,7 @@ THE SOFTWARE.*/
                 return;
             }
 
-            if (!targetPlayer.CPE)
+            if (!targetPlayer.usesCPE)
             {
                 player.Message("You can only use /GetBlock on ClassiCube players!");
             }
@@ -196,7 +196,7 @@ THE SOFTWARE.*/
 
         private static void FHHandler(Player player, Command cmd)
         {
-            if (!Heartbeat.ClassiCube() || !player.CPE)
+            if (!Heartbeat.ClassiCube() || !player.usesCPE)
             {
                 player.Message("This is a ClassiCube only command!");
                 return;
@@ -214,7 +214,7 @@ THE SOFTWARE.*/
                 return;
             }
 
-            if (!p.CPE)
+            if (!p.usesCPE)
             {
                 player.Message("You can only use /ForceHold on ClassiCube players!");
             }
@@ -256,7 +256,7 @@ THE SOFTWARE.*/
 
         private static void AnnounceHandler(Player player, Command cmd)
         {
-            if (!Heartbeat.ClassiCube() || !player.CPE)
+            if (!Heartbeat.ClassiCube() || !player.usesCPE)
             {
                 player.Message("This is a ClassiCube only command!");
                 return;
@@ -303,7 +303,7 @@ THE SOFTWARE.*/
             Packet packet = PacketWriter.MakeSpecialMessage(100, message);
             foreach (Player p in targetPlayers)
             {
-                if (p.CPE)
+                if (p.usesCPE)
                 {
                     p.Send(packet);
                 }
@@ -447,7 +447,7 @@ THE SOFTWARE.*/
                 player.MessageNoPlayer(targetName);
                 return;
             }
-            if (!target.CPE)
+            if (!target.usesCPE)
             {
                 player.Message("You can only use /SetClickDistance on ClassiCube players!");
             }

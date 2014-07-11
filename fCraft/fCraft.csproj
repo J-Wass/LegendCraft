@@ -89,6 +89,9 @@
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <DocumentationFile>..\bin\Debug\fCraft.XML</DocumentationFile>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DEBUG_BLOCKDB|AnyCPU'">
+    <OutputPath>bin\DEBUG_BLOCKDB\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AStarPathFinder, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

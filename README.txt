@@ -1,4 +1,6 @@
-﻿Thank you for downloading LegendCraft, a custom Minecraft server based on fCraft and 800craft.
+﻿All bugs and glitches randomly found in the game are meant to happen, they add to the fun :D
+
+Thank you for downloading LegendCraft, a custom Minecraft server based on fCraft and 800craft.
 
 Special thanks to fragmer, for creating fCraft! Special thanks to Jonty800, GlennMR and LaoTszy for creating 800Craft!
 LegendCraft is a modified version of 800Craft. LegendCraft configGUIs and serverGUIs were moddeled after 800Craft's.

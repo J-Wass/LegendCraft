@@ -21,6 +21,8 @@ namespace fCraft {
         public World World { get; internal set; }
 
 
+
+
         YesNoAuto enabledState;
         public YesNoAuto EnabledState {
             get { return enabledState; }
@@ -488,7 +490,6 @@ namespace fCraft {
                 }
             }
         }
-
 
         public BlockDBEntry[] Lookup( Vector3I coords ) {
             if( !IsEnabled || !IsEnabledGlobally ) {

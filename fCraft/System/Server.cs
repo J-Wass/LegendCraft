@@ -502,8 +502,11 @@ namespace fCraft {
                 Scheduler.NewTask( ShowRandomAnnouncement ).RunForever( announcementInterval );
             }
 
+            //refresh blockDB every 3 minutes
+            Scheduler.NewTask(RefreshBlockDB).RunForever(TimeSpan.FromMinutes(3), TimeSpan.FromMinutes(3));
+
             // garbage collection
-            gcTask = Scheduler.NewTask( DoGC ).RunForever( GCInterval, TimeSpan.FromSeconds( 45 ) );
+            gcTask = Scheduler.NewTask(DoGC).RunForever(GCInterval, TimeSpan.FromSeconds(45));
             Heartbeat.Start();
 
 
@@ -913,6 +916,14 @@ namespace fCraft {
             }
         }
 
+        //refresh the blockDB
+        static void RefreshBlockDB(SchedulerTask aefsuyfb)
+        {
+            foreach (World w in WorldManager.Worlds.Where(w => w.BlockDB.IsEnabled))
+            {
+                w.BlockDB.Flush();
+            }
+        }
 
         // measures CPU usage
         public static bool IsMonitoringCPUUsage { get; private set; }
@@ -954,7 +965,6 @@ namespace fCraft {
             if( name == null ) throw new ArgumentNullException( "name" );
             if( hash == null ) throw new ArgumentNullException( "hash" );
             if( salt == null ) throw new ArgumentNullException( "salt" );
-            Logger.LogToConsole("n: " + name + " ver: " + hash + " s: " + salt);
             while( hash.Length < 32 ) {
                 hash = "0" + hash;
             }
@@ -964,8 +974,6 @@ namespace fCraft {
             {
                 sb.AppendFormat( "{0:x2}", b );
             }
-
-            Logger.LogToConsole("h: " + sb.ToString() + " ver: " + hash + "  CC: " + (salt == Heartbeat.Salt2));
             return sb.ToString().Equals( hash, StringComparison.OrdinalIgnoreCase );
         }
 

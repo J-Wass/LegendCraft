@@ -82,7 +82,7 @@ namespace fCraft
         public bool ClassiCube = false;
 
         /// <summary>Determines whether or not a player is using a CPE compatable client.</summary>       
-        public bool CPE = false;
+        public bool usesCPE = false;
         
         /// <summary> Has a custom click distance set by the server </summary>
         public bool hasCustomClickDistance { get; set; }
@@ -102,6 +102,7 @@ namespace fCraft
             {
                 World world = World;
                 if (world == null) PlayerOpException.ThrowNoWorld(this);
+
                 return world.LoadMap();
             }
         }
@@ -123,7 +124,7 @@ namespace fCraft
         public Command LastCommand { get; private set; }
 
         /// <summary>
-        /// Array of players spying on this player
+        /// List of players spying on this player
         /// </summary>
         public List<Player> Spies { get; private set; }
 
@@ -523,6 +524,7 @@ namespace fCraft
                             }
                             SendToSpectators(cmd.RawMessage);
                             CommandManager.ParseCommand(this, cmd, fromConsole);
+
                             if (!commandDescriptor.NotRepeatable)
                             {
                                 LastCommand = cmd;
@@ -1670,7 +1672,7 @@ namespace fCraft
         /// To avoid threading issues, only use this from this player's IoThread. </summary>
         void RevertBlockNow(Vector3I coords)
         {
-            SendNow(PacketWriter.MakeSetBlock(coords, WorldMap.GetBlock(coords)));
+            SendNow(PacketWriter.MakeSetBlock(coords, usesCPE ? WorldMap.GetBlock(coords) : Map.GetFallbackBlock(WorldMap.GetBlock(coords))));
         }
 
 
@@ -1808,7 +1810,7 @@ namespace fCraft
             }
             
             //check classicube blocks and convert if necessary
-            if (!CPE && newBlock > Block.Obsidian) 
+            if (!usesCPE && newBlock > Block.Obsidian) 
             {
                 newBlock = Map.GetFallbackBlock(newBlock);
                 result = CanPlaceResult.Allowed;

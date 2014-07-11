@@ -1,4 +1,5 @@
-﻿
+﻿All bugs and glitches randomly found in the game are meant to happen, they add to the fun :D
+
 #LegendCraft
 ![LegendCraft](http://i.imgur.com/YNPR6p0.png "Ya it's a logo deal with it")<br />
 

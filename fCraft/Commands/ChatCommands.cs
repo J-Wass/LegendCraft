@@ -183,7 +183,7 @@ THE SOFTWARE.*/
             Permissions = new Permission[] { Permission.Chat },
             IsConsoleSafe = false,
             Usage = "/StopWatch [Start / Stop / Time / Help]",
-            Help = "Allows you to vote.",
+            Help = "Stopwatch management.",
             Handler = StopWatchHandler,
         };
 

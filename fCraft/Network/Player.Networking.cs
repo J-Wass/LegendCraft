@@ -17,6 +17,7 @@ using fCraft.AutoRank;
 using fCraft.Drawing;
 using fCraft.Events;
 using fCraft.MapConversion;
+using System.Runtime;
 using JetBrains.Annotations;
 
 namespace fCraft
@@ -24,7 +25,6 @@ namespace fCraft
     /// <summary> Represents a connection to a Minecraft client. Handles low-level interactions (e.g. networking). </summary>
     public sealed partial class Player
     {
-
         public static int SocketTimeout { get; set; }
         public static bool RelayAllUpdates { get; set; }
         const int SleepDelay = 5; // milliseconds
@@ -361,6 +361,10 @@ namespace fCraft
             {
                 throw;
             }
+            catch (NullReferenceException)
+            {
+                //lol
+            }
             catch (Exception ex)
             {
                 Logger.LogAndReportCrash("Error while parsing player's message", "LegendCraft", ex, false);
@@ -377,7 +381,7 @@ namespace fCraft
         {
             BytesReceived += 10;
             byte me = reader.ReadByte();
-            if (CPE)
+            if (usesCPE)
             {
                 try
                 {
@@ -655,7 +659,7 @@ namespace fCraft
             ClassiCube = Server.VerifyName(givenName, verificationKey, Heartbeat.Salt2);          
             
             byte magicNum = reader.ReadByte(); //for CPE check (previously unused)
-            CPE = (magicNum == 0x42);
+            usesCPE = (magicNum == 0x42);
             Skinname = givenName;
             BytesReceived += 131;
 
@@ -663,7 +667,7 @@ namespace fCraft
             if (ClassiCube)
             {
                 givenName += "+";
-                Logger.Log(LogType.SystemActivity, "ClassiCube user connecting. Name changed to " + givenName + "+");
+                Logger.Log(LogType.SystemActivity, "ClassiCube user connecting. Name changed to " + givenName);
             }
 
             // Check name for nonstandard characters
@@ -951,7 +955,7 @@ namespace fCraft
             string motd;
             if (ConfigKey.WoMEnableEnvExtensions.Enabled())
             {
-                if (CPE)
+                if (usesCPE)
                 {
                     if (!startingWorld.Hax)
                     {
@@ -983,7 +987,7 @@ namespace fCraft
             bool firstTime = (Info.TimesVisited == 1);
 
             //update fallback blocks for non CPE users
-            if (!CPE)
+            /*if (!CPE)
             {
                 Map newMap = startingWorld.Map;
                 for (int i = 0; i < newMap.Blocks.Length; i++)
@@ -994,7 +998,7 @@ namespace fCraft
                     }
                 }
                 startingWorld.Map = newMap;
-            }
+            }*/
 
             if (!JoinWorldNow(startingWorld, true, WorldChangeReason.FirstWorld))
             {
@@ -1270,7 +1274,7 @@ namespace fCraft
             if (newWorld == null) throw new ArgumentNullException("newWorld");
 
             //update fallback blocks for non CPE users
-            if (!CPE)
+            if (!usesCPE)
             {
                 Map newMap = newWorld.Map;
                 for (int i = 0; i < newMap.Blocks.Length; i++)
@@ -1302,7 +1306,7 @@ namespace fCraft
             }
 
             //update fallback blocks for non CPE users
-            if (!CPE)
+            if (!usesCPE)
             {
                 Map newMap = newWorld.Map;
                 for (int i = 0; i < newMap.Blocks.Length; i++)
@@ -1338,20 +1342,6 @@ namespace fCraft
                                                      "Use Player.JoinWorld instead.");
             }
 
-            //update fallback blocks for non CPE users
-            if (!CPE)
-            {
-                Map newMap = newWorld.Map;
-                for (int i = 0; i < newMap.Blocks.Length; i++)
-                {
-                    if (newMap.Blocks[i] > 49)
-                    {
-                        newMap.Blocks[i] = (byte)Map.GetFallbackBlock((Block)Enum.GetValues(typeof(Block)).GetValue(newMap.Blocks[i]));
-                    }
-                }
-                newWorld.Map = newMap;
-            }
-
             string textLine1 = ConfigKey.ServerName.GetString();
             string textLine2;
 
@@ -1366,7 +1356,7 @@ namespace fCraft
                     textLine2 = "cfg=" + Server.ExternalIP + ":" + Server.Port + "/" + newWorld.Name;
                 }
             }
-            else if (CPE && ConfigKey.WoMEnableEnvExtensions.Enabled() && Heartbeat.ClassiCube())
+            else if (usesCPE && ConfigKey.WoMEnableEnvExtensions.Enabled() && Heartbeat.ClassiCube())
             {
                 if (!newWorld.Hax)
                 {
@@ -1453,11 +1443,19 @@ namespace fCraft
             byte[] buffer = new byte[1024];
             int mapBytesSent = 0;
             byte[] blockData;
+         
             using (MemoryStream mapStream = new MemoryStream())
             {
-                map.GetCompressedCopy(mapStream, true);
+                using (GZipStream compressor = new GZipStream(mapStream, CompressionMode.Compress))
+                {
+                    int convertedBlockCount = IPAddress.HostToNetworkOrder(map.Volume);
+                    compressor.Write(BitConverter.GetBytes(convertedBlockCount), 0, 4);
+                    byte[] rawData = (usesCPE ? map.Blocks : map.GetFallbackMap());
+                    compressor.Write(rawData, 0, rawData.Length);
+                }
                 blockData = mapStream.ToArray();
             }
+
             Logger.Log(LogType.Debug,
                         "Player.JoinWorldNow: Sending compressed map ({0} bytes) to {1}.",
                         blockData.Length, Name);
@@ -1563,7 +1561,7 @@ namespace fCraft
             Info.placingRedFlag = false;
 
             //reset all special messages
-            if (CPE)
+            if (usesCPE)
             {
                 Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));
                 Send(PacketWriter.MakeSpecialMessage((byte)1, "&f"));
@@ -1572,7 +1570,7 @@ namespace fCraft
 
 
 
-            if (Heartbeat.ClassiCube() && CPE)
+            if (Heartbeat.ClassiCube() && usesCPE)
             {
                 //update mapedit values
                 //Packet envSetMapAppearance = PacketWriter.MakeEnvSetMapAppearance(World.textureURL, World.sideBlock, World.edgeBlock, World.sideLevel);
@@ -1597,7 +1595,7 @@ namespace fCraft
                     if (bot.World == World)
                     {
                         Send(PacketWriter.MakeAddEntity(bot.ID, bot.Name, bot.Position));
-                        if (bot.Model != "humanoid" && CPE)
+                        if (bot.Model != "humanoid" && usesCPE)
                         {
                             Send(PacketWriter.MakeChangeModel((byte)bot.ID, bot.Model));
                         }
@@ -1903,7 +1901,7 @@ namespace fCraft
                     entity.MarkedForRetention = true;
                    
                     //update player models
-                    if (CPE)
+                    if (usesCPE)
                     {
                         Send(PacketWriter.MakeChangeModel((byte)entity.Id, otherPlayer.Model));
                     }
@@ -1989,7 +1987,7 @@ namespace fCraft
                 var pos = new VisibleEntity(newPos, freePlayerIDs.Pop(), player.Info.Rank);
                 entities.Add(player, pos);
                 SendNow(PacketWriter.MakeAddEntity(entities[player].Id, player.Info.Rank.Color + player.Skinname, newPos));
-                if (CPE && Heartbeat.ClassiCube())
+                if (usesCPE && Heartbeat.ClassiCube())
                 {
                     SendNow(PacketWriter.MakeExtAddEntity((byte)entities[player].Id, player.ListName, player.Skinname));
                 }
@@ -2020,9 +2018,9 @@ namespace fCraft
             if (entity == null) throw new ArgumentNullException("entity");
             if (player == null) throw new ArgumentNullException("player");
             SendNow(PacketWriter.MakeRemoveEntity(entity.Id));
-            if (CPE && Heartbeat.ClassiCube())
+            if (usesCPE && Heartbeat.ClassiCube())
                 SendNow(PacketWriter.MakeExtRemovePlayerName((short)entity.Id));
-            if (CPE && Heartbeat.ClassiCube())
+            if (usesCPE && Heartbeat.ClassiCube())
             {
                 if (player.iName == null)
                     SendNow(PacketWriter.MakeExtAddEntity((byte)entities[player].Id, player.Skinname, player.Name));

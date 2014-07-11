@@ -322,8 +322,8 @@ namespace fCraft {
                     Packet packet = PacketWriter.MakeSetBlock( update.X, update.Y, update.Z, update.BlockType );
                     Packet packet2 = PacketWriter.MakeSetBlock(update.X, update.Y, update.Z, Map.GetFallbackBlock(update.BlockType));
 
-                    World.Players.Where(p => p.CPE).SendLowPriority(update.Origin, packet);
-                    World.Players.Where(p => !p.CPE).SendLowPriority(update.Origin, packet2);
+                    World.Players.Where(p => p.usesCPE).SendLowPriority(update.Origin, packet);
+                    World.Players.Where(p => !p.usesCPE).SendLowPriority(update.Origin, packet2);
                 }
                 packetsSent++;
             }
