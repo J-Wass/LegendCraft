@@ -84,6 +84,12 @@ namespace fCraft
             TicksToUnixEpoch = UnixEpoch.Ticks;
         }
 
+        /// <summary> Creates a DateTime from a Utc Unix Timestamp. </summary>
+        public static DateTime TryParseDateTime(long timestamp)
+        {
+            return UnixEpoch.AddSeconds(timestamp);
+        }
+
 
         #region To Unix Time
 

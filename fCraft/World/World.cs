@@ -547,7 +547,7 @@ namespace fCraft {
                 newWorld.Map = newMap;
                 newWorld.NeverUnload = neverUnload;
                 WorldManager.ReplaceWorld( this, newWorld );
-                lock( BlockDB.SyncRoot ) {
+                lock( SyncRoot ) {
                     BlockDB.Clear();
                     BlockDB.World = newWorld;
                 }

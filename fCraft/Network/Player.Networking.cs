@@ -752,7 +752,7 @@ namespace fCraft
             ResetAllBinds();
 
             //if the user is not from classicube, go ahead and verify for minecraft
-            if (!ClassiCube && Server.VerifyName(packetPlayerName, verificationKey, Heartbeat.Salt))
+            if ((!ClassiCube && Server.VerifyName(packetPlayerName, verificationKey, Heartbeat.Salt)) || ClassiCube && Server.VerifyName(packetPlayerName, verificationKey, Heartbeat.Salt2))
             {
                 IsVerified = true;
                 // update capitalization of player's name

@@ -123,11 +123,6 @@ namespace fCraft
         [CanBeNull]
         public Command LastCommand { get; private set; }
 
-        /// <summary>
-        /// List of players spying on this player
-        /// </summary>
-        public List<Player> Spies { get; private set; }
-
 
         /// <summary> Plain version of the name (no formatting). </summary>      
         [NotNull]
@@ -523,16 +518,26 @@ namespace fCraft
                                 selectionRepeatCommand = cmd;
                             }
                             SendToSpectators(cmd.RawMessage);
-                            CommandManager.ParseCommand(this, cmd, fromConsole);
+                            try
+                            {
+                                CommandManager.ParseCommand(this, cmd, fromConsole);
+                            }
+                            catch (Exception e) 
+                            {
+                                if (e is NullReferenceException)
+                                {
+                                    //chill
+                                }
+                                else
+                                {
+                                    //panic
+                                    Logger.Log(LogType.Error, e.Message);
+                                }
+                            }
 
                             if (!commandDescriptor.NotRepeatable)
                             {
                                 LastCommand = cmd;
-                            }
-
-                            foreach (Player spy in Spies)
-                            {
-                                spy.Message("SPY - {0}: " + rawMessage);
                             }
                         }
                     } break;
@@ -625,10 +630,6 @@ namespace fCraft
                             {
                                 Chat.SendPM(this, target, messageText);
                                 SendToSpectators("to {0}&F: {1}", target.ClassyName, messageText);
-                                foreach (Player spy in Spies)
-                                {
-                                    spy.Message("SPY - {0} to {1}: " + messageText, this, target);
-                                }
                             }
 
                             if (!CanSee(target))

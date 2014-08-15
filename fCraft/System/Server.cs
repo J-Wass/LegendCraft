@@ -1,4 +1,5 @@
 ﻿// Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
+//Modified LegendCraft Team
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -502,9 +503,6 @@ namespace fCraft {
                 Scheduler.NewTask( ShowRandomAnnouncement ).RunForever( announcementInterval );
             }
 
-            //refresh blockDB every 3 minutes
-            Scheduler.NewTask(RefreshBlockDB).RunForever(TimeSpan.FromMinutes(3), TimeSpan.FromMinutes(3));
-
             // garbage collection
             gcTask = Scheduler.NewTask(DoGC).RunForever(GCInterval, TimeSpan.FromSeconds(45));
             Heartbeat.Start();
@@ -606,16 +604,6 @@ namespace fCraft {
 
                 // kill IRC bot
                 IRC.Disconnect();
-
-                if( WorldManager.Worlds != null ) {
-                    lock( WorldManager.SyncRoot ) {
-                        // unload all worlds (includes saving)
-                        foreach( World world in WorldManager.Worlds ) {
-                            if( world.BlockDB.IsEnabled ) world.BlockDB.Flush();
-                            world.SaveMap();
-                        }
-                    }
-                }
 
                 if (Server.TempBans.Count() > 0)
                 {
@@ -913,15 +901,6 @@ namespace fCraft {
             if( line.Length == 0 ) return;
             foreach( Player player in Players.Where( player => player.World != null ) ) {
                 player.Message( "&R" + ReplaceTextKeywords( player, line ) );
-            }
-        }
-
-        //refresh the blockDB
-        static void RefreshBlockDB(SchedulerTask aefsuyfb)
-        {
-            foreach (World w in WorldManager.Worlds.Where(w => w.BlockDB.IsEnabled))
-            {
-                w.BlockDB.Flush();
             }
         }
 

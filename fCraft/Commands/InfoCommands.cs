@@ -339,13 +339,6 @@ THE SOFTWARE.*/
                     }
                     break;
                 }
-
-                case "block":
-                case "blocks":
-                {
-                    WorldCommands.BlockInfoHandler(player, new Command("/b"));
-                    break;
-                }
                 case "help":
                 case "about":
                 {

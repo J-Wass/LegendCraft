@@ -105,7 +105,7 @@ namespace fCraft {
 
             if( descriptor.Aliases != null ) {
                 if( descriptor.Aliases.Any( alias => Commands.ContainsKey( alias ) ) ) {
-                    throw new CommandRegistrationException( "One of the aliases for \"{0}\" is using the name of an already-defined command." );
+                    throw new CommandRegistrationException( "One of the aliases for \"{0}\" is using the name of an already-defined command.", descriptor.ToString() );
                 }
             }
 

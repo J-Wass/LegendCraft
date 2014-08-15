@@ -339,38 +339,31 @@ namespace fCraft
         }
 
 
-        /// <summary> Strips all ampersand color codes, and unescapes doubled-up ampersands. </summary>
-        public static string StripColors([NotNull] string input)
+        /// <summary> Strips Minecraft color codes from a given string.
+        /// Removes all ampersand-character sequences, including standard, fCraft-specific color codes, and newline codes.
+        /// Does not remove percent-color-codes. </summary>
+        /// <param name="message"> String to process. </param>
+        /// <returns> A processed string. </returns>
+        /// <exception cref="ArgumentNullException"> message is null. </exception>
+        [NotNull]
+        public static string StripColors([NotNull] string message)
         {
-            if (input == null) throw new ArgumentNullException("input");
-            if (input.IndexOf('&') == -1)
+            if (message == null) throw new ArgumentNullException("message");
+            int start = message.IndexOf('&');
+            if (start == -1)
             {
-                return input;
+                return message;
             }
-            else
+            int lastInsert = 0;
+            StringBuilder output = new StringBuilder(message.Length);
+            while (start != -1)
             {
-                StringBuilder output = new StringBuilder(input.Length);
-                for (int i = 0; i < input.Length; i++)
-                {
-                    if (input[i] == '&')
-                    {
-                        if (i == input.Length - 1)
-                        {
-                            break;
-                        }
-                        else if (input[i + 1] == '&')
-                        {
-                            output.Append('&');
-                        }
-                        i++;
-                    }
-                    else
-                    {
-                        output.Append(input[i]);
-                    }
-                }
-                return output.ToString();
+                output.Append(message, lastInsert, start - lastInsert);
+                lastInsert = Math.Min(start + 2, message.Length);
+                start = message.IndexOf('&', lastInsert);
             }
+            output.Append(message, lastInsert, message.Length - lastInsert);
+            return output.ToString();
         }
 
 

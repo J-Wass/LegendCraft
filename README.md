@@ -132,7 +132,7 @@ or any other files from Minecraft... neither does 800Craft or LegendCraft.
 ##Credits 
 
 LegendCraft was developed by LeChosenOne, and DingusBungus <br />
--With code contribution by Jonty800(who lifts) and Eeyle.
+-With code contribution by fragmer (the great), Jonty800 (who lifts) and Eeyle (who dissappeared randomly).
 
 LegendCraft webend was developed by Liam Stanley <br />
 

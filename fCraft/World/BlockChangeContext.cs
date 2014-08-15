@@ -1,10 +1,14 @@
-﻿// Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
+﻿// Copyright 2009-2013 Matvei Stefarov <me@matvei.org>
 using System;
 
-namespace fCraft {
+namespace fCraft
+{
+
     /// <summary> Context of the block change. Multiple flags can be combined. </summary>
     [Flags]
-    public enum BlockChangeContext { // Backed by Int32.
+    public enum BlockChangeContext
+    { // Backed by Int32.
+
         /// <summary> Default/unknown context. </summary>
         Unknown = 0,
 
@@ -35,10 +39,22 @@ namespace fCraft {
         /// <summary> Block was filled (using /fill2d or /fill3d). </summary>
         Filled = 256,
 
-        /// <summary> Portals </summary>
-        Portal = 512,
+        /// <summary> Redone, opposite of UndoneSelf/UndoneOther </summary>
+        Redone = 512,
 
-        Explosion = 1024,
-        Physics = 2048
+        /// <summary> A player-made portal </summary>
+        Portal = 1024,
+
+        /// <summary> Block modified by physics </summary>
+        Physics = 2048,
+
+        /// <summary> A player-made door</summary>
+        Door = 4096,
+
+        /// <summary> Combination of Manual and Replaced (as used by /Paint). </summary>
+        PaintedCombo = Manual | Replaced,
+
+        /// <summary> Combination of Drawn, UndoneSelf, and Redone (as used by /Redo). </summary>
+        RedoneCombo = Drawn | UndoneSelf | Redone
     }
 }

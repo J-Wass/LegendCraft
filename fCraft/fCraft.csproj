@@ -87,10 +87,12 @@
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
-    <DocumentationFile>..\bin\Debug\fCraft.XML</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DEBUG_BLOCKDB|AnyCPU'">
     <OutputPath>bin\DEBUG_BLOCKDB\</OutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AStarPathFinder, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -145,6 +147,7 @@
     <Compile Include="Commands\ModerationCommands.cs" />
     <Compile Include="Commands\MaintenanceCommands.cs" />
     <Compile Include="Commands\ZoneCommands.cs" />
+    <Compile Include="Drawing\DrawOps\BlockDBDrawOperation.cs" />
     <Compile Include="Drawing\DrawOps\CylinderDrawOperation.cs" />
     <Compile Include="Drawing\DrawOps\Maze.cs" />
     <Compile Include="Drawing\DrawOps\MazeCuboidDrawOperation.cs" />
@@ -238,6 +241,7 @@
     <Compile Include="Utils\Paths.cs" />
     <Compile Include="System\Scheduler.cs" />
     <Compile Include="Games\PlayerProximityTracker.cs" />
+    <Compile Include="Utils\RWLSExtension.cs" />
     <Compile Include="Utils\Vector3F.cs" />
     <Compile Include="Commands\CommandDescriptor.cs" />
     <Compile Include="Commands\WorldCommands.cs" />
@@ -268,6 +272,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\Trie.cs" />
     <Compile Include="World\Block.cs" />
+    <Compile Include="World\BlockDBSearchType.cs" />
     <Compile Include="World\BlockUpdate.cs" />
     <Compile Include="World\Forester.cs" />
     <Compile Include="World\Map.cs" />

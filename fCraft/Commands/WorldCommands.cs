@@ -3,16 +3,17 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using fCraft.MapConversion;
-using JetBrains.Annotations;
-using fCraft.Drawing;
-using fCraft.Portals;
 using ServiceStack.Text;
 using System.Text;
 using System.Threading;
 using System.Diagnostics;
 using System.Media;
+using JetBrains.Annotations;
+using fCraft.MapConversion;
+using fCraft.Drawing;
+using fCraft.Portals;
 using fCraft.Events;
+
 
 namespace fCraft
 {
@@ -1255,6 +1256,7 @@ THE SOFTWARE.*/
                             portalNames[i] = ((Portal)player.World.Portals[i]).Name;
                         }
 
+                        
                         output.Append(portalNames.JoinToString(", "));
 
                         player.Message(output.ToString());
@@ -2134,7 +2136,7 @@ THE SOFTWARE.*/
             if (world == null) return;
             BlockDB db = world.BlockDB;
 
-            lock (db.SyncRoot)
+            lock (world.SyncRoot)
             {
                 string op = cmd.Next();
                 if (op == null)
@@ -2488,12 +2490,11 @@ THE SOFTWARE.*/
             }
         }
 
-        #endregion
-
+        #endregion     
 
         #region BlockInfo
 
-        static readonly CommandDescriptor CdBlockInfo = new CommandDescriptor
+        private static readonly CommandDescriptor CdBlockInfo = new CommandDescriptor
         {
             Name = "BInfo",
             Category = CommandCategory.World,
@@ -2505,10 +2506,11 @@ THE SOFTWARE.*/
             Handler = BlockInfoHandler
         };
 
-        public static void BlockInfoHandler(Player player, Command cmd)
+        private static void BlockInfoHandler(Player player, Command cmd)
         {
             World playerWorld = player.World;
-            if (playerWorld == null) PlayerOpException.ThrowNoWorld(player);
+            if (playerWorld == null)
+                PlayerOpException.ThrowNoWorld(player);
 
             // Make sure BlockDB is usable
             if (!BlockDB.IsEnabledGlobally)
@@ -2522,9 +2524,13 @@ THE SOFTWARE.*/
                 return;
             }
 
+            Logger.LogToConsole("1");
+
             int x, y, z;
             if (cmd.NextInt(out x) && cmd.NextInt(out y) && cmd.NextInt(out z))
             {
+                Logger.LogToConsole("1.5");
+
                 // If block coordinates are given, run the BlockDB query right away
                 if (cmd.HasNext)
                 {
@@ -2537,18 +2543,21 @@ THE SOFTWARE.*/
                 coords.Y = Math.Min(map.Length - 1, Math.Max(0, coords.Y));
                 coords.Z = Math.Min(map.Height - 1, Math.Max(0, coords.Z));
                 BlockInfoSelectionCallback(player, new[] { coords }, null);
-
             }
             else
             {
+                Logger.LogToConsole("2");
+
                 // Otherwise, start a selection
                 player.Message("BInfo: Click a block to look it up.");
                 player.SelectionStart(1, BlockInfoSelectionCallback, null, CdBlockInfo.Permissions);
             }
         }
 
-        static void BlockInfoSelectionCallback(Player player, Vector3I[] marks, object tag)
+        private static void BlockInfoSelectionCallback(Player player, Vector3I[] marks, object tag)
         {
+            Logger.LogToConsole("3");
+
             var args = new BlockInfoLookupArgs
             {
                 Player = player,
@@ -2556,37 +2565,39 @@ THE SOFTWARE.*/
                 Coordinate = marks[0]
             };
 
-            Scheduler.NewBackgroundTask(BlockInfoSchedulerCallback, args).RunOnce();
+            Scheduler.NewTask(BlockInfoSchedulerCallback, args).RunOnce();
         }
 
-
-        sealed class BlockInfoLookupArgs
+        private sealed class BlockInfoLookupArgs
         {
             public Player Player;
             public World World;
             public Vector3I Coordinate;
         }
 
-        const int MaxBlockChangesToList = 15;
-        static void BlockInfoSchedulerCallback(SchedulerTask task)
+        private const int MaxBlockChangesToList = 15;
+
+        private static void BlockInfoSchedulerCallback(SchedulerTask task)
         {
+
+            Logger.LogToConsole("4");
+
             BlockInfoLookupArgs args = (BlockInfoLookupArgs)task.UserState;
             if (!args.World.BlockDB.IsEnabled)
             {
                 args.Player.Message("&WBlockDB is disabled in this world.");
                 return;
             }
-            const int MaxBlockChangesToList = 15;
-            BlockDBEntry[] results = args.World.BlockDB.Lookup(args.Coordinate);
+            BlockDBEntry[] results = args.World.BlockDB.Lookup(MaxBlockChangesToList, args.Coordinate);
             if (results.Length > 0)
             {
-                int startIndex = Math.Max(0, results.Length - MaxBlockChangesToList);
+                Array.Reverse(results);
 
-                //loop through results at a given coord
-                for (int i = startIndex; i < results.Length; i++)
+                Logger.LogToConsole("5");
+
+                foreach (BlockDBEntry entry in results)
                 {
-                    BlockDBEntry entry = results[i];
-                    string date = DateTime.UtcNow.Subtract(DateTimeUtil.ToDateTime(entry.Timestamp)).ToMiniString();
+                    string date = DateTime.UtcNow.Subtract(DateTimeUtil.TryParseDateTime(entry.Timestamp)).ToMiniString();
 
                     PlayerInfo info = PlayerDB.FindPlayerInfoByID(entry.PlayerID);
                     string playerName;
@@ -2607,18 +2618,31 @@ THE SOFTWARE.*/
                         }
                     }
                     string contextString;
-                    if (entry.Context == BlockChangeContext.Manual)
+                    switch (entry.Context)
                     {
-                        contextString = "";
-                    }
-                    else if ((entry.Context & BlockChangeContext.Drawn) == BlockChangeContext.Drawn &&
-                      entry.Context != BlockChangeContext.Drawn)
-                    {
-                        contextString = " (" + (entry.Context & ~BlockChangeContext.Drawn) + ")";
-                    }
-                    else
-                    {
-                        contextString = " (" + entry.Context + ")";
+                        case BlockChangeContext.Manual:
+                            contextString = "";
+                            break;
+
+                        case BlockChangeContext.PaintedCombo:
+                            contextString = " (Painted)";
+                            break;
+
+                        case BlockChangeContext.RedoneCombo:
+                            contextString = " (Redone)";
+                            break;
+
+                        default:
+                            if ((entry.Context & BlockChangeContext.Drawn) == BlockChangeContext.Drawn &&
+                                entry.Context != BlockChangeContext.Drawn)
+                            {
+                                contextString = " (" + (entry.Context & ~BlockChangeContext.Drawn) + ")";
+                            }
+                            else
+                            {
+                                contextString = " (" + entry.Context + ")";
+                            }
+                            break;
                     }
 
                     if (entry.OldBlock == (byte)Block.Air)
@@ -2643,9 +2667,10 @@ THE SOFTWARE.*/
                 args.Player.Message("BlockInfo: No results for {0}",
                                      args.Coordinate);
             }
+            Logger.LogToConsole("6");
         }
 
-        #endregion
+        #endregion BlockInfo
 
 
         #region Env

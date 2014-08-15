@@ -274,6 +274,11 @@ namespace fCraft {
         Name,
 
         /// <summary> Permission to manage and edit bots.</summary>
-        Bots
+        Bots,
+
+        /// <summary>
+        /// Permission to completely undo a target player's block modifications.
+        /// </summary>
+        UndoAll
     }
 }

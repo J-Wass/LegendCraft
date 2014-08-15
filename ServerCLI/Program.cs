@@ -198,9 +198,21 @@ namespace fCraft.ServerCLI {
             {
                 //use json to determine data on this git project
                 JsonObject json = new JsonObject();
-                WebClient web = new WebClient();
 
-                json = JsonObject.Parse(web.DownloadString("https://api.github.com/repos/LeChosenOne/LegendCraft/tags"));
+                //get request to download source off git api
+                WebRequest request = WebRequest.Create("https://api.github.com/repos/LeChosenOne/LegendCraft/tags");
+                request.Credentials = CredentialCache.DefaultCredentials;
+                request.Method = "GET";
+
+                string text = "";
+                using (StreamReader reader = new StreamReader(request.GetResponse().GetResponseStream()))
+                {
+                    text = reader.ReadToEnd();
+                }
+
+                Logger.LogToConsole(text);
+
+                json = JsonObject.Parse(text);
 
                 //convert json data to dictionary
                 System.Collections.Generic.Dictionary<string, string> jsonData = json.ToDictionary();
@@ -208,6 +220,7 @@ namespace fCraft.ServerCLI {
                 //the first value added is always the version name since we are looking up json data on tags, so we have to check Last() to find the first added
                 var first = jsonData.Last();
                 string version = first.Value;
+                Logger.LogToConsole(version);
                 //update is available, prompt for a download
                 if (version != null && version != fCraft.Updater.LatestStable)
                 {

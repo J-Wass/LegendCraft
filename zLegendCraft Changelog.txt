@@ -2,7 +2,6 @@ LegendCraft Changelog v2.4.0 (In progress)
 Add: Dual Heartbeat Support
 Add: CTF Gamemode
 Add: Bot AI
-Add: /Spy
 Add: MessageBlocks
 Add: /DoorList and /DoorCheck
 Change: ServerGUI expands much more fluidly, controls no longer overlap
@@ -11,6 +10,7 @@ Change: Players can have multiple doors
 Change: Fixes to autorank.xml throwing errors when files are missing
 Change: Fixed bug where ServerGUI themes resulted in invisible text
 Change: General stability fixes
+Change: BLOCK INFO WAS BROKEN AND NOW IT ISN'T (due to infinate loop in background scheduler from color.cs)
 Change: Updates to Helperbot
 Change: Bug fixes with the TAB player list
 Remove: LeBot (HelperBot taking over)

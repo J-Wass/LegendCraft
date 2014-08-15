@@ -86,7 +86,6 @@ namespace fCraft {
             CommandManager.RegisterCommand(CdForceHold);
             CommandManager.RegisterCommand(CdGetBlock);
             //CommandManager.RegisterCommand(CdTPA);
-            CommandManager.RegisterCommand(CdSpy);
 
         }
         #region LegendCraft
@@ -109,46 +108,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
 
+        public static SchedulerTask task;
 
-        static readonly CommandDescriptor CdSpy = new CommandDescriptor
-        {
-            Name = "Spy",
-            Aliases = new[] { "NSA" },
-            IsConsoleSafe = true,
-            Category = CommandCategory.Moderation,
-            Permissions = new[] { Permission.Spectate },
-            Help = "&SReturns all commands and PMs for a player. Use /spy [player] to toggle spying.",
-            Usage = "&S/Spy [player]",
-            Handler = SpyHandler
-        };
-
-        private static void SpyHandler(Player player, Command cmd)
-        {
-            string p = cmd.Next();
-            if (String.IsNullOrEmpty(p))
-            {
-                player.Message("Usage is /spy [player]! Use /spy [player] to toggle spying.");
-                return;
-            }
-
-            Player pPlayer = Server.FindPlayerOrPrintMatches(player, p, true, true);
-            if (pPlayer == null)
-            {
-                player.Message("{0} was not found!", p);
-                return;
-            }
-
-            if (pPlayer.Spies.Contains(player))
-            {
-                player.Message("You are no longer spying on {0}!", p);
-                pPlayer.Spies.Remove(player);
-            }
-            else
-            {
-                player.Message("Now spying on {0}! Use /spy {0} to stop spying on them.", p);
-                pPlayer.Spies.Add(player);
-            }
-        }
         static readonly CommandDescriptor CdGetBlock = new CommandDescriptor
         {
             Name = "GetBlock",
@@ -243,18 +204,19 @@ THE SOFTWARE.*/
 
 
         }
+        static World resetWorld;
         static readonly CommandDescriptor CdAnnounce = new CommandDescriptor //todo: make this work lol
         {
             Name = "Announce",
             IsConsoleSafe = true,
             Category = CommandCategory.Moderation,
             Permissions = new[] { Permission.Say },
-            Help = "&SAnnounces a message at the top of every player's screen on a specified world. To send a server-wide announcement, use /Announce all [message].",
-            Usage = "&S/Announce [world] [message]",
+            Help = "&SAnnounces a message at the top of every player's screen on a specified world. To send a server-wide announcement, use /Announce all [message]. If duration is blank, announcement will last for 7 seconds.",
+            Usage = "&S/Announce [world] [message] [duration]",
             Handler = AnnounceHandler
         };
 
-        private static void AnnounceHandler(Player player, Command cmd)
+        public static void AnnounceHandler(Player player, Command cmd)
         {
             if (!Heartbeat.ClassiCube() || !player.usesCPE)
             {
@@ -300,6 +262,13 @@ THE SOFTWARE.*/
                 return;
             }
 
+            double reset = 7;
+            if (cmd.HasNext)
+            {
+                string resetStr = cmd.Next();
+                Double.TryParse(resetStr, out reset);
+            }
+
             Packet packet = PacketWriter.MakeSpecialMessage(100, message);
             foreach (Player p in targetPlayers)
             {
@@ -307,6 +276,22 @@ THE SOFTWARE.*/
                 {
                     p.Send(packet);
                 }
+            }
+
+            task.Stop();
+
+            resetWorld = player.World;
+            task = Scheduler.NewTask(resetAnnouncement);
+            task.RunOnce(TimeSpan.FromSeconds(reset));
+
+        }
+
+        //reset announcements
+        static void resetAnnouncement(SchedulerTask task)
+        {
+            foreach (Player p in resetWorld.Players)
+            {
+                p.Send(PacketWriter.MakeSpecialMessage(100, "&f"));
             }
         }
          static readonly CommandDescriptor CdAutoRank = new CommandDescriptor 
