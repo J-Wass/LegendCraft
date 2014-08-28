@@ -117,7 +117,7 @@ namespace fCraft.ServerGUI
             Logger.Log(LogType.SystemActivity, "Checking for LegendCraft updates...");
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://legend-craft.tk/download/latest/update");
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://raw.githubusercontent.com/LeChosenOne/LegendCraft/master/README.md");
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 
                 if (response.StatusCode == HttpStatusCode.OK)
@@ -128,7 +128,7 @@ namespace fCraft.ServerGUI
                         {
                             StreamReader streamReader = new StreamReader(stream);
                             string version = streamReader.ReadLine();
-
+                            Logger.LogToConsole(version);
                             //update is available, prompt for a download
                             if (version != null && version != fCraft.Updater.LatestStable)
                             {
@@ -687,24 +687,6 @@ namespace fCraft.ServerGUI
         
         #endregion
 
-        #region PreventClose
-        //should prevent users from accidently closing the ServerGUI X out window (taken out for now)
-
-        private void Mainform_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            switch (MessageBox.Show("Would you like to save the changes before exiting?", "Warning", MessageBoxButtons.YesNoCancel))
-            {
-                case DialogResult.Yes:
-                    return;
-
-                case DialogResult.Cancel:
-                    e.Cancel = true;
-                    return;
-            }
-        }
-
-        #endregion
-
         #region VoiceCommands
 
         private void bVoice_Click(object sender, EventArgs e)
@@ -827,12 +809,6 @@ namespace fCraft.ServerGUI
             }
         }
         #endregion
-
-        private void bReport_Click(object sender, EventArgs e)
-        {
-            var form = new Report();
-            form.Show();
-        }
 
     }
 }

@@ -2355,7 +2355,7 @@ THE SOFTWARE.*/
 
         #region UndoPlayer and UndoArea
 
-        struct UndoAreaCountArgs {
+        /*struct UndoAreaCountArgs {
             [NotNull]
             public PlayerInfo Target;
 
@@ -2379,7 +2379,7 @@ THE SOFTWARE.*/
 
             [NotNull]
             public BoundingBox Area;
-        }
+        }*/
 
         static readonly CommandDescriptor CdUndoArea = new CommandDescriptor {
             Name = "UndoArea",

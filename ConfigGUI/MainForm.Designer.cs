@@ -31,8 +31,8 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabs = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
             this.gBasic = new System.Windows.Forms.GroupBox();
@@ -41,7 +41,6 @@
             this.HeartBeatUrlComboBox = new System.Windows.Forms.ComboBox();
             this.nMaxPlayersPerWorld = new System.Windows.Forms.NumericUpDown();
             this.lMaxPlayersPerWorld = new System.Windows.Forms.Label();
-            this.bPortCheck = new System.Windows.Forms.Button();
             this.lPort = new System.Windows.Forms.Label();
             this.nPort = new System.Windows.Forms.NumericUpDown();
             this.cDefaultRank = new System.Windows.Forms.ComboBox();
@@ -59,7 +58,6 @@
             this.lPublic = new System.Windows.Forms.Label();
             this.lMaxPlayers = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.bReport = new System.Windows.Forms.Button();
             this.bWiki = new System.Windows.Forms.Button();
             this.bWeb = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -432,7 +430,6 @@
             this.gBasic.Controls.Add(this.HeartBeatUrlComboBox);
             this.gBasic.Controls.Add(this.nMaxPlayersPerWorld);
             this.gBasic.Controls.Add(this.lMaxPlayersPerWorld);
-            this.gBasic.Controls.Add(this.bPortCheck);
             this.gBasic.Controls.Add(this.lPort);
             this.gBasic.Controls.Add(this.nPort);
             this.gBasic.Controls.Add(this.cDefaultRank);
@@ -521,20 +518,6 @@
             this.lMaxPlayersPerWorld.Size = new System.Drawing.Size(135, 15);
             this.lMaxPlayersPerWorld.TabIndex = 11;
             this.lMaxPlayersPerWorld.Text = "Max players (per world)";
-            // 
-            // bPortCheck
-            // 
-            this.bPortCheck.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.bPortCheck.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
-            this.bPortCheck.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
-            this.bPortCheck.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.bPortCheck.Location = new System.Drawing.Point(204, 99);
-            this.bPortCheck.Name = "bPortCheck";
-            this.bPortCheck.Size = new System.Drawing.Size(68, 23);
-            this.bPortCheck.TabIndex = 8;
-            this.bPortCheck.Text = "Check";
-            this.bPortCheck.UseVisualStyleBackColor = false;
-            this.bPortCheck.Click += new System.EventHandler(this.bPortCheck_Click);
             // 
             // lPort
             // 
@@ -745,30 +728,14 @@
             // 
             this.groupBox4.AccessibleRole = System.Windows.Forms.AccessibleRole.Window;
             this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox4.Controls.Add(this.bReport);
             this.groupBox4.Controls.Add(this.bWiki);
             this.groupBox4.Controls.Add(this.bWeb);
             this.groupBox4.Location = new System.Drawing.Point(468, 306);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(126, 135);
+            this.groupBox4.Size = new System.Drawing.Size(126, 94);
             this.groupBox4.TabIndex = 5;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Contact Us";
-            // 
-            // bReport
-            // 
-            this.bReport.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.bReport.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
-            this.bReport.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
-            this.bReport.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.bReport.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bReport.Location = new System.Drawing.Point(7, 89);
-            this.bReport.Name = "bReport";
-            this.bReport.Size = new System.Drawing.Size(110, 23);
-            this.bReport.TabIndex = 2;
-            this.bReport.Text = "Report";
-            this.bReport.UseVisualStyleBackColor = false;
-            this.bReport.Click += new System.EventHandler(this.bReport_Click);
             // 
             // bWiki
             // 
@@ -776,7 +743,7 @@
             this.bWiki.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
             this.bWiki.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.bWiki.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.bWiki.Location = new System.Drawing.Point(6, 60);
+            this.bWiki.Location = new System.Drawing.Point(7, 60);
             this.bWiki.Name = "bWiki";
             this.bWiki.Size = new System.Drawing.Size(111, 23);
             this.bWiki.TabIndex = 1;
@@ -789,7 +756,7 @@
             this.bWeb.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
             this.bWeb.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.bWeb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.bWeb.Location = new System.Drawing.Point(7, 31);
+            this.bWeb.Location = new System.Drawing.Point(8, 31);
             this.bWeb.Name = "bWeb";
             this.bWeb.Size = new System.Drawing.Size(110, 23);
             this.bWeb.TabIndex = 1;
@@ -1404,8 +1371,8 @@
             this.dgvWorlds.MultiSelect = false;
             this.dgvWorlds.Name = "dgvWorlds";
             this.dgvWorlds.RowHeadersVisible = false;
-            dataGridViewCellStyle4.Padding = new System.Windows.Forms.Padding(0, 1, 0, 1);
-            this.dgvWorlds.RowsDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Padding = new System.Windows.Forms.Padding(0, 1, 0, 1);
+            this.dgvWorlds.RowsDefaultCellStyle = dataGridViewCellStyle2;
             this.dgvWorlds.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvWorlds.Size = new System.Drawing.Size(636, 325);
             this.dgvWorlds.TabIndex = 0;
@@ -1463,8 +1430,8 @@
             // dgvcBlockDB
             // 
             this.dgvcBlockDB.DataPropertyName = "BlockDBEnabled";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.dgvcBlockDB.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.dgvcBlockDB.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgvcBlockDB.HeaderText = "BlockDB";
             this.dgvcBlockDB.Name = "dgvcBlockDB";
             this.dgvcBlockDB.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
@@ -4114,7 +4081,6 @@
         private System.Windows.Forms.CheckBox xRequireRankChangeReason;
         private System.Windows.Forms.CheckBox xRequireBanReason;
         private System.Windows.Forms.CheckBox xAnnounceRankChanges;
-        private System.Windows.Forms.Button bPortCheck;
         private System.Windows.Forms.Button bColorIRC;
         private System.Windows.Forms.Label lColorIRC;
         private System.Windows.Forms.CheckBox xIRCBotAnnounceIRCJoins;
@@ -4238,7 +4204,6 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.Button bReport;
         private System.Windows.Forms.Button bWiki;
         private System.Windows.Forms.Button bWeb;
         private System.Windows.Forms.ComboBox HeartBeatUrlComboBox;

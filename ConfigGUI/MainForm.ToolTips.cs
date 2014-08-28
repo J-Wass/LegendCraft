@@ -32,11 +32,6 @@ namespace fCraft.ConfigGUI
             toolTip.SetToolTip(nPort, ConfigKey.Port.GetDescription());
             toolTip.SetToolTip(lPort, ConfigKey.Port.GetDescription());
 
-            toolTip.SetToolTip(bPortCheck,
-@"Check if the selected port is connectible.
-If port check fails, you may need to set up
-port forwarding on your router.");
-
             toolTip.SetToolTip(nUploadBandwidth, ConfigKey.UploadBandwidth.GetDescription());
             toolTip.SetToolTip(lUploadBandwidth, ConfigKey.UploadBandwidth.GetDescription());
 

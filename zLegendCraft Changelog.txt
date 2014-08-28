@@ -12,6 +12,7 @@ Change: Fixed bug where ServerGUI themes resulted in invisible text
 Change: General stability fixes
 Change: BLOCK INFO WAS BROKEN AND NOW IT ISN'T (due to infinate loop in background scheduler from color.cs)
 Change: Updates to Helperbot
+Change: Web end is now only github
 Change: Bug fixes with the TAB player list
 Remove: LeBot (HelperBot taking over)
 Remove: /Credits
@@ -22,7 +23,7 @@ Add: AutoRank program
 Add: /Autorank
 Add: Bot system
 Add: /bot
-Add: /highlight (known as "selection cuboid" in cpe) [unfinished]
+Add: /highlight (known as "selection cuboid" in cpe) 
 Add: /forcehold
 Add: /setmodel
 Add: /Announce (message types in cpe)

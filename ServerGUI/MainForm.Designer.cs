@@ -39,7 +39,6 @@
             this.logBox = new System.Windows.Forms.RichTextBox();
             this.bVoice = new System.Windows.Forms.Button();
             this.URLLabel = new System.Windows.Forms.Label();
-            this.bReport = new System.Windows.Forms.Button();
             this.console = new fCraft.ServerGUI.ConsoleBox();
             this.PlayerOptions.SuspendLayout();
             this.SuspendLayout();
@@ -189,7 +188,7 @@
             this.bVoice.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bVoice.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bVoice.Image = ((System.Drawing.Image)(resources.GetObject("bVoice.Image")));
-            this.bVoice.Location = new System.Drawing.Point(680, 429);
+            this.bVoice.Location = new System.Drawing.Point(735, 429);
             this.bVoice.Name = "bVoice";
             this.bVoice.Size = new System.Drawing.Size(37, 29);
             this.bVoice.TabIndex = 10;
@@ -207,21 +206,6 @@
             this.URLLabel.TabIndex = 5;
             this.URLLabel.Text = "URL:";
             // 
-            // bReport
-            // 
-            this.bReport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bReport.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.bReport.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
-            this.bReport.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
-            this.bReport.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.bReport.Location = new System.Drawing.Point(723, 429);
-            this.bReport.Name = "bReport";
-            this.bReport.Size = new System.Drawing.Size(49, 29);
-            this.bReport.TabIndex = 11;
-            this.bReport.Text = "Report";
-            this.bReport.UseVisualStyleBackColor = false;
-            this.bReport.Click += new System.EventHandler(this.bReport_Click);
-            // 
             // console
             // 
             this.console.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -229,7 +213,7 @@
             this.console.Enabled = false;
             this.console.Location = new System.Drawing.Point(13, 433);
             this.console.Name = "console";
-            this.console.Size = new System.Drawing.Size(661, 20);
+            this.console.Size = new System.Drawing.Size(716, 20);
             this.console.TabIndex = 0;
             this.console.Text = "Server Loading...";
             // 
@@ -240,7 +224,6 @@
             this.BackColor = System.Drawing.Color.Brown;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(784, 464);
-            this.Controls.Add(this.bReport);
             this.Controls.Add(this.URLLabel);
             this.Controls.Add(this.bVoice);
             this.Controls.Add(this.ThemeBox);
@@ -279,7 +262,6 @@
         private System.Windows.Forms.ToolStripMenuItem PM;
         private System.Windows.Forms.Button bVoice;
         private System.Windows.Forms.Label URLLabel;
-        private System.Windows.Forms.Button bReport;
         /*private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.TabPage tabGlobal;
         private System.Windows.Forms.RichTextBox logGlobal;

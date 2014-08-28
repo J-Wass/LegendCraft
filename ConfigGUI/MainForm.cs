@@ -117,43 +117,6 @@ namespace fCraft.ConfigGUI {
             bAnnouncements.Enabled = xAnnouncements.Checked;
         }
 
-        private void bPortCheck_Click( object sender, EventArgs e ) {
-            bPortCheck.Text = "Checking";
-            Enabled = false;
-            TcpListener listener = null;
-
-            try {
-                listener = new TcpListener( IPAddress.Any, (int)nPort.Value );
-                listener.Start();
-
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create( "http://www.utorrent.com/testport?plain=1&port=" + nPort.Value );
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-
-                if( response.StatusCode == HttpStatusCode.OK ) {
-                    using( Stream stream = response.GetResponseStream() ) {
-                        if( stream != null ) {
-                            StreamReader reader = new StreamReader( stream );
-                            string returnMessage = reader.ReadLine();
-                            if( returnMessage != null && returnMessage.StartsWith( "ok" ) ) {
-                                MessageBox.Show( "Port " + nPort.Value + " is open!", "Port check success" );
-                                return;
-                            }
-                        }
-                    }
-                }
-                MessageBox.Show( "Port " + nPort.Value + " is closed. You will need to set up forwarding.", "Port check failed" );
-
-            } catch {
-                MessageBox.Show( "Could not start listening on port " + nPort.Value + ". Another program may be using the port.", "Port check failed" );
-            } finally {
-                if( listener != null ) {
-                    listener.Stop();
-                }
-                Enabled = true;
-                bPortCheck.Text = "Check";
-            }
-        }
-
         private void tIP_Validating( object sender, CancelEventArgs e ) {
             IPAddress IP;
             if( Server.IsIP( tIP.Text ) && IPAddress.TryParse( tIP.Text, out IP ) ) {
@@ -1258,11 +1221,7 @@ Your rank is {RANK}&S. Type &H/Help&S for help." );
                 ((ListBox)c).SelectedIndexChanged += handler;
             } else if( c is TextBoxBase ) {
                 c.TextChanged += handler;
-            } else if( c is ButtonBase ) {
-                if( c != bPortCheck && c != bMeasure ) {
-                    c.Click += handler;
-                }
-            }
+            } 
             foreach( Control child in c.Controls ) {
                 AddChangeHandler( child, handler );
             }
@@ -1602,7 +1561,7 @@ Your rank is {RANK}&S. Type &H/Help&S for help." );
         {
             try
             {
-                Process.Start("http://legend-craft.tk/");
+                Process.Start("https://github.com/LeChosenOne/LegendCraft");
             }
             catch { }
         }
@@ -1616,11 +1575,6 @@ Your rank is {RANK}&S. Type &H/Help&S for help." );
             catch { }
         }
 
-        private void bReport_Click(object sender, EventArgs e)
-        {
-            var form = new Report();
-            form.Show();
-        }
 
         private void bReadme_Click(object sender, EventArgs e)
         {
@@ -1644,7 +1598,7 @@ Your rank is {RANK}&S. Type &H/Help&S for help." );
         {
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://legend-craft.tk/download/latest/update");
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://raw.githubusercontent.com/LeChosenOne/LegendCraft/master/README.md");
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 
                 if (response.StatusCode == HttpStatusCode.OK)

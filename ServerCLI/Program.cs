@@ -33,7 +33,6 @@ using System.Net;
 using System.ComponentModel;
 using System.Reflection;
 using System.Linq;
-using ServiceStack.Text;
 using fCraft.Events;
 
 namespace fCraft.ServerCLI {
@@ -160,7 +159,6 @@ namespace fCraft.ServerCLI {
 
 
         static readonly AutoResetEvent UpdateDownloadWaiter = new AutoResetEvent( false );
-        static bool updateFailed;
 
         static readonly object progressReportLock = new object();
         static void OnUpdateDownloadProgress( object sender, DownloadProgressChangedEventArgs e ) {
@@ -177,83 +175,64 @@ namespace fCraft.ServerCLI {
         }
 
 
-        static void OnUpdateDownloadCompleted( object sender, AsyncCompletedEventArgs e ) {
-            Console.WriteLine();
-            if( e.Error != null ) {
-                updateFailed = true;
-                if( useColor ) Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine( "Downloading the updater failed: {0}", e.Error );
-                if( useColor ) Console.ResetColor();
-            } else {
-                Console.WriteLine( "Update download finished." );
-            }
-            UpdateDownloadWaiter.Set();
-        }
 
-
-        static void CheckForUpdates() 
+        static void CheckForUpdates()
         {
             Console.WriteLine("Checking for LegendCraft updates...");
             try
             {
-                //use json to determine data on this git project
-                JsonObject json = new JsonObject();
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://raw.githubusercontent.com/LeChosenOne/LegendCraft/master/README.md");
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 
-                //get request to download source off git api
-                WebRequest request = WebRequest.Create("https://api.github.com/repos/LeChosenOne/LegendCraft/tags");
-                request.Credentials = CredentialCache.DefaultCredentials;
-                request.Method = "GET";
-
-                string text = "";
-                using (StreamReader reader = new StreamReader(request.GetResponse().GetResponseStream()))
+                if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    text = reader.ReadToEnd();
-                }
-
-                Logger.LogToConsole(text);
-
-                json = JsonObject.Parse(text);
-
-                //convert json data to dictionary
-                System.Collections.Generic.Dictionary<string, string> jsonData = json.ToDictionary();
-
-                //the first value added is always the version name since we are looking up json data on tags, so we have to check Last() to find the first added
-                var first = jsonData.Last();
-                string version = first.Value;
-                Logger.LogToConsole(version);
-                //update is available, prompt for a download
-                if (version != null && version != fCraft.Updater.LatestStable)
-                {
-                    Console.WriteLine("Server.Run: Your LegendCraft version is out of date. A LegendCraft Update is available!");
-                    Console.WriteLine("Download the latest LegendCraft version and restart the server? (Y/N)");
-                    string answer = Console.ReadLine();
-                    if (answer.ToLower() == "y" || answer.ToLower() == "yes" || answer.ToLower() == "yup" || answer.ToLower() == "yeah")//preparedness at its finest
+                    using (Stream stream = response.GetResponseStream())
                     {
-                        using (var client = new WebClient())
+                        if (stream != null)
                         {
-                            try
-                            {
-                                Process.Start("https://github.com/LegendCraft/LegendCraft/releases");
-                                Console.WriteLine("Downloading the latest LegendCraft Version. Please replace all the files in your current folder with the new ones after shutting down.");
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine("Update error: " + ex);
-                            }
+                            StreamReader streamReader = new StreamReader(stream);
+                            string version = streamReader.ReadLine();
 
+                            //update is available, prompt for a download
+                            if (version != null && version != fCraft.Updater.LatestStable)
+                            {
+
+                                Console.WriteLine("Server.Run: Your LegendCraft version is out of date. A LegendCraft Update is available!");
+                                Console.WriteLine("Download the latest LegendCraft version and restart the server? (Y/N)");
+                                string answer = Console.ReadLine();
+                                if (answer.ToLower() == "y" || answer.ToLower() == "yes" || answer.ToLower() == "yup" || answer.ToLower() == "yeah")//preparedness at its finest
+                                {
+                                    using (var client = new WebClient())
+                                    {
+                                        try
+                                        {
+                                            //download new zip in current directory
+                                            Process.Start("http://www.legend-craft.tk/download/latest");
+                                            Console.WriteLine("Downloading the latest LegendCraft Version. Please replace all the files (not folders) in your current folder with the new ones after shutting down.");
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Console.WriteLine("Update error: " + ex);
+                                        }
+
+                                    }
+
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Update ignored. To ignore future LegendCraft update requests, uncheck the box in configGUI.");
+                                }
+
+                            }
+                            else
+                            {
+                                Console.WriteLine("Your LegendCraft version is up to date!");
+                            }
                         }
                     }
-                    else
-                    {
-                        Console.WriteLine("Update ignored. To ignore future LegendCraft update requests, uncheck the box in configGUI.");
-                    }
-
-                }
-                else
-                {
-                    Console.WriteLine("Your LegendCraft version is up to date!");
                 }
             }
+
             catch (WebException error)
             {
                 Console.WriteLine("There was an internet connection error. Server was unable to check for updates. Error: \n\r" + error);

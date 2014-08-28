@@ -138,8 +138,6 @@ namespace fCraft
                     SendClassiCubeBeat();
                     Scheduler.NewTask(t => SendMinecraftNetBeat()).RunManual(TimeSpan.FromSeconds(22));
                 }
-
-                SendLegendCraftNetBeat();
                 HbSave();
             }
             else
@@ -186,42 +184,6 @@ namespace fCraft
             var state = new HeartbeatRequestState(minecraftNetRequest, data, true);
             minecraftNetRequest.BeginGetResponse(ResponseCallback, state);
         }
-
-        static void SendLegendCraftNetBeat()
-        {
-            if (Server.Uri == null) return;
-
-            string uri = "http://legend-craft.tk/heartbeat?";
-
-            string URLdata = String.Format("name={0}&url={1}&players={2}&max={3}&version={4}",
-                                 (Uri.EscapeDataString(ConfigKey.ServerName.GetString()).Replace(" ", "%20")),
-                                 Server.Uri.ToString(),
-                                 Server.Players.Length,
-                                 ConfigKey.MaxPlayers.GetInt(),
-                                 Updater.LatestStable);
-                
-            try
-            {
-                WebRequest url = WebRequest.Create(uri + URLdata);
-                Stream webResponse = url.GetResponse().GetResponseStream();//just kind of here incase i need it :P
-                StreamReader readStream = new StreamReader(webResponse, Encoding.UTF8);
-
-            }
-            catch(Exception e)
-            {
-                if (e is WebException)
-                {
-                    //operation timed out, just chill and wait for next beat
-                }
-                else
-                {
-                    Logger.Log(LogType.Warning, "Error with web connection: " + e);
-                }
-            }
-
-        }
-
-
 
         // Creates an asynchrnous HTTP request to the given URL
         static HttpWebRequest CreateRequest(Uri uri)
