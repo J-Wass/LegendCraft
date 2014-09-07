@@ -156,8 +156,8 @@ Thanks to Minecraft servers that helped test and improve 800Craft:<br />
 Thanks to Minecraft servers that helped test and improve fCraft:<br />
 -TheOne's Zombie Survival, SpecialAttack.net Freebuild, Team9000 Freebuild, D3M0Ns FreeBuild, ~The Best Freebuild 24/7~, &nbsp;&nbsp;-800Craft Freebuild Official
 
-Thanks to Minecraft servers that helped test and improve LegendCraft:<br />
--Ascending Blackout Server Community, Pure2k12, ThunderCraft Server Community, Jonty800, and Rising Embers Community
+Thanks to Minecraft servers and players that helped test and improve LegendCraft:<br />
+-Ascending Blackout, Pure2k12, ThunderCraft, Jonty800, Un1CraftFreebuild, and Rising Embers 
 
 Special Thanks to Pure2K12 for inspiration and getting me started in this mess!<br />
 Special Thanks to Jonty800 being exceptionally awesome!

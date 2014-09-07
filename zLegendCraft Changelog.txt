@@ -1,5 +1,4 @@
 LegendCraft Changelog v2.4.0 (In progress)
-Add: Dual Heartbeat Support
 Add: CTF Gamemode
 Add: Bot AI
 Add: MessageBlocks

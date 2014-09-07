@@ -479,8 +479,7 @@
             this.HeartBeatUrlComboBox.FormattingEnabled = true;
             this.HeartBeatUrlComboBox.Items.AddRange(new object[] {
             "Minecraft.net",
-            "ClassiCube.net",
-            "Both"});
+            "ClassiCube.net"});
             this.HeartBeatUrlComboBox.Location = new System.Drawing.Point(123, 157);
             this.HeartBeatUrlComboBox.Name = "HeartBeatUrlComboBox";
             this.HeartBeatUrlComboBox.Size = new System.Drawing.Size(194, 23);

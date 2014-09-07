@@ -274,7 +274,7 @@ THE SOFTWARE.*/
         static readonly CommandDescriptor CdHighlight = new CommandDescriptor 
         {
             Name = "Highlight",
-            Aliases = new[] { "SelectionCuboid", "Select" },
+            Aliases = new[] { "SelectionCuboid", "Select", "hl" },
             IsConsoleSafe = false,
             Permissions = new[] { Permission.DrawAdvanced },
             Category = CommandCategory.Building,
@@ -387,10 +387,12 @@ THE SOFTWARE.*/
                         return;
                     }
 
-                    Tuple<int, Vector3I, Vector3I, System.Drawing.Color, int> ID;
-                    Server.Highlights.TryGetValue(targetHighlight, out ID);
+                    //get the value of the highlight key, item one of the value tuple is the ID
+                    Tuple<int, Vector3I, Vector3I, System.Drawing.Color, int> val;
+                    Server.Highlights.TryGetValue(targetHighlight, out val);
 
-                    player.World.Players.Send(PacketWriter.RemoveSelectionCuboid((byte)ID.Item1));
+                    player.World.Players.Send(PacketWriter.RemoveSelectionCuboid((byte)val.Item1));
+                    Server.Highlights.Remove(targetHighlight);
 
                     break;
                 case "list":

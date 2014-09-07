@@ -663,12 +663,6 @@ namespace fCraft
             Skinname = givenName;
             BytesReceived += 131;
 
-            //check if cc user is trying to connect to a dual heartbeat/CC heartbeat (crappy support is crappy)
-            if (ClassiCube)
-            {
-                givenName += "+";
-                Logger.Log(LogType.SystemActivity, "ClassiCube user connecting. Name changed to " + givenName);
-            }
 
             // Check name for nonstandard characters
             if (!IsValidName(givenName))
@@ -727,7 +721,7 @@ namespace fCraft
                 else if (ClassiCube)
                 {
                     //if the name is still invalid with or without the +
-                    if (!IsValidName(givenName.Replace("+", "")))
+                    if (!IsValidName(givenName))
                     {
                         Logger.Log(LogType.SuspiciousActivity, "Player.LoginSequence: Unacceptable player name: {0} ({1})", givenName, IP);                                     
                         KickNow("Invalid characters in player name!", LeaveReason.ProtocolViolation);
@@ -1573,12 +1567,16 @@ namespace fCraft
             if (Heartbeat.ClassiCube() && usesCPE)
             {
                 //update mapedit values
-                //Packet envSetMapAppearance = PacketWriter.MakeEnvSetMapAppearance(World.textureURL, World.sideBlock, World.edgeBlock, World.sideLevel);
                 Packet sky = PacketWriter.MakeEnvSetColor((byte)0, World.SkyColorCC);
                 Packet cloud = PacketWriter.MakeEnvSetColor((byte)1, World.CloudColorCC);
                 Packet fog = PacketWriter.MakeEnvSetColor((byte)2, World.FogColorCC);
                 Packet weather = PacketWriter.MakeEnvWeatherAppearance((byte)World.WeatherCC);
 
+                if (World.usesCustomTexture)
+                {
+                    Packet envSetMapAppearance = PacketWriter.MakeEnvSetMapAppearance(World.textureURL, World.sideBlock, World.edgeBlock, World.sideLevel);
+                    Send(envSetMapAppearance);
+                }
                 Send(sky);
                 Send(cloud);
                 Send(fog);
@@ -1592,8 +1590,11 @@ namespace fCraft
                 //update bots
                 foreach (Bot bot in Server.Bots)
                 {
+                    //remove old bots
+                    Send(PacketWriter.MakeRemoveEntity(bot.ID));
                     if (bot.World == World)
                     {
+                        //add back bot entity if world matches
                         Send(PacketWriter.MakeAddEntity(bot.ID, bot.Name, bot.Position));
                         if (bot.Model != "humanoid" && usesCPE)
                         {

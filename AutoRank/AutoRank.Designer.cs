@@ -45,7 +45,8 @@
             this.bRemove = new System.Windows.Forms.Button();
             this.boxSettings = new System.Windows.Forms.GroupBox();
             this.op = new System.Windows.Forms.ComboBox();
-            TreeList = new System.Windows.Forms.TreeView();
+            this.TreeList = new System.Windows.Forms.TreeView();
+            this.button1 = new System.Windows.Forms.Button();
             this.boxSettings.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -200,7 +201,7 @@
             this.bExit.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
             this.bExit.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.bExit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.bExit.Location = new System.Drawing.Point(307, 314);
+            this.bExit.Location = new System.Drawing.Point(282, 314);
             this.bExit.Name = "bExit";
             this.bExit.Size = new System.Drawing.Size(47, 27);
             this.bExit.TabIndex = 14;
@@ -216,7 +217,7 @@
             this.bRemove.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bRemove.Location = new System.Drawing.Point(168, 314);
             this.bRemove.Name = "bRemove";
-            this.bRemove.Size = new System.Drawing.Size(128, 27);
+            this.bRemove.Size = new System.Drawing.Size(108, 27);
             this.bRemove.TabIndex = 15;
             this.bRemove.Text = "Remove Selected  ";
             this.bRemove.UseVisualStyleBackColor = false;
@@ -264,18 +265,28 @@
             // 
             // TreeList
             // 
-            TreeList.Location = new System.Drawing.Point(168, 17);
-            TreeList.Name = "TreeList";
-            TreeList.Size = new System.Drawing.Size(186, 284);
-            TreeList.TabIndex = 17;
+            this.TreeList.Location = new System.Drawing.Point(168, 17);
+            this.TreeList.Name = "TreeList";
+            this.TreeList.Size = new System.Drawing.Size(217, 284);
+            this.TreeList.TabIndex = 17;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(336, 314);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 18;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
             // 
             // AutoRank
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Firebrick;
-            this.ClientSize = new System.Drawing.Size(366, 353);
-            this.Controls.Add(TreeList);
+            this.ClientSize = new System.Drawing.Size(397, 353);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.TreeList);
             this.Controls.Add(this.boxSettings);
             this.Controls.Add(this.bExit);
             this.Controls.Add(this.bRemove);
@@ -307,6 +318,7 @@
         private System.Windows.Forms.Button bRemove;
         private System.Windows.Forms.GroupBox boxSettings;
         private System.Windows.Forms.ComboBox op;
-        public static System.Windows.Forms.TreeView TreeList;
+        private System.Windows.Forms.Button button1;
+        public System.Windows.Forms.TreeView TreeList;
     }
 }

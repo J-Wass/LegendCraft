@@ -1093,6 +1093,7 @@ namespace fCraft {
         public byte sideBlock = 7;
         public byte edgeBlock = 8;
         public string textureURL = "";
+        public bool usesCustomTexture = false;
 
         #endregion
 

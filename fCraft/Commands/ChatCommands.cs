@@ -54,6 +54,7 @@ namespace fCraft
             CommandManager.RegisterCommand(CdGlobal);
             CommandManager.RegisterCommand(CdPlugin);
             CommandManager.RegisterCommand(CdBarf);
+            CommandManager.RegisterCommand(CdSecret);
 
 
             Player.Moved += new EventHandler<Events.PlayerMovedEventArgs>(Player_IsBack);
@@ -78,12 +79,27 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
 
+        static readonly CommandDescriptor CdSecret = new CommandDescriptor    
+        {
+            Name = "Secret",
+            Category = CommandCategory.Chat ,
+            Permissions = new Permission[] { Permission.Chat },
+            Usage = "/Secret",
+            Help = "&SDon't tell anyone!!!",
+            NotRepeatable = true,
+            Handler = SecretHandler
+        };
+
+        internal static void SecretHandler(Player player, Command cmd)
+        {
+            Server.Message("{0} is a loser", player.ClassyName);
+        }
         static readonly CommandDescriptor CdBarf = new CommandDescriptor    //an old plugin I made, finally fully functional
         {
             Name = "Barf",
             Aliases = new[] { "puke", "blowchunks" },
             Category = CommandCategory.Chat | CommandCategory.Fun ,
-            Usage = "Barf (Player) (option)",
+            Usage = "/Barf (Player) (option)",
             Help = "&SBarfs on a player. Can leave option blank to just barf.",
             NotRepeatable = true,
             Handler = BarfHandler

@@ -148,7 +148,7 @@ namespace fCraft
         /// </summary>
         public void tempRemoveBot()
         {
-            World.Players.Send(PacketWriter.MakeRemoveEntity(ID));
+            Server.Players.Send(PacketWriter.MakeRemoveEntity(ID));
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace fCraft
             thread.Stop();
             isMoving = false;
             Server.Bots.Remove(this);
-            World.Players.Send(PacketWriter.MakeRemoveEntity(ID));
+            Server.Players.Send(PacketWriter.MakeRemoveEntity(ID));
             
         }
 

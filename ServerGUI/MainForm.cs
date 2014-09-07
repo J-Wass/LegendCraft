@@ -128,7 +128,6 @@ namespace fCraft.ServerGUI
                         {
                             StreamReader streamReader = new StreamReader(stream);
                             string version = streamReader.ReadLine();
-                            Logger.LogToConsole(version);
                             //update is available, prompt for a download
                             if (version != null && version != fCraft.Updater.LatestStable)
                             {

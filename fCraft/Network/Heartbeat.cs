@@ -17,7 +17,6 @@ namespace fCraft
     {
         static readonly Uri MinecraftNetUri;
         static readonly Uri ClassiCubeNetUri;
-        private static bool sendBoth;
 
         //if the server is classicube compatable
         public static bool ClassiCube()
@@ -26,12 +25,6 @@ namespace fCraft
             {
                 return true;
             }
-            else if (ConfigKey.HeartbeatUrl.GetString() == "Both")
-            {
-                sendBoth = true;
-                return true;
-            }
-            else
             {
                 return false;
             }
@@ -126,18 +119,12 @@ namespace fCraft
 
             if (ConfigKey.HeartbeatEnabled.Enabled())
             {
-                if (!sendBoth)
-                {
-                    if (ClassiCube())
-                        SendClassiCubeBeat();
-                    else
-                        SendMinecraftNetBeat();
-                }
-                else
-                {
+                if (ClassiCube())
                     SendClassiCubeBeat();
-                    Scheduler.NewTask(t => SendMinecraftNetBeat()).RunManual(TimeSpan.FromSeconds(22));
-                }
+                else
+                    SendMinecraftNetBeat();
+
+
                 HbSave();
             }
             else

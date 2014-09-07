@@ -172,10 +172,18 @@ THE SOFTWARE.*/
             }
             else if (option.ToLower() == "removeall")
             {
+
+            rewipe:
                 Server.Bots.ForEach(botToRemove =>
                 {
                     botToRemove.removeBot();
                 });
+
+                if (Server.Bots.Count != 0)
+                {
+                    goto rewipe;
+                }
+
                 player.Message("All bots removed from the server.");
                 return;
             }
