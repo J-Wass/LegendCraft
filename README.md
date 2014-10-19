@@ -6,7 +6,7 @@ All bugs and glitches randomly found in the game are meant to happen, they add t
 ![LegendCraft](http://i.imgur.com/YNPR6p0.png "Ya it's a logo deal with it")<br />
 
 Dowload the latest LegendCraft release here: 
-https://github.com/LeChosenOne/LegendCraft/releases/tag/2.3.0
+https://github.com/LeChosenOne/LegendCraft/releases/tag/2.4.0
 
 View all LegendCraft releases:
 https://github.com/LeChosenOne/LegendCraft/releases

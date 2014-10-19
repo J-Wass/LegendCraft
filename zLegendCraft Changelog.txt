@@ -1,4 +1,4 @@
-LegendCraft Changelog v2.4.0 (In progress)
+LegendCraft Changelog v2.4.0 
 Add: CTF Gamemode
 Add: Bot AI
 Add: MessageBlocks

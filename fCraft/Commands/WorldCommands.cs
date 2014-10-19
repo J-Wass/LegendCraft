@@ -277,7 +277,7 @@ THE SOFTWARE.*/
             Category = CommandCategory.World,
             Permissions = new[] { Permission.ManageWorlds },
             Help = "&SPrints or changes the environmental variables for a given world. " +
-                   "Variables are: clouds, fog, sky, and weather. " +//add level, edge, side, and texture once supported
+                   "Variables are: clouds, fog, sky, level, edge, side, texture and weather. " +
                    "See &H/Help MapEdit <Variable>&S for details about each variable. " +
                    "Type &H/MapEdit <WorldName> normal&S to reset everything for a world. " +
                    "All Color formats should be in hexcode. \n Ex: #ffffff",
@@ -292,7 +292,7 @@ THE SOFTWARE.*/
                 { "sky", "&H/MapEdit <WorldName> sky <Color>\n&S" +
                                 "Sets color of the sky. Sky color blends with fog color in the distance. " +
                                 "Use \"normal\" instead of color to reset." },
-                /*{ "level", "&H/MapEdit <WorldName> level <#>\n&S" +
+                { "level", "&H/MapEdit <WorldName> level <#>\n&S" +
                                 "Sets height of the map edges/water level, in terms of blocks from the bottom of the map. " +
                                 "Use \"normal\" instead of a number to reset to default (middle of the map)." },
                 { "edge", "&H/MapEdit <WorldName> edge <BlockType>\n&S" +
@@ -303,7 +303,7 @@ THE SOFTWARE.*/
                                 "Use \"normal\" instead of a number to reset to default (admincrete)." },
                 { "texture", "&H/MapEdit <WorldName> texture url\n&S" +
                                 "Retextures the blocks of the map to a specific texture pack. "+
-                                "Use \"normal\" instead of a url to reset to default." },*/
+                                "Use \"normal\" instead of a url to reset to default." },
                 { "weather", "&H/MapEdit <WorldName> weather <Normal/Rain/Snow>\n&S" +
                                 "Sets the default weather of the map. " +
                                 "Use \"normal\" instead of a number to reset to default (Clear)" },
@@ -322,7 +322,7 @@ THE SOFTWARE.*/
             }
             if (!ConfigKey.WoMEnableEnvExtensions.Enabled())
             {
-                player.Message("This command has been disabled for the server!");
+                player.Message("This command has been disabled for the server! Enable it in the ConfigGUI in the 'Worlds' tab!");
                 return;
             }
 
@@ -370,19 +370,25 @@ THE SOFTWARE.*/
                     Packet fog = PacketWriter.MakeEnvSetColor((byte)2, (world.FogColorCC));
                     Packet cloud = PacketWriter.MakeEnvSetColor((byte)1, (world.CloudColorCC));
                     Packet sky = PacketWriter.MakeEnvSetColor((byte)0, (world.SkyColorCC));
-                    //Packet appearence = PacketWriter.MakeEnvSetMapAppearance("", world.sideBlock, world.edgeBlock, world.sideLevel); update once supported
                     Packet weather = PacketWriter.MakeEnvWeatherAppearance((byte)world.WeatherCC);
+
+                    if (world.usesCustomTexture)
+                    {
+                        world.usesCustomTexture = false;
+                        player.Message("Reset texture pack to default minecraft. You must rejoin to see the changes.");
+                        world.textureURL = "";
+                    }
 
                     foreach (Player p in world.Players.Where(p => p.usesCPE))
                     {
                         p.Send(sky);
                         p.Send(cloud);
                         p.Send(fog);
-                        //p.Send(appearence);
                         p.Send(weather);
                     }
+                    
                     break;
-                /*case "texture":
+                case "texture":
                     if (string.IsNullOrEmpty(setting))
                     {
                         player.Message("Please specify the url of the texture pack.");
@@ -393,12 +399,8 @@ THE SOFTWARE.*/
                         player.Message("Reset texture pack to default minecraft.");
                         world.textureURL = "";
 
-                        Packet textNormal = PacketWriter.MakeEnvSetMapAppearance(world.textureURL, world.sideBlock, world.edgeBlock, world.sideLevel);
-                        foreach (Player p in world.Players.Where(p => p.ClassiCube))
-                        {
-                            p.Send(textNormal);
-                        }
-                        player.Message("Map settings have been updated.");
+                        world.usesCustomTexture = false;
+                        player.Message("Map settings have been updated. You will have to rejoin to see any updates. Use /rejoin to rejoin yourself, and /flush to force everyone to rejoin.");
                         return;
                     }
 
@@ -411,6 +413,7 @@ THE SOFTWARE.*/
                             p.Send(texture);
                         }
                         player.Message("Map settings have been updated.");
+                        world.usesCustomTexture = true;
                     }
                     catch
                     {
@@ -538,7 +541,7 @@ THE SOFTWARE.*/
                     {
                         player.Message("Please choose a number between 0 and {0}.", world.Map.Height.ToString());
                     }
-                    break;*/
+                    break;
 
                 case "clouds":
                     if (string.IsNullOrEmpty(setting))

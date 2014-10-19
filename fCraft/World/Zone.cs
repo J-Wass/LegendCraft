@@ -95,17 +95,27 @@ namespace fCraft {
                                       Int32.Parse( header[4] ), Int32.Parse( header[5] ), Int32.Parse( header[6] ) );
 
             Rank buildRank = Rank.Parse( header[7] );
-            // if all else fails, fall back to lowest class
-            if( buildRank == null ) {
-                if( world != null ) {
+            if (header[0].Contains("Door_"))
+            {
+                buildRank = RankManager.DefaultRank;
+            }
+            // if all else fails, fall back to lowest class... ignore door instances
+            if( buildRank == null && !header[0].Contains("Door_"))
+            {
+                if( world != null )
+                {
                     Controller.MinRank = world.BuildSecurity.MinRank;
-                } else {
+                } 
+                else
+                {
                     Controller.ResetMinRank();
                 }
                 Logger.Log( LogType.Error,
-                            "Zone: Error parsing zone definition: unknown rank \"{0}\". Permission reset to default ({1}).",
+                            "Zone: Error parsing zone definition: unknown rank \"{0}\". Permission reset to default ({1}). Ignore this message if you have recently changed rank permissions.",
                             header[7], Controller.MinRank.Name );
-            } else {
+            } 
+            else 
+            {
                 Controller.MinRank = buildRank;
             }
 
