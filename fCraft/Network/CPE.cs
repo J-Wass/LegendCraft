@@ -7,11 +7,13 @@ using System.Net;
 using System.Net.Sockets;
 using System.IO;
 
+//All of this was pretty much taken or based off of FemtoCraft by fragmer, I wrote about 5%-7% of this lol
+
 namespace fCraft
 {
     public sealed partial class Player
     {
-        const string SelectionBoxExtName = "SelectionBoxExt";
+        const string SelectionBoxExtName = "SelectionBoxExt";//I don't think this is actually a packet
         const int SelectionBoxExtVersion = 1;
         const string CustomBlocksExtName = "CustomBlocks";
         const int CustomBlocksExtVersion = 1;
@@ -38,7 +40,7 @@ namespace fCraft
         const int HackControlExtVersion = 1;
 
         // Note: if more levels are added, change UsesCustomBlocks from bool to int
-        public bool SelectionBoxExt { get; set; }
+        public bool SelectionBoxExt { get; set; }//is this even a thing?
         public bool UsesCustomBlocks { get; set; }
         public bool SupportsClickDistance = false;
         public bool SupportsEnvColors = false;
@@ -56,8 +58,10 @@ namespace fCraft
         bool NegotiateProtocolExtension()
         {
             this.reader = new PacketReader(this.stream);
-            // write our ExtInfo and ExtEntry packets
-            writer.Write(Packet.MakeExtInfo(9).Data);
+            // Send info of how many extensions we support
+            writer.Write(Packet.MakeExtInfo(10).Data);
+
+            //dump all my extensions here for the lels
             writer.Write(Packet.MakeExtEntry(CustomBlocksExtName, CustomBlocksExtVersion).Data);
             writer.Write(Packet.MakeExtEntry(ClickDistanceExtName, ClickDistanceExtVersion).Data);
             writer.Write(Packet.MakeExtEntry(EnvColorsExtName, EnvColorsExtVersion).Data);
@@ -79,11 +83,12 @@ namespace fCraft
                 Logger.Log(LogType.Warning, "Player {0} from {1}: Unexpected ExtInfo reply ({2})", Name, IP, extInfoReply);
                 return false;
             }
-            //read EXT_INFO
+
+            //read EXT_INFO from client
             ClientName = reader.ReadString();
             int expectedEntries = reader.ReadInt16();
 
-            // wait for client to send its ExtEntries
+            // Get all of the ext info packets
             bool sendCustomBlockPacket = false;
             List<string> clientExts = new List<string>();
             for (int i = 0; i < expectedEntries; i++)
@@ -99,12 +104,15 @@ namespace fCraft
                 string extName = reader.ReadString();
                 int extVersion = reader.ReadInt32();
 
+                //check if this extension is customblocks
                 if (extName == CustomBlocksExtName && extVersion == CustomBlocksExtVersion)
                 {
                     // Hooray, client supports custom blocks! We still need to check support level.
                     sendCustomBlockPacket = true;
                     clientExts.Add(extName + " " + extVersion);
                 }
+
+                //check for selectionbox, and so on (95% sure this isn't actually a thing)
                 if (extName == SelectionBoxExtName && extVersion == SelectionBoxExtVersion)
                 {
                     SelectionBoxExt = true;
