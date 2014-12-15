@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using fCraft;
 using fCraft.Drawing;
 
@@ -40,6 +41,7 @@ namespace fCraft
             CommandManager.RegisterCommand(CdClearParam);
             CommandManager.RegisterCommand(CdSpring);
             CommandManager.RegisterCommand(CdPolarRose);
+            CommandManager.RegisterCommand(CdDifferentiate);
         }
         const string commonFuncHelp = "Can also be x=f(y, z) or y=f(x, z). ";
 
@@ -55,6 +57,143 @@ namespace fCraft
             "Using 'u' as a scaling switch coords to be [0, 1] along the corresponding cuboid axis. " +
             "'uu' switches coords to be [-1, 1] along the corresponding cuboid axis.";
         const string copyright = "\n(C) 2012 Lao Tszy";
+
+        #region LegendCraft
+        /* Copyright (c) <2012-2014> <LeChosenOne, DingusBungus>
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.*/
+
+        static readonly CommandDescriptor CdDifferentiate = new CommandDescriptor
+        {
+            Name = "Differentiate",
+            Aliases = new[] { "Derivative", "Derive" },
+            Category = CommandCategory.Math,
+            Permissions = new Permission[] { Permission.Chat },
+            IsConsoleSafe = true,
+            Usage = "/Differentiate [expression]",
+            Help = "Expression must be in terms of x, supported expressions are nx^c, x^n, nx, x, and n. Divison, multiplied expressions, chain rule, logs, and e are unsupported atm.",
+            NotRepeatable = true,
+            Handler = DifferentiateHandler,
+        };
+
+        //inb4 hate, there's almost no math in this code lol, it's all using the shortcut methods
+        private static void DifferentiateHandler(Player player, Command cmd)       
+        {
+            string expression = cmd.Next().Replace(" ", ""); //'3x^4 + 3' becomes '3x^4+3'
+            List<String> eqItems = new List<string>();
+
+            //why can't calc be this easy
+            if (!expression.Contains("x"))
+            {
+                player.Message("The derivative of {0} is 0.", expression);
+                return;
+            }
+
+            //just like the calc AP test
+            if (expression == "x")
+            {
+                player.Message("The derivative of x is 1.");
+                return;
+            }
+
+            //literally just break the expression down into chunks, loop through each chunk
+            Regex breakdown = new Regex("[\\-\\+]|[0-9]+[x][\\^][0-9]|[x][\\^][0-9]|[0-9]+[x]|[x]|[0-9]+");
+            MatchCollection breakdownMatch = breakdown.Matches(expression);
+            foreach (Match m in breakdownMatch)
+            {
+                player.Message(m.ToString());
+                eqItems.Add(differentiate(m.ToString(), expression));
+            }
+
+            StringBuilder sb = new StringBuilder();
+            foreach(string str in eqItems)
+            {
+                sb.Append(str);
+            }
+
+            player.Message("The derivative of {0} is {1}", expression, sb.ToString());
+        }
+
+        //differentiates the same way humans do, with visual shortcuts
+        static string differentiate(string inString, string expression)
+        {
+            if (inString == "+" || inString == "-")
+            {
+                Logger.LogToConsole("0");
+                return inString;
+            }
+
+            Regex numberPolyRegex = new Regex(@"[0-9]+x\^[0-9]+");//nx^c
+            Regex polyRegex = new Regex(@"x\^[0-9]+");            //x^n
+            Regex linearRegex = new Regex(@"[0-9]+x");            //nx
+
+            if (numberPolyRegex.IsMatch(expression))
+            {
+                Logger.LogToConsole("1");
+                int coefficient = Convert.ToInt32(inString.Substring(0, inString.IndexOf("x")));
+                int exp = Convert.ToInt32(inString.Substring(inString.IndexOf("x") + 2));
+                return exp * coefficient + "x^" + (exp - 1);
+            }
+            else if (polyRegex.IsMatch(expression))
+            {
+                Logger.LogToConsole("2");
+                int exp = Convert.ToInt32(inString.Substring(2));
+                return exp + "x^" + (exp - 1);
+            }
+            else if (linearRegex.IsMatch(expression))
+            {
+                Logger.LogToConsole("3");
+                Logger.LogToConsole(inString.Length.ToString());
+                Logger.LogToConsole(inString.IndexOf("x").ToString());
+                return inString.Substring(0, inString.IndexOf("x"));
+            }
+
+            return "0";
+        }
+
+        static readonly CommandDescriptor CdSpring = new CommandDescriptor
+        {
+            Name = "Spring",
+            Aliases = new[] { "Helix" },
+            Category = CommandCategory.Building,
+            Permissions = new Permission[] { Permission.DrawAdvanced },
+            IsConsoleSafe = false,
+            Usage = "/Spring [Number of revolutions]",
+            Help = "Draws up to 9 revolutions of a spring in the given area.",
+            NotRepeatable = true,
+            Handler = SpringHandler,
+        };
+
+        static readonly CommandDescriptor CdPolarRose = new CommandDescriptor
+        {
+            Name = "PolarRose",
+            Aliases = new[] { "pr", "rose" },
+            Category = CommandCategory.Building,
+            Permissions = new Permission[] { Permission.DrawAdvanced },
+            IsConsoleSafe = false,
+            Usage = "/PolarRose [Number of Petals] [Length of Petals] [Number of Revolutions] [Height Upward]",
+            Help = "Draws a polar rose. Leave height blank for flat rose. " +
+                   "The lengths and heights expand with your chosen interval, so they are relative. " +
+                   "&cRanges: &hPetals[3,infinity), Length[1,4], Revolutions[1,4), Height[1,infinity).",
+            NotRepeatable = true,
+            Handler = PolarRoseHandler,
+        };
+        #endregion
 
 
         static readonly CommandDescriptor CdFunc = new CommandDescriptor
@@ -185,34 +324,6 @@ namespace fCraft
                 Usage = "/cpd",
                 Handler = PrepareParametrizedManifold.ClearParametrization,
             };
-
-        static readonly CommandDescriptor CdSpring = new CommandDescriptor
-        {
-            Name = "Spring",
-            Aliases = new[] { "Helix" },
-            Category = CommandCategory.Building,
-            Permissions = new Permission[] { Permission.DrawAdvanced },
-            IsConsoleSafe = false,
-            Usage = "/Spring [Number of revolutions]",
-            Help = "Draws up to 9 revolutions of a spring in the given area.",
-            NotRepeatable = true,
-            Handler = SpringHandler,
-        };
-        
-        static readonly CommandDescriptor CdPolarRose = new CommandDescriptor
-        {
-            Name = "PolarRose",
-            Aliases = new[] { "pr", "rose" },
-            Category = CommandCategory.Building,
-            Permissions = new Permission[] { Permission.DrawAdvanced },
-            IsConsoleSafe = false,
-            Usage = "/PolarRose [Number of Petals] [Length of Petals] [Number of Revolutions] [Height Upward]",
-            Help = "Draws a polar rose. Leave height blank for flat rose. " +
-                   "The lengths and heights expand with your chosen interval, so they are relative. " +
-                   "&cRanges: &hPetals[3,infinity), Length[1,4], Revolutions[1,4), Height[1,infinity).",
-            NotRepeatable = true,
-            Handler = PolarRoseHandler,
-        };
 
 
         //Those handler functions would be a template function when this <censored> c# could 

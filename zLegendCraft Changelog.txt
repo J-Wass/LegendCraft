@@ -1,3 +1,7 @@
+LegendCraft Changelog v2.4.1
+Add: /Differentiate
+Change: Host can set global chat color now
+
 LegendCraft Changelog v2.4.0 
 Add: CTF Gamemode
 Add: Bot AI

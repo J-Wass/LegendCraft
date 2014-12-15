@@ -9,7 +9,6 @@ using System.Threading;
 using System.Net;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using fCraft.Events;
 using fCraft.GUI;
 using fCraft.ServerGUI;
