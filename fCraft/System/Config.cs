@@ -578,6 +578,10 @@ namespace fCraft {
                     Color.IRC = Color.Parse( key.GetString() );
                     break;
 
+                case ConfigKey.GlobalColor:
+                    Color.Global = Color.Parse(key.GetString());
+                    break;
+
                 case ConfigKey.LogMode:
                     Logger.SplittingType = key.GetEnum<LogSplittingType>();
                     break;

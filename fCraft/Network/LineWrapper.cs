@@ -370,6 +370,10 @@ namespace fCraft
                 case (byte)'i':
                     ch = (byte)Color.IRC[1];
                     return true;
+
+                case (byte)'g':
+                    ch = (byte)Color.Global[1];
+                    return true;
             }
             return false;
         }

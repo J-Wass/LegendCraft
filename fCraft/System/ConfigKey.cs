@@ -162,6 +162,10 @@ colorcodes in announcement and rule files." )]
 @"Color of error and warning messages." )]
         WarningColor,
 
+        [ColorKey(ConfigSection.Chat, Color.GlobalDefault,
+@"Color of global messages.")]
+        GlobalColor,
+
         [IntKey( ConfigSection.Chat, 0,
 @"Announcement interval, in minutes. Set to 0 to disable announcements.
 Announcements are shown to all players, one line at a time, in random order.",

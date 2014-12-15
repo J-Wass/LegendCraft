@@ -36,7 +36,6 @@
             this.tabs = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
             this.gBasic = new System.Windows.Forms.GroupBox();
-            this.xWebPanel = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.HeartBeatUrlComboBox = new System.Windows.Forms.ComboBox();
             this.nMaxPlayersPerWorld = new System.Windows.Forms.NumericUpDown();
@@ -317,6 +316,8 @@
             this.bApply = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.IColorGlobal = new System.Windows.Forms.Label();
+            this.bColorGlobal = new System.Windows.Forms.Button();
             this.tabs.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.gBasic.SuspendLayout();
@@ -425,7 +426,6 @@
             // 
             // gBasic
             // 
-            this.gBasic.Controls.Add(this.xWebPanel);
             this.gBasic.Controls.Add(this.label6);
             this.gBasic.Controls.Add(this.HeartBeatUrlComboBox);
             this.gBasic.Controls.Add(this.nMaxPlayersPerWorld);
@@ -452,16 +452,6 @@
             this.gBasic.TabIndex = 0;
             this.gBasic.TabStop = false;
             this.gBasic.Text = "Basic Settings";
-            // 
-            // xWebPanel
-            // 
-            this.xWebPanel.AutoSize = true;
-            this.xWebPanel.Location = new System.Drawing.Point(440, 162);
-            this.xWebPanel.Name = "xWebPanel";
-            this.xWebPanel.Size = new System.Drawing.Size(125, 19);
-            this.xWebPanel.TabIndex = 21;
-            this.xWebPanel.Text = "Enable WebPanel";
-            this.xWebPanel.UseVisualStyleBackColor = true;
             // 
             // label6
             // 
@@ -1037,6 +1027,7 @@
             // 
             this.gChatColors.BackColor = System.Drawing.Color.IndianRed;
             this.gChatColors.Controls.Add(this.lColorMe);
+            this.gChatColors.Controls.Add(this.bColorGlobal);
             this.gChatColors.Controls.Add(this.bColorMe);
             this.gChatColors.Controls.Add(this.lColorWarning);
             this.gChatColors.Controls.Add(this.bColorWarning);
@@ -1045,6 +1036,7 @@
             this.gChatColors.Controls.Add(this.bColorPM);
             this.gChatColors.Controls.Add(this.lColorHelp);
             this.gChatColors.Controls.Add(this.lColorPM);
+            this.gChatColors.Controls.Add(this.IColorGlobal);
             this.gChatColors.Controls.Add(this.lColorSay);
             this.gChatColors.Controls.Add(this.bColorAnnouncement);
             this.gChatColors.Controls.Add(this.lColorAnnouncement);
@@ -3817,6 +3809,25 @@
             this.toolTip.IsBalloon = true;
             this.toolTip.ReshowDelay = 100;
             // 
+            // IColorGlobal
+            // 
+            this.IColorGlobal.AutoSize = true;
+            this.IColorGlobal.Location = new System.Drawing.Point(402, 111);
+            this.IColorGlobal.Name = "IColorGlobal";
+            this.IColorGlobal.Size = new System.Drawing.Size(103, 15);
+            this.IColorGlobal.TabIndex = 10;
+            this.IColorGlobal.Text = "Global Chat Color";
+            // 
+            // bColorGlobal
+            // 
+            this.bColorGlobal.BackColor = System.Drawing.Color.White;
+            this.bColorGlobal.Location = new System.Drawing.Point(525, 111);
+            this.bColorGlobal.Name = "bColorGlobal";
+            this.bColorGlobal.Size = new System.Drawing.Size(100, 23);
+            this.bColorGlobal.TabIndex = 13;
+            this.bColorGlobal.UseVisualStyleBackColor = false;
+            this.bColorGlobal.Click += new System.EventHandler(this.bColorGlobal_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -4217,6 +4228,7 @@
         private System.Windows.Forms.TextBox tChanPass;
         private System.Windows.Forms.CheckBox xChanPass;
         private System.Windows.Forms.CheckBox xAutoRank;
-        private System.Windows.Forms.CheckBox xWebPanel;
+        private System.Windows.Forms.Button bColorGlobal;
+        private System.Windows.Forms.Label IColorGlobal;
     }
 }

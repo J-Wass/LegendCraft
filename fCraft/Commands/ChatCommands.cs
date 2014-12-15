@@ -411,7 +411,7 @@ THE SOFTWARE.*/
             {
                 string rawMessage = player.ClassyName + Color.White + ": " + message;
                 message = player.ClassyName + Color.Black + ": " + message;
-                SendList.Message("&i[Global] " + rawMessage); 
+                SendList.Message("&g[Global] " + rawMessage); 
                 GlobalChat.GlobalThread.SendChannelMessage(Color.ReplacePercentCodes(Color.MinecraftToIrcColors(message))); 
             }
         }

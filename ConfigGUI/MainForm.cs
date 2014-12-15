@@ -1231,7 +1231,7 @@ Your rank is {RANK}&S. Type &H/Help&S for help." );
 
 
         #region Colors
-        int colorSys, colorSay, colorHelp, colorAnnouncement, colorPM, colorIRC, colorMe, colorWarning, colorCustom;
+        int colorSys, colorSay, colorHelp, colorAnnouncement, colorPM, colorIRC, colorMe, colorWarning, colorCustom, colorGlobal;
 
         void ApplyColor( Button button, int color ) {
             button.Text = Color.GetName( color );
@@ -1304,6 +1304,15 @@ Your rank is {RANK}&S. Type &H/Help&S for help." );
             Color.IRC = Color.Parse( colorIRC );
         }
 
+        private void bColorGlobal_Click(object sender, EventArgs e)
+        {
+            ColorPicker picker = new ColorPicker("Global message color", colorGlobal);
+            picker.ShowDialog();
+            colorGlobal = picker.ColorIndex;
+            ApplyColor(bColorGlobal, colorGlobal);
+            Color.Global = Color.Parse(colorGlobal);
+        }
+
         private void bColorRank_Click( object sender, EventArgs e ) {
             ColorPicker picker = new ColorPicker( "Rank color for \"" + selectedRank.Name + "\"", Color.ParseToIndex( selectedRank.Color ) );
             picker.ShowDialog();
@@ -1319,7 +1328,7 @@ Your rank is {RANK}&S. Type &H/Help&S for help." );
         void UpdateChatPreview() {
             List<string> lines = new List<string>();
             if( xShowConnectionMessages.Checked ) {
-                lines.Add( String.Format( "&SPlayer {0}{1}Notch&S connected, joined {2}{3}main",
+                lines.Add( String.Format( "&SPlayer {0}{1}LeChosenOne&S connected, joined {2}{3}main",
                                           xRankColorsInChat.Checked ? RankManager.HighestRank.Color : "",
                                           xRankPrefixesInChat.Checked ? RankManager.HighestRank.Prefix : "",
                                           xRankColorsInWorldNames.Checked ? RankManager.LowestRank.Color : "",
@@ -1330,7 +1339,7 @@ Your rank is {RANK}&S. Type &H/Help&S for help." );
             lines.Add( String.Format( "{0}{1}LeChosenOne&F: This is a normal chat message",
                                       xRankColorsInChat.Checked ? RankManager.HighestRank.Color : "",
                                       xRankPrefixesInChat.Checked ? RankManager.HighestRank.Prefix : "" ) );
-            lines.Add( "&Pfrom Dingus: This is a private message / whisper" );
+            lines.Add( "&Pfrom Dingus: This is a private message /whisper" );
             lines.Add( "&M*LeChosenOne is using /Me to write this" );
             if( xShowJoinedWorldMessages.Checked ) {
                 Rank midRank = RankManager.LowestRank;
@@ -1346,7 +1355,7 @@ Your rank is {RANK}&S. Type &H/Help&S for help." );
             }
             lines.Add( "&SUnknown command \"kikc\", see &H/Commands" );
             if( xAnnounceKickAndBanReasons.Checked ) {
-                lines.Add( String.Format( "&W{0}{1}LeChosenOne&W was kicked by {0}{1}gamer1&W: Reason goes here",
+                lines.Add( String.Format( "&W{0}{1}LeChosenOne&W was kicked by {0}{1}Dingus&W: Reason goes here",
                                           xRankColorsInChat.Checked ? RankManager.HighestRank.Color : "",
                                           xRankPrefixesInChat.Checked ? RankManager.HighestRank.Prefix : "" ) );
             } else {

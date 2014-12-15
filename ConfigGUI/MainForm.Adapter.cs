@@ -165,17 +165,6 @@ namespace fCraft.ConfigGUI
                 checkUpdate.Checked = false;
             }
 
-            if (!ConfigKey.WebPanelEnabled.IsBlank())
-            {
-                if (ConfigKey.WebPanelEnabled.GetString() == "True")
-                {
-                    xWebPanel.Checked = true;
-                }
-                else
-                {
-                    xWebPanel.Checked = false;
-                }
-            }
 
 
             FillRankList(cDefaultRank, "(lowest rank)");
@@ -254,6 +243,10 @@ namespace fCraft.ConfigGUI
             colorMe = Color.ParseToIndex(ConfigKey.MeColor.GetString());
             ApplyColor(bColorMe, colorMe);
             Color.Me = Color.Parse(colorMe);
+
+            colorGlobal = Color.ParseToIndex(ConfigKey.GlobalColor.GetString());
+            ApplyColor(bColorGlobal, colorGlobal);
+            Color.Global = Color.Parse(colorGlobal);
 
             UpdateChatPreview();
         }
@@ -573,7 +566,6 @@ namespace fCraft.ConfigGUI
             ConfigKey.CustomChatName.TrySetValue(CustomName.Text);
             ConfigKey.SwearName.TrySetValue(SwearBox.Text);
             ConfigKey.CheckForUpdates.TrySetValue(checkUpdate.Checked.ToString());
-            ConfigKey.WebPanelEnabled.TrySetValue(xWebPanel.Checked.ToString());
             ConfigKey.WebsiteURL.TrySetValue(websiteURL.Text);
             ConfigKey.HeartbeatUrl.TrySetValue(HeartBeatUrlComboBox.SelectedItem);
             ConfigKey.CustomAliasName.TrySetValue(CustomAliases.Text);
@@ -621,6 +613,7 @@ namespace fCraft.ConfigGUI
             ConfigKey.PrivateMessageColor.TrySetValue(Color.GetName(colorPM));
             ConfigKey.WarningColor.TrySetValue(Color.GetName(colorWarning));
             ConfigKey.MeColor.TrySetValue(Color.GetName(colorMe));
+            ConfigKey.GlobalColor.TrySetValue(Color.GetName(colorGlobal));
             ConfigKey.ShowJoinedWorldMessages.TrySetValue(xShowJoinedWorldMessages.Checked);
             ConfigKey.RankColorsInWorldNames.TrySetValue(xRankColorsInWorldNames.Checked);
             ConfigKey.RankColorsInChat.TrySetValue(xRankColorsInChat.Checked);

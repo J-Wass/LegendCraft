@@ -29,7 +29,7 @@ namespace fCraft
                             White = "&f";
 
         // User-defined color assignments. Set by Config.ApplyConfig.
-        public static string Sys, Help, Say, Announcement, PM, IRC, Me, Custom, Warning;
+        public static string Sys, Help, Say, Announcement, PM, IRC, Me, Custom, Warning, Global;
 
         // Defaults for user-defined colors.
         public const string SysDefault = Yellow,
@@ -40,7 +40,8 @@ namespace fCraft
                             IRCDefault = Purple,
                             MeDefault = Purple,
                             WarningDefault = Red,
-                            CustomDefault = Yellow;
+                            CustomDefault = Yellow,
+                            GlobalDefault = Purple;
 
         public static readonly SortedList<char, string> ColorNames = new SortedList<char, string>{
             { '0', "black" },
@@ -156,6 +157,7 @@ namespace fCraft
                     case 'w': return Warning;
                     case 'm': return Me;
                     case 'i': return IRC;
+                    case 'g': return Global;
                     default:
                         return null;
                 }
@@ -243,6 +245,7 @@ namespace fCraft
                         case "&w": return ColorNames.IndexOfKey(Warning[1]);
                         case "&m": return ColorNames.IndexOfKey(Me[1]);
                         case "&i": return ColorNames.IndexOfKey(IRC[1]);
+                        case "&g": return ColorNames.IndexOfKey(Global[1]);
                         default: return 15;
                     }
                 }
@@ -322,6 +325,7 @@ namespace fCraft
                         case 'w': sb[i] = Warning[1]; break;
                         case 'm': sb[i] = Me[1]; break;
                         case 'i': sb[i] = IRC[1]; break;
+                        case 'g': sb[i] = Global[1]; break;
                         default:
                             if (IsValidColorCode(sb[i]))
                             {
@@ -495,6 +499,9 @@ namespace fCraft
                             break;
                         case 'i':
                             sb[i] = IRC[1];
+                            break;
+                        case 'g':
+                            sb[i] = Global[1];
                             break;
                         default:
                             if (!IsValidColorCode(sb[i]))
