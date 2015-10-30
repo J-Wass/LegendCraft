@@ -4,7 +4,7 @@ All bugs and glitches randomly found in the game are meant to happen.
 
 Here lies LegendCraft. After a year of inactivity, it's time to finally let it rest. LegendCraft, along with DingusBungus, was my software for Minecraft Classic and early Classicube. With the loss of interest in these games, LegendCraft too has fallen. Thank you to everyone for making what was once my daily routine possible. Special thanks to Jonty800, fragmer, Eeyle, and especially DingusBungus. Shout outs to ThunderCraft, RisingEmbers, Un1Craft, and so many other servers. Programming in LegendCraft has taught me nearly everything I now know about programming. I have learned so much, and LegendCraft will always be with me wherever I go. 
 
-Long Live Classicube
+Long Live Classicube<br />
 Long Live Minecraft Classic
 
 #LegendCraft
