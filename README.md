@@ -1,6 +1,11 @@
-﻿2.4.0
+2.4.0
 
-All bugs and glitches randomly found in the game are meant to happen, they add to the fun :D
+All bugs and glitches randomly found in the game are meant to happen.
+
+Here lies LegendCraft. After a year of inactivity, it's time to finally let it rest. LegendCraft, along with DingusBungus, was my software for Minecraft Classic and early Classicube. With the loss of interest in these games, LegendCraft too has fallen. Thank you to everyone for making what was once my daily routine possible. Special thanks to Jonty800, fragmer, Eeyle, and especially DingusBungus. Shout outs to ThunderCraft, RisingEmbers, Un1Craft, and so many other servers. Programming in LegendCraft has taught me nearly everything I now know about programming. I have learned so much, and LegendCraft will always be with me wherever I go. 
+
+Long Live Classicube
+Long Live Minecraft Classic
 
 #LegendCraft
 ![LegendCraft](http://i.imgur.com/YNPR6p0.png "Ya it's a logo deal with it")<br />
@@ -13,9 +18,7 @@ https://github.com/LeChosenOne/LegendCraft/releases
 
 Thank you for downloading LegendCraft, a custom Minecraft/ClassiCube server based on fCraft and 800craft.
 
-Special thanks to fragmer, for creating fCraft! Special thanks to Jonty800, GlennMR and LaoTszy for their hard 
-
-work with
+Special thanks to fragmer, for creating fCraft! Special thanks to Jonty800, GlennMR and LaoTszy for their hard work with
 800Craft! LegendCraft is a modified version of 800Craft. 
 
 
