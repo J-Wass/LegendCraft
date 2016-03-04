@@ -1270,7 +1270,7 @@ THE SOFTWARE.*/
             Usage = "/Reload config/salt/swears",
             Help = "Reloads a given configuration file or setting. "+
                    "Config note: changes to ranks and IRC settings still require a full restart. "+
-                   "Salt note: Until server synchronizes with Minecraft.net, " +
+                   "Salt note: Until server synchronizes with ClassiCube.net, " +
                    "connecting players may have trouble verifying names.",
             Handler = ReloadHandler
         };
@@ -1301,7 +1301,7 @@ THE SOFTWARE.*/
                     case "salt":
                         Heartbeat.Salt = Server.GetRandomString( 32 );
                         Heartbeat.Salt2 = Server.GetRandomString(32);
-                        player.Message( "&WNote: Until server synchronizes with Minecraft.net, " +
+                        player.Message( "&WNote: Until server synchronizes with ClassiCube.net, " +
                                         "connecting players may have trouble verifying names." );
                         success = true;
                         break;

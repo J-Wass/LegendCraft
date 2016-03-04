@@ -36,8 +36,6 @@
             this.tabs = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
             this.gBasic = new System.Windows.Forms.GroupBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.HeartBeatUrlComboBox = new System.Windows.Forms.ComboBox();
             this.nMaxPlayersPerWorld = new System.Windows.Forms.NumericUpDown();
             this.lMaxPlayersPerWorld = new System.Windows.Forms.Label();
             this.lPort = new System.Windows.Forms.Label();
@@ -426,8 +424,6 @@
             // 
             // gBasic
             // 
-            this.gBasic.Controls.Add(this.label6);
-            this.gBasic.Controls.Add(this.HeartBeatUrlComboBox);
             this.gBasic.Controls.Add(this.nMaxPlayersPerWorld);
             this.gBasic.Controls.Add(this.lMaxPlayersPerWorld);
             this.gBasic.Controls.Add(this.lPort);
@@ -452,29 +448,6 @@
             this.gBasic.TabIndex = 0;
             this.gBasic.TabStop = false;
             this.gBasic.Text = "Basic Settings";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(10, 160);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(112, 15);
-            this.label6.TabIndex = 20;
-            this.label6.Text = "HeartBeat Location";
-            // 
-            // HeartBeatUrlComboBox
-            // 
-            this.HeartBeatUrlComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.HeartBeatUrlComboBox.FormattingEnabled = true;
-            this.HeartBeatUrlComboBox.Items.AddRange(new object[] {
-            "Minecraft.net",
-            "ClassiCube.net"});
-            this.HeartBeatUrlComboBox.Location = new System.Drawing.Point(123, 157);
-            this.HeartBeatUrlComboBox.Name = "HeartBeatUrlComboBox";
-            this.HeartBeatUrlComboBox.Size = new System.Drawing.Size(194, 23);
-            this.HeartBeatUrlComboBox.TabIndex = 19;
-            this.HeartBeatUrlComboBox.SelectedIndexChanged += new System.EventHandler(this.HeartBeatUrlComboBox_SelectedIndexChanged);
             // 
             // nMaxPlayersPerWorld
             // 
@@ -1212,7 +1185,7 @@
             this.xWoMEnableEnvExtensions.Name = "xWoMEnableEnvExtensions";
             this.xWoMEnableEnvExtensions.Size = new System.Drawing.Size(251, 19);
             this.xWoMEnableEnvExtensions.TabIndex = 22;
-            this.xWoMEnableEnvExtensions.Text = "Enable Env Extensions (/MapEdit or /Env)";
+            this.xWoMEnableEnvExtensions.Text = "Enable Env Extensions (/Env)";
             this.xWoMEnableEnvExtensions.UseVisualStyleBackColor = true;
             // 
             // bMapPath
@@ -4216,8 +4189,6 @@
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Button bWiki;
         private System.Windows.Forms.Button bWeb;
-        private System.Windows.Forms.ComboBox HeartBeatUrlComboBox;
-        private System.Windows.Forms.Label label6;
         private System.Windows.Forms.CheckBox xCrash;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.Button bUpdate;

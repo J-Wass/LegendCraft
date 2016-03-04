@@ -548,12 +548,12 @@ Each state increases the maximum potential memory use per-player.",
 @"Displayed name of the Console pseudoplayer. You may use any printable characters, and even colorcodes here.",
             MinLength = 1, MaxLength = 64 )]
         ConsoleName,
-
+        
         [StringKey(ConfigSection.General, "Classicube.net",
 @"URL to send heartbeats to. Default is classicube.net.
 This config key is added in case alternative login/heartbeat services arise.")]
         HeartbeatUrl,
-
+        
         [BoolKey( ConfigSection.Advanced, false,
 @"Enable AutoRank to run on the server." )]
         AutoRankEnabled,
@@ -568,7 +568,7 @@ If disabled, heartbeat data is written to heartbeatdata.txt." )]
         HeartbeatToWoMDirect,
 
         [BoolKey( ConfigSection.Advanced, false,
-@"If enabled, allows changing worlds' environment settings for WoM clients via /Env or /MapEdit" )]
+@"If enabled, allows changing worlds' environment settings for WoM clients via /Env" )]
         WoMEnableEnvExtensions,
 
         [IPKey( ConfigSection.Advanced, IPKeyAttribute.BlankValueMeaning.Any,

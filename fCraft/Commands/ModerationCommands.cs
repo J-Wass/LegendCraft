@@ -1,4 +1,4 @@
-// Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
+﻿// Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -157,7 +157,7 @@ THE SOFTWARE.*/
 
         private static void FHHandler(Player player, Command cmd)
         {
-            if (!Heartbeat.ClassiCube() || !player.usesCPE)
+            if (!player.usesCPE)
             {
                 player.Message("This is a ClassiCube only command!");
                 return;
@@ -218,7 +218,7 @@ THE SOFTWARE.*/
 
         public static void AnnounceHandler(Player player, Command cmd)
         {
-            if (!Heartbeat.ClassiCube() || !player.usesCPE)
+            if (!player.usesCPE)
             {
                 player.Message("This is a ClassiCube only command!");
                 return;
@@ -415,11 +415,6 @@ THE SOFTWARE.*/
 
         private static void SetClickHandler(Player player, Command cmd)
         {
-            if (!Heartbeat.ClassiCube())
-            {
-                player.Message("This command can only be used on ClassiCube server!");
-                return;
-            }
             string targetName = cmd.Next();
             if (String.IsNullOrEmpty(targetName))
             {

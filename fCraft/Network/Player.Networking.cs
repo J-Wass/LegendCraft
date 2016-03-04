@@ -1337,34 +1337,8 @@ namespace fCraft
             }
 
             string textLine1 = ConfigKey.ServerName.GetString();
-            string textLine2;
-
-            if (IsUsingWoM && ConfigKey.WoMEnableEnvExtensions.Enabled() && !Heartbeat.ClassiCube())
-            {
-                if (IP.Equals(IPAddress.Loopback))
-                {
-                    textLine2 = "cfg=localhost:" + Server.Port + "/" + newWorld.Name;
-                }
-                else
-                {
-                    textLine2 = "cfg=" + Server.ExternalIP + ":" + Server.Port + "/" + newWorld.Name;
-                }
-            }
-            else if (usesCPE && ConfigKey.WoMEnableEnvExtensions.Enabled() && Heartbeat.ClassiCube())
-            {
-                if (!newWorld.Hax)
-                {
-                    textLine2 = "Loading world " + newWorld.ClassyName + "-hax";
-                }
-                else
-                {
-                    textLine2 = "Loading world " + newWorld.ClassyName;
-                }
-            }
-            else
-            {
-                textLine2 = "Loading world " + newWorld.ClassyName;
-            }
+            string textLine2 = "Loading world " + newWorld.ClassyName;
+            if (newWorld.Hax) textLine2 += " -hax";
 
             if (RaisePlayerJoiningWorldEvent(this, newWorld, reason, textLine1, textLine2))
             {
@@ -1554,33 +1528,18 @@ namespace fCraft
             Info.placingBlueFlag = false;
             Info.placingRedFlag = false;
 
-            //reset all special messages
             if (usesCPE)
             {
+                //reset all special messages
                 Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));
                 Send(PacketWriter.MakeSpecialMessage((byte)1, "&f"));
                 Send(PacketWriter.MakeSpecialMessage((byte)2, "&f"));
-            }
 
-
-
-            if (Heartbeat.ClassiCube() && usesCPE)
-            {
-                //update mapedit values
-                Packet sky = PacketWriter.MakeEnvSetColor((byte)0, World.SkyColorCC);
-                Packet cloud = PacketWriter.MakeEnvSetColor((byte)1, World.CloudColorCC);
-                Packet fog = PacketWriter.MakeEnvSetColor((byte)2, World.FogColorCC);
-                Packet weather = PacketWriter.MakeEnvWeatherAppearance((byte)World.WeatherCC);
-
-                if (World.usesCustomTexture)
-                {
-                    Packet envSetMapAppearance = PacketWriter.MakeEnvSetMapAppearance(World.textureURL, World.sideBlock, World.edgeBlock, World.sideLevel);
-                    Send(envSetMapAppearance);
-                }
-                Send(sky);
-                Send(cloud);
-                Send(fog);
-                Send(weather);
+                Send(PacketWriter.MakeEnvSetMapAppearance(World.textureURL, World.SideBlock, World.EdgeBlock, World.EdgeLevel));
+                Send(PacketWriter.MakeEnvSetColor(0, World.SkyColor));
+                Send(PacketWriter.MakeEnvSetColor(1, World.CloudColor));
+                Send(PacketWriter.MakeEnvSetColor(2, World.FogColor));
+                Send(PacketWriter.MakeEnvWeatherAppearance((byte)World.WeatherCC));
 
                 if (!World.Hax)
                 {
@@ -1988,7 +1947,7 @@ namespace fCraft
                 var pos = new VisibleEntity(newPos, freePlayerIDs.Pop(), player.Info.Rank);
                 entities.Add(player, pos);
                 SendNow(PacketWriter.MakeAddEntity(entities[player].Id, player.Info.Rank.Color + player.Skinname, newPos));
-                if (usesCPE && Heartbeat.ClassiCube())
+                if (usesCPE)
                 {
                     SendNow(PacketWriter.MakeExtAddEntity((byte)entities[player].Id, player.ListName, player.Skinname));
                 }
@@ -2019,9 +1978,9 @@ namespace fCraft
             if (entity == null) throw new ArgumentNullException("entity");
             if (player == null) throw new ArgumentNullException("player");
             SendNow(PacketWriter.MakeRemoveEntity(entity.Id));
-            if (usesCPE && Heartbeat.ClassiCube())
+            if (usesCPE)
                 SendNow(PacketWriter.MakeExtRemovePlayerName((short)entity.Id));
-            if (usesCPE && Heartbeat.ClassiCube())
+            if (usesCPE)
             {
                 if (player.iName == null)
                     SendNow(PacketWriter.MakeExtAddEntity((byte)entities[player].Id, player.Skinname, player.Name));

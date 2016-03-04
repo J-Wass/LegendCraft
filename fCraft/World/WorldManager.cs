@@ -309,43 +309,49 @@ namespace fCraft {
                     }
                     else
                     {
-                        if (Map.GetEdgeTexture(block) == null)
-                        {
-                            world.EdgeBlock = Block.Water;
-                            Logger.Log(LogType.Warning,
-                                        "WorldManager: Unacceptable blocktype given for \"edge\" attribute of Environment settings for world \"{0}\", assuming default (Water).",
-                                        worldName);
-                        }
-                        else
-                        {
-                            world.EdgeBlock = block;
-                        }
+                        world.EdgeBlock = block;
+                    }
+                }
+                
+                if ((tempAttr = envEl.Attribute("side")) != null)
+                {
+                    Block block = Map.GetBlockByName(tempAttr.Value);
+                    if (block == Block.Undefined)
+                    {
+                        world.EdgeBlock = Block.Admincrete;
+                        Logger.Log(LogType.Warning,
+                                    "WorldManager: Could not parse \"side\" attribute of Environment settings for world \"{0}\", assuming default (Admincrete).",
+                                    worldName);
+                    }
+                    else
+                    {
+                        world.SideBlock = block;
                     }
                 }
 
                 if ((tempAttr = envEl.Attribute("cloudCC")) != null)
                 {
-                    world.CloudColorCC = tempAttr.Value;
+                	world.CloudColor = System.Drawing.ColorTranslator.FromHtml(tempAttr.Value).ToArgb();
                 }
                 if ((tempAttr = envEl.Attribute("fogCC")) != null)
                 {
-                    world.FogColorCC = tempAttr.Value;
+                    world.FogColor = System.Drawing.ColorTranslator.FromHtml(tempAttr.Value).ToArgb();
                 }
                 if ((tempAttr = envEl.Attribute("skyCC")) != null)
                 {
-                    world.SkyColorCC = tempAttr.Value;
+                    world.SkyColor = System.Drawing.ColorTranslator.FromHtml(tempAttr.Value).ToArgb();
                 }
                 if ((tempAttr = envEl.Attribute("levelCC")) != null)
                 {
-                    world.sideLevel = Convert.ToInt16(tempAttr.Value);
+                    world.EdgeLevel = Convert.ToInt16(tempAttr.Value);
                 }
                 if ((tempAttr = envEl.Attribute("edgeCC")) != null)
                 {
-                    world.edgeBlock = (byte)Convert.ToInt16(tempAttr.Value);
+                	world.EdgeBlock = (Block)Byte.Parse(tempAttr.Value);
                 }
                 if ((tempAttr = envEl.Attribute("sideCC")) != null)
                 {
-                    world.sideBlock = (byte)Convert.ToInt16(tempAttr.Value);
+                	world.SideBlock = (Block)Byte.Parse(tempAttr.Value);
                 }
                 if ((tempAttr = envEl.Attribute("textureCC")) != null)
                 {
@@ -490,21 +496,15 @@ namespace fCraft {
                     if( world.FogColor > -1 ) elEnv.Add( new XAttribute( "fog", world.FogColor ) );
                     if( world.SkyColor > -1 ) elEnv.Add( new XAttribute( "sky", world.SkyColor ) );
                     if( world.EdgeLevel > -1 ) elEnv.Add( new XAttribute( "level", world.EdgeLevel ) );
-                    if (world.Terrain != null) elEnv.Add(new XAttribute("terrain", world.Terrain));
-                    if( world.EdgeBlock != Block.Water ) elEnv.Add( new XAttribute( "edge", world.EdgeBlock ) );
+                    if( world.Terrain != null ) elEnv.Add(new XAttribute("terrain", world.Terrain));
+                    elEnv.Add( new XAttribute( "edge", world.EdgeBlock ) );
+                    elEnv.Add( new XAttribute( "side", world.SideBlock ) );
 
                     //ClassiCube
-                    elEnv.Add(new XAttribute("cloudCC", world.CloudColorCC));
-                    elEnv.Add(new XAttribute("fogCC", world.FogColorCC));
-                    elEnv.Add(new XAttribute("skyCC", world.SkyColorCC));
-                    elEnv.Add(new XAttribute("levelCC", (int)(world.sideLevel)));
-                    elEnv.Add(new XAttribute("edgeCC", (int)(world.edgeBlock)));
-                    elEnv.Add(new XAttribute("sideCC", (int)(world.sideBlock)));
                     elEnv.Add(new XAttribute("textureCC", world.textureURL));
                     elEnv.Add(new XAttribute("hacks", world.Hax.ToString()));
-                    if( elEnv.HasAttributes ) {
+                    if( elEnv.HasAttributes )
                         temp.Add( elEnv );
-                    }
 
                     root.Add( temp );
                 }
