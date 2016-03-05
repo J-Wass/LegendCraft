@@ -524,15 +524,7 @@ namespace fCraft
                             }
                             catch (Exception e) 
                             {
-                                if (e is NullReferenceException)
-                                {
-                                    //chill
-                                }
-                                else
-                                {
-                                    //panic
-                                    Logger.Log(LogType.Error, e.Message);
-                                }
+                                Logger.Log(LogType.Error, e.Message + Environment.NewLine + e);
                             }
 
                             if (!commandDescriptor.NotRepeatable)
