@@ -1267,20 +1267,6 @@ namespace fCraft
         {
             if (newWorld == null) throw new ArgumentNullException("newWorld");
 
-            //update fallback blocks for non CPE users
-            if (!usesCPE)
-            {
-                Map newMap = newWorld.Map;
-                for (int i = 0; i < newMap.Blocks.Length; i++)
-                {
-                    if (newMap.Blocks[i] > 49)
-                    {
-                        newMap.Blocks[i] = (byte)Map.GetFallbackBlock((Block)Enum.GetValues(typeof(Block)).GetValue(newMap.Blocks[i]));
-                    }
-                }
-                newWorld.Map = newMap;
-            }
-
             lock (joinWorldLock)
             {
                 useWorldSpawn = true;
@@ -1297,20 +1283,6 @@ namespace fCraft
             if (!Enum.IsDefined(typeof(WorldChangeReason), reason))
             {
                 throw new ArgumentOutOfRangeException("reason");
-            }
-
-            //update fallback blocks for non CPE users
-            if (!usesCPE)
-            {
-                Map newMap = newWorld.Map;
-                for (int i = 0; i < newMap.Blocks.Length; i++)
-                {
-                    if (newMap.Blocks[i] > 49)
-                    {
-                        newMap.Blocks[i] = (byte)Map.GetFallbackBlock((Block)Enum.GetValues(typeof(Block)).GetValue(newMap.Blocks[i]));
-                    }
-                }
-                newWorld.Map = newMap;
             }
 
             lock (joinWorldLock)
@@ -1947,9 +1919,9 @@ namespace fCraft
                 var pos = new VisibleEntity(newPos, freePlayerIDs.Pop(), player.Info.Rank);
                 entities.Add(player, pos);
                 SendNow(PacketWriter.MakeAddEntity(entities[player].Id, player.Info.Rank.Color + player.Skinname, newPos));
-                if (usesCPE)
-                {
+                if (usesCPE) {
                     SendNow(PacketWriter.MakeExtAddEntity((byte)entities[player].Id, player.ListName, player.Skinname));
+                    SendNow(PacketWriter.MakeTeleport(entities[player].Id, newPos));
                 }
             }
         }
@@ -1980,17 +1952,22 @@ namespace fCraft
             SendNow(PacketWriter.MakeRemoveEntity(entity.Id));
             if (usesCPE)
                 SendNow(PacketWriter.MakeExtRemovePlayerName((short)entity.Id));
-            if (usesCPE)
+            /*if (usesCPE)
             {
                 if (player.iName == null)
                     SendNow(PacketWriter.MakeExtAddEntity((byte)entities[player].Id, player.Skinname, player.Name));
                 else
                     SendNow(PacketWriter.MakeExtAddEntity((byte)entities[player].Id, player.Skinname, player.iName));
                
+            }*/
+            SendNow(PacketWriter.MakeAddEntity(entity.Id, player.Info.Rank.Color + player.Skinname, newPos));
+            if (usesCPE) {
+            	SendNow(PacketWriter.MakeExtAddEntity((byte)entity.Id, player.ListName, player.Skinname));
+            	SendNow(PacketWriter.MakeTeleport(entities[player].Id, newPos));
             }
             entity.LastKnownPosition = newPos;
         }
-
+        
 
         void RemoveEntity([NotNull] Player player)
         {
