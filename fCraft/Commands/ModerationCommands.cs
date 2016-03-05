@@ -570,7 +570,7 @@ THE SOFTWARE.*/
             IsConsoleSafe = false,
             Category = CommandCategory.Moderation,
             Permissions = new[] { Permission.Freeze },
-            Help = "&SFreezes and summons a player to your location. Usefull for griefers.",
+            Help = "&SFreezes and summons a player to your location. Useful for griefers.",
             Usage = "&S/FreezeBring player",
             Handler = FBHandler
         };

@@ -1040,7 +1040,7 @@ THE SOFTWARE.*/
                     } else {
                         if( idle.TotalMinutes > 1 ) {
                             if( player.Can( Permission.ViewPlayerIPs ) ) {
-                                player.Message( "About {0}&S({1}): Online now from {2} (idle {3)",
+                                player.Message( "About {0}&S({1}): Online now from {2} (idle {3})",
                                                 info.ClassyName,
                                                 info.Name,
                                                 info.LastIP,

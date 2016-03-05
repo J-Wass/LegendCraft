@@ -1,4 +1,4 @@
-// Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
+﻿// Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -322,7 +322,7 @@ namespace fCraft
         {
             BytesReceived += 66;
             ResetIdleTimer();
-            reader.ReadByte();
+            byte continuedMessage = reader.ReadByte();
             string message = ReadString();
 
             if (String.IsNullOrEmpty(message))
@@ -346,6 +346,9 @@ namespace fCraft
                 KickNow("Illegal characters in chat.", LeaveReason.InvalidMessageKick);
                 return false;
             }
+            
+            if (continuedMessage == 1 && SupportsLongerMessages)
+                message = message + "Ω";
 #if DEBUG
                 ParseMessage( message, false, true );
 #else
