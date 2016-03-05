@@ -269,6 +269,11 @@ namespace fCraft
                             processedMessage = NonPrintableChars.Replace(processedMessage, "");
                             if (processedMessage.Length > 0)
                             {
+                                if (processedMessage.Equals(".players", StringComparison.OrdinalIgnoreCase) ||
+                                    processedMessage.Equals("!players", StringComparison.OrdinalIgnoreCase)) {
+                                    HandleIRCPlayers(); return;
+                                }
+                            	
                                 if (ConfigKey.IRCBotForwardFromIRC.Enabled())
                                 {
                                     if (msg.Type == IRCMessageType.ChannelAction)
@@ -418,6 +423,16 @@ namespace fCraft
                 }
             }
 
+            void HandleIRCPlayers() {
+                Player[] players = Server.Players.Where(p => !p.Info.IsHidden)
+                    .OrderBy(p => p, PlayerListSorter.Instance).ToArray();
+                
+                if (players.Length == 0) {
+                    SendChannelMessage("There are 0 players online.");
+                } else {
+                    SendChannelMessage("Players online: " + players.JoinToClassyString());
+                }
+            }
 
             public void DisconnectThread()
             {
