@@ -16,7 +16,7 @@ namespace fCraft.Drawing {
 
         public string[] Aliases { get; private set; }
 
-        const string HelpString = "Checkered brush: Fills the area with alternating checkered pattern. " +
+        const string HelpString = "Fills the area with alternating checkered pattern. " +
                                   "If only one block name is given, leaves every other block untouched.";
         public string Help {
             get { return HelpString; }

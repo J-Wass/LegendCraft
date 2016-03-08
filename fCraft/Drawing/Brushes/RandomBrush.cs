@@ -19,7 +19,7 @@ namespace fCraft.Drawing {
 
         public string[] Aliases { get; private set; }
 
-        const string HelpString = "Random brush: Chaotic pattern of two or more random block types. " +
+        const string HelpString = "Chaotic pattern of two or more random block types. " +
                                   "If only one block name is given, leaves every other block untouched.";
         public string Help {
             get { return HelpString; }
