@@ -605,7 +605,6 @@ namespace fCraft {
 
 
         static readonly Dictionary<string, Block> BlockNames = new Dictionary<string, Block>();
-        static readonly Dictionary<Block, string> BlockEdgeTextures = new Dictionary<Block, string>();
 
         static Map() {
             // add default names for blocks, and their numeric codes
@@ -798,46 +797,6 @@ namespace fCraft {
             BlockNames["turqoisewool"] = Block.Turquoise;
             
             BlockNames["fancybrick"] = Block.StoneBrick;
-
-            // add WoM file hashes for edge textures
-            BlockEdgeTextures[Block.Air] = "bed8ac09b8c761527f3e205f8b85a2e22519b937";
-            BlockEdgeTextures[Block.Aqua] = "246870d16093ff02738b3d42084c6597c02fad36";
-            BlockEdgeTextures[Block.Black] = "48dcdd9b63fe5ce1129baea990189653dc833d69";
-            BlockEdgeTextures[Block.Blue] = "eea1b7e0a62d90b5b681f142bd2f483a671ba160";
-            BlockEdgeTextures[Block.Brick] = "b4a23c66dc4ba488a97becd62f2bae8d61eb8ad2";
-            BlockEdgeTextures[Block.Coal] = "1f9eb8aff893a43860fcd1f9c1e7ef84e0bfd77b";
-            BlockEdgeTextures[Block.Cobblestone] = "b4d9c39d00102f1b3b67c9e885b62cb8e27efd03";
-            BlockEdgeTextures[Block.Cyan] = "2532a657b5525ad10a0ccab78bd4343d44a0bfb7";
-            BlockEdgeTextures[Block.Dirt] = "e35227f0b78041e45523c3bf250f4922e82585e2";
-            BlockEdgeTextures[Block.Gold] = "7e2a41d578bde6fc253863ccc9a25eb099ff6daf";
-            BlockEdgeTextures[Block.GoldOre] = "1f61ef253653b9cd8f98a92922b3dbf50d939d09";
-            BlockEdgeTextures[Block.Grass] = "1acfce7a8cd70b8ca6047b66a5734e9a3c1d737d";
-            BlockEdgeTextures[Block.Gravel] = "e61083cd5396f207267391d5a1f0491c1ce6d404";
-            BlockEdgeTextures[Block.Gray] = "1cf2d2b250184516b22f351fa804c243d3ed64fe";
-            BlockEdgeTextures[Block.Green] = "8f4be9678eb1b6cc4175ff7f45b78fc9f0d76962";
-            BlockEdgeTextures[Block.Indigo] = "dfa3c9ff4b7cc393e84257ae6744edb6c53ded09";
-            BlockEdgeTextures[Block.Iron] = "6ec104eba32c595dd7c8c08bb99c422e0e2fc1b7";
-            BlockEdgeTextures[Block.IronOre] = "6b8ad341eb0f3209e67f4a1723ca8994f9517fae";
-            BlockEdgeTextures[Block.Lime] = "b6e1831c9b30d4e6f7012dd8b2f39e1150ef67fb";
-            BlockEdgeTextures[Block.Log] = "f3a13b17c5d906d165581c019b2a44eddd0ad5b7";
-            BlockEdgeTextures[Block.Magenta] = "578abc6d183d8a33b548ea92b0982cfb8201498b";
-            BlockEdgeTextures[Block.MossyRocks] = "182bf0fe9cf4476a573df4f470ac1b7e55936543";
-            BlockEdgeTextures[Block.Obsidian] = "73963ffce5d7d845eb3216a6766655fc405b473c";
-            BlockEdgeTextures[Block.Orange] = "cfd84200707e41556d1bb0ace3ca37c69b51cc54";
-            BlockEdgeTextures[Block.Pink] = "19fcc81e8204de91fdbfdc2b59cffe0bfb2ba823";
-            BlockEdgeTextures[Block.Red] = "be9c5e2ff1d4bbfcd0826c04db5684359acecf28";
-            BlockEdgeTextures[Block.Sand] = "1a2dda7ed25ad5e94da4c6a0ac7e63f4a9a72590";
-            BlockEdgeTextures[Block.Admincrete] = "7abdd25d9229087f29655a1974aed01cbd3eb753";
-            BlockEdgeTextures[Block.Sponge] = "eaecd6ec9c24ed8a2c20ffb10e83409f04409ddd";
-            BlockEdgeTextures[Block.Stair] = "9106fb8ac7a4eb6f30ce28921f071e6b31bdd74b";
-            BlockEdgeTextures[Block.DoubleStair] = BlockEdgeTextures[Block.Stair];
-            BlockEdgeTextures[Block.Stone] = "c2eaac7631e184e4e7f6eeca4c4d6a74f6d953f9";
-            BlockEdgeTextures[Block.Teal] = "9cbd25d433c533207b9946a0228ddd9aef7b17e5";
-            BlockEdgeTextures[Block.TNT] = "7314851e18cdfe9dd1513f9eab86901221421239";
-            BlockEdgeTextures[Block.Violet] = "a171372d9fca63df911485602a5120fd5422f2b9";
-            BlockEdgeTextures[Block.White] = "d7d91aef7f07a0e0dbafca3b6387619098916953";
-            BlockEdgeTextures[Block.Wood] = "af65cd0d0756d357a1abd5390b8de2e5ad1f29af";
-            BlockEdgeTextures[Block.Yellow] = "eff6823a987deb65ad21020a3151bb809d3d062c";
         }
 
 
@@ -878,19 +837,6 @@ namespace fCraft {
                 return result;
             } else {
                 return Block.Undefined;
-            }
-        }
-
-        /// <summary> Tries to find WoM file hashes for edge textures. </summary>
-        /// <param name="block"> Blocktype to find edge texture hash for. </param>
-        /// <returns> Hash string if found, or null if not found. </returns>
-        [CanBeNull]
-        internal static string GetEdgeTexture( Block block ) {
-            string result;
-            if( BlockEdgeTextures.TryGetValue( block, out result ) ) {
-                return result;
-            } else {
-                return null;
             }
         }
 

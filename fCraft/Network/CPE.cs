@@ -13,8 +13,6 @@ namespace fCraft
 {
     public sealed partial class Player
     {
-        const string SelectionBoxExtName = "SelectionBoxExt";//I don't think this is actually a packet
-        const int SelectionBoxExtVersion = 1;
         const string CustomBlocksExtName = "CustomBlocks";
         const int CustomBlocksExtVersion = 1;
         const byte CustomBlocksLevel = 1;
@@ -38,9 +36,10 @@ namespace fCraft
         const int EnvWeatherTypeExtVersion = 1;
         const string HackControlExtName = "HackControl";
         const int HackControlExtVersion = 1;
+        const string LongerMessagesExtName = "LongerMessages";
+        const int LongerMessagesExtVersion = 1;
 
         // Note: if more levels are added, change UsesCustomBlocks from bool to int
-        public bool SelectionBoxExt { get; set; }//is this even a thing?
         public bool UsesCustomBlocks { get; set; }
         public bool SupportsClickDistance = false;
         public bool SupportsEnvColors = false;
@@ -52,26 +51,29 @@ namespace fCraft
         public bool SupportsSelectionCuboid = false;
         public bool SupportsMessageTypes = false;
         public bool SupportsHackControl = false;
-
+        public bool SupportsLongerMessages = false;
+        
         string ClientName { get; set; }
 
         bool NegotiateProtocolExtension()
         {
             this.reader = new PacketReader(this.stream);
-            // Send info of how many extensions we support
-            writer.Write(Packet.MakeExtInfo(10).Data);
-
-            //dump all my extensions here for the lels
+            writer.Write(Packet.MakeExtInfo(11).Data);
+            
             writer.Write(Packet.MakeExtEntry(CustomBlocksExtName, CustomBlocksExtVersion).Data);
             writer.Write(Packet.MakeExtEntry(ClickDistanceExtName, ClickDistanceExtVersion).Data);
             writer.Write(Packet.MakeExtEntry(EnvColorsExtName, EnvColorsExtVersion).Data);
+            
             writer.Write(Packet.MakeExtEntry(ChangeModelExtName, ChangeModelExtVersion).Data);
             writer.Write(Packet.MakeExtEntry(EnvMapAppearanceExtName, EnvMapAppearanceExtVersion).Data);
             writer.Write(Packet.MakeExtEntry(HeldBlockExtName, HeldBlockExtVersion).Data);
+            
             writer.Write(Packet.MakeExtEntry(ExtPlayerListExtName, ExtPlayerListExtVersion).Data);
             writer.Write(Packet.MakeExtEntry(SelectionCuboidExtName, SelectionCuboidExtVersion).Data);
             writer.Write(Packet.MakeExtEntry(MessageTypesExtName, MessageTypesExtVersion).Data);
+            
             writer.Write(Packet.MakeExtEntry(HackControlExtName, HackControlExtVersion).Data);
+            writer.Write(Packet.MakeExtEntry(LongerMessagesExtName, LongerMessagesExtVersion).Data);
 
             Logger.Log(LogType.Debug, "Sent ExtInfo and entry packets");
 
@@ -104,79 +106,42 @@ namespace fCraft
                 string extName = reader.ReadString();
                 int extVersion = reader.ReadInt32();
 
-                //check if this extension is customblocks
-                if (extName == CustomBlocksExtName && extVersion == CustomBlocksExtVersion)
-                {
+                if (extName == CustomBlocksExtName && extVersion == CustomBlocksExtVersion) {
                     // Hooray, client supports custom blocks! We still need to check support level.
                     sendCustomBlockPacket = true;
                     clientExts.Add(extName + " " + extVersion);
-                }
-
-                //check for selectionbox, and so on (95% sure this isn't actually a thing)
-                if (extName == SelectionBoxExtName && extVersion == SelectionBoxExtVersion)
-                {
-                    SelectionBoxExt = true;
-                    //Logger.Log(LogType.Debug, "{0} true", extName);
-                    clientExts.Add(extName + " " + extVersion);
-                }
-                if (extName == ClickDistanceExtName && extVersion == ClickDistanceExtVersion)
-                {
+                } else if (extName == ClickDistanceExtName && extVersion == ClickDistanceExtVersion) {
                     SupportsClickDistance = true;
-                    //Logger.Log(LogType.Debug, "{0} true", extName);
                     clientExts.Add(extName + " " + extVersion);
-                }
-                if (extName == EnvColorsExtName && extVersion == EnvColorsExtVersion)
-                {
+                } else if (extName == EnvColorsExtName && extVersion == EnvColorsExtVersion) {
                     SupportsEnvColors = true;
-                    //Logger.Log(LogType.Debug, "{0} true", extName);
                     clientExts.Add(extName + " " + extVersion);
-                }
-                if (extName == ChangeModelExtName && extVersion == ChangeModelExtVersion)
-                {
+                } else if (extName == ChangeModelExtName && extVersion == ChangeModelExtVersion) {
                     SupportsChangeModel = true;
-                    //Logger.Log(LogType.Debug, "{0} true", extName);
                     clientExts.Add(extName + " " + extVersion);
-                }
-                if (extName == EnvMapAppearanceExtName && extVersion == EnvMapAppearanceExtVersion)
-                {
+                } else if (extName == EnvMapAppearanceExtName && extVersion == EnvMapAppearanceExtVersion) {
                     SupportsEnvMapAppearance = true;
-                    //Logger.Log(LogType.Debug, "{0} true", extName);
                     clientExts.Add(extName + " " + extVersion);
-                }
-                if (extName == HeldBlockExtName && extVersion == HeldBlockExtVersion)
-                {
+                } else if (extName == HeldBlockExtName && extVersion == HeldBlockExtVersion) {
                     SupportsHeldBlock = true;
-                    //Logger.Log(LogType.Debug, "{0} true", extName);
                     clientExts.Add(extName + " " + extVersion);
-                }
-                if (extName == ExtPlayerListExtName && extVersion == ExtPlayerListExtVersion)
-                {
+                } else if (extName == ExtPlayerListExtName && extVersion == ExtPlayerListExtVersion) {
                     SupportsExtPlayerList = true;
-                    //Logger.Log(LogType.Debug, "{0} true", extName);
                     clientExts.Add(extName + " " + extVersion);
-                }
-                if (extName == SelectionCuboidExtName && extVersion == SelectionCuboidExtVersion)
-                {
+                } else if (extName == SelectionCuboidExtName && extVersion == SelectionCuboidExtVersion) {
                     SupportsSelectionCuboid = true;
-                    //Logger.Log(LogType.Debug, "{0} true", extName);
                     clientExts.Add(extName + " " + extVersion);
-                }
-                if (extName == MessageTypesExtName && extVersion == MessageTypesExtVersion)
-                {
+                } else if (extName == MessageTypesExtName && extVersion == MessageTypesExtVersion) {
                     SupportsMessageTypes = true;
-                    //Logger.Log(LogType.Debug, "{0} true", extName);
                     clientExts.Add(extName + " " + extVersion);
-                }
-                if (extName == EnvWeatherTypeExtName && extVersion == EnvWeatherTypeExtVersion)
-                {
+                } else if (extName == EnvWeatherTypeExtName && extVersion == EnvWeatherTypeExtVersion) {
                     SupportsEnvWeatherType = true;
-                    //Logger.Log(LogType.Debug, "{0} true", extName);
                     clientExts.Add(extName + " " + extVersion);
-                }
-                if (extName == HackControlExtName && extVersion == HackControlExtVersion)
-                {
+                } else if (extName == HackControlExtName && extVersion == HackControlExtVersion) {
                     SupportsHackControl = true;
-                    //Logger.Log(LogType.Debug, "{0} true", extName);
+                    clientExts.Add(extName + " " + extVersion);
+                } else if (extName == LongerMessagesExtName && extVersion == LongerMessagesExtVersion) {
+                    SupportsLongerMessages = true;
                     clientExts.Add(extName + " " + extVersion);
                 }
             }

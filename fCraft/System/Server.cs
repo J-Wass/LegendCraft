@@ -529,28 +529,6 @@ namespace fCraft {
             GlobalChat.Init();
             GlobalChat.Start();
 
-            //send webpanel salt (unfinished)
-           
-            /*try
-            {
-                WebRequest request = WebRequest.Create("http://legend-craft.tk/heartbeat?salt=" + Heartbeat.Salt);
-                StreamReader readStream = new StreamReader(request.GetResponse().GetResponseStream(), Encoding.UTF8);
-                string response = readStream.ReadLine();
-                Server.VerifiedUser = response;
-                Logger.LogToConsole("LegendCraft WebPanel is active at http://legend-craft.tk/" + ConfigKey.ServerName.GetString().Replace(" ", "%20"));
-            }
-            catch(Exception ex)
-            {
-                if (ex is WebException)
-                {
-                    Logger.LogToConsole("Unable to connect to WebPanel. Network may be down.");
-                }
-                else
-                {
-                    Logger.LogToConsole("Error with web connection: " + ex);
-                }
-            }*/
-
             IsRunning = true;
             RaiseEvent( Started );
             return true;

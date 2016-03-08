@@ -1,4 +1,4 @@
-// Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
+﻿// Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -461,6 +461,7 @@ namespace fCraft {
             if( message.Equals( "/ok", StringComparison.OrdinalIgnoreCase ) ) return RawMessageType.Confirmation;
             if( message.EndsWith( " /" ) ) return RawMessageType.PartialMessage;
             if( message.EndsWith( " //" ) ) message = message.Substring( 0, message.Length - 1 );
+            if( message.EndsWith( "Ω" ) ) return RawMessageType.LongerMessage;
 
             switch( message[0] ) {
                 case '/':
@@ -596,6 +597,9 @@ namespace fCraft {
         
         /// <summary> Chat private to the world you are in. </summary>
         WorldChat,
+        
+        /// <summary> LongerMessages partial message. </summary>
+        LongerMessage,
     }
 }
 

@@ -524,15 +524,7 @@ namespace fCraft
                             }
                             catch (Exception e) 
                             {
-                                if (e is NullReferenceException)
-                                {
-                                    //chill
-                                }
-                                else
-                                {
-                                    //panic
-                                    Logger.Log(LogType.Error, e.Message);
-                                }
+                                Logger.Log(LogType.Error, e.Message + Environment.NewLine + e);
                             }
 
                             if (!commandDescriptor.NotRepeatable)
@@ -818,6 +810,12 @@ namespace fCraft
                     partialMessage = rawMessage.Substring(0, rawMessage.Length - 1);
                     MessageNow("Partial: &F{0}", partialMessage);
                     break;
+                    
+				case RawMessageType.LongerMessage:
+					partialMessage = rawMessage.Substring(0, rawMessage.Length - 1);
+					// Spaces at the end are trimmed by default, so we need to insert one.
+                    if (partialMessage.Length != 64) partialMessage += " ";
+					break;                  
 
                 case RawMessageType.Invalid:
                     MessageNow("Could not parse message.");

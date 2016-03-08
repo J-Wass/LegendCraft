@@ -19,7 +19,7 @@ namespace fCraft.Drawing {
             get { return null; }
         }
 
-        const string HelpString = "Cloudy brush: Creates a swirling pattern of two or more block types. " +
+        const string HelpString = "Creates a swirling pattern of two or more block types. " +
                                   "If only one block name is given, leaves every other block untouched.";
         public string Help {
             get { return HelpString; }

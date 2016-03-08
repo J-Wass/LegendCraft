@@ -17,7 +17,7 @@ namespace fCraft.Drawing
             get { return "Diagonal"; }
         }
         public string[] Aliases { get; private set; }
-        const string HelpString = "Diagonal brush: Fills the area with in a diagonal pattern of 2 block types. " +
+        const string HelpString = "Fills the area with in a diagonal pattern of 2 block types. " +
         "If only one block name is given, leaves every other block untouched.";
         public string Help
         {

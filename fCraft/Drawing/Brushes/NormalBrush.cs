@@ -17,7 +17,7 @@ namespace fCraft.Drawing {
 
         public string[] Aliases { get; private set; }
 
-        const string HelpString = "Normal brush: Fills the area with solid color. " +
+        const string HelpString = "Fills the area with solid color. " +
                                   "If no block name is given, uses the last block that player has placed.";
         public string Help {
             get { return HelpString; }

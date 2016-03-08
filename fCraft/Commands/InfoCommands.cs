@@ -1,4 +1,4 @@
-// Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
+﻿// Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,7 +17,7 @@ namespace fCraft {
 
         /// <summary> Gives back an array of players arranged from most to least number of bans </summary>
         static List<PlayerInfo> MostBans = new List<PlayerInfo>(PlayerDB.PlayerInfoList
-                                    .OrderBy(p => p.TimesVisited).ToArray().Reverse());
+                                    .OrderBy(p => p.TimesBannedOthers).ToArray().Reverse());
 
         /// <summary> Gives back an array of players arranged from most to least number of logins </summary>
         static List<PlayerInfo> TopLogins = new List<PlayerInfo>(PlayerDB.PlayerInfoList
@@ -511,7 +511,7 @@ THE SOFTWARE.*/
             Category = CommandCategory.Info,
             IsConsoleSafe = true,
             UsableByFrozenPlayers = true,
-            Help = "&SCan show an advanced list for a chosen section. "+ 
+            Help = "&SCan show an advanced list for a chosen section. " + 
             "Type /List to display the sections",
             Usage = "/List SectionName",
             Handler = ListHandler
@@ -520,6 +520,7 @@ THE SOFTWARE.*/
         internal static void ListHandler(Player player, Command cmd)
         {
             string Option = cmd.Next();
+            int count = 0;
             if (Option == null)
             {
                 CdList.PrintUsage(player);
@@ -556,26 +557,11 @@ THE SOFTWARE.*/
                 case "toplogins":
                 case "topvisits":
                 case "mostvisits":
-                    if (TopLogins.Count() < 1)
-                    {
-                        player.Message("&WNo results found");
-                        return;
-                    }
+                    if (TopLogins.Count < 1) { player.Message("&WNo results found"); return; }
                     player.Message("&WShowing players with the most logins: ");
-                    if (TopLogins.Count() < 10)
-                    {
-                        for (int i = 0; i < TopLogins.Count(); i++)
-                        {
-                            player.Message("{0}&s - {1} Logins", TopLogins[i].ClassyName, TopLogins[i].TimesVisited);
-                        }
-                    }
-                    else
-                    {
-                        for (int i = 0; i < 10; i++)
-                        {
-                            player.Message("{0}&s - {1} Logins", TopLogins[i].ClassyName, TopLogins[i].TimesVisited);
-                        }
-                    }
+                    count = Math.Min(10, TopLogins.Count);
+                    for (int i = 0; i < count; i++)
+                        player.Message("{0}&s - {1} Logins", TopLogins[i].ClassyName, TopLogins[i].TimesVisited);
                     break;
                 case "idles":
                 case "idle":
@@ -645,125 +631,48 @@ THE SOFTWARE.*/
                     break;
 
                 case "topbuilders":
-                    if (TopBuilders.Count() < 1)
-                    {
-                        player.Message("&WNo results found");
-                        return;
-                    }
+                    if (TopBuilders.Count < 1) { player.Message("&WNo results found"); return; }
                     player.Message("&WShowing players who have built the most blocks: ");
-                    if (TopBuilders.Count() < 10)
-                    {
-                        for (int i = 0; i < TopBuilders.Count(); i++)
-                        {
-                            player.Message("{0}&s - {1} Blks", TopBuilders[i].ClassyName, TopBuilders[i].BlocksBuilt);
-                        }
-                    }
-                    else
-                    {
-                        for (int i = 0; i < 10; i++)
-                        {
-                            player.Message("{0}&s - {1} Blks", TopBuilders[i].ClassyName, TopBuilders[i].BlocksBuilt);
-                        }
-                    }
+                    count = Math.Min(10, TopBuilders.Count);
+                    for (int i = 0; i < count; i++)
+                        player.Message("{0}&s - {1} Blocks", TopBuilders[i].ClassyName, TopBuilders[i].BlocksBuilt);
                     break;
 
                 case "mostkicks":
-                    if (MostKicks.Count() < 1)
-                    {
-                        player.Message("&WNo results found");
-                        return;
-                    }
+                    if (MostKicks.Count < 1) { player.Message("&WNo results found"); return; }
                     player.Message("&WShowing players who have kicked the most players: ");
-                    if (MostKicks.Count() < 10)
-                    {
-                        for (int i = 0; i < MostKicks.Count(); i++)
-                        {
-                            player.Message("{0}&s - {1} Kicks", MostKicks[i].ClassyName, MostKicks[i].TimesKickedOthers);
-                        }
-                    }
-                    else
-                    {
-                        for (int i = 0; i < 10; i++)
-                        {
-                            player.Message("{0}&s - {1} Kicks", MostKicks[i].ClassyName, MostKicks[i].TimesKickedOthers);
-                        }
-                    }
+                    count = Math.Min(10, MostKicks.Count);
+                    for (int i = 0; i < count; i++)
+                        player.Message("{0}&s - {1} Kicks", MostKicks[i].ClassyName, MostKicks[i].TimesKickedOthers);
                     break;
 
                 case "mostbans":
-                    if (MostBans.Count() < 1)
-                    {
-                        player.Message("&WNo results found");
-                        return;
-                    }
+                    if (MostBans.Count < 1) { player.Message("&WNo results found"); return; }
                     player.Message("&WShowing players who have banned the most players: ");
-                    if (MostBans.Count() < 10)
-                    {
-                        for (int i = 0; i < MostBans.Count(); i++)
-                        {
-                            player.Message("{0}&s - {1} Bans", MostBans[i].ClassyName, MostBans[i].TimesBannedOthers);
-                        }
-                    }
-                    else
-                    {
-                        for (int i = 0; i < 10; i++)
-                        {
-                            player.Message("{0}&s - {1} Bans", MostBans[i].ClassyName, MostBans[i].TimesBannedOthers);
-                        }
-                    }
+                    count = Math.Min(10, MostBans.Count);
+                    for (int i = 0; i < count; i++)
+                        player.Message("{0}&s - {1} Bans", MostBans[i].ClassyName, MostBans[i].TimesBannedOthers);
                     break;
 
                 case "mosttime":
                 case "toptime":
                 case "mosthours":
-                    if (MostTime.Count() < 1)
-                    {
-                        player.Message("&WNo results found");
-                        return;
-                    }
+                    if (MostTime.Count < 1) { player.Message("&WNo results found"); return; }
                     player.Message("&WShowing players who have spent the most time on the server: ");
-                    if (MostTime.Count() < 10)
-                    {
-                        for (int i = 0; i < MostTime.Count(); i++)
-                        {
-                            int hours = Convert.ToInt16(MostTime[i].TotalTime.TotalHours);
-                            player.Message("{0}&s - {1} Hrs", MostTime[i].ClassyName, hours);
-                        }
-                    }
-                    else
-                    {
-                        for (int i = 0; i < 10; i++)
-                        {
-                            int hours = Convert.ToInt16(MostTime[i].TotalTime.TotalHours);
-                            player.Message("{0}&s - {1} Hrs", MostTime[i].ClassyName, hours);
-                        }
-                    }
+                    count = Math.Min(10, MostTime.Count);
+                    for (int i = 0; i < count; i++)
+                        player.Message("{0}&s - {1} Hrs", MostTime[i].ClassyName, (int)MostTime[i].TotalTime.TotalHours);
                     break;
 
                 case "mostpromos":
                 case "mostpromotions":
                 case "mostranks":
                 case "toppromos":
-                    if (MostPromos.Count() < 1)
-                    {
-                        player.Message("&WNo results found");
-                        return;
-                    }
+                    if (MostPromos.Count() < 1) { player.Message("&WNo results found"); return; }
                     player.Message("&WShowing players who have promoted the most players: ");
-                    if (MostPromos.Count() < 10)
-                    {
-                        for (int i = 0; i < MostPromos.Count(); i++)
-                        {
-                            player.Message("{0}&s - {1} Promos", MostPromos[i].ClassyName, MostPromos[i].PromoCount);
-                        }
-                    }
-                    else
-                    {
-                        for (int i = 0; i < 10; i++)
-                        {
-                            player.Message("{0}&s - {1} Promos", MostPromos[i].ClassyName, MostPromos[i].PromoCount);
-                        }
-                    }
+                    count = Math.Min(10, MostPromos.Count);
+                    for (int i = 0; i < count; i++)
+                        player.Message("{0}&s - {1} Promos", MostPromos[i].ClassyName, MostPromos[i].PromoCount);
                     break;
 
                 case "rank":
@@ -1131,7 +1040,7 @@ THE SOFTWARE.*/
                     } else {
                         if( idle.TotalMinutes > 1 ) {
                             if( player.Can( Permission.ViewPlayerIPs ) ) {
-                                player.Message( "About {0}&S({1}): Online now from {2} (idle {3)",
+                                player.Message( "About {0}&S({1}): Online now from {2} (idle {3})",
                                                 info.ClassyName,
                                                 info.Name,
                                                 info.LastIP,

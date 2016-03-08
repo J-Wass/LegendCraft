@@ -15,22 +15,7 @@ namespace fCraft
     /// <summary> Static class responsible for sending heartbeats. </summary>
     public static class Heartbeat
     {
-        static readonly Uri MinecraftNetUri;
         static readonly Uri ClassiCubeNetUri;
-
-        //if the server is classicube compatable
-        public static bool ClassiCube()
-        {
-            if (ConfigKey.HeartbeatUrl.GetString() == "ClassiCube.net")
-            {
-                return true;
-            }
-            {
-                return false;
-            }
-        }
-
-
 
         /// <summary> Delay between sending heartbeats. Default: 25s </summary>
         public static TimeSpan Delay { get; set; }
@@ -88,8 +73,6 @@ namespace fCraft
 
         static Heartbeat()
         {
-
-            MinecraftNetUri = new Uri("https://minecraft.net/heartbeat.jsp");
             ClassiCubeNetUri = new Uri("http://www.classicube.net/heartbeat.jsp");
             Delay = TimeSpan.FromSeconds(45);
             Timeout = TimeSpan.FromSeconds(10);
@@ -119,12 +102,7 @@ namespace fCraft
 
             if (ConfigKey.HeartbeatEnabled.Enabled())
             {
-                if (ClassiCube())
-                    SendClassiCubeBeat();
-                else
-                    SendMinecraftNetBeat();
-
-
+                SendClassiCubeBeat();
                 HbSave();
             }
             else
@@ -156,18 +134,6 @@ namespace fCraft
                 return;
             }
             minecraftNetRequest = CreateRequest(data.CreateUri(Salt2));
-            var state = new HeartbeatRequestState(minecraftNetRequest, data, true);
-            minecraftNetRequest.BeginGetResponse(ResponseCallback, state);
-        }
-
-        static void SendMinecraftNetBeat()
-        {
-            HeartbeatData data = new HeartbeatData(MinecraftNetUri);
-            if (!RaiseHeartbeatSendingEvent(data, MinecraftNetUri, true))
-            {
-                return;
-            }
-            minecraftNetRequest = CreateRequest(data.CreateUri(Salt));
             var state = new HeartbeatRequestState(minecraftNetRequest, data, true);
             minecraftNetRequest.BeginGetResponse(ResponseCallback, state);
         }

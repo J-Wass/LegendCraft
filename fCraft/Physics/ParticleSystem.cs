@@ -1,4 +1,4 @@
-//Copyright (C) <2012>  <Jon Baker, Glenn Mariën and Lao Tszy>
+﻿//Copyright (C) <2012>  <Jon Baker, Glenn Mariën and Lao Tszy>
 
 //This program is free software: you can redistribute it and/or modify
 //it under the terms of the GNU General Public License as published by
@@ -468,7 +468,7 @@ namespace fCraft
                     healthBar = "&f[&8--------&f]";
                 }
 
-                if (hitted.usesCPE && Heartbeat.ClassiCube())
+                if (hitted.usesCPE)
                 {
                     hitted.Send(PacketWriter.MakeSpecialMessage((byte)1, healthBar));
                 }
@@ -517,7 +517,7 @@ namespace fCraft
                     //revive dead players with 100% health
                     hitted.Info.Health = 100;
 
-                    if (hitted.usesCPE && Heartbeat.ClassiCube())
+                    if (hitted.usesCPE)
                     {
                         hitted.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f[&a--------&f]"));
                     }
@@ -576,7 +576,7 @@ namespace fCraft
                     healthBar = "&f[&8--------&f]";
                 }
                 hitted.Send(PacketWriter.MakeSpecialMessage((byte)1, healthBar));
-                if (hitted.usesCPE && Heartbeat.ClassiCube())
+                if (hitted.usesCPE)
                 {
                     hitted.Send(PacketWriter.MakeSpecialMessage((byte)1, healthBar));
                 }
@@ -615,7 +615,7 @@ namespace fCraft
                         //update scoreboard for all players
                         foreach (Player p in hitted.World.Players)
                         {
-                            if (p.usesCPE && Heartbeat.ClassiCube())
+                            if (p.usesCPE)
                             {
                                 p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&cRed&f: " + fCraft.TeamDeathMatch.redScore + ",&1 Blue&f: " + fCraft.TeamDeathMatch.blueScore));
                             }
@@ -651,7 +651,7 @@ namespace fCraft
                         }                      
                         foreach (Player p in hitted.World.Players)
                         {
-                            if (p.usesCPE && Heartbeat.ClassiCube())
+                            if (p.usesCPE)
                             {
                                 p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&eCurrent Leader&f: " + leader.Name + ", Kills: " + leader.Info.gameKillsFFA));
                             }
@@ -661,7 +661,7 @@ namespace fCraft
                     //revive dead players with 100% health
                     hitted.Info.Health = 100;
 
-                    if (hitted.usesCPE && Heartbeat.ClassiCube())
+                    if (hitted.usesCPE)
                     {
                         hitted.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f[&a--------&f]"));
                     }

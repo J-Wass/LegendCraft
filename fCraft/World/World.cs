@@ -536,12 +536,6 @@ namespace fCraft {
                     EdgeLevel = EdgeLevel,
                     SideBlock = SideBlock,
                     EdgeBlock = EdgeBlock,
-                    CloudColorCC = CloudColorCC,
-                    SkyColorCC = SkyColorCC,
-                    FogColorCC = FogColorCC,
-                    sideLevel = sideLevel,
-                    sideBlock = sideBlock,
-                    edgeBlock = edgeBlock,
                     textureURL = textureURL
                 };
                 newWorld.Map = newMap;
@@ -1036,10 +1030,7 @@ namespace fCraft {
         #region Env 
   
         //Minecraft
-        public int CloudColor = -1,
-           FogColor = -1,
-           SkyColor = -1,
-           EdgeLevel = -1;
+        public int CloudColor = 0xFFFFFF, FogColor = 0xFFFFFF, SkyColor = 0x99CCFF, EdgeLevel = -1;
         public string Terrain { get; set; }
 
         public Block EdgeBlock = Block.Water;
@@ -1062,38 +1053,32 @@ namespace fCraft {
             if (FogColor > -1) sb.AppendLine("environment.fog = " + FogColor);
             if (SkyColor > -1) sb.AppendLine("environment.sky = " + SkyColor);
             if (EdgeLevel > -1) sb.AppendLine("environment.level = " + EdgeLevel);
-            if (Terrain != null) sb.AppendLine("environment.terrain = " + Terrain);
-            if (EdgeBlock != Block.Water)
-            {
-                string edgeTexture = Map.GetEdgeTexture(EdgeBlock);
-                if (edgeTexture != null)
-                {
-                    sb.AppendLine("environment.edge = " + edgeTexture);
-                }
-            }
-            if (SideBlock != Block.Admincrete)
-            {
-                string sideTexture = Map.GetEdgeTexture(SideBlock);
-                if (sideTexture != null)
-                {
-                    sb.AppendLine("environment.side = " + sideTexture);
-                }
-            }
             sb.AppendLine("server.sendwomid = true");
             return sb.ToString();
         }
 
 
         //ClassiCube
-        public string CloudColorCC = "#ffffff";
-        public string SkyColorCC = "#99CCFF";
-        public string FogColorCC = "#ffffff";
         public int WeatherCC = 0;
-        public short sideLevel = 0;
-        public byte sideBlock = 7;
-        public byte edgeBlock = 8;
         public string textureURL = "";
-        public bool usesCustomTexture = false;
+        
+        internal void SendAllMapAppearance() {
+            Packet packet = PacketWriter.MakeEnvSetMapAppearance(textureURL, SideBlock, EdgeBlock, EdgeLevel);
+            foreach (Player p in Players.Where(p => p.usesCPE))
+                p.Send(packet);
+        }
+        
+        internal void SendAllMapWeather() {
+            Packet packet = PacketWriter.MakeEnvWeatherAppearance((byte)WeatherCC);
+            foreach (Player p in Players.Where(p => p.usesCPE))
+                p.Send(packet);
+        }
+        
+        internal void SendAllEnvColor(byte variable, int  value) {
+        	Packet packet = PacketWriter.MakeEnvSetColor(variable, value);
+            foreach (Player p in Players.Where(p => p.usesCPE))
+                p.Send(packet);
+        }
 
         #endregion
 
