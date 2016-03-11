@@ -53,6 +53,7 @@ namespace fCraft
         /// not on cooldown (a bit of an intentional race condition). </summary>
         public sealed class IRCThread : IDisposable
         {
+            DateTime lastPing = DateTime.Now;
             bool triedPass = false;
             TcpClient client;
             StreamReader reader;
@@ -149,10 +150,16 @@ namespace fCraft
                         Send(IRCCommands.User(ActualBotNick, 8, ConfigKey.ServerName.GetString()));
                         Send(IRCCommands.Nick(ActualBotNick));
 
+                        lastPing = DateTime.Now;
                         while (isConnected && !reconnect)
                         {
                             Thread.Sleep(10);
-
+                            
+                            if((DateTime.Now - lastPing).Seconds > 60)
+                            {
+                                lastPing = DateTime.Now;
+                                Send(IRCCommands.Ping(ConfigKey.ServerName.GetString()));
+                            }
                             if (localQueue.Count > 0 &&
                                 DateTime.UtcNow.Subtract(lastMessageSent).TotalMilliseconds >= SendDelay &&
                                 localQueue.TryDequeue(out outputLine))
@@ -247,7 +254,18 @@ namespace fCraft
                         Send(IRCCommands.Pong(msg.RawMessageArray[1].Substring(1)));
                         return;
 
-
+                    case IRCMessageType.Pong:
+                        if(ConfigKey.ServerName.GetString() != msg.RawMessageArray[1].Substring(1))
+                        {
+                            //probably a useless check, might have a use for it in the future
+                        }
+                        if((DateTime.Now - lastPing).Seconds > 60)
+                        {
+                            //connection is shaky, send another
+                            Send(IRCCommands.Ping(ConfigKey.ServerName.GetString()));
+                            lastPing = DateTime.Now;
+                        }
+                        return;
                     case IRCMessageType.ChannelAction:
                     case IRCMessageType.ChannelMessage:
                         // channel chat
@@ -1273,6 +1291,7 @@ namespace fCraft
     public enum IRCMessageType
     {
         Ping,
+        Pong,
         Info,
         Login,
         Motd,

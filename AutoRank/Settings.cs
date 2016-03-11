@@ -39,7 +39,7 @@ namespace AutoRank
         public static List<String> validRankList = new List<String>();
 
         //Save TreeList data to xml
-        public static void Save()
+        public static void Save(TreeView view)
         {
             if (File.Exists("Autorank.xml"))
             {
@@ -55,7 +55,7 @@ namespace AutoRank
 
             writer.WriteStartElement("Autorank");//<Autorank>
 
-            foreach (TreeNode mainNode in AutoRank.TreeList.Nodes)
+            foreach (TreeNode mainNode in view.Nodes)
             {
                 writer.WriteStartElement(mainNode.Text.Replace(" ", ""));
                 foreach (TreeNode childNode in mainNode.Nodes)
@@ -105,7 +105,7 @@ namespace AutoRank
         }
 
         //Load xml into TreeList
-        public static void Load()
+        public static void Load(TreeView view)
         {
             bool layered = false;
             //since Load() is more complicated than Save(), i'll use XDocument instead of XMLReader
@@ -135,7 +135,7 @@ namespace AutoRank
                     }
                 }
                 TreeNode rankNode = new TreeNode(mainElement.Name.ToString(), tempChildNodes.ToArray());
-                AutoRank.TreeList.Nodes.Add(rankNode);
+                view.Nodes.Add(rankNode);
                 tempChildNodes = new List<TreeNode>();
                 layered = false;
             }

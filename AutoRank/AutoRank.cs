@@ -51,7 +51,7 @@ namespace AutoRank
                 this.Close();
             }
 
-            Settings.Load();
+            Settings.Load(TreeList);
         }
 
         private void bCreate_Click(object sender, EventArgs e)
@@ -250,7 +250,7 @@ namespace AutoRank
 
         private void bExit_Click(object sender, EventArgs e)
         {
-            Settings.Save();
+            Settings.Save(TreeList);
             this.Close();
         }
 
