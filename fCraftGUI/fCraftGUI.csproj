@@ -57,9 +57,6 @@
     <ApplicationIcon>LegendCraftLogoIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="fCraft">
-      <HintPath>..\fCraft\bin\DEBUG_BLOCKDB\fCraft.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -117,6 +114,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\fCraft\fCraft.csproj">
+      <Project>{7FBE7809-6F77-415C-ABEB-A3F627E817B0}</Project>
+      <Name>fCraft</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
