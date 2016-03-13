@@ -55,14 +55,6 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="fCraft, Version=0.6.1.7, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\bin\Debug\fCraft.dll</HintPath>
-    </Reference>
-    <Reference Include="fCraftGUI, Version=0.6.1.7, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\bin\Debug\fCraftGUI.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -92,6 +84,16 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ServerCLI.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\fCraftGUI\fCraftGUI.csproj">
+      <Project>{AFAEE6CC-8B4F-40CD-9623-7FFDC8E52222}</Project>
+      <Name>fCraftGUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\fCraft\fCraft.csproj">
+      <Project>{7FBE7809-6F77-415C-ABEB-A3F627E817B0}</Project>
+      <Name>fCraft</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
