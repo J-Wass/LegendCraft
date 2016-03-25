@@ -227,7 +227,8 @@ namespace fCraft.MapConversion {
                         // write metadata
                         metaCount = WriteMetadata( bs, mapToSave );
                         offset = mapStream.Position; // inaccurate, but who cares
-                        bs.Write( blocksCache, 0, blocksCache.Length );
+                        bs.Flush();
+                        MapUtility.WriteAll( blocksCache, bs );
                         compressedLength = (int)(mapStream.Position - offset);
                     }
                 }

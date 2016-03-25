@@ -144,7 +144,7 @@ namespace fCraft.MapConversion {
                     bs.Write( IPAddress.HostToNetworkOrder( mapToSave.Blocks.Length ) );
 
                     // Write out the map data
-                    bs.Write( mapToSave.Blocks );
+                    MapUtility.WriteAll( mapToSave.Blocks, bs );
                     return true;
                 }
             }
