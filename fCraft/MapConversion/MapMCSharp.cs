@@ -269,7 +269,7 @@ namespace fCraft.MapConversion {
                     bs.Write( (byte)0 );
 
                     // Write the map data
-                    bs.Write( mapToSave.Blocks, 0, mapToSave.Blocks.Length );
+                    MapUtility.WriteAll( mapToSave.Blocks, bs );
 
                     bs.Close();
                 }

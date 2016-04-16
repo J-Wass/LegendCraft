@@ -217,5 +217,31 @@ namespace fCraft.MapConversion {
                 bytesLeft -= readPass;
             }
         }
+        
+        // Write at most 256 MiB at a time.
+        const int MaxWriteChunk = 256*1024*1024;
+
+        // Works around an overflow in BufferedStream.Write() that happens on 1 GiB+ writes.
+        internal static void WriteAll([NotNull] byte[] source, [NotNull] Stream destination) {
+            if (source == null) throw new ArgumentNullException("source");
+            if (destination == null) throw new ArgumentNullException("destination");
+            int written = 0;
+            while (written < source.Length) {
+                int toWrite = Math.Min(MaxWriteChunk, source.Length - written);
+                destination.Write(source, written, toWrite);
+                written += toWrite;
+            }
+        }
+        
+        internal static void WriteAll([NotNull] byte[] source, [NotNull] BinaryWriter destination) {
+            if (source == null) throw new ArgumentNullException("source");
+            if (destination == null) throw new ArgumentNullException("destination");
+            int written = 0;
+            while (written < source.Length) {
+                int toWrite = Math.Min(MaxWriteChunk, source.Length - written);
+                destination.Write(source, written, toWrite);
+                written += toWrite;
+            }
+        }
     }
 }

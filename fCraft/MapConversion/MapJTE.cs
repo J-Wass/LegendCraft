@@ -156,7 +156,7 @@ namespace fCraft.MapConversion {
                     bs.Write( IPAddress.NetworkToHostOrder( mapToSave.Height ) );
 
                     // Write the map data
-                    bs.Write( mapToSave.Blocks, 0, mapToSave.Blocks.Length );
+                    MapUtility.WriteAll( mapToSave.Blocks, bs );
                 }
                 return true;
             }
