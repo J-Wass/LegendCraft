@@ -2669,7 +2669,7 @@ THE SOFTWARE.*/
             Aliases = new[] { "up", "undox" },
             Category = CommandCategory.Moderation,
             Permissions = new[] { Permission.UndoOthersActions },
-            Usage = "/UndoPlayer PlayerName [TimeSpan|BlockCount]",
+            Usage = "/UndoPlayer (TimeSpan|BlockCount) PlayerName [AnotherName...]",
             Help = "Reverses changes made by a given player in the current world.",
             Handler = UndoPlayerHandler
         };
