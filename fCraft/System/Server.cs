@@ -594,6 +594,16 @@ namespace fCraft {
                         }
                     }
                 }
+                
+                if( WorldManager.Worlds != null ) {
+                    lock( WorldManager.SyncRoot ) {
+                        // unload all worlds (includes saving)
+                        foreach( World world in WorldManager.Worlds ) {
+                        	 if( world.BlockDB.IsEnabled ) world.BlockDB.Flush( false );
+                             world.SaveMap();
+                         }
+                     }
+                 }
 
                 //Sends data to serverlist with a 0 uptime and playercount
                 //Scheduler.NewTask(t => Network.ServerList.sendLastData()).RunOnce();

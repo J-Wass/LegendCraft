@@ -578,24 +578,68 @@ THE SOFTWARE.*/
             Handler = UndoAllHandler
         };
 
-        public static void UndoAllHandler(Player player, Command cmd)
-        {
-            string targetName = cmd.Next();
-            if (targetName == null)
-            {
-                CdUndoAll.PrintUsage(player);
+        public static void UndoAllHandler(Player player, Command cmd) {
+            // check if command's being called by a worldless player (e.g. console)
+            World playerWorld = player.World;
+            if (playerWorld == null) PlayerOpException.ThrowNoWorld(player);
+
+            // ensure that BlockDB is enabled
+            if (!BlockDB.IsEnabledGlobally) {
+                player.Message("&WUndoAll: BlockDB is disabled on this server."); return;
             }
-            PlayerInfo target = PlayerDB.FindPlayerInfoOrPrintMatches(player, targetName);
-            if (target == null)
-            {
-                player.MessageNoPlayer(targetName);
+            if (!playerWorld.BlockDB.IsEnabled) {
+                player.Message("&WUndoAll: BlockDB is disabled in this world."); return;
+            }  
+            
+            string name = cmd.Next();
+            if (name == null) {
+                CdUndoAll.PrintUsage(player); return;
+            }
+            PlayerInfo target = PlayerDB.FindPlayerInfoOrPrintMatches(player, name);
+            if (target == null) {
+                player.MessageNoPlayer(name); return;
+            }
+            if( !player.Can(Permission.UndoOthersActions, target.Rank)) {
+                player.Message("&WUndoAll: You may only undo actions of players ranked {0}&S or lower.",
+                               player.Info.Rank.GetLimit(Permission.UndoOthersActions).ClassyName);
+                player.Message("Player {0}&S is ranked {1}", target.ClassyName, target.Rank.ClassyName);
                 return;
             }
-            UndoAllHandler(player, new Command("/undoall " + target.Name));
+            
+            BlockDBUndoArgs args = new BlockDBUndoArgs {
+                Player = player,
+                CountLimit = 100000,
+                Area = player.WorldMap.Bounds,
+                World = playerWorld,
+                Targets = new PlayerInfo[] { target },
+            }; 
+            Scheduler.NewBackgroundTask(UndoAllLookup)
+                     .RunOnce(args, TimeSpan.Zero);
         }
         
-        
-        
+        static void UndoAllLookup(SchedulerTask task) {
+            BlockDBUndoArgs args = (BlockDBUndoArgs)task.UserState;
+            const string cmdName = "UndoPlayer";
+            Vector3I[] coords = new Vector3I[0];
+            args.Entries = args.World.BlockDB.Lookup(args.CountLimit, args.Targets, args.Not);
+
+            // Produce a brief param description for BlockDBDrawOperation
+            string description = String.Format("{0} by {1}", args.CountLimit,
+                                                 args.Targets.JoinToString(p => p.Name));
+
+            // start undoing (using DrawOperation infrastructure)
+            var op = new BlockDBDrawOperation(args.Player, cmdName, description, coords.Length);
+            op.Prepare(coords, args.Entries);
+
+            // log operation
+            string targetList = targetList = args.Targets.JoinToClassyString();
+            Logger.Log(LogType.UserActivity,
+                        "{0}: Player {1} will undo {2} changes (limit of {3}) by {4} on world {5}",
+                        cmdName, args.Player.Name, args.Entries.Length,
+                        args.CountLimit.ToString(NumberFormatInfo.InvariantInfo),
+                        targetList, args.World.Name);
+            op.Begin();
+        }
         
         static readonly CommandDescriptor CdAbortAll = new CommandDescriptor 
     	{
@@ -2625,7 +2669,7 @@ THE SOFTWARE.*/
             Aliases = new[] { "up", "undox" },
             Category = CommandCategory.Moderation,
             Permissions = new[] { Permission.UndoOthersActions },
-            Usage = "/UndoPlayer PlayerName [TimeSpan|BlockCount]",
+            Usage = "/UndoPlayer (TimeSpan|BlockCount) PlayerName [AnotherName...]",
             Help = "Reverses changes made by a given player in the current world.",
             Handler = UndoPlayerHandler
         };
@@ -2656,7 +2700,6 @@ THE SOFTWARE.*/
             Scheduler.NewBackgroundTask(UndoPlayerLookup)
                      .RunOnce(args, TimeSpan.Zero);
         }
-
 
         // Looks up the changes in BlockDB and prints a confirmation prompt. Runs on a background thread.
         static void UndoPlayerLookup(SchedulerTask task)
