@@ -1313,7 +1313,7 @@ namespace fCraft
 
             string textLine1 = ConfigKey.ServerName.GetString();
             string textLine2 = "Loading world " + newWorld.ClassyName;
-            if (newWorld.Hax) textLine2 += " -hax";
+            if (!newWorld.Hax) textLine2 += " -hax";
 
             if (RaisePlayerJoiningWorldEvent(this, newWorld, reason, textLine1, textLine2))
             {
