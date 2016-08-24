@@ -155,54 +155,36 @@ THE SOFTWARE.*/
             Handler = FHHandler
         };
 
-        private static void FHHandler(Player player, Command cmd)
-        {
-            if (!player.usesCPE)
-            {
+        private static void FHHandler(Player player, Command cmd)  {
+            if (!player.usesCPE) {
                 player.Message("This is a ClassiCube only command!");
                 return;
             }
             string target = cmd.Next();
-            if (String.IsNullOrEmpty(target))
-            {
+            if (String.IsNullOrEmpty(target)) {
                 CdForceHold.PrintUsage(player);
                 return;
             }
 
             Player p = Server.FindPlayerOrPrintMatches(player, target, false, true);
-            if (p == null)
-            {
-                return;
-            }
+            if (p == null) return;
 
-            if (!p.usesCPE)
-            {
-                player.Message("You can only use /ForceHold on ClassiCube players!");
+            if (!p.usesCPE) {
+                player.Message("You can only use /ForceHold on ClassiCube players!"); return;
             }
 
             string blockStr = cmd.Next();
-            if (String.IsNullOrEmpty(blockStr))
-            {
+            if (String.IsNullOrEmpty(blockStr)) {
                 CdForceHold.PrintUsage(player);
                 return;
             }
 
-            //format blockname to be "Stone" instead of "STONE" or "stone"
-            blockStr = blockStr.Substring(0, 1).ToUpper() + blockStr.Substring(1).ToLower();
-            Block block;
-            try
-            {
-                block = (Block)Enum.Parse(typeof(Block), blockStr);
-            }
-            catch
-            {
-                player.Message("Sorry, that was not a valid block name!");
+            Block b = Map.GetBlockByName(blockStr);
+            if (b == Block.Undefined) {
+                p.Message("&WUnrecognized block name " + blockStr);
                 return;
             }
-
-            p.Send(PacketWriter.MakeHoldThis((byte)block, false));
-
-
+            p.Send(PacketWriter.MakeHoldThis((byte)b, false));
         }
         static World resetWorld;
         static readonly CommandDescriptor CdAnnounce = new CommandDescriptor //todo: make this work lol
