@@ -108,8 +108,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.*/
 
-        public static SchedulerTask task;
-
         static readonly CommandDescriptor CdGetBlock = new CommandDescriptor
         {
             Name = "GetBlock",
@@ -155,146 +153,108 @@ THE SOFTWARE.*/
             Handler = FHHandler
         };
 
-        private static void FHHandler(Player player, Command cmd)
-        {
-            if (!player.usesCPE)
-            {
+        private static void FHHandler(Player player, Command cmd)  {
+            if (!player.usesCPE) {
                 player.Message("This is a ClassiCube only command!");
                 return;
             }
             string target = cmd.Next();
-            if (String.IsNullOrEmpty(target))
-            {
+            if (String.IsNullOrEmpty(target)) {
                 CdForceHold.PrintUsage(player);
                 return;
             }
 
             Player p = Server.FindPlayerOrPrintMatches(player, target, false, true);
-            if (p == null)
-            {
-                return;
-            }
+            if (p == null) return;
 
-            if (!p.usesCPE)
-            {
-                player.Message("You can only use /ForceHold on ClassiCube players!");
+            if (!p.usesCPE) {
+                player.Message("You can only use /ForceHold on ClassiCube players!"); return;
             }
 
             string blockStr = cmd.Next();
-            if (String.IsNullOrEmpty(blockStr))
-            {
+            if (String.IsNullOrEmpty(blockStr)) {
                 CdForceHold.PrintUsage(player);
                 return;
             }
 
-            //format blockname to be "Stone" instead of "STONE" or "stone"
-            blockStr = blockStr.Substring(0, 1).ToUpper() + blockStr.Substring(1).ToLower();
-            Block block;
-            try
-            {
-                block = (Block)Enum.Parse(typeof(Block), blockStr);
-            }
-            catch
-            {
-                player.Message("Sorry, that was not a valid block name!");
+            Block b = Map.GetBlockByName(blockStr);
+            if (b == Block.Undefined) {
+                p.Message("&WUnrecognized block name " + blockStr);
                 return;
             }
-
-            p.Send(PacketWriter.MakeHoldThis((byte)block, false));
-
-
+            p.Send(PacketWriter.MakeHoldThis((byte)b, false));
         }
-        static World resetWorld;
-        static readonly CommandDescriptor CdAnnounce = new CommandDescriptor //todo: make this work lol
+
+        static readonly CommandDescriptor CdAnnounce = new CommandDescriptor
         {
             Name = "Announce",
             IsConsoleSafe = true,
             Category = CommandCategory.Moderation,
             Permissions = new[] { Permission.Say },
-            Help = "&SAnnounces a message at the top of every player's screen on a specified world. To send a server-wide announcement, use /Announce all [message]. If duration is blank, announcement will last for 7 seconds.",
+            Help = "&SAnnounces a message at the top of every player's screen on a specified world. " +
+                "To send a server-wide announcement, use /Announce all [message]. If duration is blank, announcement will last for 7 seconds.",
             Usage = "&S/Announce [world] [message] [duration]",
             Handler = AnnounceHandler
         };
 
-        public static void AnnounceHandler(Player player, Command cmd)
-        {
-            if (!player.usesCPE)
-            {
+        public static void AnnounceHandler(Player player, Command cmd) {
+            if (!player.usesCPE) {
                 player.Message("This is a ClassiCube only command!");
                 return;
             }
 
-            Player[] targetPlayers;
-            string world = cmd.Next();
-            if(string.IsNullOrEmpty(world))
-            {
+            Player[] players;
+            string worldName = cmd.Next();
+            if (string.IsNullOrEmpty(worldName)) {
                 CdAnnounce.PrintUsage(player);
                 return;
             }
+            World world = null;
 
-            if (world == "all")
-            {
-                targetPlayers = Server.Players;
-            }
-            else
-            {
-                World[] targetWorlds = WorldManager.FindWorlds(player, world);
-                if (targetWorlds.Length > 1)
-                {
-                    player.MessageManyMatches("world", targetWorlds);
-                    return;
-                }
-                else if (targetWorlds.Length == 1)
-                {
-                    targetPlayers = targetWorlds[0].Players;
-                }
-                else
-                {
-                    player.Message("No worlds found matching {0}! Please check your spelling.", world);
-                    return;
-                }
+            if (worldName == "all") {
+                players = Server.Players;
+            } else {
+                world = WorldManager.FindWorldOrPrintMatches(player, worldName);
+                if (world == null) return;
+                players = world.Players;
             }
 
             string message = cmd.Next();
-            if (string.IsNullOrEmpty(message))
-            {
+            if (string.IsNullOrEmpty(message)) {
                 CdAnnounce.PrintUsage(player);
                 return;
             }
 
             double reset = 7;
-            if (cmd.HasNext)
-            {
+            if (cmd.HasNext) {
                 string resetStr = cmd.Next();
                 Double.TryParse(resetStr, out reset);
             }
 
             Packet packet = PacketWriter.MakeSpecialMessage(100, message);
-            foreach (Player p in targetPlayers)
-            {
-                if (p.usesCPE)
-                {
-                    p.Send(packet);
-                }
+            foreach (Player p in players) {
+                if (!p.usesCPE) continue;
+                p.Send(packet);
             }
 
-            task.Stop();
-
-            resetWorld = player.World;
-            task = Scheduler.NewTask(resetAnnouncement);
-            task.RunOnce(TimeSpan.FromSeconds(reset));
+            Scheduler.NewTask(ResetAnnouncement)
+                .RunOnce(world, TimeSpan.FromSeconds(reset));
 
         }
 
         //reset announcements
-        static void resetAnnouncement(SchedulerTask task)
-        {
-            foreach (Player p in resetWorld.Players)
-            {
+        static void ResetAnnouncement(SchedulerTask task) {
+            Player[] players = Server.Players;
+            if (task.UserState != null)
+                players = ((World)task.UserState).Players;
+            
+            foreach (Player p in players) {
+                if (!p.usesCPE) continue;
                 p.Send(PacketWriter.MakeSpecialMessage(100, "&f"));
             }
         }
-         static readonly CommandDescriptor CdAutoRank = new CommandDescriptor 
+        
+        static readonly CommandDescriptor CdAutoRank = new CommandDescriptor 
         {
             Name = "AutoRank",
             IsConsoleSafe = true,
