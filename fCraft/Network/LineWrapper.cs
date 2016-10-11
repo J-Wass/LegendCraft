@@ -17,12 +17,6 @@ namespace fCraft
     public sealed class LineWrapper : IEnumerable<Packet>, IEnumerator<Packet>
     {
         const string DefaultPrefixString = "> ";
-        static readonly byte[] DefaultPrefix;
-
-        static LineWrapper()
-        {
-            DefaultPrefix = Encoding.ASCII.GetBytes(DefaultPrefixString);
-        }
 
         const int LineSize = 64;
         const int MaxPrefixSize = 32;
@@ -38,13 +32,13 @@ namespace fCraft
         int spaceCount,
             wordLength; // used to see whether to wrap at hyphens
 
-        readonly byte[] input;
+        readonly string input;
         int inputIndex;
 
         byte[] output;
         int outputStart, outputIndex;
 
-        readonly byte[] prefix;
+        readonly string prefix;
 
         int wrapIndex,
             wrapOutputIndex;
@@ -56,8 +50,8 @@ namespace fCraft
         LineWrapper([NotNull] string message, bool supportsAllChars)
         {
             if (message == null) throw new ArgumentNullException("message");
-            input = GetBytes(message);
-            prefix = DefaultPrefix;
+            input = message;
+            prefix = DefaultPrefixString;
             this.supportsAllChars = supportsAllChars;
             Reset();
         }
@@ -66,10 +60,10 @@ namespace fCraft
         LineWrapper([NotNull] string prefixString, [NotNull] string message, bool supportsAllChars)
         {
             if (prefixString == null) throw new ArgumentNullException("prefixString");
-            prefix = GetBytes(prefixString);
+            prefix = prefixString;
             if (prefix.Length > MaxPrefixSize) throw new ArgumentException("Prefix too long", "prefixString");
             if (message == null) throw new ArgumentNullException("message");
-            input = GetBytes(message);
+            input = message;
             this.supportsAllChars = supportsAllChars;
             Reset();
         }
@@ -117,7 +111,7 @@ namespace fCraft
                 wordLength = 0;
                 while (inputIndex < prefix.Length)
                 {
-                    byte ch = prefix[inputIndex];
+                    char ch = prefix[inputIndex];
                     if (ProcessChar(ch))
                     {
                         // Should never happen, since prefix is under 32 chars
@@ -137,7 +131,7 @@ namespace fCraft
             // Append as much of the remaining input as possible
             while (inputIndex < input.Length)
             {
-                byte ch = input[inputIndex];
+                char ch = input[inputIndex];
                 if (ProcessChar(ch))
                 {
                     // Line wrap is needed
@@ -152,11 +146,12 @@ namespace fCraft
         }
 
 
-        bool ProcessChar(byte ch)
+        bool ProcessChar(char ch)
         {
+            byte raw = GetByte(ch);
             switch (ch)
             {
-                case (byte)' ':
+                case ' ':
                     hadSpace = true;
                     expectingColor = false;
                     if (spaceCount == 0)
@@ -169,7 +164,7 @@ namespace fCraft
                     spaceCount++;
                     break;
 
-                case (byte)'&':
+                case '&':
                     if (expectingColor)
                     {
                         // skip double ampersands
@@ -181,7 +176,7 @@ namespace fCraft
                     }
                     break;
 
-                case (byte)'-':
+                case '-':
                     if (spaceCount > 0)
                     {
                         // set wrapping point, if at beginning of a word
@@ -189,7 +184,7 @@ namespace fCraft
                         wrapColor = color;
                     }
                     expectingColor = false;
-                    if (!Append(ch))
+                    if (!Append(raw))
                     {
                         if (hadSpace)
                         {
@@ -211,7 +206,7 @@ namespace fCraft
                     }
                     break;
 
-                case (byte)'\n':
+                case '\n':
                     // break the line early
                     inputIndex++;
                     return true;
@@ -220,9 +215,9 @@ namespace fCraft
                     if (expectingColor)
                     {
                         expectingColor = false;
-                        if (ProcessColor(ref ch))
+                        if (ProcessColor(ref raw))
                         {
-                            color = ch;
+                            color = raw;
                             hadColor = true;
                         }// else colorcode is invalid, skip
                     }
@@ -234,12 +229,12 @@ namespace fCraft
                             wrapIndex = inputIndex;
                             wrapColor = color;
                         }
-                        if (!IsWordChar(ch) && !supportsAllChars)
+                        if (!IsWordChar(raw) && !supportsAllChars)
                         {
                             // replace unprintable chars with '?'
-                            ch = (byte)'?';
+                            raw = (byte)'?';
                         }
-                        if (!Append(ch))
+                        if (!Append(raw))
                         {
                             if (hadSpace)
                             {
@@ -382,24 +377,17 @@ namespace fCraft
         }
 
 
-        static byte[] GetBytes(string value) 
+        static byte GetByte(char ch) 
         {
-            byte[] buffer = new byte[value.Length];
-            for( int i = 0; i < value.Length; i++ ) 
-            {
-                char c = value[i];
-                int cpIndex = 0;
-                if (c >= ' ' && c <= '~') {
-                    buffer[i] = (byte)c;
-                } else if ((cpIndex = Chat.ControlCharReplacements.IndexOf(c)) >= 0) {
-                    buffer[i] = (byte)cpIndex;
-                } else if ((cpIndex = Chat.ExtendedCharReplacements.IndexOf(c)) >= 0 ) {
-                    buffer[i] = (byte)(cpIndex + 127);
-                } else {
-                    buffer[i] = (byte)'?';
-                }
+            int cpIndex = 0;
+            if (ch >= ' ' && ch <= '~') {
+                return (byte)ch;
+            } else if ((cpIndex = Chat.ControlCharReplacements.IndexOf(ch)) >= 0) {
+                return (byte)cpIndex;
+            } else if ((cpIndex = Chat.ExtendedCharReplacements.IndexOf(ch)) >= 0 ) {
+                return(byte)(cpIndex + 127);
             }
-            return buffer;
+            return (byte)'?';
         }
         
         

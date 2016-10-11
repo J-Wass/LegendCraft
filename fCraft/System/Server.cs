@@ -527,7 +527,7 @@ namespace fCraft {
 
             //enable global chat
             GlobalChat.Init();
-            //GlobalChat.Start();
+            GlobalChat.Start();
 
             IsRunning = true;
             RaiseEvent( Started );
