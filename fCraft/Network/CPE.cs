@@ -38,7 +38,9 @@ namespace fCraft
         const int HackControlExtVersion = 1;
         const string LongerMessagesExtName = "LongerMessages";
         const int LongerMessagesExtVersion = 1;
-
+        const string FullCP437ExtName = "FullCP437";
+        const int FullCP437ExtVersion = 1;
+        
         // Note: if more levels are added, change UsesCustomBlocks from bool to int
         public bool UsesCustomBlocks { get; set; }
         public bool SupportsClickDistance = false;
@@ -52,13 +54,13 @@ namespace fCraft
         public bool SupportsMessageTypes = false;
         public bool SupportsHackControl = false;
         public bool SupportsLongerMessages = false;
+        public bool SupportsFullCP437 = false;
         
         string ClientName { get; set; }
 
         bool NegotiateProtocolExtension()
         {
-            this.reader = new PacketReader(this.stream);
-            writer.Write(Packet.MakeExtInfo(11).Data);
+            writer.Write(Packet.MakeExtInfo(12).Data);
             
             writer.Write(Packet.MakeExtEntry(CustomBlocksExtName, CustomBlocksExtVersion).Data);
             writer.Write(Packet.MakeExtEntry(ClickDistanceExtName, ClickDistanceExtVersion).Data);
@@ -74,7 +76,8 @@ namespace fCraft
             
             writer.Write(Packet.MakeExtEntry(HackControlExtName, HackControlExtVersion).Data);
             writer.Write(Packet.MakeExtEntry(LongerMessagesExtName, LongerMessagesExtVersion).Data);
-
+            writer.Write(Packet.MakeExtEntry(FullCP437ExtName, FullCP437ExtVersion).Data);
+            
             Logger.Log(LogType.Debug, "Sent ExtInfo and entry packets");
 
             // Expect ExtInfo reply from the client
@@ -143,6 +146,9 @@ namespace fCraft
                 } else if (extName == LongerMessagesExtName && extVersion == LongerMessagesExtVersion) {
                     SupportsLongerMessages = true;
                     clientExts.Add(extName + " " + extVersion);
+                } else if (extName == FullCP437ExtName && extVersion == FullCP437ExtVersion) {
+                    SupportsFullCP437 = true;
+                    clientExts.Add(extName + " " + extVersion);
                 }
             }
 
@@ -176,7 +182,6 @@ namespace fCraft
                 byte clientLevel = reader.ReadByte();
                 UsesCustomBlocks = (clientLevel >= CustomBlocksLevel);
             }
-            this.reader = new BinaryReader(this.stream);
             return true;
         }
 

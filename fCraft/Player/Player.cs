@@ -895,14 +895,14 @@ namespace fCraft
             }
             else if (IsUsingWoM)
             {
-                foreach (Packet p in LineWrapper.WrapPrefixed(WoMAlertPrefix, WoMAlertPrefix + Color.Sys + message))
+                foreach (Packet p in LineWrapper.WrapPrefixed(WoMAlertPrefix, WoMAlertPrefix + Color.Sys + message, SupportsFullCP437))
                 {
                     Send(p);
                 }
             }
             else
             {
-                foreach (Packet p in LineWrapper.Wrap(Color.Sys + message))
+                foreach (Packet p in LineWrapper.Wrap(Color.Sys + message, SupportsFullCP437))
                 {
                     Send(p);
                 }
@@ -935,7 +935,7 @@ namespace fCraft
             }
             else
             {
-                foreach (Packet p in LineWrapper.Wrap(Color.Sys + message))
+                foreach (Packet p in LineWrapper.Wrap(Color.Sys + message, SupportsFullCP437))
                 {
                     Send(p);
                 }
@@ -976,7 +976,7 @@ namespace fCraft
             }
             else
             {
-                foreach (Packet p in LineWrapper.WrapPrefixed(prefix, message))
+                foreach (Packet p in LineWrapper.WrapPrefixed(prefix, message, SupportsFullCP437))
                 {
                     Send(p);
                 }
@@ -1004,7 +1004,7 @@ namespace fCraft
                 {
                     throw new InvalidOperationException("SendNow may only be called from player's own thread.");
                 }
-                foreach (Packet p in LineWrapper.Wrap(Color.Sys + message))
+                foreach (Packet p in LineWrapper.Wrap(Color.Sys + message, SupportsFullCP437))
                 {
                     SendNow(p);
                 }
@@ -1033,7 +1033,7 @@ namespace fCraft
                 {
                     throw new InvalidOperationException("SendNow may only be called from player's own thread.");
                 }
-                foreach (Packet p in LineWrapper.WrapPrefixed(prefix, message))
+                foreach (Packet p in LineWrapper.WrapPrefixed(prefix, message, SupportsFullCP437))
                 {
                     Send(p);
                 }

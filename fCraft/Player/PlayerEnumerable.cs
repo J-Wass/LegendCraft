@@ -468,9 +468,10 @@ namespace fCraft {
                                    [NotNull] string message ) {
             if( source == null ) throw new ArgumentNullException( "source" );
             if( message == null ) throw new ArgumentNullException( "message" );
+            
             int i = 0;
-            foreach( Packet packet in LineWrapper.Wrap( message ) ) {
-                foreach( Player player in source ) {
+            foreach( Player player in source ) {
+                foreach( Packet packet in LineWrapper.Wrap( message, player.SupportsFullCP437 ) ) {
                     player.Send( packet );
                     i++;
                 }
@@ -488,9 +489,10 @@ namespace fCraft {
                                    [NotNull] string message ) {
             if( source == null ) throw new ArgumentNullException( "source" );
             if( message == null ) throw new ArgumentNullException( "message" );
+            
             int i = 0;
-            foreach( Packet packet in LineWrapper.Wrap( message ) ) {
-                foreach( Player player in source ) {
+            foreach( Player player in source ) {
+                foreach( Packet packet in LineWrapper.Wrap( message, player.SupportsFullCP437 ) ) {
                     if( player == except ) continue;
                     player.Send( packet );
                     i++;
@@ -513,9 +515,10 @@ namespace fCraft {
             if( source == null ) throw new ArgumentNullException( "source" );
             if( message == null ) throw new ArgumentNullException( "message" );
             if( formatArgs == null ) throw new ArgumentNullException( "formatArgs" );
+            
             int i = 0;
-            foreach( Packet packet in LineWrapper.Wrap( String.Format( message, formatArgs ) ) ) {
-                foreach( Player player in source ) {
+            foreach( Player player in source ) {
+                foreach( Packet packet in LineWrapper.Wrap( String.Format( message, formatArgs ), player.SupportsFullCP437 ) ) {
                     if( player == except ) continue;
                     player.Send( packet );
                     i++;
@@ -537,9 +540,10 @@ namespace fCraft {
             if( source == null ) throw new ArgumentNullException( "source" );
             if( message == null ) throw new ArgumentNullException( "message" );
             if( formatArgs == null ) throw new ArgumentNullException( "formatArgs" );
+            
             int i = 0;
-            foreach( Packet packet in LineWrapper.Wrap( String.Format( message, formatArgs ) ) ) {
-                foreach( Player player in source ) {
+            foreach( Player player in source ) {
+                foreach( Packet packet in LineWrapper.Wrap( String.Format( message, formatArgs ), player.SupportsFullCP437 ) ) {
                     player.Send( packet );
                     i++;
                 }
@@ -558,9 +562,10 @@ namespace fCraft {
             if( source == null ) throw new ArgumentNullException( "source" );
             if( prefix == null ) throw new ArgumentNullException( "prefix" );
             if( message == null ) throw new ArgumentNullException( "message" );
+            
             int i = 0;
-            foreach( Packet packet in LineWrapper.WrapPrefixed( prefix, message ) ) {
-                foreach( Player player in source ) {
+            foreach( Player player in source ) {
+                foreach( Packet packet in LineWrapper.WrapPrefixed( prefix, message, player.SupportsFullCP437 ) ) {
                     player.Send( packet );
                     i++;
                 }
@@ -582,9 +587,10 @@ namespace fCraft {
             if( message == null ) throw new ArgumentNullException( "message" );
             if( prefix == null ) throw new ArgumentNullException( "prefix" );
             if( formatArgs == null ) throw new ArgumentNullException( "formatArgs" );
+            
             int i = 0;
-            foreach( Packet packet in LineWrapper.WrapPrefixed( prefix, String.Format( message, formatArgs ) ) ) {
-                foreach( Player player in source ) {
+            foreach( Player player in source ) {
+                foreach( Packet packet in LineWrapper.WrapPrefixed( prefix, String.Format( message, formatArgs ), player.SupportsFullCP437 ) ) {
                     player.Send( packet );
                     i++;
                 }
@@ -607,6 +613,7 @@ namespace fCraft {
             if( source == null ) throw new ArgumentNullException( "source" );
             if( message == null ) throw new ArgumentNullException( "message" );
             if( formatArgs == null ) throw new ArgumentNullException( "formatArgs" );
+            
             int i = 0;
             foreach( Player player in source ) {
                 player.MessageAlt( message, formatArgs );

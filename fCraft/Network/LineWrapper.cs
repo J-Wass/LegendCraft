@@ -50,24 +50,27 @@ namespace fCraft
             wrapOutputIndex;
         byte wrapColor;
         bool expectingColor;
+        bool supportsAllChars;
 
 
-        LineWrapper([NotNull] string message)
+        LineWrapper([NotNull] string message, bool supportsAllChars)
         {
             if (message == null) throw new ArgumentNullException("message");
-            input = Encoding.ASCII.GetBytes(message);
+            input = GetBytes(message);
             prefix = DefaultPrefix;
+            this.supportsAllChars = supportsAllChars;
             Reset();
         }
 
 
-        LineWrapper([NotNull] string prefixString, [NotNull] string message)
+        LineWrapper([NotNull] string prefixString, [NotNull] string message, bool supportsAllChars)
         {
             if (prefixString == null) throw new ArgumentNullException("prefixString");
-            prefix = Encoding.ASCII.GetBytes(prefixString);
+            prefix = GetBytes(prefixString);
             if (prefix.Length > MaxPrefixSize) throw new ArgumentException("Prefix too long", "prefixString");
             if (message == null) throw new ArgumentNullException("message");
-            input = Encoding.ASCII.GetBytes(message);
+            input = GetBytes(message);
+            this.supportsAllChars = supportsAllChars;
             Reset();
         }
 
@@ -231,7 +234,7 @@ namespace fCraft
                             wrapIndex = inputIndex;
                             wrapColor = color;
                         }
-                        if (!IsWordChar(ch))
+                        if (!IsWordChar(ch) && !supportsAllChars)
                         {
                             // replace unprintable chars with '?'
                             ch = (byte)'?';
@@ -379,6 +382,27 @@ namespace fCraft
         }
 
 
+        static byte[] GetBytes(string value) 
+        {
+            byte[] buffer = new byte[value.Length];
+            for( int i = 0; i < value.Length; i++ ) 
+            {
+                char c = value[i];
+                int cpIndex = 0;
+                if (c >= ' ' && c <= '~') {
+                    buffer[i] = (byte)c;
+                } else if ((cpIndex = Chat.ControlCharReplacements.IndexOf(c)) >= 0) {
+                    buffer[i] = (byte)cpIndex;
+                } else if ((cpIndex = Chat.ExtendedCharReplacements.IndexOf(c)) >= 0 ) {
+                    buffer[i] = (byte)(cpIndex + 127);
+                } else {
+                    buffer[i] = (byte)'?';
+                }
+            }
+            return buffer;
+        }
+        
+        
         object IEnumerator.Current
         {
             get { return Current; }
@@ -404,16 +428,16 @@ namespace fCraft
 
 
         /// <summary> Creates a new line wrapper for a given raw string. </summary>
-        public static LineWrapper Wrap(string message)
+        public static LineWrapper Wrap(string message, bool supportsAllChars)
         {
-            return new LineWrapper(message);
+            return new LineWrapper(message, supportsAllChars);
         }
 
 
         /// <summary> Creates a new line wrapper for a given raw string. </summary>
-        public static LineWrapper WrapPrefixed(string prefix, string message)
+        public static LineWrapper WrapPrefixed(string prefix, string message, bool supportsAllChars)
         {
-            return new LineWrapper(prefix, message);
+            return new LineWrapper(prefix, message, supportsAllChars);
         }
     }
 }
