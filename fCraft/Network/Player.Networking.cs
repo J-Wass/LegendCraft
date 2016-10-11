@@ -52,7 +52,7 @@ namespace fCraft
         Thread ioThread;
         TcpClient client;
         readonly NetworkStream stream;
-        BinaryReader reader;
+        PacketReader reader;
         PacketWriter writer;
         ConcurrentQueue<Packet> outputQueue = new ConcurrentQueue<Packet>(),
                                          priorityOutputQueue = new ConcurrentQueue<Packet>();
@@ -87,7 +87,7 @@ namespace fCraft
                 if (Server.RaiseSessionConnectingEvent(IP)) return;
 
                 stream = client.GetStream();
-                reader = new BinaryReader(stream);
+                reader = new PacketReader(stream);
                 writer = new PacketWriter(stream);
 
                 ioThread = new Thread(IoLoop)
@@ -323,7 +323,7 @@ namespace fCraft
             BytesReceived += 66;
             ResetIdleTimer();
             byte continuedMessage = reader.ReadByte();
-            string message = ReadString();
+            string message = reader.ReadString();
 
             if (String.IsNullOrEmpty(message))
             {
@@ -337,7 +337,7 @@ namespace fCraft
                 return true;
             }
 
-            if (Chat.ContainsInvalidChars(message))
+            if (message.IndexOf('&') >= 0)
             {
                 Logger.Log(LogType.SuspiciousActivity,
                             "Player.ParseMessage: {0} attempted to write illegal characters in chat and was kicked.",
@@ -400,9 +400,9 @@ namespace fCraft
 
             Position newPos = new Position
             {
-                X = IPAddress.NetworkToHostOrder(reader.ReadInt16()),
-                Z = IPAddress.NetworkToHostOrder(reader.ReadInt16()),
-                Y = IPAddress.NetworkToHostOrder(reader.ReadInt16()),
+                X = reader.ReadInt16(),
+                Z = reader.ReadInt16(),
+                Y = reader.ReadInt16(),
                 R = reader.ReadByte(),
                 L = reader.ReadByte()
             };
@@ -542,9 +542,9 @@ namespace fCraft
             BytesReceived += 9;
             if (World == null || World.Map == null) return;
             ResetIdleTimer();
-            short x = IPAddress.NetworkToHostOrder(reader.ReadInt16());
-            short z = IPAddress.NetworkToHostOrder(reader.ReadInt16());
-            short y = IPAddress.NetworkToHostOrder(reader.ReadInt16());
+            short x = reader.ReadInt16();
+            short z = reader.ReadInt16();
+            short y = reader.ReadInt16();
             ClickAction action = (reader.ReadByte() == 1) ? ClickAction.Build : ClickAction.Delete;
             byte type = reader.ReadByte();
 
@@ -653,12 +653,12 @@ namespace fCraft
             }
 
             //raw name from player ID packet from the client
-            string givenName = ReadString();
+            string givenName = reader.ReadString();
             string packetPlayerName = givenName; //make a copy of the full name, in case Mojang support is needed
             bool UsedMojang = false;
 
             //verificication key found in player ID packet
-            string verificationKey = ReadString();
+            string verificationKey = reader.ReadString();
             ClassiCube = Server.VerifyName(givenName, verificationKey, Heartbeat.Salt2);          
             
             byte magicNum = reader.ReadByte(); //for CPE check (previously unused)
@@ -1130,7 +1130,7 @@ namespace fCraft
         void GentlyKickBetaClients()
         {
             // This may be someone connecting with an SMP client
-            int strLen = IPAddress.NetworkToHostOrder(reader.ReadInt16());
+            int strLen = reader.ReadInt16();
 
             if (strLen >= 2 && strLen <= 16)
             {
@@ -1597,13 +1597,7 @@ namespace fCraft
         }
 
         #endregion
-
-
-        string ReadString()
-        {
-            return Encoding.ASCII.GetString(reader.ReadBytes(64)).TrimEnd();
-        }
-
+        
 
         /// <summary> Clears the low priority player queue. </summary>
         void ClearLowPriotityOutputQueue()
