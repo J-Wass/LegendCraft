@@ -479,7 +479,11 @@ namespace fCraft
                         {
                             rawMessage = rawMessage.Substring(1);
                         }
-
+                        if (rawMessage.StartsWith("!!"))
+                        {
+                            rawMessage = rawMessage.Substring(1);
+                        }
+                        
                         if (rawMessage.EndsWith("//"))
                         {
                             rawMessage = rawMessage.Substring(0, rawMessage.Length - 1);
