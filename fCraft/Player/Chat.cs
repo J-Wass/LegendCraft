@@ -511,6 +511,10 @@ namespace fCraft {
                     return RawMessageType.Invalid;
                 
                 case '!':
+                    if (message.Length >= 2 && message[1] == '!') {
+                        // escaped exclamation mark in the beginning: "!!blah"
+                        return RawMessageType.Chat;
+                    }
                     if (message.Length < 2 || message.IndexOf(' ') == -1)
                     {
                         // message too short
