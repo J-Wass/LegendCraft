@@ -2433,7 +2433,7 @@ THE SOFTWARE.*/
             Category = CommandCategory.Moderation,
             Permissions = new[] { Permission.UndoOthersActions },
             RepeatableSelection = true,
-            Usage = "/UndoArea PlayerName [TimeSpan|BlockCount]",
+            Usage = "/UndoArea [TimeSpan|BlockCount] PlayerName",
             Help = "Reverses changes made by a given player in the current world, in the given area.",
             Handler = UndoAreaHandler
         };
@@ -2463,7 +2463,7 @@ THE SOFTWARE.*/
             Category = CommandCategory.Moderation,
             Permissions = new[] { Permission.UndoOthersActions, Permission.UndoAll },
             RepeatableSelection = true,
-            Usage = "/UndoArea (TimeSpan|BlockCount) PlayerName [AnotherName]",
+            Usage = "/UndoAreaNot (TimeSpan|BlockCount) PlayerName [AnotherName]",
             Help = "Reverses changes made by everyone EXCEPT the given player(s). " +
                    "Applies to a selected area in the current world. " +
                    "More than one player name can be given at a time.",
