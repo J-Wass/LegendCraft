@@ -244,6 +244,7 @@ THE SOFTWARE.*/
                     return;
                 }
                 world.Hax = true;
+				WorldManager.SaveWorldList();
                 Server.Message("&sHax have been enabled on {0}", world.ClassyName);
                 foreach (Player p in world.Players)
                 {
@@ -259,6 +260,7 @@ THE SOFTWARE.*/
                     return;
                 }
                 world.Hax = false;
+				WorldManager.SaveWorldList();
                 Server.Message("&sHax have been disabled on {0}", world.ClassyName);
                 foreach (Player p in world.Players) //make all players rejoin to force changes
                 {
