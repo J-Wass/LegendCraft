@@ -30,11 +30,6 @@ namespace fCraft {
             if( player == null ) throw new ArgumentNullException( "player" );
             if( rawMessage == null ) throw new ArgumentNullException( "rawMessage" );
             string OriginalMessage = rawMessage;
-            if (Server.Moderation && !Server.VoicedPlayers.Contains(player) && player.World != null)
-            {
-                player.Message("&WError: Server Moderation is activated. Message failed to send");
-                return false;
-            }
 
             rawMessage = rawMessage.Replace("$name", player.ClassyName + "&f");
             rawMessage = rawMessage.Replace("$kicks", player.Info.TimesKickedOthers.ToString());

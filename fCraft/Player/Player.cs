@@ -465,14 +465,7 @@ namespace fCraft
                 case RawMessageType.Chat:
                     {
                         if (!Can(Permission.Chat)) return;
-
-                        if (Info.IsMuted)
-                        {
-                            MessageMuted();
-                            return;
-                        }
-
-                        if (DetectChatSpam()) return;
+                        if (!MaySpeakFurther()) return;
 
                         // Escaped slash removed AFTER logging, to avoid confusion with real commands
                         if (rawMessage.StartsWith("//"))
@@ -566,14 +559,7 @@ namespace fCraft
                 case RawMessageType.PrivateChat:
                     {
                         if (!Can(Permission.Chat)) return;
-
-                        if (Info.IsMuted)
-                        {
-                            MessageMuted();
-                            return;
-                        }
-
-                        if (DetectChatSpam()) return;
+                        if (!MaySpeakFurther()) return;
 
                         if (rawMessage.EndsWith("//"))
                         {
@@ -672,14 +658,7 @@ namespace fCraft
                 case RawMessageType.RankChat:
                     {
                         if (!Can(Permission.Chat)) return;
-
-                        if (Info.IsMuted)
-                        {
-                            MessageMuted();
-                            return;
-                        }
-
-                        if (DetectChatSpam()) return;
+                        if (!MaySpeakFurther()) return;
 
                         if (rawMessage.EndsWith("//"))
                         {
@@ -718,14 +697,7 @@ namespace fCraft
                 case RawMessageType.WorldChat:
                     {
                         if (!Can(Permission.Chat)) return;
-
-                        if (Info.IsMuted)
-                        {
-                            MessageMuted();
-                            return;
-                        }
-
-                        if (DetectChatSpam()) return;
+                        if (!MaySpeakFurther()) return;
 
                         if (rawMessage.EndsWith("//"))
                         {
@@ -1295,6 +1267,17 @@ namespace fCraft
         public static int AntispamMessageCount = 3;
         public static int AntispamInterval = 4;
         readonly Queue<DateTime> spamChatLog = new Queue<DateTime>(AntispamMessageCount);
+        
+        internal bool MaySpeakFurther() {
+            if (Info.IsMuted) { MessageMuted(); return false; }
+            if (DetectChatSpam()) return false;
+            
+            if (!IsSuper && Server.Moderation && !Server.VoicedPlayers.Contains(this)) {
+                Message("&WServer Moderation is on, you may not speak.");
+                return false;
+            }
+            return true;
+        }
 
         internal bool DetectChatSpam()
         {

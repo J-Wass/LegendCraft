@@ -107,6 +107,8 @@ THE SOFTWARE.*/
 
         internal static void BarfHandler(Player player, Command cmd)
         {
+            if (!player.MaySpeakFurther()) return;
+        	
             string name = cmd.Next();
             if (string.IsNullOrEmpty(name)) {
                 Server.Players.CanSee(player).Except(player).Message("{0} &6Barfed&s.", player.ClassyName);
@@ -758,10 +760,10 @@ THE SOFTWARE.*/
         };
 
 
-
-
         static void BrofistHandler(Player player, Command cmd)
         {
+            if (!player.MaySpeakFurther()) return;
+        	
             string targetName = cmd.Next();
             if (targetName == null)
             {
@@ -785,9 +787,6 @@ THE SOFTWARE.*/
             IRC.PlayerSomethingMessage(player, "brofisted", target, null);
             target.Message("{0}&S's fist met yours for a &8Brofist&S.", player.ClassyName);
         }
-
-
-
 
 
         static readonly CommandDescriptor CdMad = new CommandDescriptor
@@ -1218,13 +1217,7 @@ THE SOFTWARE.*/
 
         static void CustomChatHandler(Player player, Command cmd)
         {
-            if (player.Info.IsMuted)
-            {
-                player.MessageMuted();
-                return;
-            }
-
-            if (player.DetectChatSpam()) return;
+            if (!player.MaySpeakFurther()) return;
 
             string message = cmd.NextAll().Trim();
             if (message.Length > 0)
@@ -1287,6 +1280,8 @@ THE SOFTWARE.*/
 
         internal static void High5Handler(Player player, Command cmd)
         {
+            if (!player.MaySpeakFurther()) return;
+            
             string targetName = cmd.Next();
             if (targetName == null)
             {
@@ -1319,6 +1314,8 @@ THE SOFTWARE.*/
 
         internal static void PokeHandler(Player player, Command cmd)
         {
+            if (!player.MaySpeakFurther()) return;
+        	
             string targetName = cmd.Next();
             if (targetName == null)
             {
@@ -1444,13 +1441,7 @@ THE SOFTWARE.*/
 
         static void SayHandler(Player player, Command cmd)
         {
-            if (player.Info.IsMuted)
-            {
-                player.MessageMuted();
-                return;
-            }
-
-            if (player.DetectChatSpam()) return;
+            if (!player.MaySpeakFurther()) return;
 
             if (player.Can(Permission.Say))
             {
@@ -1491,13 +1482,7 @@ THE SOFTWARE.*/
 
         static void StaffHandler(Player player, Command cmd)
         {
-            if (player.Info.IsMuted)
-            {
-                player.MessageMuted();
-                return;
-            }
-
-            if (player.DetectChatSpam()) return;
+            if (!player.MaySpeakFurther()) return;
 
             string message = cmd.NextAll().Trim();
             if (message.Length > 0)
@@ -1628,13 +1613,7 @@ THE SOFTWARE.*/
 
         static void MeHandler(Player player, Command cmd)
         {
-            if (player.Info.IsMuted)
-            {
-                player.MessageMuted();
-                return;
-            }
-
-            if (player.DetectChatSpam()) return;
+            if (!player.MaySpeakFurther()) return;
 
             string msg = cmd.NextAll().Trim();
             if (msg.Length > 0)
@@ -1668,13 +1647,7 @@ THE SOFTWARE.*/
 
         static void RollHandler(Player player, Command cmd)
         {
-            if (player.Info.IsMuted)
-            {
-                player.MessageMuted();
-                return;
-            }
-
-            if (player.DetectChatSpam()) return;
+            if (!player.MaySpeakFurther()) return;
 
             Random rand = new Random();
             int n1;
@@ -1843,12 +1816,8 @@ THE SOFTWARE.*/
             }
 
             // Start a timer
-            if (player.Info.IsMuted)
-            {
-                player.MessageMuted();
-                return;
-            }
-            if (player.DetectChatSpam()) return;
+            if (!player.MaySpeakFurther()) return;
+            
             TimeSpan duration;
             if (!param.TryParseMiniTimespan(out duration))
             {
@@ -1886,9 +1855,6 @@ THE SOFTWARE.*/
         }
 
         #endregion
-
-        
     }
-
 }
-                     
+                    

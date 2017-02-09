@@ -618,6 +618,8 @@ THE SOFTWARE.*/
 
         static void BeatDownHandler(Player player, Command cmd) //a more brutal /slap cmd, sends the player underground to the bottom of the world
         {
+            if (!player.MaySpeakFurther()) return;
+        	
             string name = cmd.Next();
             string item = cmd.Next();
             if (name == null)
@@ -1159,6 +1161,8 @@ THE SOFTWARE.*/
 
         internal static void AssassinateHandler(Player player, Command cmd)
         {
+            if (!player.MaySpeakFurther()) return;
+        	
             string name = cmd.Next();
             if (name == null)
             {
@@ -1236,6 +1240,8 @@ THE SOFTWARE.*/
 
         static void PunchHandler(Player player, Command cmd)
         {
+            if (!player.MaySpeakFurther()) return;
+            
             string name = cmd.Next();
             string item = cmd.Next();
             if (name == null)
@@ -1486,6 +1492,8 @@ THE SOFTWARE.*/
 
         internal static void KillHandler(Player player, Command cmd)
         {
+            if (!player.MaySpeakFurther()) return;
+        	
             string name = cmd.Next();
             string reason = cmd.NextAll();
             if (name == null)
@@ -1561,6 +1569,8 @@ THE SOFTWARE.*/
 
         static void Slap(Player player, Command cmd)
         {
+            if (!player.MaySpeakFurther()) return;
+        	
             string name = cmd.Next();
             string item = cmd.Next();
             if (name == null){
