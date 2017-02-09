@@ -141,45 +141,50 @@ namespace fCraft
                     {
                         if (e.NewBlock == Block.Iron)
                         {
-                            waterThread = new Thread(new ThreadStart(delegate
-                            {
-                                if (e.Player.TowerCache != null)
-                                {
-                                    world.Map.QueueUpdate(new BlockUpdate(null, e.Player.towerOrigin, Block.Air));
-                                    e.Player.towerOrigin = e.Coords;
-                                    foreach (Vector3I block in e.Player.TowerCache.Values)
-                                    {
-                                        e.Player.Send(PacketWriter.MakeSetBlock(block, Block.Air));
-                                    }
-                                    e.Player.TowerCache.Clear();
-                                }
-                                e.Player.towerOrigin = e.Coords;
-                                e.Player.TowerCache = new System.Collections.Concurrent.ConcurrentDictionary<string, Vector3I>();
-                                for (int z = e.Coords.Z; z <= world.Map.Height; z++)
-                                {
-                                    Thread.Sleep(250);
-                                    if (world.Map != null && world.IsLoaded)
-                                    {
-                                        if (world.Map.GetBlock(e.Coords.X, e.Coords.Y, z + 1) != Block.Air
-                                            || world.Map.GetBlock(e.Coords) != Block.Iron
-                                            || e.Player.towerOrigin != e.Coords
-                                            || !e.Player.towerMode)
-                                        {
-                                            break;
-                                        }
-                                        else
-                                        {
-                                            Vector3I tower = new Vector3I(e.Coords.X, e.Coords.Y, z + 1);
-                                            e.Player.TowerCache.TryAdd(tower.ToString(), tower);
-                                            e.Player.Send(PacketWriter.MakeSetBlock(tower, Block.Water));
-                                        }
-                                    }
-                                }
-                            })); waterThread.Start();
+                            makeTower(world, e.Player, e.Coords);
                         }
                     }
                 }
             }
+        }
+        
+        static void makeTower(World world, Player player, Vector3I coords) {
+            waterThread = new Thread(new ThreadStart(
+                delegate
+                {
+                    if (player.TowerCache != null)
+                    {
+                        world.Map.QueueUpdate(new BlockUpdate(null, player.towerOrigin, Block.Air));
+                        player.towerOrigin = coords;
+                        foreach (Vector3I block in player.TowerCache.Values)
+                        {
+                            player.Send(PacketWriter.MakeSetBlock(block, Block.Air));
+                        }
+                        player.TowerCache.Clear();
+                    }
+                    player.towerOrigin = coords;
+                    player.TowerCache = new System.Collections.Concurrent.ConcurrentDictionary<string, Vector3I>();
+                    for (int z = coords.Z; z <= world.Map.Height; z++)
+                    {
+                        Thread.Sleep(250);
+                        if (world.Map != null && world.IsLoaded)
+                        {
+                            if (world.Map.GetBlock(coords.X, coords.Y, z + 1) != Block.Air
+                                || world.Map.GetBlock(coords) != Block.Iron
+                                || player.towerOrigin != coords
+                                || !player.towerMode)
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                Vector3I tower = new Vector3I(coords.X, coords.Y, z + 1);
+                                player.TowerCache.TryAdd(tower.ToString(), tower);
+                                player.Send(PacketWriter.MakeSetBlock(tower, Block.Water));
+                            }
+                        }
+                    }
+                })); waterThread.Start();
         }
 
         public static void towerRemove(object sender, Events.PlayerClickingEventArgs e)
