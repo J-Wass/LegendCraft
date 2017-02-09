@@ -60,7 +60,7 @@ namespace fCraft
             {
                 world_ = world;
                 instance = new FFA();
-                startTime = DateTime.Now;
+                startTime = DateTime.UtcNow;
                 task_ = new SchedulerTask(Interval, true).RunForever(TimeSpan.FromSeconds(1)); 
                 stoppedEarly = false; //to catch bugs when there is an unexpected crash (for testing/debugging)
             }
@@ -71,7 +71,7 @@ namespace fCraft
         {
             world_.Hax = false;
             world_.gameMode = GameMode.FFA; //set the game mode
-            delayTask = Scheduler.NewTask(t => world_.Players.Message("&WFFA &fwill be starting in {0} seconds: &WGet ready!", (timeDelay - (DateTime.Now - startTime).ToSeconds())));
+            delayTask = Scheduler.NewTask(t => world_.Players.Message("&WFFA &fwill be starting in {0} seconds: &WGet ready!", (timeDelay - (DateTime.UtcNow - startTime).ToSeconds())));
             delayTask.RunRepeating(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(10), (timeDelay / 10));
         }
 
@@ -130,7 +130,7 @@ namespace fCraft
             }
 
             //remove announcement after 5 seconds
-            if ((DateTime.Now - announced).TotalSeconds >= 5)
+            if ((DateTime.UtcNow - announced).TotalSeconds >= 5)
             {
                 foreach (Player p in world_.Players)
                 {
@@ -149,7 +149,7 @@ namespace fCraft
                     task.Stop();
                     return;
                 }
-                if (startTime != null && (DateTime.Now - startTime).TotalSeconds > timeDelay)
+                if (startTime != null && (DateTime.UtcNow - startTime).TotalSeconds > timeDelay)
                 {
                     foreach (Player p in world_.Players)
                     {
@@ -193,8 +193,8 @@ namespace fCraft
                     {
                         world_.EnableGunPhysics(Player.Console, true); //enables gun physics if they are not already on
                     }
-                    lastChecked = DateTime.Now;     //used for intervals
-                    announced = DateTime.Now; //set when the announcement was launched
+                    lastChecked = DateTime.UtcNow;     //used for intervals
+                    announced = DateTime.UtcNow; //set when the announcement was launched
                     return;
                 }
             }
@@ -202,7 +202,7 @@ namespace fCraft
             //check if one of the players has won
             foreach (Player p in world_.Players)
             {
-                if (started && startTime != null && (DateTime.Now - startTime).TotalSeconds >= timeDelay && p.Info.gameKillsFFA >= scoreLimit)
+                if (started && startTime != null && (DateTime.UtcNow - startTime).TotalSeconds >= timeDelay && p.Info.gameKillsFFA >= scoreLimit)
                 {
                     Stop(p);
                     return;
@@ -210,7 +210,7 @@ namespace fCraft
             }
 
             //check if time is up
-            if (started && startTime != null && (DateTime.Now - startTime).TotalSeconds >= (totalTime))
+            if (started && startTime != null && (DateTime.UtcNow - startTime).TotalSeconds >= (totalTime))
             {
                 Player winner = GetScoreList()[0];
                 if (world_.Players.Count() < 2)
@@ -222,7 +222,7 @@ namespace fCraft
                 return;
             }
 
-            if (started && (DateTime.Now - lastChecked).TotalSeconds > 10) //check if players left the world, forfeits if no players of that team left
+            if (started && (DateTime.UtcNow - lastChecked).TotalSeconds > 10) //check if players left the world, forfeits if no players of that team left
             {
                 if (world_.Players.Count() < 2)
                 {
@@ -231,9 +231,9 @@ namespace fCraft
                     return;
                 }
             }
-            timeLeft = Convert.ToInt16(((timeDelay + timeLimit) - (DateTime.Now - startTime).ToSeconds()));
+            timeLeft = Convert.ToInt16(((timeDelay + timeLimit) - (DateTime.UtcNow - startTime).ToSeconds()));
             //Keep the players updated about the score
-            if (lastChecked != null && (DateTime.Now - lastChecked).TotalSeconds > 29.9 && timeLeft <= timeLimit)
+            if (lastChecked != null && (DateTime.UtcNow - lastChecked).TotalSeconds > 29.9 && timeLeft <= timeLimit)
             {
                 Player leader = GetScoreList()[0];  //leader is the top of the score list
                 Player secondPlace = GetScoreList()[1]; //second place is - well, second place XD
@@ -247,7 +247,7 @@ namespace fCraft
                     world_.Players.Message("{1}&f and {2}&f are tied at &c{0}!", leader.Info.gameKillsFFA, leader.ClassyName, secondPlace.ClassyName);
                     world_.Players.Message("&fThere are &W{0}&f seconds left in the game.", timeLeft);
                 }
-                lastChecked = DateTime.Now;
+                lastChecked = DateTime.UtcNow;
             }
             if (timeLeft < 10.1)
             {

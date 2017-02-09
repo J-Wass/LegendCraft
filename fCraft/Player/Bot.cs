@@ -437,12 +437,12 @@ namespace fCraft
         {
             Scheduler.NewTask(t => updateBlock(Block.Lava, center, true, length)).RunManual(TimeSpan.FromSeconds(delay));
 
-            Random rand1 = new Random((int)DateTime.Now.Ticks);
-            Random rand2 = new Random((int)DateTime.Now.Ticks + 1);
-            Random rand3 = new Random((int)DateTime.Now.Ticks + 2); 
-            Random rand4 = new Random((int)DateTime.Now.Ticks + 3);
-            Random rand5 = new Random((int)DateTime.Now.Ticks + 4);
-            Random rand6 = new Random((int)DateTime.Now.Ticks + 5);
+            Random rand1 = new Random((int)DateTime.UtcNow.Ticks);
+            Random rand2 = new Random((int)DateTime.UtcNow.Ticks + 1);
+            Random rand3 = new Random((int)DateTime.UtcNow.Ticks + 2); 
+            Random rand4 = new Random((int)DateTime.UtcNow.Ticks + 3);
+            Random rand5 = new Random((int)DateTime.UtcNow.Ticks + 4);
+            Random rand6 = new Random((int)DateTime.UtcNow.Ticks + 5);
 
             //The code block generates a lava block from 0 to 3 block spaces, randomly away from the center block
 

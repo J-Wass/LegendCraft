@@ -53,7 +53,7 @@ namespace fCraft
         /// not on cooldown (a bit of an intentional race condition). </summary>
         public sealed class IRCThread : IDisposable
         {
-            DateTime lastPing = DateTime.Now;
+            DateTime lastPing = DateTime.UtcNow;
             bool triedPass = false;
             TcpClient client;
             StreamReader reader;
@@ -150,14 +150,14 @@ namespace fCraft
                         Send(IRCCommands.User(ActualBotNick, 8, ConfigKey.ServerName.GetString()));
                         Send(IRCCommands.Nick(ActualBotNick));
 
-                        lastPing = DateTime.Now;
+                        lastPing = DateTime.UtcNow;
                         while (isConnected && !reconnect)
                         {
                             Thread.Sleep(10);
                             
-                            if((DateTime.Now - lastPing).Seconds > 60)
+                            if((DateTime.UtcNow - lastPing).Seconds > 60)
                             {
-                                lastPing = DateTime.Now;
+                                lastPing = DateTime.UtcNow;
                                 Send(IRCCommands.Ping(ConfigKey.ServerName.GetString()));
                             }
                             if (localQueue.Count > 0 &&
@@ -259,11 +259,11 @@ namespace fCraft
                         {
                             //probably a useless check, might have a use for it in the future
                         }
-                        if((DateTime.Now - lastPing).Seconds > 60)
+                        if((DateTime.UtcNow - lastPing).Seconds > 60)
                         {
                             //connection is shaky, send another
                             Send(IRCCommands.Ping(ConfigKey.ServerName.GetString()));
-                            lastPing = DateTime.Now;
+                            lastPing = DateTime.UtcNow;
                         }
                         return;
                     case IRCMessageType.ChannelAction:

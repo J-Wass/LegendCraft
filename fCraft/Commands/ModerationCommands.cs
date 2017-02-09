@@ -637,7 +637,7 @@ THE SOFTWARE.*/
                 player.Message("&sYou can't pummel yourself.... What's wrong with you???");
                 return;
             }
-            double time = (DateTime.Now - player.Info.LastUsedBeatDown).TotalSeconds;
+            double time = (DateTime.UtcNow - player.Info.LastUsedBeatDown).TotalSeconds;
             double timeLeft = Math.Round(20 - time);
             if (time < 20)
             {
@@ -657,7 +657,7 @@ THE SOFTWARE.*/
                     Server.Players.CanSee(target).Union(target).Message("{0} &Swas pummeled into the ground by {1}", target.ClassyName, player.ClassyName);
                     target.Message("Do &a/Spawn&s to get back above ground.");
                     IRC.PlayerSomethingMessage(player, "beat down", target, null);
-                    player.Info.LastUsedBeatDown = DateTime.Now;
+                    player.Info.LastUsedBeatDown = DateTime.UtcNow;
                     return;
                 }
                 else if (item.ToLower() == "hammer")
@@ -677,13 +677,13 @@ THE SOFTWARE.*/
                     Server.Players.CanSee(target).Union(target).Message("{0} &Swas pummeled into the ground by {1}", target.ClassyName, player.ClassyName);
                     target.Message("Do &a/Spawn&s to get back above ground.");
                     IRC.PlayerSomethingMessage(player, "beat down", target, null);
-                    player.Info.LastUsedBeatDown = DateTime.Now;
+                    player.Info.LastUsedBeatDown = DateTime.UtcNow;
                     return;
                 }
                 Server.Players.CanSee(target).Union(target).Message(aMessage);
                 target.Message("Do &a/Spawn&s to get back above ground.");
                 IRC.PlayerSomethingMessage(player, "beat down", target, null);
-                player.Info.LastUsedBeatDown = DateTime.Now;
+                player.Info.LastUsedBeatDown = DateTime.UtcNow;
                 return;
             }
             else
@@ -1255,7 +1255,7 @@ THE SOFTWARE.*/
                 player.Message("&sYou can't &aPunch &syourself, Weirdo!");
                 return;
             }
-            double time = (DateTime.Now - player.Info.LastUsedSlap).TotalSeconds;
+            double time = (DateTime.UtcNow - player.Info.LastUsedSlap).TotalSeconds;
             if (time < 10)
             {
                 player.Message("&WYou can use /Punch again in " + Math.Round(10 - time) + " seconds.");
@@ -1270,7 +1270,7 @@ THE SOFTWARE.*/
                 {
                     Server.Players.CanSee(target).Union(target).Message("{0} &Swas &aPunched &Sin the &cFace &Sby {1}", target.ClassyName, player.ClassyName);
                     IRC.PlayerSomethingMessage(player, "punched", target, null);
-                    player.Info.LastUsedSlap = DateTime.Now;
+                    player.Info.LastUsedSlap = DateTime.UtcNow;
                     return;
                 }
                 else if (item.ToLower() == "groin")
@@ -1285,12 +1285,12 @@ THE SOFTWARE.*/
                 {
                     Server.Players.CanSee(target).Union(target).Message("{0} &Swas &aPunched &Sin the &cFace &Sby {1}", target.ClassyName, player.ClassyName);
                     IRC.PlayerSomethingMessage(player, "punched", target, null);
-                    player.Info.LastUsedSlap = DateTime.Now;
+                    player.Info.LastUsedSlap = DateTime.UtcNow;
                     return;
                 }
                 Server.Players.CanSee(target).Union(target).Message(aMessage);
                 IRC.PlayerSomethingMessage(player, "punched", target, null);
-                player.Info.LastUsedSlap = DateTime.Now;
+                player.Info.LastUsedSlap = DateTime.UtcNow;
                 return;
             }
             else
@@ -1502,7 +1502,7 @@ THE SOFTWARE.*/
                 return;
             }
 
-            double time = (DateTime.Now - player.Info.LastUsedKill).TotalSeconds;
+            double time = (DateTime.UtcNow - player.Info.LastUsedKill).TotalSeconds;
             if (time < 10)
             {
                 player.Message("&WYou can use /Kill again in " + Math.Round(10 - time) + " seconds.");
@@ -1518,7 +1518,7 @@ THE SOFTWARE.*/
                 if (target == player)
                 {
                     player.TeleportTo(player.World.Map.Spawn);
-                    player.Info.LastUsedKill = DateTime.Now;
+                    player.Info.LastUsedKill = DateTime.UtcNow;
                     Server.Players.CanSee(target).Message("{0}&C killed itself in confusion!", player);
                     return;
                 }
@@ -1526,14 +1526,14 @@ THE SOFTWARE.*/
                 if (player.Can(Permission.Kill, target.Info.Rank) && reason.Length < 1)
                 {
                     target.TeleportTo(player.World.Map.Spawn);
-                    player.Info.LastUsedKill = DateTime.Now;
+                    player.Info.LastUsedKill = DateTime.UtcNow;
                     Server.Players.CanSee(target).Message("{0}&C was &4Killed&C by {1}", target.ClassyName, player.ClassyName);
                     return;
                 }
                 else if (player.Can(Permission.Kill, target.Info.Rank) && reason != null)
                 {
                     target.TeleportTo(player.World.Map.Spawn);
-                    player.Info.LastUsedKill = DateTime.Now;
+                    player.Info.LastUsedKill = DateTime.UtcNow;
                     Server.Players.CanSee(target).Message("{0}&C was &4Killed&C by {1}&c: {2}", target.ClassyName, player.ClassyName, reason);
                 }
                 else
@@ -1577,7 +1577,7 @@ THE SOFTWARE.*/
                 player.Message("&sYou can't slap yourself.... What's wrong with you???");
                 return;
             }
-            double time = (DateTime.Now - player.Info.LastUsedSlap).TotalSeconds;
+            double time = (DateTime.UtcNow - player.Info.LastUsedSlap).TotalSeconds;
             if (time < 10){
                 player.Message("&WYou can use /Slap again in " + Math.Round(10 - time) + " seconds.");
                 return;
@@ -1591,7 +1591,7 @@ THE SOFTWARE.*/
                 if (string.IsNullOrEmpty(item)){
                     Server.Players.CanSee(target).Union(target).Message("{0} &Swas slapped sky high by {1}", target.ClassyName, player.ClassyName);
                     IRC.PlayerSomethingMessage(player, "slapped", target, null);
-                    player.Info.LastUsedSlap = DateTime.Now;
+                    player.Info.LastUsedSlap = DateTime.UtcNow;
                     return;
                 }
                 else if (item.ToLower() == "bakingtray")
@@ -1613,12 +1613,12 @@ THE SOFTWARE.*/
                 else{
                     Server.Players.CanSee(target).Union(target).Message("{0} &Swas slapped sky high by {1}", target.ClassyName, player.ClassyName);
                     IRC.PlayerSomethingMessage(player, "slapped", target, null);
-                    player.Info.LastUsedSlap = DateTime.Now;
+                    player.Info.LastUsedSlap = DateTime.UtcNow;
                     return;
                 }
                 Server.Players.CanSee(target).Union(target).Message(aMessage);
                 IRC.PlayerSomethingMessage(player, "slapped", target, null);
-                player.Info.LastUsedSlap = DateTime.Now;
+                player.Info.LastUsedSlap = DateTime.UtcNow;
                 return;
             }else{
                 player.Message("&sYou can only Slap players ranked {0}&S or lower",

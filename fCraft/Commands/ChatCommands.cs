@@ -1,4 +1,4 @@
-// Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
+﻿// Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -112,7 +112,7 @@ THE SOFTWARE.*/
             {
                 Server.Players.CanSee(player).Except(player).Message("{0} &6Barfed&s.", player.ClassyName);
                 player.Message("&sYou &6Barfed&s.");
-                player.Info.LastUsedBarf = DateTime.Now;
+                player.Info.LastUsedBarf = DateTime.UtcNow;
                 return;                                                 //stop the command here with return;
             }
             //if the name does exists
@@ -130,14 +130,14 @@ THE SOFTWARE.*/
             }
             string item = cmd.Next();                               // /barf playername [item]
             string aMessage;
-            double time = (DateTime.Now - player.Info.LastUsedBarf).TotalSeconds;
+            double time = (DateTime.UtcNow - player.Info.LastUsedBarf).TotalSeconds;
             if (player.Can(Permission.HighFive) && time > 20)
             {
                 if (string.IsNullOrEmpty(item))
                 {
                     Server.Players.CanSee(target).Union(target).Message("{0} &Swas &6Barfed &son by {1}&s.", target.ClassyName, player.ClassyName);
                     IRC.PlayerSomethingMessage(player, "barfed on", target, null);
-                    player.Info.LastUsedBarf = DateTime.Now;
+                    player.Info.LastUsedBarf = DateTime.UtcNow;
                     return;
                 }
                 else if (item.ToLower() == "throwup")
@@ -150,12 +150,12 @@ THE SOFTWARE.*/
                 {
                     Server.Players.CanSee(target).Union(target).Message("{0} &Swas &6Barfed &son by {1}&s.", target.ClassyName, player.ClassyName);
                     IRC.PlayerSomethingMessage(player, "barfed on", target, null);
-                    player.Info.LastUsedBarf = DateTime.Now;
+                    player.Info.LastUsedBarf = DateTime.UtcNow;
                     return;
                 }
                 Server.Players.CanSee(target).Union(target).Message(aMessage);
                 IRC.PlayerSomethingMessage(player, "barfed on", target, null);
-                player.Info.LastUsedBarf = DateTime.Now;
+                player.Info.LastUsedBarf = DateTime.UtcNow;
                 return;
             }
             else

@@ -177,11 +177,11 @@ namespace fCraft
                     }
 
                     //check for autorank conditions every 15 seconds
-                    if ((DateTime.Now - lastAutorankCheck).TotalSeconds > 15 && Server.AutoRankEnabled && !IsAutoRankExempt)
+                    if ((DateTime.UtcNow - lastAutorankCheck).TotalSeconds > 15 && Server.AutoRankEnabled && !IsAutoRankExempt)
                     {
                         AutoRankManager.Load();
                         AutoRankManager.Check(this);
-                        lastAutorankCheck = DateTime.Now;
+                        lastAutorankCheck = DateTime.UtcNow;
                     }
 
 

@@ -51,7 +51,7 @@ namespace fCraft.Games
             {
                 world_ = world;
                 instance = new Infection();
-                startTime = DateTime.Now;
+                startTime = DateTime.UtcNow;
                 task_ = new SchedulerTask(Interval, true).RunForever(TimeSpan.FromMilliseconds(250)); //run loop every quarter second
             }
             return instance;
@@ -139,7 +139,7 @@ namespace fCraft.Games
 
             if (!isOn)
             {
-                if (startTime != null && (DateTime.Now - startTime).TotalSeconds > timeDelay)
+                if (startTime != null && (DateTime.UtcNow - startTime).TotalSeconds > timeDelay)
                 {
                     foreach (Player p in world_.Players)
                     {
@@ -166,11 +166,11 @@ namespace fCraft.Games
                         
                     }
                     isOn = true;
-                    lastChecked = DateTime.Now;     //used for intervals
+                    lastChecked = DateTime.UtcNow;     //used for intervals
                     return;
                 }
             }
-            timeLeft = Convert.ToInt16(((timeDelay + timeLimit) - (DateTime.Now -  startTime).TotalSeconds));
+            timeLeft = Convert.ToInt16(((timeDelay + timeLimit) - (DateTime.UtcNow -  startTime).TotalSeconds));
 
             if (isOn) //Check for win conditions
             {
@@ -207,11 +207,11 @@ namespace fCraft.Games
 
             }
 
-            if (lastChecked != null && (DateTime.Now - lastChecked).TotalSeconds > 29.9 && timeLeft < timeLimit)
+            if (lastChecked != null && (DateTime.UtcNow - lastChecked).TotalSeconds > 29.9 && timeLeft < timeLimit)
             {
                 world_.Players.Message("&sThere are currently {0} human(s) and {1} zombie(s) left on {2}.", world_.Players.Count() - world_.Players.Count(player => player.Info.isInfected), world_.Players.Count(player => player.Info.isInfected), world_.ClassyName);
                 world_.Players.Message("&fThere are &W{0}&f seconds left in the game.", timeLeft);
-                lastChecked = DateTime.Now;
+                lastChecked = DateTime.UtcNow;
             }
         }
 

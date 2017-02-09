@@ -1,4 +1,4 @@
-//Copyright (C) <2012>  <Jon Baker, Glenn Mariën and Lao Tszy>
+﻿//Copyright (C) <2012>  <Jon Baker, Glenn Mariën and Lao Tszy>
 
 //This program is free software: you can redistribute it and/or modify
 //it under the terms of the GNU General Public License as published by
@@ -2047,7 +2047,7 @@ THE SOFTWARE.*/
             };
 
             int index = randomizer.Next(0, insults.Count);
-            double time = (DateTime.Now - player.Info.LastUsedInsult).TotalSeconds;
+            double time = (DateTime.UtcNow - player.Info.LastUsedInsult).TotalSeconds;
 
             if (name == null || name.Length < 1)
             {
@@ -2071,7 +2071,7 @@ THE SOFTWARE.*/
             else
             {
                 Server.Message(insults[index], player.ClassyName, target.ClassyName);
-                player.Info.LastUsedInsult = DateTime.Now;
+                player.Info.LastUsedInsult = DateTime.UtcNow;
                 return;
             }
 
@@ -2114,7 +2114,7 @@ THE SOFTWARE.*/
                 player.Message("&sYou can't throw yourself... It's just physically impossible...");
                 return;
             }
-            double time = (DateTime.Now - player.Info.LastUsedThrow).TotalSeconds;
+            double time = (DateTime.UtcNow - player.Info.LastUsedThrow).TotalSeconds;
             if (time < 10)
             {
                 player.Message("&WYou can use /Throw again in " + Math.Round(10 - time) + " seconds.");
@@ -2122,7 +2122,7 @@ THE SOFTWARE.*/
             }
             Random random = new Random();
             int randomNumber = random.Next(1, 4);
-            player.Info.LastUsedThrow = DateTime.Now;
+            player.Info.LastUsedThrow = DateTime.UtcNow;
 
             if (randomNumber == 1)
                 if (player.Can(Permission.Slap, target.Info.Rank))

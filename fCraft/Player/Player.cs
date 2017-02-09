@@ -849,14 +849,14 @@ namespace fCraft
             if (markSet == 0)//first corner
             {
                 Message(cmd + ": Use /mark or place/break a block at the location of the first corner of your selection.");
-                selectionTime = DateTime.Now;
+                selectionTime = DateTime.UtcNow;
                 markSet++;
                 return;
             }
             if (markSet == 1)//second corner
             {
                 Message(cmd + ": Use /mark or place/break a block at the location of the second corner of your selection.");
-                selectionTime = DateTime.Now;
+                selectionTime = DateTime.UtcNow;
                 markSet++;
                 return;
             }
@@ -1455,7 +1455,7 @@ namespace fCraft
             if (markSet > 0)
             {
                 //if it has been over 10 seconds, stop selection process
-                if ((DateTime.Now - selectionTime).TotalSeconds > 10)
+                if ((DateTime.UtcNow - selectionTime).TotalSeconds > 10)
                 {
                     markSet = 0;
                     selectedMarks.Clear();

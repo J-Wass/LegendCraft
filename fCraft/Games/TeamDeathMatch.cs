@@ -69,7 +69,7 @@ namespace fCraft
             {
                 world_ = world;
                 instance = new TeamDeathMatch();
-                startTime = DateTime.Now;
+                startTime = DateTime.UtcNow;
                 task_ = new SchedulerTask(Interval, true).RunForever(TimeSpan.FromSeconds(1));
                 if (manualTeams)
                 {
@@ -129,7 +129,7 @@ namespace fCraft
             }
 
             //remove announcement after 5 seconds
-            if ((DateTime.Now - announced).TotalSeconds >= 5)
+            if ((DateTime.UtcNow - announced).TotalSeconds >= 5)
             {
                 foreach (Player p in world_.Players)
                 {
@@ -147,7 +147,7 @@ namespace fCraft
                     world_.Players.Message("&WTeam DeathMatch&s requires at least 2 people to play.");
                     return;
                 }
-                if (startTime != null && (DateTime.Now - startTime).TotalSeconds > timeDelay)
+                if (startTime != null && (DateTime.UtcNow - startTime).TotalSeconds > timeDelay)
                 {
                     foreach (Player p in world_.Players)
                     {
@@ -190,8 +190,8 @@ namespace fCraft
                     {
                         world_.EnableGunPhysics(Player.Console, true); //enables gun physics if they are not already on
                     }
-                    lastChecked = DateTime.Now;     //used for intervals
-                    announced = DateTime.Now; //set when the announcement was launched
+                    lastChecked = DateTime.UtcNow;     //used for intervals
+                    announced = DateTime.UtcNow; //set when the announcement was launched
                     return;
                 }   
             }          
@@ -210,7 +210,7 @@ namespace fCraft
             }
 
             //check if time is up
-            if (started && startTime != null && (DateTime.Now - startTime).TotalSeconds >= (totalTime))
+            if (started && startTime != null && (DateTime.UtcNow - startTime).TotalSeconds >= (totalTime))
             {
                 if (redScore != blueScore)
                 {
@@ -230,7 +230,7 @@ namespace fCraft
                 }
             }
 
-            if (started && (DateTime.Now - lastChecked).TotalSeconds > 10) //check if players left the world, forfeits if no players of that team left
+            if (started && (DateTime.UtcNow - lastChecked).TotalSeconds > 10) //check if players left the world, forfeits if no players of that team left
             {
                 int redCount = world_.Players.Where(p => p.Info.isOnRedTeam).ToArray().Count();
                 int blueCount = world_.Players.Where(p => p.Info.isOnBlueTeam).ToArray().Count();
@@ -261,9 +261,9 @@ namespace fCraft
                     }
                 }
             }
-            timeLeft = Convert.ToInt16(((timeDelay + timeLimit) - (DateTime.Now - startTime).TotalSeconds));
+            timeLeft = Convert.ToInt16(((timeDelay + timeLimit) - (DateTime.UtcNow - startTime).TotalSeconds));
             //Keep the players updated about the score
-            if (lastChecked != null && (DateTime.Now - lastChecked).TotalSeconds > 29.8 && timeLeft <= timeLimit)
+            if (lastChecked != null && (DateTime.UtcNow - lastChecked).TotalSeconds > 29.8 && timeLeft <= timeLimit)
             {               
                 if (redScore > blueScore)
                 {
@@ -280,7 +280,7 @@ namespace fCraft
                     world_.Players.Message("&fThe teams are tied at {0}!", blueScore); 
                     world_.Players.Message("&fThere are &W{0}&f seconds left in the game.", timeLeft);
                 }
-                lastChecked = DateTime.Now;
+                lastChecked = DateTime.UtcNow;
             }
             if (timeLeft == 10)
             {
