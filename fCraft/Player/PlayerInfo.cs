@@ -65,20 +65,8 @@ namespace fCraft
 
         public int PromoCount;
         //dummy
-
-        public int DummyID;
-        public string DummyName;
-        public Position DummyPos;
-        public bool IsFollowing = false;
-        public string followingID;
-        public int followingCount = 0;
-        public bool Static = true;
         public string LeaveMsg = "left the server";
         public string oldDisplayedName = null;
-
-        //Games
-        public bool ArrivedLate = false;
-        public bool InGame = false;
 
         //TempRank
         public bool isTempRanked = false;
@@ -94,7 +82,6 @@ namespace fCraft
         public DateTime LastUsedBeatDown;
         public DateTime LastUsedBarf;
         public DateTime LastUsedThrow;
-        public bool KillWait = false;
 
         //bromode
         public string oldname;
@@ -144,9 +131,7 @@ namespace fCraft
         public bool isDoorChecking = false;
         public DateTime doorCheckTime = DateTime.MaxValue;
 
-        /// <summary>
-        /// Health var used in several gamemodes
-        /// </summary>
+        /// <summary> Health var used in several gamemodes </summary>
         public short Health = 100;
 
         #region Rank
