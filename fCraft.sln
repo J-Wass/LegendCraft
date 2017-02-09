@@ -1,6 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 11
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+# SharpDevelop 4.4
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fCraft", "fCraft\fCraft.csproj", "{7FBE7809-6F77-415C-ABEB-A3F627E817B0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerGUI", "ServerGUI\ServerGUI.csproj", "{4D4EEAA2-190C-496D-B014-0EB68CA4E535}"
