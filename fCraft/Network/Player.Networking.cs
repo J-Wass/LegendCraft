@@ -1168,63 +1168,8 @@ namespace fCraft
                 using (StreamWriter textWriter = new StreamWriter(stream))
                 {
                     string firstLine = "G" + textReader.ReadLine();
-
-                    //get webpanel request (not working yet)
-                    if (firstLine.Contains("LC") /*&& ConfigKey.WebPanelEnabled.Enabled()*/)
-                    {
-                        string message = firstLine.Substring(15); //grab action
-                        string salt = "", user = "", action = "";
-
-                        try
-                        {
-                            string[] tokens = message.Split('&');
-                            salt = tokens[0].Substring(4);
-                            user = tokens[1].Substring(4);
-                            action = (tokens[2].Remove(tokens[2].LastIndexOf(' '))).Replace("%20", " ").Substring(6);
-                        }
-                        catch (Exception ex)
-                        {
-                            if (ex is IndexOutOfRangeException)
-                            {
-                                textWriter.WriteLine("HTTP/1.1 400 Bad Request: Incorrect syntax");
-                                return;
-                            }
-                            textWriter.WriteLine("HTTP/1.1 400 Bad Request: Something went wrong!");
-                            return;
-                        }
-
-                        if (String.IsNullOrEmpty(salt))
-                        {
-                            textWriter.WriteLine("HTTP/1.1 400 Bad Request: Missing Salt");
-                            return;
-                        }
-                        if (String.IsNullOrEmpty(user))
-                        {
-                            textWriter.WriteLine("HTTP/1.1 400 Bad Request: Missing User");
-                            return;
-                        }
-
-                        if (salt != Heartbeat.Salt)
-                        {
-                            textWriter.WriteLine("HTTP/1.1 404 Not Found: Salt Not Found- Invalid Salt");
-                            return;
-                        }
-
-                        if (user != Server.VerifiedUser)
-                        {
-                            textWriter.WriteLine("HTTP/1.1 404 Not Found: User Not Found- Invalid User");
-                            return;
-                        }
-
-                        Player.Console.sendToWebPanel = true;
-                        Player.Console.ParseMessage("/" + action, true, false);
-                        textWriter.Write(Player.Console.WebPanelData);
-
-                        Player.Console.sendToWebPanel = false;
-                        Player.Console.WebPanelData = "";
-                    }
-
                     var match = HttpFirstLine.Match(firstLine);
+                    
                     if (match.Success)
                     {
                         string worldName = match.Groups[1].Value;
