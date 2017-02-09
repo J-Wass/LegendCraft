@@ -1829,12 +1829,12 @@ namespace fCraft
                 {
                     entity.MarkedForRetention = true;
                    
-                    //update player models
-                    if (usesCPE)
+                    if (usesCPE && entity.LastKnownModel != otherPlayer.Model) 
                     {
-                        Send(PacketWriter.MakeChangeModel((byte)entity.Id, otherPlayer.Model));
+                        SendNow(PacketWriter.MakeChangeModel((byte)entity.Id, otherPlayer.Model));
+                        entity.LastKnownModel = otherPlayer.Model;
                     }
-
+                    
                     if (entity.LastKnownRank != otherPlayer.Info.Rank)
                     {
                         ReAddEntity(entity, otherPlayer, otherPos);
@@ -1843,11 +1843,11 @@ namespace fCraft
                     //if entity changed for another player, add this player to the list pf players who have seen the update
                     if( otherPlayer.entityChanged && !otherPlayer.playersWhoHaveSeenEntityChanges.Contains(this))
                     {
-						ReAddEntity(entity, otherPlayer, otherPos);
+                        ReAddEntity(entity, otherPlayer, otherPos);
                         otherPlayer.playersWhoHaveSeenEntityChanges.Add(this);
-					}
-					//if this player is already in the list (has updated the skin), continue
-					//if the player whose skin changed has updated for everyone, clear the list and set entityChanged to false
+                    }
+                    //if this player is already in the list (has updated the skin), continue
+                    //if the player whose skin changed has updated for everyone, clear the list and set entityChanged to false
                     else if (otherPlayer.playersWhoHaveSeenEntityChanges.Count() == (World.Players.Count() - 1))
                     {
                         otherPlayer.playersWhoHaveSeenEntityChanges.Clear();
@@ -1913,12 +1913,14 @@ namespace fCraft
             if (player == null) throw new ArgumentNullException("player");
             if (freePlayerIDs.Count > 0)
             {
-                var pos = new VisibleEntity(newPos, freePlayerIDs.Pop(), player.Info.Rank);
-                entities.Add(player, pos);
-                SendNow(PacketWriter.MakeAddEntity(entities[player].Id, player.Info.Rank.Color + player.Skinname, newPos));
+                var entity = new VisibleEntity(newPos, freePlayerIDs.Pop(), player.Info.Rank, player.Model);
+                entities.Add(player, entity);
+                SendNow(PacketWriter.MakeAddEntity(entity.Id, player.Info.Rank.Color + player.Skinname, newPos));
+                
                 if (usesCPE) {
-                    SendNow(PacketWriter.MakeExtAddEntity((byte)entities[player].Id, player.ListName, player.Skinname));
-                    SendNow(PacketWriter.MakeTeleport(entities[player].Id, newPos));
+                    SendNow(PacketWriter.MakeExtAddEntity((byte)entity.Id, player.ListName, player.Skinname));
+                    SendNow(PacketWriter.MakeTeleport(entity.Id, newPos));
+                    SendNow(PacketWriter.MakeChangeModel((byte)entity.Id, player.Model));
                 }
             }
         }
@@ -1959,8 +1961,8 @@ namespace fCraft
             }*/
             SendNow(PacketWriter.MakeAddEntity(entity.Id, player.Info.Rank.Color + player.Skinname, newPos));
             if (usesCPE) {
-            	SendNow(PacketWriter.MakeExtAddEntity((byte)entity.Id, player.ListName, player.Skinname));
-            	SendNow(PacketWriter.MakeTeleport(entities[player].Id, newPos));
+                SendNow(PacketWriter.MakeExtAddEntity((byte)entity.Id, player.ListName, player.Skinname));
+                SendNow(PacketWriter.MakeTeleport(entities[player].Id, newPos));
             }
             entity.LastKnownPosition = newPos;
         }
@@ -2057,18 +2059,20 @@ namespace fCraft
         {
             public static readonly Position HiddenPosition = new Position(0, 0, short.MinValue);
 
-            public VisibleEntity(Position newPos, sbyte newId, Rank newRank)
+            public VisibleEntity(Position newPos, sbyte newId, Rank newRank, string newModel)
             {
                 Id = newId;
                 LastKnownPosition = newPos;
                 MarkedForRetention = true;
                 Hidden = true;
                 LastKnownRank = newRank;
+                LastKnownModel = newModel;
             }
 
             public readonly sbyte Id;
             public Position LastKnownPosition;
             public Rank LastKnownRank;
+            public string LastKnownModel;
             public bool Hidden;
             public bool MarkedForRetention;
             public bool SkippedLastMove;

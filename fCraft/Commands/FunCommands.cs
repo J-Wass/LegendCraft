@@ -48,20 +48,8 @@ namespace fCraft
             Player.Moving += PlayerMoved;
         }
 
-            public static string[] validEntities = 
-            {
-                "chicken",
-                "creeper",
-                "croc",
-                "humanoid",
-                "human",
-                "pig",
-                "printer",
-                "sheep",
-                "skeleton",
-                "spider",
-                "zombie"
-                                     };
+        public static string[] validEntities =  { "chibi", "chicken", "creeper", "croc", "head", 
+            "humanoid", "human", "pig", "printer", "sheep", "skeleton", "spider", "zombie" };
 
         public static void PlayerMoved(object sender, fCraft.Events.PlayerMovingEventArgs e)
         {
@@ -432,50 +420,43 @@ THE SOFTWARE.*/
         static readonly CommandDescriptor CdSetModel = new CommandDescriptor
         {
             Name = "SetModel",
+            Aliases = new[] { "Model" },
             Permissions = new Permission[] { Permission.Troll },
             Category = CommandCategory.Fun,
             IsConsoleSafe = false,
             Usage = "/SetModel [Player] [Model]",
-            Help = "Changes the model of a target player Valid models are chicken, creeper, croc, human, pig, printer, sheep, skeleton, spider, or zombie. If the model is empty, the player's model will reset.",
+            Help = "Changes the model of a target player. If the model is empty, resets player model.\n" +
+                "Valid models: " + validEntities.JoinToString(),
             Handler = ModelHandler,
         };
 
         static void ModelHandler(Player player, Command cmd)
         {
-            string target = cmd.Next();
-            if(string.IsNullOrEmpty(target))
+            string targetName = cmd.Next();
+            if(string.IsNullOrEmpty(targetName)) 
             {
-                CdSetModel.PrintUsage(player);
-                return;
+                CdSetModel.PrintUsage(player); 
+                return; 
             }
 
-            Player targetPlayer = Server.FindPlayerOrPrintMatches(player, target, false, true);
-            if (targetPlayer == null)
-            {
-                return;
-            }
-
+            Player target = Server.FindPlayerOrPrintMatches(player, targetName, false, true);
+            if (target == null) return;
+            
             string model = cmd.Next();
-            if (string.IsNullOrEmpty(model))
+            if (string.IsNullOrEmpty(model)) model = "humanoid";
+            if (model == "human") model = "humanoid";
+            
+            if (!validEntities.Contains(model)) 
             {
-                player.Message("Reset the model for {0}.", targetPlayer.Name);
-                targetPlayer.Model = player.Name; //reset the model to the player's name
-                return;
-            }
-
-            if (model == "human")//execute super lazy parse
+                player.Message("Please choose a valid model! Valid models are:");
+                player.Message(validEntities.JoinToString());
+            } 
+            else 
             {
-                model = "humanoid";
+                player.Message("{0} has been changed into a {1}!", target.Name, model);
+                target.Model = model;
+                if (target.usesCPE) target.Send(PacketWriter.MakeChangeModel(255, model));
             }
-            if (!validEntities.Contains(model))
-            {
-                player.Message("Please choose a valid model! Valid models are chicken, creeper, croc, human, pig, printer, sheep, skeleton, spider, or zombie.");
-                return;
-            }
-
-            player.Message("{0} has been changed into a {1}!", targetPlayer.Name, model);
-            targetPlayer.Model = model;
-            return;
         }
 
         static readonly CommandDescriptor CdTroll = new CommandDescriptor //Troll is an old command from 800craft that i have rehashed because of its popularity
