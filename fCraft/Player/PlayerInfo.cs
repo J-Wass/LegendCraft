@@ -76,8 +76,6 @@ namespace fCraft
         public DateTime LastUsedSlap;
         public DateTime LastUsedKill;
         public DateTime LastUsedInsult;
-        public DateTime LastUsedSwag;
-        public DateTime LastUsedDingusInfo;
         public DateTime LastUsedHug;
         public DateTime LastUsedBeatDown;
         public DateTime LastUsedBarf;
