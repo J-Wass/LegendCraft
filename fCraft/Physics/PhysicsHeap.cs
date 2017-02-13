@@ -23,14 +23,10 @@ using System.Text;
 
 namespace fCraft
 {
-    /// <summary>
-    /// Base class for physic tasks
-    /// </summary>
-    public abstract class PhysicsTask : IHeapKey<Int64>
+    /// <summary> Base class for physic tasks </summary>
+    public abstract class PhysicsTask
     {
-        /// <summary>
-        /// the task due time in milliseconds since some start moment
-        /// </summary>
+        /// <summary> the task due time in milliseconds since some start moment </summary>
         public Int64 DueTime;
 
         /// <summary>
@@ -57,16 +53,13 @@ namespace fCraft
             }
         }
 
-		public Int64 GetHeapKey()
-        {
+		public Int64 GetHeapKey() 
+	    {
             return DueTime;
         }
 
-        /// <summary>
-        /// Performs the action. The returned value is used as the reschedule delay. If 0 - the task is completed and
-        /// should not be rescheduled
-        /// </summary>
-        /// <returns></returns>
+        /// <summary> Performs the action. The returned value is used as the reschedule delay. If 0 - the task is completed and
+        /// should not be rescheduled </summary>
         public int Perform()
         {
 			lock (_world.SyncRoot)
@@ -76,10 +69,8 @@ namespace fCraft
                 return PerformInternal();
             }
         }
-        /// <summary>
-        /// The real implementation of the action
-        /// </summary>
-        /// <returns></returns>
+        
+        /// <summary> The real implementation of the action </summary>
         protected abstract int PerformInternal();
 
         protected void UpdateMap(BlockUpdate upd)
@@ -89,73 +80,60 @@ namespace fCraft
         }
     }
 
-    public interface IHeapKey<out T> where T : IComparable
-    {
-        T GetHeapKey();
-    }
-
     /// <summary>
     /// Min binary heap implementation.
     /// Note that the base array size is never decreased, i.e. Clear just moves the internal pointer to the first element.
     /// </summary>
-    public class MinBinaryHeap<T, K>
-        where T : IHeapKey<K>
-        where K : IComparable
+    class MinBinaryHeap
     {
-        private readonly List<T> _heap = new List<T>();
-        private int _free = 0;
+        readonly List<PhysicsTask> _heap = new List<PhysicsTask>();
+        int _free = 0;
 
-        /// <summary>
-        /// Adds an element.
-        /// </summary>
-        /// <param name="t">The t.</param>
-        public void Add(T t)
+        /// <summary> Adds an element. </summary>
+        public void Add(PhysicsTask t)
         {
             int me = _free++;
             if (_heap.Count > me)
                 _heap[me] = t;
             else
                 _heap.Add(t);
-            K myKey = t.GetHeapKey();
+            
+            long myKey = t.GetHeapKey();
             while (me > 0)
             {
                 int parent = ParentIdx(me);
-                if (_heap[parent].GetHeapKey().CompareTo(myKey) < 0)
+                if (_heap[parent].GetHeapKey() < myKey)
                     break;
                 Swap(me, parent);
                 me = parent;
             }
         }
 
-        /// <summary>
-        /// Head of this heap. This call assumes that size was checked before accessing the head element.
-        /// </summary>
-        /// <returns>Head element.</returns>
-        public T Head()
+        /// <summary> Head of this heap. Assumes that size was checked before accessing the head element. </summary>
+        public PhysicsTask Head()
         {
             return _heap[0];
         }
 
-        /// <summary>
-        /// Removes the head. This call assumes that size was checked before removing the head element.
-        /// </summary>
+        /// <summary> Removes the head. Assumes that size was checked before removing the head element. </summary>
         public void RemoveHead()
         {
             _heap[0] = _heap[--_free];
-            _heap[_free] = default(T); //to enable garbage collection for the deleted item when necessary
-            if (0 == _free)
+            _heap[_free] = null; //to enable garbage collection for the deleted item when necessary
+            if (_free == 0)
                 return;
+            
             int me = 0;
-            K myKey = _heap[0].GetHeapKey();
+            long myKey = _heap[0].GetHeapKey();
 
             for (; ; )
             {
                 int kid1, kid2;
                 Kids(me, out kid1, out kid2);
-                if (kid1 >= _free)
-                    break;
+                if (kid1 >= _free) break;
+                
                 int minKid;
-                K minKidKey;
+                long minKidKey;
                 if (kid2 >= _free)
                 {
                     minKid = kid1;
@@ -163,9 +141,9 @@ namespace fCraft
                 }
                 else
                 {
-                    K key1 = _heap[kid1].GetHeapKey();
-                    K key2 = _heap[kid2].GetHeapKey();
-                    if (key1.CompareTo(key2) < 0)
+                    long key1 = _heap[kid1].GetHeapKey();
+                    long key2 = _heap[kid2].GetHeapKey();
+                    if (key1 < key2)
                     {
                         minKid = kid1;
                         minKidKey = key1;
@@ -176,7 +154,7 @@ namespace fCraft
                         minKidKey = key2;
                     }
                 }
-                if (myKey.CompareTo(minKidKey) > 0)
+                if (myKey > minKidKey)
                 {
                     Swap(me, minKid);
                     me = minKid;
@@ -186,38 +164,30 @@ namespace fCraft
             }
         }
 
-        /// <summary>
-        /// Heap size.
-        /// </summary>
-        public int Size
-        {
-            get
-            {
-                return _free;
-            }
-        }
+        /// <summary> Heap size. </summary>
+        public int Size { get { return _free; } }
 
         public void Clear()
         {
             for (int i = 0; i < _free; ++i)
-                _heap[i] = default(T); //enables garbage collecting for the deleted elements
+                _heap[i] = null; //enables garbage collecting for the deleted elements
             _free = 0;
         }
 
-        private static int ParentIdx(int idx)
+        static int ParentIdx(int idx)
         {
             return (idx - 1) / 2;
         }
 
-        private static void Kids(int idx, out int kid1, out int kid2)
+        static void Kids(int idx, out int kid1, out int kid2)
         {
             kid1 = 2 * idx + 1;
             kid2 = kid1 + 1;
         }
 
-        private void Swap(int i1, int i2)
+        void Swap(int i1, int i2)
         {
-            T t = _heap[i1];
+            PhysicsTask t = _heap[i1];
             _heap[i1] = _heap[i2];
             _heap[i2] = t;
         }
