@@ -433,20 +433,16 @@ THE SOFTWARE.*/
         static void ModelHandler(Player player, Command cmd)
         {
             string targetName = cmd.Next();
-            if(string.IsNullOrEmpty(targetName)) 
+            if (string.IsNullOrEmpty(targetName)) 
             {
-                CdSetModel.PrintUsage(player); 
-                return; 
+                CdSetModel.PrintUsage(player); return; 
             }
 
             Player target = Server.FindPlayerOrPrintMatches(player, targetName, false, true);
             if (target == null) return;
             
-            string model = cmd.Next();
-            if (string.IsNullOrEmpty(model)) model = "humanoid";
-            if (model == "human") model = "humanoid";
-            
-            if (!validEntities.Contains(model)) 
+            string model = ParseModel(cmd.Next());
+            if (model == null) 
             {
                 player.Message("Please choose a valid model! Valid models are:");
                 player.Message(validEntities.JoinToString());
@@ -457,6 +453,34 @@ THE SOFTWARE.*/
                 target.Model = model;
                 if (target.usesCPE) target.Send(PacketWriter.MakeChangeModel(255, model));
             }
+        }
+        
+        static string ParseModel(string model) {
+            model = model ?? "humanoid";
+            float scale = 0.0f;
+            string scalestr = "";
+            int sepIndex = model.IndexOf('|');
+            if (sepIndex >= 0) {
+                scalestr = model.Substring(sepIndex + 1);
+                model = model.Substring(0, sepIndex);
+            }
+            if (float.TryParse(scalestr, out scale)) {
+                if (scale < 0.25f) scale = 0.25f;
+                if (scale > 3f) scale = 3f;
+            }
+            
+            if (!validEntities.Contains(model.ToLower())) {
+                byte blockId;
+                Block block;
+                if (byte.TryParse(model, out blockId)) {
+                } else if ((block = Map.GetBlockByName(model)) != Block.Undefined) {
+                    model = ((byte)block).ToString();
+                } else {
+                    return null;
+                }
+            }
+
+            return scale == 0 ? model : model + "|" + scale;
         }
 
         static readonly CommandDescriptor CdTroll = new CommandDescriptor //Troll is an old command from 800craft that i have rehashed because of its popularity
