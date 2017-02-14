@@ -158,6 +158,21 @@ namespace fCraft {
                             worldName, ex.Message);
                 return;
             }
+            if((tempAttr = el.Attribute("worldOnlyChat")) != null) {
+                bool worldOnlyChat;
+                
+                if (Boolean.TryParse(tempAttr.Value, out worldOnlyChat))
+                {
+                    world.WorldOnlyChat = worldOnlyChat;
+                }
+                else
+                {
+                    Logger.Log(LogType.Warning,
+                               "WorldManager: Could not parse \"worldOnlyChat\" attribute of world \"{0}\", assuming NO world only chat.",
+                               worldName);
+                }
+            }
+            
             if ((tempAttr = el.Attribute("realm")) != null)
             {
                 if (tempAttr.Value == "yes")
@@ -451,6 +466,8 @@ namespace fCraft {
                     if( world.BuildSecurity.HasRestrictions ) {
                         temp.Add( world.BuildSecurity.Serialize( BuildSecurityXmlTagName ) );
                     }
+
+                    temp.Add(new XAttribute("worldOnlyChat", world.WorldOnlyChat.ToString()));
 
                     if( world.BackupInterval != World.DefaultBackupInterval ) {
                         temp.Add( new XAttribute( "backup", world.BackupInterval.ToTickString() ) );

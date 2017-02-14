@@ -67,7 +67,7 @@ namespace fCraft
             CommandManager.RegisterCommand(CdPhysics);
 
             CommandManager.RegisterCommand(CdRejoin);
-            //CommandManager.RegisterCommand(CdWorldChat);
+            CommandManager.RegisterCommand(CdWorldChat);
             CommandManager.RegisterCommand(CdBack);
             CommandManager.RegisterCommand(CdJump);
             CommandManager.RegisterCommand(CdHax);
@@ -592,9 +592,10 @@ THE SOFTWARE.*/
         static readonly CommandDescriptor CdWorldChat = new CommandDescriptor
         {
             Name = "WorldChat",
+            Aliases = new string[] { "WorldChatOnly", "Wc", "Wco" },
             Category = CommandCategory.World | CommandCategory.Chat,
             Permissions = new Permission[] { Permission.ManageWorldChat },
-            IsConsoleSafe = false,
+            IsConsoleSafe = true,
             Usage = "/WorldChat [toggle:check]",
             Help = "Toggles World Chat.",
             Handler = WorldChat,
@@ -610,11 +611,13 @@ THE SOFTWARE.*/
                 {
                     Server.Message("{0}&c has activated world chat on {1}", player.ClassyName, player.World);
                     player.World.WorldOnlyChat = true;
+                    WorldManager.SaveWorldList();
                 }
                 else
                 {
                     Server.Message("{0}&c has deactivated world chat on {1}", player.ClassyName, player.World);
                     player.World.WorldOnlyChat = false;
+                    WorldManager.SaveWorldList();
                 }
             }
             else if (option == "check")

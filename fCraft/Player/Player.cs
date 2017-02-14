@@ -477,8 +477,12 @@ namespace fCraft
                         {
                             rawMessage = rawMessage.Substring(0, rawMessage.Length - 1);
                         }
-
-                        Chat.SendGlobal(this, rawMessage);
+                        
+                        if(!World.WorldOnlyChat) {
+                            Chat.SendGlobal(this, rawMessage);
+                        } else {
+                            Chat.SendWorld(this, World, rawMessage);
+                        }
                     } break;
 
 
