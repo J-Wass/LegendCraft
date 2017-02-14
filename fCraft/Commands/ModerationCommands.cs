@@ -2687,8 +2687,8 @@ THE SOFTWARE.*/
                         player.previousWorld = null;
                         player.TeleportTo( new Position {
                             X = (short)(x * 32 + 16),
-                            Y = (short)(y * 32 + 51),
-                            Z = (short)(z * 32 + 16),
+                            Y = (short)(y * 32 + 16),
+                            Z = (short)(z * 32 + 51),
                             R = player.Position.R,
                             L = player.Position.L
                         } );
