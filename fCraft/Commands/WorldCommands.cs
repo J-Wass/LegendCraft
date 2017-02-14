@@ -606,39 +606,20 @@ THE SOFTWARE.*/
             string option = cmd.Next();
             if (option == "toggle")
             {
-
-                if (player.World.WorldOnlyChat == false)
-                {
-                    Server.Message("{0}&c has activated world chat on {1}", player.ClassyName, player.World);
-                    player.World.WorldOnlyChat = true;
-                    WorldManager.SaveWorldList();
-                }
-                else
-                {
-                    Server.Message("{0}&c has deactivated world chat on {1}", player.ClassyName, player.World);
-                    player.World.WorldOnlyChat = false;
-                    WorldManager.SaveWorldList();
-                }
+                Server.Message("{0}&c has {2} world chat on {1}", player.ClassyName, player.World,
+                               player.World.WorldOnlyChat ? "deactivated" : "activated");
+                player.World.WorldOnlyChat = !player.World.WorldOnlyChat;
+                WorldManager.SaveWorldList();
             }
             else if (option == "check")
             {
-                if (player.World.WorldOnlyChat == true)
-                {
-                    player.Message("World Chat is enabled on {0}", player.World);
-                    return;
-                }
-                else
-                {
-                    player.Message("World Chat is disabled on {0}", player.World);
-                    return;
-                }
+                player.Message("World Chat is {1} on {0}", player.World,
+                               player.World.WorldOnlyChat ? "enabled" : "disabled");
             }
             else
             {
                 player.Message("Valid options are toggle and check.");
-                return;
             }
-
         }
 
         static readonly CommandDescriptor CdRejoin = new CommandDescriptor
