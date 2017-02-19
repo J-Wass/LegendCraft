@@ -687,125 +687,125 @@ namespace fCraft.ServerGUI
 
         #region VoiceCommands
 
-        private void bVoice_Click(object sender, EventArgs e)
-        {
-            if (MonoCompat.IsMono)
-            {
-                Logger.Log(LogType.Warning, "Voice commands are for windows operating systems only");
-                return;
-            }
-
-            //if button was already clicked, cancel
-            if (listening)
-            {
-                listening = false;
-                bVoice.ForeColor = System.Drawing.Color.Black;
-                return;
-            }
-
-                System.Speech.Recognition.SpeechRecognitionEngine engine = new System.Speech.Recognition.SpeechRecognitionEngine();
-                bVoice.ForeColor = System.Drawing.Color.Aqua;
-                System.Speech.Recognition.Choices commands = new System.Speech.Recognition.Choices();
-                commands.Add(new string[] { "restart", "shutdown", "status report", "players", "help" });
-                System.Speech.Recognition.Grammar gr = new System.Speech.Recognition.Grammar(new System.Speech.Recognition.GrammarBuilder(commands));
-                try
-                {
-                    listening = true;
-                    engine.RequestRecognizerUpdate();
-                    engine.LoadGrammar(gr);
-                    engine.SpeechRecognized += engine_SpeechRecognized;
-                    engine.SetInputToDefaultAudioDevice();
-                    engine.RecognizeAsync(System.Speech.Recognition.RecognizeMode.Multiple);
-                    engine.Recognize();
-                }
-
-                catch
-                {
-                    return;
-                }
-        }
-        void engine_SpeechRecognized(object sender, System.Speech.Recognition.SpeechRecognizedEventArgs e)
-        {
-            System.Speech.Synthesis.SpeechSynthesizer reader = new System.Speech.Synthesis.SpeechSynthesizer();
-            System.Speech.Recognition.SpeechRecognitionEngine engine = new System.Speech.Recognition.SpeechRecognitionEngine();
-            try
-            {
-                engine = new System.Speech.Recognition.SpeechRecognitionEngine();
-                String message = "";
-                String results = e.Result.Text;
-                if (!listening)
-                {
-                    return;
-                }
-                switch (results)
-                {
-                    case "help":
-                        reader.Speak("The available commands are restart, shutdown, status report, and players.");
-                        Logger.Log(LogType.ConsoleOutput, "The available commands are restart, shutdown, status report, and a players.");
-                        bVoice.ForeColor = System.Drawing.Color.Black;
-                        results = "";
-                        engine.RecognizeAsyncStop();
-                        engine.Dispose();
-                        listening = false;
-                        break;
-                    case "restart":
-                        reader.Speak("The server is now restarting.");
-                        ShutdownParams param = new ShutdownParams(ShutdownReason.Restarting, TimeSpan.FromSeconds(5), true, true, "Restarting", Player.Console);
-                        Server.Shutdown(param, true);
-                        bVoice.ForeColor = System.Drawing.Color.Black;
-                        results = "";
-                        engine.RecognizeAsyncStop();
-                        engine.Dispose();
-                        listening = false;
-                        break;
-                    case "shutdown":
-                        reader.Speak("The server is now shutting down.");
-                        Shutdown(ShutdownReason.ShuttingDown, true);
-                        bVoice.ForeColor = System.Drawing.Color.Black;
-                        results = "";
-                        engine.RecognizeAsyncStop();
-                        engine.Dispose();
-                        listening = false;
-                        break;
-                    case "status report":
-                        reader.Speak("Server has been up for " + Math.Round(DateTime.UtcNow.Subtract(Server.StartTime).TotalHours, 1, MidpointRounding.AwayFromZero) + " hours.");
-                        Player.Console.ParseMessage("/sinfo", true, false);
-                        bVoice.ForeColor = System.Drawing.Color.Black;
-                        results = "";
-                        engine.RecognizeAsyncStop();
-                        engine.Dispose();
-                        listening = false;
-                        break;
-                    case "players":
-                        foreach (Player p in Server.Players)
-                        {
-                            message += p.Name;
-                        }
-                        reader.Speak(message);
-                        Player.Console.ParseMessage("/players", true, false);
-                        bVoice.ForeColor = System.Drawing.Color.Black;
-                        results = "";
-                        engine.RecognizeAsyncStop();
-                        engine.Dispose();
-                        listening = false;
-                        break;
-                    default:
-                        bVoice.ForeColor = System.Drawing.Color.Black;
-                        results = "";
-                        engine.RecognizeAsyncStop();
-                        engine.Dispose();
-                        listening = false;
-                        break;
-                }
-            }
-            catch(Exception)
-            {
-                //Audio Device is either missing or damaged, actual Exception is System.Speech.Internal.Synthesis.AudioException
-                engine.RecognizeAsyncStop();
-                engine.Dispose();
-                return;
-            }
-        }
+//        private void bVoice_Click(object sender, EventArgs e)
+//        {
+//            if (MonoCompat.IsMono)
+//            {
+//                Logger.Log(LogType.Warning, "Voice commands are for windows operating systems only");
+//                return;
+//            }
+//
+//            //if button was already clicked, cancel
+//            if (listening)
+//            {
+//                listening = false;
+//                bVoice.ForeColor = System.Drawing.Color.Black;
+//                return;
+//            }
+//
+//                System.Speech.Recognition.SpeechRecognitionEngine engine = new System.Speech.Recognition.SpeechRecognitionEngine();
+//                bVoice.ForeColor = System.Drawing.Color.Aqua;
+//                System.Speech.Recognition.Choices commands = new System.Speech.Recognition.Choices();
+//                commands.Add(new string[] { "restart", "shutdown", "status report", "players", "help" });
+//                System.Speech.Recognition.Grammar gr = new System.Speech.Recognition.Grammar(new System.Speech.Recognition.GrammarBuilder(commands));
+//                try
+//                {
+//                    listening = true;
+//                    engine.RequestRecognizerUpdate();
+//                    engine.LoadGrammar(gr);
+//                    engine.SpeechRecognized += engine_SpeechRecognized;
+//                    engine.SetInputToDefaultAudioDevice();
+//                    engine.RecognizeAsync(System.Speech.Recognition.RecognizeMode.Multiple);
+//                    engine.Recognize();
+//                }
+//
+//                catch
+//                {
+//                    return;
+//                }
+//        }
+//        void engine_SpeechRecognized(object sender, System.Speech.Recognition.SpeechRecognizedEventArgs e)
+//        {
+//            System.Speech.Synthesis.SpeechSynthesizer reader = new System.Speech.Synthesis.SpeechSynthesizer();
+//            System.Speech.Recognition.SpeechRecognitionEngine engine = new System.Speech.Recognition.SpeechRecognitionEngine();
+//            try
+//            {
+//                engine = new System.Speech.Recognition.SpeechRecognitionEngine();
+//                String message = "";
+//                String results = e.Result.Text;
+//                if (!listening)
+//                {
+//                    return;
+//                }
+//                switch (results)
+//                {
+//                    case "help":
+//                        reader.Speak("The available commands are restart, shutdown, status report, and players.");
+//                        Logger.Log(LogType.ConsoleOutput, "The available commands are restart, shutdown, status report, and a players.");
+//                        bVoice.ForeColor = System.Drawing.Color.Black;
+//                        results = "";
+//                        engine.RecognizeAsyncStop();
+//                        engine.Dispose();
+//                        listening = false;
+//                        break;
+//                    case "restart":
+//                        reader.Speak("The server is now restarting.");
+//                        ShutdownParams param = new ShutdownParams(ShutdownReason.Restarting, TimeSpan.FromSeconds(5), true, true, "Restarting", Player.Console);
+//                        Server.Shutdown(param, true);
+//                        bVoice.ForeColor = System.Drawing.Color.Black;
+//                        results = "";
+//                        engine.RecognizeAsyncStop();
+//                        engine.Dispose();
+//                        listening = false;
+//                        break;
+//                    case "shutdown":
+//                        reader.Speak("The server is now shutting down.");
+//                        Shutdown(ShutdownReason.ShuttingDown, true);
+//                        bVoice.ForeColor = System.Drawing.Color.Black;
+//                        results = "";
+//                        engine.RecognizeAsyncStop();
+//                        engine.Dispose();
+//                        listening = false;
+//                        break;
+//                    case "status report":
+//                        reader.Speak("Server has been up for " + Math.Round(DateTime.UtcNow.Subtract(Server.StartTime).TotalHours, 1, MidpointRounding.AwayFromZero) + " hours.");
+//                        Player.Console.ParseMessage("/sinfo", true, false);
+//                        bVoice.ForeColor = System.Drawing.Color.Black;
+//                        results = "";
+//                        engine.RecognizeAsyncStop();
+//                        engine.Dispose();
+//                        listening = false;
+//                        break;
+//                    case "players":
+//                        foreach (Player p in Server.Players)
+//                        {
+//                            message += p.Name;
+//                        }
+//                        reader.Speak(message);
+//                        Player.Console.ParseMessage("/players", true, false);
+//                        bVoice.ForeColor = System.Drawing.Color.Black;
+//                        results = "";
+//                        engine.RecognizeAsyncStop();
+//                        engine.Dispose();
+//                        listening = false;
+//                        break;
+//                    default:
+//                        bVoice.ForeColor = System.Drawing.Color.Black;
+//                        results = "";
+//                        engine.RecognizeAsyncStop();
+//                        engine.Dispose();
+//                        listening = false;
+//                        break;
+//                }
+//            }
+//            catch(Exception)
+//            {
+//                //Audio Device is either missing or damaged, actual Exception is System.Speech.Internal.Synthesis.AudioException
+//                engine.RecognizeAsyncStop();
+//                engine.Dispose();
+//                return;
+//            }
+//        }
         #endregion
 
     }
