@@ -3081,7 +3081,7 @@ THE SOFTWARE.*/
                             locked++;
                         }
                     }
-                    player.Message("Locked {0} worlds.", locked);
+                    player.Message("Unlocked {0} worlds.", locked);
                     return;
                 }
                 else
@@ -3089,10 +3089,12 @@ THE SOFTWARE.*/
                     world = WorldManager.FindWorldOrPrintMatches(player, worldName);
                     if (world == null) return;
                 }
+
             }
             else if (player.World != null)
             {
                 world = player.World;
+
             }
             else
             {
@@ -3108,7 +3110,6 @@ THE SOFTWARE.*/
             {
                 player.Message("Locked world {0}", world);
             }
-            WorldManager.SaveWorldList();
         }
 
 
@@ -3156,6 +3157,7 @@ THE SOFTWARE.*/
             else if (player.World != null)
             {
                 world = player.World;
+
             }
             else
             {
@@ -3171,7 +3173,6 @@ THE SOFTWARE.*/
             {
                 player.Message("Unlocked world {0}", world);
             }
-            WorldManager.SaveWorldList();
         }
 
         #endregion
