@@ -193,7 +193,7 @@
             this.bVoice.Size = new System.Drawing.Size(37, 29);
             this.bVoice.TabIndex = 10;
             this.bVoice.UseVisualStyleBackColor = false;
-//            this.bVoice.Click += new System.EventHandler(this.bVoice_Click);
+            this.bVoice.Click += new System.EventHandler(this.bVoice_Click);
             // 
             // URLLabel
             // 
