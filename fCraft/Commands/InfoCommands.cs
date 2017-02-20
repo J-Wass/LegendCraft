@@ -59,7 +59,8 @@ namespace fCraft {
             CommandManager.RegisterCommand( CdCommands );
 
             CommandManager.RegisterCommand( CdColors );
-
+            CommandManager.RegisterCommand( CdListClients );
+            
             CommandManager.RegisterCommand(CdReqs);
             CommandManager.RegisterCommand(CdList);
             CommandManager.RegisterCommand(CdWhoIs);
@@ -2150,6 +2151,47 @@ THE SOFTWARE.*/
             }
 
             player.Message( sb.ToString() );
+        }
+
+        #endregion
+        
+        
+        
+        #region ListClients
+
+        static readonly CommandDescriptor CdListClients = new CommandDescriptor {
+            Name = "ListClients",
+            Aliases = new[] { "pclients", "clients" },
+            Category = CommandCategory.Info,
+            IsConsoleSafe = true,
+            Help = "Shows a list of currently clients users are using.",
+            Handler = ListClientsHandler
+        };
+
+        static void ListClientsHandler(Player player, Command cmd) {
+            Player[] players = Server.Players;
+            var visiblePlayers = players.Where(player.CanSee).OrderBy(p => p, PlayerListSorter.Instance).ToArray();
+
+            Dictionary<string, List<Player>> clients = new Dictionary<string, List<Player>>();
+            foreach (var p in visiblePlayers) {
+                string appName = p.ClientName;
+                if (string.IsNullOrEmpty(appName)) {
+                    appName = "(unknown)";
+                }
+
+                List<Player> usingClient;
+                if (!clients.TryGetValue(appName, out usingClient)) {
+                    usingClient = new List<Player>();
+                    clients[appName] = usingClient;
+                }
+                usingClient.Add(p);
+            }
+            
+            player.Message("Players using:");
+            foreach (var kvp in clients) {
+                player.Message("  {0}:&f {1}",
+                               kvp.Key, kvp.Value.JoinToClassyString());
+            }
         }
 
         #endregion

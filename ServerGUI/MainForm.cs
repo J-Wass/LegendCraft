@@ -1,17 +1,14 @@
 ﻿// Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
 //Modified LegendCraft Team
 using System;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Windows.Forms;
-using System.Threading;
-using System.Net;
 using System.IO;
-using System.IO.Compression;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Windows.Forms;
 using fCraft.Events;
 using fCraft.GUI;
-using fCraft.ServerGUI;
 
 namespace fCraft.ServerGUI
 {

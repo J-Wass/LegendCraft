@@ -56,7 +56,7 @@ namespace fCraft
         public bool SupportsLongerMessages = false;
         public bool SupportsFullCP437 = false;
         
-        string ClientName { get; set; }
+        public string ClientName;
 
         bool NegotiateProtocolExtension()
         {
