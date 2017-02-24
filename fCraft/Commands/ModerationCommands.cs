@@ -1579,62 +1579,60 @@ THE SOFTWARE.*/
             }
             Player target = Server.FindPlayerOrPrintMatches(player, name, false, true);
             if (target == null) return;
+            
             if (target.Immortal){
                 player.Message("&SYou failed to slap {0}&S, they are immortal", target.ClassyName);
                 return;
-            }
+            }            
             if (target == player){
                 player.Message("&sYou can't slap yourself.... What's wrong with you???");
                 return;
             }
+            
             double time = (DateTime.UtcNow - player.Info.LastUsedSlap).TotalSeconds;
             if (time < 10){
                 player.Message("&WYou can use /Slap again in " + Math.Round(10 - time) + " seconds.");
                 return;
             }
-            string aMessage;
-            if (player.Can(Permission.Slap, target.Info.Rank)){
-                Position slap = new Position(target.Position.X, target.Position.Y, (target.World.Map.Bounds.ZMax) * 32);
-                target.previousLocation = target.Position;
-                target.previousWorld = null;
-                target.TeleportTo(slap);
-                if (string.IsNullOrEmpty(item)){
-                    Server.Players.CanSee(target).Union(target).Message("{0} &Swas slapped sky high by {1}", target.ClassyName, player.ClassyName);
-                    IRC.PlayerSomethingMessage(player, "slapped", target, null);
-                    player.Info.LastUsedSlap = DateTime.UtcNow;
-                    return;
-                }
-                else if (item.ToLower() == "bakingtray")
-                    aMessage = String.Format("{0} &Swas slapped by {1}&S with a Baking Tray", target.ClassyName, player.ClassyName);
-                else if (item.ToLower() == "fish")
-                    aMessage = String.Format("{0} &Swas slapped by {1}&S with a Giant Fish", target.ClassyName, player.ClassyName);
-                else if (item.ToLower() == "bitchslap")
-                    aMessage = String.Format("{0} &Swas bitch-slapped by {1}", target.ClassyName, player.ClassyName);
-                else if (item.ToLower() == "shoe")
-                    aMessage = String.Format("{0} &Swas slapped by {1}&S with a Shoe", target.ClassyName, player.ClassyName);
-                else if (item.ToLower() == "ass")
-                    aMessage = String.Format("{0} &Swas slapped on the &0Ass&s by {1}", target.ClassyName, player.ClassyName);
-                else if (item.ToLower() == "fryingpan")
-                    aMessage = String.Format("{0} &Swas slapped by {1}&S with a Frying Pan", target.ClassyName, player.ClassyName);
-                else if (item.ToLower() == "noodle")
-                    aMessage = String.Format("{0} &Swas slapped by {1}&S with a Wet Noodle", target.ClassyName, player.ClassyName);
-                else if (item.ToLower() == "ho")
-                    aMessage = String.Format("{1} &Sslapped {0}&S like a Pimp slaps a Ho", target.ClassyName, player.ClassyName);
-                else{
-                    Server.Players.CanSee(target).Union(target).Message("{0} &Swas slapped sky high by {1}", target.ClassyName, player.ClassyName);
-                    IRC.PlayerSomethingMessage(player, "slapped", target, null);
-                    player.Info.LastUsedSlap = DateTime.UtcNow;
-                    return;
-                }
-                Server.Players.CanSee(target).Union(target).Message(aMessage);
-                IRC.PlayerSomethingMessage(player, "slapped", target, null);
-                player.Info.LastUsedSlap = DateTime.UtcNow;
-                return;
-            }else{
+            
+            if (!player.Can(Permission.Slap, target.Info.Rank)) {
                 player.Message("&sYou can only Slap players ranked {0}&S or lower",
                                player.Info.Rank.GetLimit(Permission.Slap).ClassyName);
                 player.Message("{0}&S is ranked {1}", target.ClassyName, target.Info.Rank.ClassyName);
+                return;
             }
+            
+            string reason = "{0} &Swas slapped sky high by {1}";
+            Position slap = new Position(target.Position.X, target.Position.Y, (target.World.Map.Bounds.ZMax) * 32);
+            target.previousLocation = target.Position;
+            target.previousWorld = null;            
+            
+            if (string.IsNullOrEmpty(item)) {
+                reason = "{0} &Swas slapped sky high by {1}";
+            } else if (item.ToLower() == "bakingtray") {
+                reason = "{0} &Swas slapped by {1}&S with a Baking Tray";
+            } else if (item.ToLower() == "fish") {
+                reason = "{0} &Swas slapped by {1}&S with a Giant Fish";
+            } else if (item.ToLower() == "bitchslap") {
+                reason = "{0} &Swas bitch-slapped by {1}";
+            } else if (item.ToLower() == "shoe") {
+                reason = "{0} &Swas slapped by {1}&S with a Shoe";
+            } else if (item.ToLower() == "ass") {
+                reason = "{0} &Swas slapped on the &0Ass&s by {1}";
+            } else if (item.ToLower() == "fryingpan") {
+                reason = "{0} &Swas slapped by {1}&S with a Frying Pan";
+            } else if (item.ToLower() == "noodle") {
+                reason = "{0} &Swas slapped by {1}&S with a Wet Noodle";
+            } else if (item.ToLower() == "ho") {
+                reason = "{1} &Sslapped {0}&S like a Pimp slaps a Ho";
+            }         
+            reason = String.Format(reason, target.ClassyName, player.ClassyName);
+            slap.L = target.Position.L; slap.R = target.Position.R;
+            
+            target.TeleportTo(slap);
+            Server.Players.CanSee(target).Union(target).Message(reason);
+            IRC.PlayerSomethingMessage(player, "slapped", target, null);
+            player.Info.LastUsedSlap = DateTime.UtcNow;
         }
 
         static readonly CommandDescriptor CdTPZone = new CommandDescriptor

@@ -228,7 +228,7 @@ namespace fCraft {
                     {
                         if (!File.Exists("HeartbeatSaver.exe"))
                         {
-                            Logger.Log(LogType.Warning, "heartbeatsaver.exe does not exist and failed to launch");
+                            Logger.Log(LogType.Warning, "HeartbeatSaver.exe does not exist and failed to launch");
                             return;
                         }
 
