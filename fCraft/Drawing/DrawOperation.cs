@@ -146,14 +146,7 @@ namespace fCraft.Drawing {
 
             Context |= BlockChangeContext.Drawn;
             AnnounceCompletion = true;
-            if (Updater.CurrentRelease.IsFlagged(ReleaseFlags.Dev))
-            {
-                LogCompletion = true;
-            }
-            else
-            {
-                LogCompletion = false;
-            }
+            LogCompletion = Updater.CurrentRelease.IsFlagged(ReleaseFlags.Dev);
         }
 
 
