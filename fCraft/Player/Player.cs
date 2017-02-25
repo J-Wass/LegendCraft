@@ -498,6 +498,7 @@ namespace fCraft
                         if (commandDescriptor == null)
                         {
                             MessageNow("Unknown command \"{0}\". See &H/Commands", cmd.Name);
+                            Logger.Log(LogType.UserCommand, Name + ": /" + cmd.Name);
                         }
                         else if (Info.IsFrozen && !commandDescriptor.UsableByFrozenPlayers)
                         {
