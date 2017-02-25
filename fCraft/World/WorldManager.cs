@@ -257,6 +257,56 @@ namespace fCraft {
                 world.BackupInterval = World.DefaultBackupInterval;
             }
 
+			if((tempEl = el.Element("Locked")) != null) {
+				bool locked;
+
+				if (Boolean.TryParse(tempEl.Value, out locked))
+				{
+					if(locked) {
+						world.Lock(Player.Console);
+					} else {
+						world.Unlock(Player.Console);
+					}
+				}
+				else
+				{
+					Logger.Log(LogType.Warning,
+					           "WorldManager: Could not parse \"Locked\" attribute of world \"{0}\", assuming NOT locked.",
+					           worldName);
+				}
+			}
+            
+            if((tempEl = el.Element("LockedBy")) != null) {
+                world.LockedBy = tempEl.Value;
+            }
+            if((tempEl = el.Element("LockedOn")) != null) {
+                DateTime lockedOn = DateTime.UtcNow;
+
+                if(DateTimeUtil.ToDateTime(tempEl.Value, ref lockedOn))
+                {
+                    world.LockedDate = lockedOn;
+                } else {
+                    Logger.Log(LogType.Warning,
+                               "WorldManager: Could not parse \"LockedOn\" attribute of world \"{0}\", assuming NO lock time.",
+                               worldName);
+                }
+            }
+            if((tempEl = el.Element("UnlockedBy")) != null) {
+                world.UnlockedBy = tempEl.Value;
+            }
+            if((tempEl = el.Element("UnlockedOn")) != null) {
+                DateTime unlockedOn = DateTime.UtcNow;
+
+                if(DateTimeUtil.ToDateTime(tempEl.Value, ref unlockedOn))
+                {
+                    world.UnlockedDate = unlockedOn;
+                } else {
+                    Logger.Log(LogType.Warning,
+                               "WorldManager: Could not parse \"UnlockedOn\" attribute of world \"{0}\", assuming NO unlock time.",
+                               worldName);
+                }
+            }
+            
             XElement blockEl = el.Element(BlockDB.XmlRootName);
             if (blockEl != null)
             {
@@ -506,7 +556,20 @@ namespace fCraft {
                     if( world.MapChangedOn != DateTime.MinValue ) {
                         temp.Add( new XElement( "MapChangedOn", world.MapChangedOn.ToUnixTime() ) );
                     }
-
+					temp.Add( new XElement( "Locked", world.IsLocked.ToString() ) );
+					if( !String.IsNullOrEmpty( world.LockedBy ) ) {
+						temp.Add( new XElement( "LockedBy", world.LockedBy ) );
+					}
+                    if( world.LockedDate != DateTime.MinValue ) {
+                        temp.Add( new XElement( "LockedOn", world.LockedDate.ToUnixTime() ) );
+                    }
+                    if( !String.IsNullOrEmpty( world.UnlockedBy ) ) {
+                        temp.Add( new XElement( "UnlockedBy", world.UnlockedBy ) );
+                    }
+                    if( world.UnlockedDate != DateTime.MinValue ) {
+                        temp.Add( new XElement( "UnlockedOn", world.UnlockedDate.ToUnixTime() ) );
+                    }
+                    
                     XElement elEnv = new XElement( EnvironmentXmlTagName );
                     //Minecraft
                     if( world.CloudColor > -1 ) elEnv.Add( new XAttribute( "cloud", world.CloudColor ) );

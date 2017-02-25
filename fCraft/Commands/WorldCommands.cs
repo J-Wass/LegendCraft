@@ -3110,6 +3110,7 @@ THE SOFTWARE.*/
             {
                 player.Message("Locked world {0}", world);
             }
+            WorldManager.SaveWorldList();
         }
 
 
@@ -3173,6 +3174,7 @@ THE SOFTWARE.*/
             {
                 player.Message("Unlocked world {0}", world);
             }
+            WorldManager.SaveWorldList();
         }
 
         #endregion
