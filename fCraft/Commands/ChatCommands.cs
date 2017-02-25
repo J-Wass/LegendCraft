@@ -294,6 +294,13 @@ THE SOFTWARE.*/
         static void GHandler(Player player, Command cmd)
         {
             string message = cmd.NextAll();
+
+            if (!GlobalChat.isEnabled)
+            {
+                player.Message("&cGlobal Chat has been disabled on this server.");
+                return;
+            }
+
             if (message == "connect")
             {
                 if (player.Can(Permission.ReadAdminChat))

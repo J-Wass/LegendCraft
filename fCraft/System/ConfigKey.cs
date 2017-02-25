@@ -28,6 +28,10 @@ official server list (if server is public).",
 MinLength = 1, MaxLength = 64)]
         WebsiteURL,
 
+        [BoolKey(ConfigSection.General, true,
+@"Whether GlobalChat should be on or off.")]
+        GlobalChat,
+
         [StringKey(ConfigSection.General, "True",
 @"Determines if the server should check for updates", MinLength = 4, MaxLength = 5)]
         CheckForUpdates,
