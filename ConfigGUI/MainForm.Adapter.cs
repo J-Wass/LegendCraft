@@ -64,6 +64,7 @@ namespace fCraft.ConfigGUI
             ApplyTabLogging();
             ApplyTabIRC();
             ApplyTabAdvanced();
+            globalChat.Checked = ConfigKey.GlobalChat.Enabled();
 
             AddChangeHandler(tabs, SomethingChanged);
             AddChangeHandler(bResetTab, SomethingChanged);
