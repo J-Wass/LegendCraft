@@ -846,7 +846,7 @@ namespace fCraft {
         #region Lock / Unlock
 
         /// <summary> Whether the world is currently locked (in read-only mode). </summary>
-        public bool IsLocked { get; private set; }
+        public bool IsLocked { get; internal set; }
 
         public string LockedBy, UnlockedBy;
         public DateTime LockedDate, UnlockedDate;

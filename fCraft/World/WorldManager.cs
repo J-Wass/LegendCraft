@@ -262,11 +262,7 @@ namespace fCraft {
 
                 if (Boolean.TryParse(tempEl.Value, out locked))
                 {
-                    if(locked) {
-                        world.Lock(Player.Console);
-                    } else {
-                        world.Unlock(Player.Console);
-                    }
+                    world.IsLocked = locked;
                 }
                 else
                 {
