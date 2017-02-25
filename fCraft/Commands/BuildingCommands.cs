@@ -503,17 +503,14 @@ THE SOFTWARE.*/
 
         static void zzHandler(Player player, Command cmd)
         {
-            bool zz = false;
-            if (zz == false)
+            if (!player.IsRepeatingSelection)
             {
                 StaticHandler(player, new Command("/static"));
                 CuboidHandler(player, new Command("/cuboid"));
-                zz = true;
             }
             else
             {
                 StaticHandler(player, new Command("/static"));
-                zz = false;
             }
         }
         

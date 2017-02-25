@@ -1550,7 +1550,7 @@ namespace fCraft
                     break;
 
                 case CanPlaceResult.RankDenied:
-                    if (World.gunPhysics == true && GunMode == true)
+                    if (World.gunPhysics && GunMode)
                     {
                         RevertBlockNow(coord);
                         break;
@@ -1571,7 +1571,7 @@ namespace fCraft
                     {
                         case SecurityCheckResult.RankTooLow:
                         case SecurityCheckResult.RankTooHigh:
-                            if (World.gunPhysics == true && GunMode == true)
+                            if (World.gunPhysics && GunMode)
                             {
                                 RevertBlockNow(coord);
                                 break;
