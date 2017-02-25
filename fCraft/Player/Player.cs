@@ -478,7 +478,7 @@ namespace fCraft
                             rawMessage = rawMessage.Substring(0, rawMessage.Length - 1);
                         }
                         
-                        if(!World.WorldOnlyChat) {
+                        if (World == null || !World.WorldOnlyChat) {
                             Chat.SendGlobal(this, rawMessage);
                         } else {
                             Chat.SendWorld(this, World, rawMessage);
@@ -1551,7 +1551,7 @@ namespace fCraft
                     break;
 
                 case CanPlaceResult.RankDenied:
-                    if (World.gunPhysics == true && GunMode == true)
+                    if (World.gunPhysics && GunMode)
                     {
                         RevertBlockNow(coord);
                         break;
@@ -1572,7 +1572,7 @@ namespace fCraft
                     {
                         case SecurityCheckResult.RankTooLow:
                         case SecurityCheckResult.RankTooHigh:
-                            if (World.gunPhysics == true && GunMode == true)
+                            if (World.gunPhysics && GunMode)
                             {
                                 RevertBlockNow(coord);
                                 break;

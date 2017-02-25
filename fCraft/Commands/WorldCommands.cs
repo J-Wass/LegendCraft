@@ -238,7 +238,7 @@ THE SOFTWARE.*/
             }
             if (hax.ToLower() == "on" || hax.ToLower() == "true")
             {
-                if (world.Hax == true)
+                if (world.Hax)
                 {
                     player.Message("&sHax are already enabled on {0}", world.ClassyName);
                     return;
@@ -254,7 +254,7 @@ THE SOFTWARE.*/
             }
             if (hax.ToLower() == "off" || hax.ToLower() == "false")
             {
-                if (world.Hax == false)
+                if (!world.Hax)
                 {
                     player.Message("&sHax are already disabled on {0}", world.ClassyName);
                     return;
