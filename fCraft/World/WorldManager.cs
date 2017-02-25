@@ -256,25 +256,25 @@ namespace fCraft {
             {
                 world.BackupInterval = World.DefaultBackupInterval;
             }
+            
+            if((tempEl = el.Element("Locked")) != null) {
+                bool locked;
 
-			if((tempEl = el.Element("Locked")) != null) {
-				bool locked;
-
-				if (Boolean.TryParse(tempEl.Value, out locked))
-				{
-					if(locked) {
-						world.Lock(Player.Console);
-					} else {
-						world.Unlock(Player.Console);
-					}
-				}
-				else
-				{
-					Logger.Log(LogType.Warning,
-					           "WorldManager: Could not parse \"Locked\" attribute of world \"{0}\", assuming NOT locked.",
-					           worldName);
-				}
-			}
+                if (Boolean.TryParse(tempEl.Value, out locked))
+                {
+                    if(locked) {
+                        world.Lock(Player.Console);
+                    } else {
+                        world.Unlock(Player.Console);
+                    }
+                }
+                else
+                {
+                    Logger.Log(LogType.Warning,
+                               "WorldManager: Could not parse \"Locked\" attribute of world \"{0}\", assuming NOT locked.",
+                               worldName);
+                }
+            }
             
             if((tempEl = el.Element("LockedBy")) != null) {
                 world.LockedBy = tempEl.Value;
@@ -556,10 +556,10 @@ namespace fCraft {
                     if( world.MapChangedOn != DateTime.MinValue ) {
                         temp.Add( new XElement( "MapChangedOn", world.MapChangedOn.ToUnixTime() ) );
                     }
-					temp.Add( new XElement( "Locked", world.IsLocked.ToString() ) );
-					if( !String.IsNullOrEmpty( world.LockedBy ) ) {
-						temp.Add( new XElement( "LockedBy", world.LockedBy ) );
-					}
+                    temp.Add( new XElement( "Locked", world.IsLocked.ToString() ) );
+                    if( !String.IsNullOrEmpty( world.LockedBy ) ) {
+                        temp.Add( new XElement( "LockedBy", world.LockedBy ) );
+                    }
                     if( world.LockedDate != DateTime.MinValue ) {
                         temp.Add( new XElement( "LockedOn", world.LockedDate.ToUnixTime() ) );
                     }
