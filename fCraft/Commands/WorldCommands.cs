@@ -244,7 +244,7 @@ THE SOFTWARE.*/
                     return;
                 }
                 world.Hax = true;
-				WorldManager.SaveWorldList();
+                WorldManager.SaveWorldList();
                 Server.Message("&sHax have been enabled on {0}", world.ClassyName);
                 foreach (Player p in world.Players)
                 {
@@ -260,7 +260,7 @@ THE SOFTWARE.*/
                     return;
                 }
                 world.Hax = false;
-				WorldManager.SaveWorldList();
+                WorldManager.SaveWorldList();
                 Server.Message("&sHax have been disabled on {0}", world.ClassyName);
                 foreach (Player p in world.Players) //make all players rejoin to force changes
                 {
@@ -3062,52 +3062,37 @@ THE SOFTWARE.*/
             Handler = WorldLockHandler
         };
 
-        static void WorldLockHandler(Player player, Command cmd)
-        {
+        static void WorldLockHandler(Player player, Command cmd) {
             string worldName = cmd.Next();
 
+            if (worldName != null && worldName == "*") {                
+                World[] worlds = WorldManager.Worlds;
+                int locked = 0;
+                for (int i = 0; i < worlds.Length; i++) {
+                    if (worlds[i].Lock(player)) locked++;
+                }
+                
+                player.Message("Locked {0} worlds.", locked);
+                if (locked > 0) WorldManager.SaveWorldList();
+                return;
+            }
+             
             World world;
-            if (worldName != null)
-            {
-                if (worldName == "*")
-                {
-                    int locked = 0;
-                    World[] worldListCache = WorldManager.Worlds;
-                    for (int i = 0; i < worldListCache.Length; i++)
-                    {
-                        if (!worldListCache[i].IsLocked)
-                        {
-                            worldListCache[i].Lock(player);
-                            locked++;
-                        }
-                    }
-                    player.Message("Unlocked {0} worlds.", locked);
-                    return;
-                }
-                else
-                {
-                    world = WorldManager.FindWorldOrPrintMatches(player, worldName);
-                    if (world == null) return;
-                }
-
-            }
-            else if (player.World != null)
-            {
+            if (worldName != null) {
+                world = WorldManager.FindWorldOrPrintMatches(player, worldName);
+                if (world == null) return;
+            } else if (player.World != null) {
                 world = player.World;
-
-            }
-            else
-            {
+            } else {
                 player.Message("When called from console, /WLock requires a world name.");
                 return;
             }
 
-            if (!world.Lock(player))
-            {
+            if (!world.Lock(player)) {
                 player.Message("The world is already locked.");
+                return;
             }
-            else if (player.World != world)
-            {
+            if (player.World != world) {
                 player.Message("Locked world {0}", world);
             }
             WorldManager.SaveWorldList();
@@ -3126,52 +3111,37 @@ THE SOFTWARE.*/
             Handler = WorldUnlockHandler
         };
 
-        static void WorldUnlockHandler(Player player, Command cmd)
-        {
+        static void WorldUnlockHandler(Player player, Command cmd) {
             string worldName = cmd.Next();
-
+            
+            if (worldName != null && worldName == "*") {
+                World[] worlds = WorldManager.Worlds;
+                int unlocked = 0;
+                for (int i = 0; i < worlds.Length; i++) {
+                    if (worlds[i].Unlock(player)) unlocked++;
+                }
+                
+                player.Message("Unlocked {0} worlds.", unlocked);
+                if (unlocked > 0) WorldManager.SaveWorldList();
+                return;
+            }
+            
             World world;
-            if (worldName != null)
-            {
-                if (worldName == "*")
-                {
-                    World[] worldListCache = WorldManager.Worlds;
-                    int unlocked = 0;
-                    for (int i = 0; i < worldListCache.Length; i++)
-                    {
-                        if (worldListCache[i].IsLocked)
-                        {
-                            worldListCache[i].Unlock(player);
-                            unlocked++;
-                        }
-                    }
-                    player.Message("Unlocked {0} worlds.", unlocked);
-                    return;
-                }
-                else
-                {
-                    world = WorldManager.FindWorldOrPrintMatches(player, worldName);
-                    if (world == null) return;
-                }
-
-            }
-            else if (player.World != null)
-            {
+            if (worldName != null) {
+                world = WorldManager.FindWorldOrPrintMatches(player, worldName);
+                if (world == null) return;
+            } else if (player.World != null) {
                 world = player.World;
-
-            }
-            else
-            {
-                player.Message("When called from console, /WLock requires a world name.");
+            } else {
+                player.Message("When called from console, /WUnlock requires a world name.");
                 return;
             }
 
-            if (!world.Unlock(player))
-            {
+            if (!world.Unlock(player)) {
                 player.Message("The world is already unlocked.");
+                return;
             }
-            else if (player.World != world)
-            {
+            if (player.World != world) {
                 player.Message("Unlocked world {0}", world);
             }
             WorldManager.SaveWorldList();
