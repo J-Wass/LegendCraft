@@ -1,4 +1,4 @@
-2.4.1
+2.4.2
 
 All bugs and glitches randomly found in the game are meant to happen.
 
