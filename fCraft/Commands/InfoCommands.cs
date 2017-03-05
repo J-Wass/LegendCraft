@@ -1999,6 +1999,7 @@ THE SOFTWARE.*/
                 CommandDescriptor descriptor = CommandManager.GetDescriptor( commandName, true );
                 if( descriptor == null ) {
                     player.Message( "Unknown command: \"{0}\"", commandName );
+                    Logger.Log(LogType.UserCommand, "{0}: /{1}", player.Name, cmd.Name);
                     return;
                 }
 

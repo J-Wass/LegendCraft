@@ -161,11 +161,11 @@ namespace fCraft {
         #region Comparison
 
         public int CompareTo( Vector3I other ) {
-            return Math.Sign( LengthSquared - LengthSquared );
+            return Math.Sign( LengthSquared - other.LengthSquared );
         }
 
         public int CompareTo( Vector3F other ) {
-            return Math.Sign( LengthSquared - LengthSquared );
+            return Math.Sign( LengthSquared - other.LengthSquared );
         }
 
 

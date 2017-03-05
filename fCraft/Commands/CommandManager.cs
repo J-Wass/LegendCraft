@@ -182,6 +182,7 @@ namespace fCraft {
 
             if( descriptor == null ) {
                 player.Message( "Unknown command \"{0}\". See &H/Commands", cmd.Name );
+                Logger.Log(LogType.UserCommand, "{0}: /{1}", player.Name, cmd.Name);
                 return false;
             }
 
