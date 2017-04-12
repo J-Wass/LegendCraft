@@ -563,6 +563,7 @@ namespace fCraft.ServerGUI
             BackColor = System.Drawing.Color.Firebrick;
             playerList.BackColor = System.Drawing.Color.White;
             logBox.BackColor = System.Drawing.Color.Black;
+            
             logBox.SelectAll();
             logBox.SelectionColor = System.Drawing.Color.LightGray;
             logBox.SelectionStart = logBox.TextLength;
@@ -580,69 +581,41 @@ namespace fCraft.ServerGUI
             logBox.ScrollToCaret();
 
         }
-        public void SetPinkTheme()
-        {
-            BackColor = System.Drawing.Color.Pink;
-            playerList.BackColor = System.Drawing.Color.LightPink;
-            logBox.BackColor = System.Drawing.Color.LightPink;
-
-            logBox.SelectAll();
-            logBox.SelectionColor = System.Drawing.Color.Black;
-            logBox.SelectionStart = logBox.TextLength;
-            logBox.ScrollToCaret();
-
+        
+        public void SetPinkTheme() {
+            SetTheme(System.Drawing.Color.Pink, 
+                     System.Drawing.Color.LightPink);
         }
 
-        public void SetYellowTheme()
-        {
-            BackColor = System.Drawing.Color.LightGoldenrodYellow;
-            playerList.BackColor = System.Drawing.Color.LightYellow;
-            logBox.BackColor = System.Drawing.Color.LightYellow;
-
-            logBox.SelectAll();
-            logBox.SelectionColor = System.Drawing.Color.Black;
-            logBox.SelectionStart = logBox.TextLength;
-            logBox.ScrollToCaret();
-
+        public void SetYellowTheme() {
+            SetTheme(System.Drawing.Color.LightGoldenrodYellow, 
+                     System.Drawing.Color.LightYellow);
         }
 
-        public void SetGreenTheme()
-        {
-            BackColor = System.Drawing.Color.SpringGreen;
-            playerList.BackColor = System.Drawing.Color.LightGreen;
-            logBox.BackColor = System.Drawing.Color.LightGreen;
-
-            logBox.SelectAll();
-            logBox.SelectionColor = System.Drawing.Color.Black;
-            logBox.SelectionStart = logBox.TextLength;
-            logBox.ScrollToCaret();
-
+        public void SetGreenTheme() {
+            SetTheme(System.Drawing.Color.SpringGreen, 
+                     System.Drawing.Color.LightGreen);
         }
 
-        public void SetPurpleTheme()
-        {
-            BackColor = System.Drawing.Color.MediumPurple;
-            playerList.BackColor = System.Drawing.Color.Plum;
-            logBox.BackColor = System.Drawing.Color.Plum;
-
-            logBox.SelectAll();
-            logBox.SelectionColor = System.Drawing.Color.Black;
-            logBox.SelectionStart = logBox.TextLength;
-            logBox.ScrollToCaret();
-
+        public void SetPurpleTheme() {
+            SetTheme(System.Drawing.Color.MediumPurple, 
+                     System.Drawing.Color.Plum);
         }
 
-        public void SetGreyTheme()
-        {
-            BackColor = System.Drawing.SystemColors.Control;
-            playerList.BackColor = System.Drawing.SystemColors.ControlLight;
-            logBox.BackColor = System.Drawing.SystemColors.ControlLight;
+        public void SetGreyTheme() {
+            SetTheme(System.Drawing.SystemColors.Control, 
+                     System.Drawing.SystemColors.ControlLight);
+        }
+        
+        void SetTheme(System.Drawing.Color back, System.Drawing.Color itemsBack) {
+            BackColor = back;
+            playerList.BackColor = itemsBack;
+            logBox.BackColor = itemsBack;
 
             logBox.SelectAll();
             logBox.SelectionColor = System.Drawing.Color.Black;
             logBox.SelectionStart = logBox.TextLength;
             logBox.ScrollToCaret();
-
         }
 
       /*public void tabChat_tabSelected(object sender, EventArgs e)
