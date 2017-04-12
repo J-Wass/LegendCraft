@@ -258,11 +258,11 @@ namespace fCraft.ServerGUI
                     // store user's selection
                     int userSelectionStart = logBox.SelectionStart;
                     int userSelectionLength = logBox.SelectionLength;
-                    bool userSelecting = (logBox.SelectionStart != logBox.Text.Length && logBox.Focused ||
+                    bool userSelecting = (logBox.SelectionStart != logBox.TextLength && logBox.Focused ||
                                           logBox.SelectionLength > 0);
 
                     // insert and color a new message
-                    int oldLength = logBox.Text.Length;
+                    int oldLength = logBox.TextLength;
                     string msgToAppend = e.Message + Environment.NewLine;
 
                     /*if (e.MessageType == LogType.GlobalChat) //If Global Message, send to global and stop
@@ -386,7 +386,7 @@ namespace fCraft.ServerGUI
                     }
                     else
                     {
-                        logBox.SelectionStart = logBox.Text.Length;
+                        logBox.SelectionStart = logBox.TextLength;
                         logBox.ScrollToCaret();
                     }
                 }
@@ -518,22 +518,22 @@ namespace fCraft.ServerGUI
         {
             if (SizeBox.SelectedItem.ToString() == "Normal")
             {
-                logBox.ZoomFactor = 1;
+                logBox.ZoomFactor = 1.0f;
             }
             if (SizeBox.SelectedItem.ToString() == "Big")
             {
-                logBox.ZoomFactor = (float)1.2;
+                logBox.ZoomFactor = 1.2f;
             }
             if (SizeBox.SelectedItem.ToString() == "Large")
             {
-                logBox.ZoomFactor = (float)1.5;
+                logBox.ZoomFactor = 1.5f;
             }
         }
 
         private void CopyMenuOnClickHandler(object sender, EventArgs e)
         {
-            if (logBox.SelectedText.Length > 0)
-                Clipboard.SetText(logBox.SelectedText.ToString(), TextDataFormat.Text);
+            if (logBox.SelectionLength > 0)
+                Clipboard.SetText(logBox.SelectedText, TextDataFormat.Text);
         }
 
         private void CopyMenuPopupHandler(object sender, EventArgs e)
@@ -541,7 +541,7 @@ namespace fCraft.ServerGUI
             ContextMenu menu = sender as ContextMenu;
             if (menu != null)
             {
-                menu.MenuItems[0].Enabled = (logBox.SelectedText.Length > 0);
+                menu.MenuItems[0].Enabled = (logBox.SelectionLength > 0);
             }
         }
 
@@ -565,7 +565,7 @@ namespace fCraft.ServerGUI
             logBox.BackColor = System.Drawing.Color.Black;
             logBox.SelectAll();
             logBox.SelectionColor = System.Drawing.Color.LightGray;
-            logBox.SelectionStart = logBox.Text.Length;
+            logBox.SelectionStart = logBox.TextLength;
             logBox.ScrollToCaret();
         }
         public void SetAltTheme()
@@ -576,7 +576,7 @@ namespace fCraft.ServerGUI
 
             logBox.SelectAll();
             logBox.SelectionColor = System.Drawing.Color.Black;
-            logBox.SelectionStart = logBox.Text.Length;
+            logBox.SelectionStart = logBox.TextLength;
             logBox.ScrollToCaret();
 
         }
@@ -588,7 +588,7 @@ namespace fCraft.ServerGUI
 
             logBox.SelectAll();
             logBox.SelectionColor = System.Drawing.Color.Black;
-            logBox.SelectionStart = logBox.Text.Length;
+            logBox.SelectionStart = logBox.TextLength;
             logBox.ScrollToCaret();
 
         }
@@ -601,7 +601,7 @@ namespace fCraft.ServerGUI
 
             logBox.SelectAll();
             logBox.SelectionColor = System.Drawing.Color.Black;
-            logBox.SelectionStart = logBox.Text.Length;
+            logBox.SelectionStart = logBox.TextLength;
             logBox.ScrollToCaret();
 
         }
@@ -614,7 +614,7 @@ namespace fCraft.ServerGUI
 
             logBox.SelectAll();
             logBox.SelectionColor = System.Drawing.Color.Black;
-            logBox.SelectionStart = logBox.Text.Length;
+            logBox.SelectionStart = logBox.TextLength;
             logBox.ScrollToCaret();
 
         }
@@ -627,7 +627,7 @@ namespace fCraft.ServerGUI
 
             logBox.SelectAll();
             logBox.SelectionColor = System.Drawing.Color.Black;
-            logBox.SelectionStart = logBox.Text.Length;
+            logBox.SelectionStart = logBox.TextLength;
             logBox.ScrollToCaret();
 
         }
@@ -640,7 +640,7 @@ namespace fCraft.ServerGUI
 
             logBox.SelectAll();
             logBox.SelectionColor = System.Drawing.Color.Black;
-            logBox.SelectionStart = logBox.Text.Length;
+            logBox.SelectionStart = logBox.TextLength;
             logBox.ScrollToCaret();
 
         }
