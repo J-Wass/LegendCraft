@@ -1067,15 +1067,13 @@ namespace fCraft {
             return sb.ToString();
         }
 
-        static readonly Uri IPCheckUri = new Uri( "http://checkip.dyndns.org/" );
+        static readonly Uri IPCheckUri = new Uri( "http://www.classicube.net/api/myip" );
         const int IPCheckTimeout = 30000;
 
         /// <summary> Checks server's external IP, as reported by checkip.dyndns.org. </summary>
         [CanBeNull]
         static IPAddress CheckExternalIP() {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create( IPCheckUri );
-            request.ServicePoint.BindIPEndPointDelegate = new BindIPEndPoint( BindIPEndPointCallback );
-            request.Timeout = IPCheckTimeout;
+            HttpWebRequest request = HttpUtil.CreateRequest( IPCheckUri, TimeSpan.FromMilliseconds( IPCheckTimeout ) );
             request.CachePolicy = new RequestCachePolicy( RequestCacheLevel.NoCacheNoStore );
 
             try {
@@ -1084,10 +1082,8 @@ namespace fCraft {
                     using( StreamReader responseReader = new StreamReader( response.GetResponseStream() ) ) {
                         // ReSharper restore AssignNullToNotNullAttribute
                         string responseString = responseReader.ReadToEnd();
-                        int startIndex = responseString.IndexOf( ":" ) + 2;
-                        int endIndex = responseString.IndexOf( '<', startIndex ) - startIndex;
                         IPAddress result;
-                        if( IPAddress.TryParse( responseString.Substring( startIndex, endIndex ), out result ) ) {
+                        if( IPAddress.TryParse( responseString, out result ) ) {
                             return result;
                         } else {
                             return null;
@@ -1103,6 +1099,14 @@ namespace fCraft {
 
         // Callback for setting the local IP binding. Implements System.Net.BindIPEndPoint delegate.
         public static IPEndPoint BindIPEndPointCallback( ServicePoint servicePoint, IPEndPoint remoteEndPoint, int retryCount ) {
+            // InternalIP is ipv4 address, so we can't use it when connecting to a website via ipv6
+            // Otherwise it gets stuck trying to bind to an ipv4 address with this:
+            /* System.Net.Sockets Error: 0 : [1696] Socket#13869071::UpdateStatusAfterSocketError() - Fault
+               System.Net.Sockets Error: 0 : [1696] Exception in Socket#13869071::DoBind - The system detected an invalid pointer address in attempting to use a pointer argument in a call.
+               System.Net.Sockets Verbose: 0 : [1696] Socket#13869071::InternalBind(0.0.0.0:0#0) 
+             */
+            if (remoteEndPoint.AddressFamily != AddressFamily.InterNetwork) return null;
+            
             return new IPEndPoint( InternalIP, 0 );
         }
 

@@ -141,16 +141,8 @@ namespace fCraft
         // Creates an asynchrnous HTTP request to the given URL
         static HttpWebRequest CreateRequest(Uri uri)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
-            request.ServicePoint.BindIPEndPointDelegate = new BindIPEndPoint(Server.BindIPEndPointCallback);
-            request.Method = "GET";
-            request.Timeout = (int)Timeout.TotalMilliseconds;
+            HttpWebRequest request = HttpUtil.CreateRequest(uri, Timeout);
             request.CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.BypassCache);
-            request.UserAgent = Updater.UserAgent;
-            if (uri.Scheme == "http")
-            {
-                request.Proxy = new WebProxy("http://" + RefreshTargetAddress(uri) + ":" + uri.Port);
-            }
             return request;
         }
         public static string HbData;

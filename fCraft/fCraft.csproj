@@ -167,6 +167,7 @@
     <Compile Include="MapConversion\MapFCMv3.cs" />
     <Compile Include="Network\CPE.cs" />
     <Compile Include="Network\GlobalChat.cs" />
+    <Compile Include="Network\HttpUtil.cs" />
     <Compile Include="Network\PacketReader.cs" />
     <Compile Include="Physics\ExplodingPhysics.cs" />
     <Compile Include="Physics\Life\Life2d.cs" />
