@@ -29,6 +29,8 @@ namespace fCraft {
         public static string UserAgent {
             get { return "LegendCraft " + LatestStable; }
         }
+    	
+        public static readonly string VersionCheckURI = "https://raw.githubusercontent.com/UnknownShadow200/LegendCraft/master/README.md";
 
         public const string LatestStable = "2.4.2";
 
