@@ -451,7 +451,7 @@ THE SOFTWARE.*/
             {
                 player.Message("{0} has been changed into a {1}!", target.Name, model);
                 target.Model = model;
-                if (target.usesCPE) target.Send(PacketWriter.MakeChangeModel(255, model));
+                if (target.SupportsChangeModel) target.Send(PacketWriter.MakeChangeModel(255, model));
             }
         }
         

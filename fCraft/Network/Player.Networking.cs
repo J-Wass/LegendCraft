@@ -194,7 +194,7 @@ namespace fCraft
                             if (!outputQueue.TryDequeue(out packet)) break;
 
                         if (IsDeaf && packet.OpCode == OpCode.Message) continue;
-
+                        
                         writer.Write(packet.Data);
                         BytesSent += packet.Data.Length;
                         packetsSent++;
@@ -254,6 +254,8 @@ namespace fCraft
                     while (canReceive && stream.DataAvailable)
                     {
                         byte opcode = reader.ReadByte();
+                        if (opcode != (byte)OpCode.Teleport)
+                            System.Console.WriteLine("IN: " + (OpCode)opcode);
                         switch ((OpCode)opcode)
                         {
 
@@ -383,20 +385,8 @@ namespace fCraft
         void ProcessMovementPacket()
         {
             BytesReceived += 10;
-            byte me = reader.ReadByte();
-            if (usesCPE)
-            {
-                try
-                {
-                    //check if all the requested byte exists as a block, if it does create a block
-                    Info.HeldBlock = (Block)me;
-                }
-                catch(Exception ex)
-                {
-                    Logger.LogToConsole(ex.Data + ex.Message);
-                    Info.HeldBlock = Block.Stone;
-                }
-            }
+            byte held = reader.ReadByte();
+            if (SupportsHeldBlock) Info.HeldBlock = (Block)held;
 
             Position newPos = new Position
             {
@@ -1475,7 +1465,7 @@ namespace fCraft
                     {
                         //add back bot entity if world matches
                         Send(PacketWriter.MakeAddEntity(bot.ID, bot.Name, bot.Position));
-                        if (bot.Model != "humanoid" && usesCPE)
+                        if (bot.Model != "humanoid" && SupportsChangeModel)
                         {
                             Send(PacketWriter.MakeChangeModel((byte)bot.ID, bot.Model));
                         }
@@ -1774,7 +1764,7 @@ namespace fCraft
                 {
                     entity.MarkedForRetention = true;
                    
-                    if (usesCPE && entity.LastKnownModel != otherPlayer.Model) 
+                    if (SupportsChangeModel && entity.LastKnownModel != otherPlayer.Model) 
                     {
                         SendNow(PacketWriter.MakeChangeModel((byte)entity.Id, otherPlayer.Model));
                         entity.LastKnownModel = otherPlayer.Model;

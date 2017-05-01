@@ -1064,19 +1064,19 @@ namespace fCraft {
         
         internal void SendAllMapAppearance() {
             Packet packet = PacketWriter.MakeEnvSetMapAppearance(textureURL, SideBlock, EdgeBlock, EdgeLevel);
-            foreach (Player p in Players.Where(p => p.usesCPE))
+            foreach (Player p in Players.Where(p => p.SupportsEnvMapAppearance))
                 p.Send(packet);
         }
         
         internal void SendAllMapWeather() {
             Packet packet = PacketWriter.MakeEnvWeatherAppearance((byte)WeatherCC);
-            foreach (Player p in Players.Where(p => p.usesCPE))
+            foreach (Player p in Players.Where(p => p.SupportsEnvWeatherType))
                 p.Send(packet);
         }
         
         internal void SendAllEnvColor(byte variable, int  value) {
         	Packet packet = PacketWriter.MakeEnvSetColor(variable, value);
-            foreach (Player p in Players.Where(p => p.usesCPE))
+            foreach (Player p in Players.Where(p => p.SupportsEnvColors))
                 p.Send(packet);
         }
 

@@ -140,7 +140,7 @@ namespace fCraft
             {
                 foreach (Player p in world_.Players)
                 {
-                    if (p.usesCPE)
+                    if (p.SupportsMessageTypes)
                     {
                         p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));//super hacky way to remove announcements, simply send a color code and call it a day
                     }
@@ -316,7 +316,7 @@ namespace fCraft
                         //send an announcement (Will be sent as a normal message to non classicube players)
                         p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&cLet the Games Begin!"));
 
-                        if (p.usesCPE)
+                        if (p.SupportsMessageTypes)
                         {
                             //set player health
                             p.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f[&a--------&f]"));
@@ -703,7 +703,7 @@ namespace fCraft
                         healthBar = "&f[&8--------&f]";
                     }
 
-                    if (p.usesCPE)
+                    if (p.SupportsMessageTypes)
                     {
                         p.Send(PacketWriter.MakeSpecialMessage((byte)1, healthBar));
                     }
@@ -720,7 +720,7 @@ namespace fCraft
                     world_.Players.Message("&f{0} has been healed for 100 hp.", p.Name);
                     p.Info.Health = 100;
 
-                    if (p.usesCPE)
+                    if (p.SupportsMessageTypes)
                     {
                         p.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f[&8--------&f]"));
                     }
@@ -863,7 +863,7 @@ namespace fCraft
                     }
                     foreach (Player pl in world_.Players)
                     {
-                        if (pl.usesCPE)
+                        if (pl.SupportsMessageTypes)
                         {
                             pl.Send(PacketWriter.MakeSpecialMessage((byte)2, "&cRed&f: " + redScore + ",&1 Blue&f: " + blueScore));
                         }
@@ -912,7 +912,7 @@ namespace fCraft
                             p.World.Map.QueueUpdate(blockUpdate);
 
                             //set game score
-                            if (p.usesCPE)
+                            if (p.SupportsMessageTypes)
                             {
                                 p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&cRed&f: " + redScore + ",&1 Blue&f: " + blueScore));
                                 p.Send(PacketWriter.MakeSpecialMessage((byte)100, e.Player.Name + " has successfully capped the &cred &fflag"));
@@ -948,7 +948,7 @@ namespace fCraft
                             p.World.Map.QueueUpdate(blockUpdate);
 
                             //set game scorecboard
-                            if (p.usesCPE)
+                            if (p.SupportsMessageTypes)
                             {
                                 p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&cRed&f: " + redScore + ",&1 Blue&f: " + blueScore));
                                 p.Send(PacketWriter.MakeSpecialMessage((byte)100, e.Player.Name + " has successfully capped the &cred &fflag"));

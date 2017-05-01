@@ -181,7 +181,7 @@ namespace fCraft
                 return; //something went wrong, model does not exist
             }
 
-            World.Players.Where(p => p.usesCPE).Send(PacketWriter.MakeChangeModel((byte)ID, botModel));
+            World.Players.Where(p => p.SupportsChangeModel).Send(PacketWriter.MakeChangeModel((byte)ID, botModel));
             Model = botModel;
         }
 

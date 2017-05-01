@@ -439,7 +439,7 @@ THE SOFTWARE.*/
                     if (worldTarget == "all")
                     {
                         player.Message("_Removing all highlights {0}_", ConfigKey.ServerName.GetString());
-                        foreach (Player p in Server.Players.Where(p => p.usesCPE))
+                        foreach (Player p in Server.Players.Where(p => p.SupportsSelectionCuboid))
                         {
                             //physically remove all highlights where players are connected to specific worlds
                             if (p.World.Highlights.Count > 0)
@@ -473,7 +473,7 @@ THE SOFTWARE.*/
                         }
 
                         player.Message("_Removing all highlights on {0}_", targetWorld.Name);
-                        foreach (Player p in targetWorld.Players.Where(p => p.usesCPE))
+                        foreach (Player p in targetWorld.Players.Where(p => p.SupportsSelectionCuboid))
                         {
                             foreach (var i in targetWorld.Highlights.Values)
                             {
