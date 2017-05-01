@@ -254,8 +254,6 @@ namespace fCraft
                     while (canReceive && stream.DataAvailable)
                     {
                         byte opcode = reader.ReadByte();
-                        if (opcode != (byte)OpCode.Teleport)
-                            System.Console.WriteLine("IN: " + (OpCode)opcode);
                         switch ((OpCode)opcode)
                         {
 
