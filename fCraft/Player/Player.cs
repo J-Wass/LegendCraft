@@ -1791,7 +1791,7 @@ namespace fCraft
             }
             
             //check classicube blocks and convert if necessary
-            if (!usesCPE && newBlock > Block.Obsidian) 
+            if (!UsesCustomBlocks && newBlock > Block.Obsidian) 
             {
                 newBlock = Map.GetFallbackBlock(newBlock);
                 result = CanPlaceResult.Allowed;

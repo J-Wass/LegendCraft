@@ -266,7 +266,7 @@ namespace fCraft
                     }
                     foreach (Player p in world_.Players)
                     {
-                        if (p.usesCPE)
+                        if (p.SupportsBlockPermissions)
                         {
                             //loop through each block ID
                             for (int i = 1; i < 65; i++)
@@ -571,9 +571,10 @@ namespace fCraft
                     p.entityChanged = true;
 
                     //reset all special messages
-                    if (p.usesCPE)
-                    {
+                    if (p.SupportsBlockPermissions) {
                         p.Send(PacketWriter.MakeSetBlockPermissions((byte)0, true, true));
+                    }
+                    if (p.SupportsMessageTypes) {
                         p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));
                         p.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f"));
                         p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&f"));

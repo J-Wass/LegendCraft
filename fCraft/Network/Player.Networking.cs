@@ -971,20 +971,6 @@ namespace fCraft
           
             bool firstTime = (Info.TimesVisited == 1);
 
-            //update fallback blocks for non CPE users
-            /*if (!CPE)
-            {
-                Map newMap = startingWorld.Map;
-                for (int i = 0; i < newMap.Blocks.Length; i++)
-                {
-                    if (newMap.Blocks[i] > 49)
-                    {
-                        newMap.Blocks[i] = (byte)Map.GetFallbackBlock((Block)Enum.GetValues(typeof(Block)).GetValue(newMap.Blocks[i]));
-                    }
-                }
-                startingWorld.Map = newMap;
-            }*/
-
             if (!JoinWorldNow(startingWorld, true, WorldChangeReason.FirstWorld))
             {
                 Logger.Log(LogType.Warning,
@@ -1326,7 +1312,7 @@ namespace fCraft
                 {
                     int convertedBlockCount = IPAddress.HostToNetworkOrder(map.Volume);
                     compressor.Write(BitConverter.GetBytes(convertedBlockCount), 0, 4);
-                    byte[] rawData = (usesCPE ? map.Blocks : map.GetFallbackMap());
+                    byte[] rawData = (UsesCustomBlocks ? map.Blocks : map.GetFallbackMap());
                     compressor.Write(rawData, 0, rawData.Length);
                 }
                 blockData = mapStream.ToArray();
@@ -1436,19 +1422,26 @@ namespace fCraft
             Info.placingBlueFlag = false;
             Info.placingRedFlag = false;
 
-            if (usesCPE)
-            {
+            if (SupportsEnvMapAppearance) {
+                Send(PacketWriter.MakeEnvSetMapAppearance(World.textureURL, World.SideBlock, World.EdgeBlock, World.EdgeLevel));
+            }
+            if (SupportsEnvWeatherType) {
+                Send(PacketWriter.MakeEnvWeatherAppearance((byte)World.WeatherCC));
+            }
+            if (SupportsMessageTypes) {
                 //reset all special messages
                 Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));
                 Send(PacketWriter.MakeSpecialMessage((byte)1, "&f"));
                 Send(PacketWriter.MakeSpecialMessage((byte)2, "&f"));
-
-                Send(PacketWriter.MakeEnvSetMapAppearance(World.textureURL, World.SideBlock, World.EdgeBlock, World.EdgeLevel));
+            }
+            if (SupportsEnvColors) {
                 Send(PacketWriter.MakeEnvSetColor(0, World.SkyColor));
                 Send(PacketWriter.MakeEnvSetColor(1, World.CloudColor));
                 Send(PacketWriter.MakeEnvSetColor(2, World.FogColor));
-                Send(PacketWriter.MakeEnvWeatherAppearance((byte)World.WeatherCC));
-
+            }
+            
+            if (usesCPE)
+            {
                 if (!World.Hax)
                 {
                     //Send(PacketWriter.MakeHackControl(1, 1, 1, 1, 1, -1)); Commented out until classicube clients support hax packet
@@ -1473,7 +1466,9 @@ namespace fCraft
                         }
                     }
                 }
-
+            }
+            
+            if (SupportsSelectionCuboid) {
                 //update highlights
                 if (oldWorld != null)
                 {
@@ -1486,7 +1481,6 @@ namespace fCraft
                 {
                     Send(PacketWriter.MakeSelectionCuboid((byte)entry.Value.Item1, entry.Key, entry.Value.Item2, entry.Value.Item3, entry.Value.Item4, entry.Value.Item5));
                 }
-
             }
 
             // Done.
@@ -1853,6 +1847,9 @@ namespace fCraft
                 if (usesCPE) {
                     SendNow(PacketWriter.MakeExtAddEntity((byte)entity.Id, player.ListName, player.Skinname));
                     SendNow(PacketWriter.MakeTeleport(entity.Id, newPos));
+                    
+                }
+                if (SupportsChangeModel) {
                     SendNow(PacketWriter.MakeChangeModel((byte)entity.Id, player.Model));
                 }
             }
