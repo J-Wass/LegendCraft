@@ -1,4 +1,4 @@
-// Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
+﻿// Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -444,6 +444,7 @@ namespace fCraft
                 return;
             }
 
+            string originalMessage = rawMessage;
             if (partialMessage != null)
             {
                 rawMessage = partialMessage + rawMessage;
@@ -791,7 +792,8 @@ namespace fCraft
 				case RawMessageType.LongerMessage:
 					partialMessage = rawMessage.Substring(0, rawMessage.Length - 1);
 					// Spaces at the end are trimmed by default, so we need to insert one.
-                    if (partialMessage.Length != 64) partialMessage += " ";
+                    // +1 to length to account for Ω at end
+                    if (originalMessage.Length != (64 + 1)) partialMessage += " ";
 					break;                  
 
                 case RawMessageType.Invalid:
