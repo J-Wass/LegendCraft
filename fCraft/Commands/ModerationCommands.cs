@@ -2500,24 +2500,21 @@ THE SOFTWARE.*/
             }
 
             bool silent = cmd.HasNext;
-
             // for aware players: notify
-            Server.Players.CanSee( player ).Message( "&SPlayer {0}&S is no longer hidden.",
-                                                     player.ClassyName );
+            Server.Players.CanSee( player ).Message( "&SPlayer {0}&S is no longer hidden.", player.ClassyName );
+            
             player.Message( "&8You are no longer hidden." );
-            player.Info.IsHidden = false;
-            if( !silent ) {
-                if( ConfigKey.ShowConnectionMessages.Enabled() ) {
-                    // ReSharper disable AssignNullToNotNullAttribute
-                    string msg = Server.MakePlayerConnectedMessage( player, false, player.World );
-                    // ReSharper restore AssignNullToNotNullAttribute
-                    Server.Players.CantSee( player ).Message( msg );
-                }
-                if( ConfigKey.IRCBotAnnounceServerJoins.Enabled() ) {
-                    IRC.PlayerReadyHandler( null, new PlayerConnectedEventArgs( player, player.World ) );
-                }
+            if( !silent && ConfigKey.ShowConnectionMessages.Enabled() ) {
+                 // ReSharper disable AssignNullToNotNullAttribute
+                 string msg = Server.MakePlayerConnectedMessage( player, false, player.World );
+                 // ReSharper restore AssignNullToNotNullAttribute
+                 Server.Players.CantSee( player ).Message( msg );
             }
-
+        
+            player.Info.IsHidden = false;
+            if( !silent && ConfigKey.IRCBotAnnounceServerJoins.Enabled() ) {
+                IRC.PlayerReadyHandler( null, new PlayerConnectedEventArgs( player, player.World ) );
+            }
             Player.RaisePlayerHideChangedEvent( player );
         }
 
