@@ -1067,7 +1067,7 @@ namespace fCraft {
             return sb.ToString();
         }
 
-        static readonly Uri IPCheckUri = new Uri( "http://www.classicube.net/api/myip" );
+        static readonly Uri IPCheckUri = new Uri( "http://www.classicube.net/api/myip/" );
         const int IPCheckTimeout = 30000;
 
         /// <summary> Checks server's external IP, as reported by checkip.dyndns.org. </summary>
