@@ -4708,7 +4708,7 @@ THE SOFTWARE.*/
 
             // normalize the path
             fileName = fileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-            if (fileName.EndsWith("/") && fileName.EndsWith(@"\"))
+            if (fileName.EndsWith("/") || fileName.EndsWith(@"\"))
             {
                 fileName += world.Name + ".fcm";
             }
