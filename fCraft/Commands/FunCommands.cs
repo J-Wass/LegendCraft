@@ -160,16 +160,8 @@ THE SOFTWARE.*/
             }
             else if (option.ToLower() == "removeall")
             {
-
-            rewipe:
-                Server.Bots.ForEach(botToRemove =>
-                {
-                    botToRemove.removeBot();
-                });
-
-                if (Server.Bots.Count != 0)
-                {
-                    goto rewipe;
+                while (Server.Bots.Count > 0) {
+                    Server.Bots[0].removeBot();
                 }
 
                 player.Message("All bots removed from the server.");
