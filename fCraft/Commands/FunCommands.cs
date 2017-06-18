@@ -2083,8 +2083,6 @@ THE SOFTWARE.*/
         }
 
 
-
-
         static readonly CommandDescriptor CdThrow = new CommandDescriptor
         {
             Name = "Throw",
@@ -2100,7 +2098,7 @@ THE SOFTWARE.*/
 
         static void ThrowHandler(Player player, Command cmd)
         {
-            string name = cmd.Next(), item = cmd.Next();
+            string name = cmd.Next();
             if (name == null)
             {
                 player.Message("Please enter a name");

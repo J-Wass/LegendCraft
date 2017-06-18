@@ -629,7 +629,7 @@ THE SOFTWARE.*/
             op.Prepare(coords, args.Entries);
 
             // log operation
-            string targetList = targetList = args.Targets.JoinToClassyString();
+            string targetList = args.Targets.JoinToClassyString();
             Logger.Log(LogType.UserActivity,
                         "{0}: Player {1} will undo {2} changes (limit of {3}) by {4} on world {5}",
                         cmdName, args.Player.Name, args.Entries.Length,
