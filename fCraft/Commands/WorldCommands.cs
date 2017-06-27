@@ -4506,7 +4506,7 @@ THE SOFTWARE.*/
             if (world.AccessSecurity.MinRank > rank)
             {
                 player.Message("World {0}&S requires {1}+&S to join, so it cannot be used as the main world for rank {2}&S.",
-                                world.ClassyName, world.AccessSecurity.MinRank, rank.ClassyName);
+                                world.ClassyName, world.AccessSecurity.MinRank.ClassyName, rank.ClassyName);
                 return;
             }
 
