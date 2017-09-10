@@ -554,6 +554,7 @@ THE SOFTWARE.*/
                 }
             }
         }
+        
         static readonly CommandDescriptor CdLastCommand = new CommandDescriptor
         {
             Name = "LastCommand",
@@ -566,37 +567,26 @@ THE SOFTWARE.*/
             Handler = LastCommandHandler
         };
 
-        static void LastCommandHandler(Player player, Command cmd) //allows the user to see the last command a target player has used
+        static void LastCommandHandler(Player player, Command cmd)
         {
-            string target = cmd.Next();
-            if (String.IsNullOrEmpty(target))
-            {
-                if (player.LastCommand == null)
-                {
+            string targetName = cmd.Next();
+            if (String.IsNullOrEmpty(targetName))  {
+                if (player.LastCommand == null) {
                     player.Message("You do not have a last command");
-                    CdLastCommand.PrintUsage(player);
+                } else {
+                    string last = player.LastCommand.RawMessage;
+                    player.Message("Your last command used was: " + last);
+                }
+            } else {
+                Player target = Server.FindPlayerOrPrintMatches(player, targetName, false, true);                
+                if (target != null) {
+                    string last = target.LastCommand.RawMessage;
+                    player.Message(target.Name + "'s last command was " + last);
                     return;
                 }
-
-                string sub = player.LastCommand.ToString().Split('"')[1].Split('"')[0];
-
-                player.Message("Your last command used was: " + sub);
-                return;
-            }
-            Player targetName = Server.FindPlayerOrPrintMatches(player, target, false, true);
-            if (targetName == null)
-            {
-                player.Message("No player found matching " + target);
-                return;
-            }
-            else
-            {
-                string sub = targetName.LastCommand.ToString().Split('"')[1].Split('"')[0];
-
-                player.Message(targetName.Name + "'s last command was " + sub);
-                return;
             }
         }
+        
         static readonly CommandDescriptor CdBeatDown = new CommandDescriptor
         {
             Name = "Beatdown",
