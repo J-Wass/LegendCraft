@@ -494,25 +494,24 @@ namespace fCraft
                             rawMessage = rawMessage.Substring(0, rawMessage.Length - 1);
                         }
                         Command cmd = new Command(rawMessage);
-                        CommandDescriptor commandDescriptor = CommandManager.GetDescriptor(cmd.Name, true);
 
-                        if (commandDescriptor == null)
+                        if (cmd.Descriptor == null)
                         {
                             MessageNow("Unknown command \"{0}\". See &H/Commands", cmd.Name);
                             Logger.Log(LogType.UserCommand, "{0}: /{1}", Name, cmd.Name);
                         }
-                        else if (Info.IsFrozen && !commandDescriptor.UsableByFrozenPlayers)
+                        else if (Info.IsFrozen && !cmd.Descriptor.UsableByFrozenPlayers)
                         {
                             MessageNow("&WYou cannot use this command while frozen.");
                         }
                         else
                         {
-                            if (!commandDescriptor.DisableLogging)
+                            if (!cmd.Descriptor.DisableLogging)
                             {
                                 Logger.Log(LogType.UserCommand,
                                             "{0}: {1}", Name, rawMessage);
                             }
-                            if (commandDescriptor.RepeatableSelection)
+                            if (cmd.Descriptor.RepeatableSelection)
                             {
                                 selectionRepeatCommand = cmd;
                             }
@@ -526,7 +525,7 @@ namespace fCraft
                                 Logger.Log(LogType.Error, e.Message + Environment.NewLine + e);
                             }
 
-                            if (!commandDescriptor.NotRepeatable)
+                            if (!cmd.Descriptor.NotRepeatable)
                             {
                                 LastCommand = cmd;
                             }
