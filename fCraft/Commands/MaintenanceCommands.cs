@@ -1429,7 +1429,7 @@ THE SOFTWARE.*/
                     }
                     return;
                 } else if( !delayString.TryParseMiniTimespan( out delayTime ) ) {
-                    CdShutdown.PrintUsage( player );
+                    CdRestart.PrintUsage( player );
                     return;
                 }
                 if( delayTime > DateTimeUtil.MaxTimeSpan ) {
