@@ -115,48 +115,26 @@ namespace fCraft.ServerGUI
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Updater.VersionCheckURI);
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-
-                if (response.StatusCode == HttpStatusCode.OK)
+                if (response.StatusCode != HttpStatusCode.OK) return;
+                
+                using (Stream stream = response.GetResponseStream())
                 {
-                    using (Stream stream = response.GetResponseStream())
+                    if (stream == null) return;
+                    string version = new StreamReader(stream).ReadLine();
+
+                    if (version != null && version != fCraft.Updater.LatestStable)
                     {
-                        if (stream != null)
-                        {
-                            StreamReader streamReader = new StreamReader(stream);
-                            string version = streamReader.ReadLine();
-                            //update is available, prompt for a download
-                            if (version != null && version != fCraft.Updater.LatestStable)
-                            {
-
-                                Logger.Log(LogType.SystemActivity, "Server.Run: Your LegendCraft version is out of date. A LegendCraft Update is available!");
-
-                                DialogResult answer = MessageBox.Show("Would you like to download the latest LegendCraft Version? (" + version + ")", "LegendCraft Updater", MessageBoxButtons.YesNo);
-                                if (answer == DialogResult.Yes)
-                                {
-                                    Process.Start("https://github.com/LegendCraft/LegendCraft/releases");
-                                }
-                                else
-                                {
-                                    Logger.Log(LogType.SystemActivity, "Update ignored. To ignore future LegendCraft update requests, uncheck the box in configGUI.");
-                                }
-
-                            }
-                            else
-                            {
-                                Logger.Log(LogType.SystemActivity, "Your LegendCraft version is up to date!");
-                            }
-                        }
+                        Logger.Log(LogType.Warning, "UpdateCheck: Your LegendCraft version is out of date. A newer update is available!");
+                    }
+                    else
+                    {
+                        Logger.Log(LogType.SystemActivity, "UpdateCheck: Your LegendCraft version is up to date!");
                     }
                 }
             }
-
-            catch (WebException)
+            catch (Exception ex)
             {
-                Console.WriteLine("There was an internet connection error. Server was unable to check for updates.");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("There was an error in trying to check for updates:\n\r " + e);
+                Logger.Log(LogType.Error, "Error when trying to to check for updates: " + ex);
             }
         }
 

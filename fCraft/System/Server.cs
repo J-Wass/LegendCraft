@@ -289,7 +289,7 @@ namespace fCraft {
                 Logger.Log( LogType.Warning,
                             "You are using an unreleased developer version of LegendCraft. " +
                             "Do not use this version unless you are ready to deal with bugs and potential data loss. " +
-                            "Consider using the latest stable version instead, available from http://github.com/LeChosenOne/LegendCraft/releases" );
+                            "Consider using the latest stable version instead, available from http://github.com/UnknownShadow200/LegendCraft/releases" );
             }
 
             if( Updater.CurrentRelease.IsFlagged( ReleaseFlags.Unstable ) ) {
