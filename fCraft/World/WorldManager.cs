@@ -63,12 +63,17 @@ namespace fCraft {
                 try {
                     XDocument doc = XDocument.Load( Paths.WorldListFileName );
                     XElement root = doc.Root;
+                    // Cache list of all files just once. This way we avoid the overhead
+                    // of getting list of files each time a world entry is added, which
+                    // ends up being very time consuming on large servers.
+                    FileInfo[] allMapFiles = new DirectoryInfo( Paths.MapPath ).GetFiles();
+                    
                     if( root != null ) {
                         foreach( XElement el in root.Elements( "World" ) ) {
 #if !DEBUG
                             try {
 #endif
-                                LoadWorldListEntry( el );
+                                LoadWorldListEntry( el, allMapFiles );
 #if !DEBUG
                             } catch( Exception ex ) {
                                 Logger.LogAndReportCrash( "An error occured while trying to parse one of the entries on the world list",
@@ -133,7 +138,7 @@ namespace fCraft {
             return true;
         }
 
-        static void LoadWorldListEntry([NotNull] XElement el)
+        static void LoadWorldListEntry([NotNull] XElement el, FileInfo[] allMapFiles)
         {
             if (el == null) throw new ArgumentNullException("el");
             XAttribute tempAttr;
@@ -392,7 +397,7 @@ namespace fCraft {
 
                 if ((tempAttr = envEl.Attribute("cloudCC")) != null)
                 {
-                	world.CloudColor = System.Drawing.ColorTranslator.FromHtml(tempAttr.Value).ToArgb();
+                    world.CloudColor = System.Drawing.ColorTranslator.FromHtml(tempAttr.Value).ToArgb();
                 }
                 if ((tempAttr = envEl.Attribute("fogCC")) != null)
                 {
@@ -408,11 +413,11 @@ namespace fCraft {
                 }
                 if ((tempAttr = envEl.Attribute("edgeCC")) != null)
                 {
-                	world.EdgeBlock = (Block)Byte.Parse(tempAttr.Value);
+                    world.EdgeBlock = (Block)Byte.Parse(tempAttr.Value);
                 }
                 if ((tempAttr = envEl.Attribute("sideCC")) != null)
                 {
-                	world.SideBlock = (Block)Byte.Parse(tempAttr.Value);
+                    world.SideBlock = (Block)Byte.Parse(tempAttr.Value);
                 }
                 if ((tempAttr = envEl.Attribute("textureCC")) != null)
                 {
@@ -440,19 +445,19 @@ namespace fCraft {
                 }
             }
 
-            CheckMapFile(world);
+            CheckMapFile(world, allMapFiles);
         }
 
 
         // Makes sure that the map file exists, is properly named, and is loadable.
-        static void CheckMapFile( [NotNull] World world ) {
+        static void CheckMapFile( [NotNull] World world, FileInfo[] allMapFiles ) {
             if( world == null ) throw new ArgumentNullException( "world" );
             // Check the world's map file
             string fullMapFileName = world.MapFileName;
             string fileName = Path.GetFileName( fullMapFileName );
 
-            if( Paths.FileExists( fullMapFileName, false ) ) {
-                if( !Paths.FileExists( fullMapFileName, true ) ) {
+            if( Paths.FileExists( fullMapFileName, allMapFiles, false ) ) {
+                if( !Paths.FileExists( fullMapFileName, allMapFiles, true ) ) {
                     // Map file has wrong capitalization
                     FileInfo[] matches = Paths.FindFiles( fullMapFileName );
                     if( matches.Length == 1 ) {
@@ -460,6 +465,8 @@ namespace fCraft {
                         // ReSharper disable AssignNullToNotNullAttribute
                         Paths.ForceRename( matches[0].FullName, fileName );
                         // ReSharper restore AssignNullToNotNullAttribute
+                        
+                        // Don't check with allMapFiles, because the array will have the old incorrectly cased filename.
                         if( Paths.FileExists( fullMapFileName, true ) ) {
                             Logger.Log( LogType.Warning,
                                         "WorldManager.CheckMapFile: Map file for world \"{0}\" was renamed from \"{1}\" to \"{2}\"",
