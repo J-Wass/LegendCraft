@@ -32,7 +32,7 @@ namespace fCraft {
     	
         public static readonly string VersionCheckURI = "https://raw.githubusercontent.com/UnknownShadow200/LegendCraft/master/README.md";
 
-        public const string LatestStable = "2.4.2";
+        public const string LatestStable = "2.4.3";
 
         public static string UpdateUrl { get; set; }
 
