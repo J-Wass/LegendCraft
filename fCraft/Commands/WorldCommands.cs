@@ -2312,13 +2312,9 @@ THE SOFTWARE.*/
                 return;
             }
 
-            Logger.LogToConsole("1");
-
             int x, y, z;
             if (cmd.NextInt(out x) && cmd.NextInt(out y) && cmd.NextInt(out z))
             {
-                Logger.LogToConsole("1.5");
-
                 // If block coordinates are given, run the BlockDB query right away
                 if (cmd.HasNext)
                 {
@@ -2334,7 +2330,6 @@ THE SOFTWARE.*/
             }
             else
             {
-                Logger.LogToConsole("2");
 
                 // Otherwise, start a selection
                 player.Message("BInfo: Click a block to look it up.");
@@ -2344,8 +2339,6 @@ THE SOFTWARE.*/
 
         private static void BlockInfoSelectionCallback(Player player, Vector3I[] marks, object tag)
         {
-            Logger.LogToConsole("3");
-
             var args = new BlockInfoLookupArgs
             {
                 Player = player,
@@ -2367,9 +2360,6 @@ THE SOFTWARE.*/
 
         private static void BlockInfoSchedulerCallback(SchedulerTask task)
         {
-
-            Logger.LogToConsole("4");
-
             BlockInfoLookupArgs args = (BlockInfoLookupArgs)task.UserState;
             if (!args.World.BlockDB.IsEnabled)
             {
@@ -2380,8 +2370,6 @@ THE SOFTWARE.*/
             if (results.Length > 0)
             {
                 Array.Reverse(results);
-
-                Logger.LogToConsole("5");
 
                 foreach (BlockDBEntry entry in results)
                 {
@@ -2455,7 +2443,6 @@ THE SOFTWARE.*/
                 args.Player.Message("BlockInfo: No results for {0}",
                                      args.Coordinate);
             }
-            Logger.LogToConsole("6");
         }
 
         #endregion BlockInfo
