@@ -55,7 +55,7 @@ namespace fCraft
         }
 
         static void LoadTypes(string file) {
-            Assembly lib = Assembly.LoadFile(Path.GetFullPath(file));
+            Assembly lib = Assembly.LoadFrom(Path.GetFullPath(file));
             if (lib == null) return;
             
             foreach (Type t in lib.GetTypes()) {
