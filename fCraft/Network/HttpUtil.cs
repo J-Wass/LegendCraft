@@ -60,7 +60,10 @@ namespace fCraft
             request.UserAgent = Updater.UserAgent;
             
             if (uri.Scheme == "http") {
-                request.Proxy = new WebProxy("http://" + RefreshTargetAddress(uri) + ":" + uri.Port);
+                IPAddress ipv4 =  RefreshTargetAddress(uri);
+                if (ipv4 != null) {
+                    request.Proxy = new WebProxy("http://" + ipv4 + ":" + uri.Port);
+                }
             }
             return request;
         }

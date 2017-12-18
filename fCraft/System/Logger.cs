@@ -43,7 +43,6 @@ namespace fCraft
         const string DefaultLogFileName = "LegendCraft.log",
                      LongDateFormat = "yyyy'-'MM'-'dd'_'HH'-'mm'-'ss",
                      ShortDateFormat = "yyyy'-'MM'-'dd";
-        static readonly Uri CrashReportUri = new Uri("http://legend-craft.tk/crash");
         public static LogSplittingType SplittingType = LogSplittingType.OneFile;
 
         static readonly string SessionStart = DateTime.Now.ToString(LongDateFormat); // localized
@@ -205,122 +204,6 @@ namespace fCraft
             }
             catch { }
             // ReSharper restore EmptyGeneralCatchClause
-
-            if (!submitCrashReport || isCommon)
-            {
-                return;
-            }
-
-            lock (CrashReportLock)
-            {
-                if (DateTime.UtcNow.Subtract(lastCrashReport).TotalSeconds < MinCrashReportInterval)
-                {
-                    Log(LogType.Warning, "Logger.SubmitCrashReport: Could not submit crash report, reports too frequent.");
-                    return;
-                }
-                lastCrashReport = DateTime.UtcNow;
-
-                try
-                {
-                    StringBuilder sb = new StringBuilder();
-                    sb.Append("version=").Append(Uri.EscapeDataString(Updater.LatestStable));
-                    sb.Append("&error=").Append(Uri.EscapeDataString(message));
-
-                    if (MonoCompat.IsMono)
-                    {
-                        sb.Append("&os=").Append(Environment.OSVersion.VersionString);
-                        sb.Append("&runtime=").Append(Uri.EscapeDataString("Mono " + MonoCompat.MonoVersionString));
-                    }
-                    else
-                    {
-                        sb.Append("&os=").Append(GetOS() + Environment.OSVersion.ServicePack);
-                        sb.Append("&runtime=").Append(Uri.EscapeDataString(".Net " + Environment.Version.Major + "." + Environment.Version.MajorRevision + "." + Environment.Version.Build));
-                    }
-
-                    sb.Append("&server=").Append(ConfigKey.ServerName.GetString());
-                
-
-                    if (exception is TargetInvocationException)
-                    {
-                        exception = (exception).InnerException;
-                    }
-                    else if (exception is TypeInitializationException)
-                    {
-                        exception = (exception).InnerException;
-                    }
-                    sb.Append("&exception=").Append(Uri.EscapeDataString(exception.GetType().ToString() + ": " + exception.Message + ", Stack: " + exception.StackTrace));
-
-                    if (File.Exists(Paths.ConfigFileName))
-                    {
-                        sb.Append("&config=").Append(Uri.EscapeDataString(File.ReadAllText(Paths.ConfigFileName)));
-                    }
-                    else
-                    {
-                        sb.Append("&config=EMPTY");
-                    }
-
-                    string[] lastFewLines;
-                    lock (LogLock)
-                    {
-                        lastFewLines = RecentMessages.ToArray();
-                    }
-                    sb.Append("&log=").Append(Uri.EscapeDataString(String.Join(Environment.NewLine, lastFewLines)));
-
-                    byte[] formData = Encoding.UTF8.GetBytes(sb.ToString());
-
-                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(CrashReportUri);
-                    request.Method = "POST";
-                    request.Timeout = 15000; // 15s timeout
-                    request.ContentType = "application/x-www-form-urlencoded";
-                    request.CachePolicy = new RequestCachePolicy(RequestCacheLevel.NoCacheNoStore);
-                    request.ContentLength = formData.Length;
-                    request.UserAgent = Updater.UserAgent;
-
-                    using (Stream requestStream = request.GetRequestStream())
-                    {
-                        requestStream.Write(formData, 0, formData.Length);
-                        requestStream.Flush();
-                    }
-
-                    string responseString;
-                    using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                    {
-                        using (Stream responseStream = response.GetResponseStream())
-                        {
-                            // ReSharper disable AssignNullToNotNullAttribute
-                            using (StreamReader reader = new StreamReader(responseStream))
-                            {
-                                // ReSharper restore AssignNullToNotNullAttribute
-                                responseString = reader.ReadLine();
-                            }
-                        }
-                    }
-                    request.Abort();
-
-                    if (responseString != null && responseString.StartsWith("ERROR"))
-                    {
-                        Log(LogType.Error, "Crash report could not be processed by legend-craft.net.");
-                    }
-                    else
-                    {
-                        int referenceNumber;
-                        if (responseString != null && Int32.TryParse(responseString, out referenceNumber))
-                        {
-                            Log(LogType.SystemActivity, "Crash report submitted (Reference #{0})", referenceNumber);
-                        }
-                        else
-                        {
-                            Log(LogType.SystemActivity, "Crash report submitted.");
-                        }
-                    }
-
-
-                }
-                catch (Exception ex)
-                {
-                    Log(LogType.Warning, "Logger.SubmitCrashReport: {0}", ex.Message);
-                }
-            }
         }
 
 
