@@ -142,55 +142,20 @@ THE SOFTWARE.*/
             IsConsoleSafe = true,
             Category = CommandCategory.Info,
             UsableByFrozenPlayers = true,
-            Usage = "/Irc (broadcast/bc)",
-            Help = "Shows the player the server's irc channel. Broadcast option allows you to display the IRC channel in a server message.",
+            Usage = "/Irc",
+            Help = "Shows the server's irc channel to you",
             Handler = IRCHandler
         };
 
         static void IRCHandler(Player player, Command cmd)
         {
-            string bc = cmd.Next();
-            if (bc == null || bc.Length < 2)
+            if (ConfigKey.IRCBotEnabled.Enabled())
             {
-                if (ConfigKey.IRCBotEnabled.Enabled())
-                {
-                    player.Message("&sThe server's &iIRC &schannel(s): &i{0}", ConfigKey.IRCBotChannels.GetString());
-                    return;
-                }
-                else
-                {
-                    player.Message("&sThe server does not have IRC integration");
-                    return;
-                }
+                player.Message("&sThe server's &iIRC &schannel(s): &i{0}", ConfigKey.IRCBotChannels.GetString());
             }
             else
             {
-                if (bc.ToLower() == "broadcast" || bc.ToLower() == "bc")
-                {
-                    if (ConfigKey.IRCBotEnabled.Enabled())
-                    {
-                        Server.Message("&sThe server's &iIRC &schannel(s): &i{0}", ConfigKey.IRCBotChannels.GetString());
-                        return;
-                    }
-                    else
-                    {
-                        Server.Message("&sThe server does not have IRC integration");
-                        return;
-                    }
-                }
-                else
-                {
-                    if (ConfigKey.IRCBotEnabled.Enabled())
-                    {
-                        player.Message("&sThe server's &iIRC &schannel(s): &i{0}", ConfigKey.IRCBotChannels.GetString());
-                        return;
-                    }
-                    else
-                    {
-                        player.Message("&sThe server does not have IRC integration");
-                        return;
-                    }
-                }
+                player.Message("&sThe server does not have IRC integration");
             }
         }
         
@@ -202,55 +167,21 @@ THE SOFTWARE.*/
             IsConsoleSafe = true,
             Category = CommandCategory.Info,
             UsableByFrozenPlayers = true,
-            Usage = "/Website (broadcast/bc)",
-            Help = "Shows the player the server's website. Broadcast option allows you to display the Website in a server message.",
+            Usage = "/Website",
+            Help = "Shows the server's website to you",
             Handler = WebsiteHandler
         };
 
         static void WebsiteHandler(Player player, Command cmd)
         {
-            string bc = cmd.Next();
-            if (bc == null || bc.Length < 1)
+            string website = ConfigKey.WebsiteURL.GetString();
+            if (website.Length == 0)
             {
-                if (ConfigKey.WebsiteURL.GetString().Length < 1)
-                {
-                    player.Message("&sThe server does not have a website.");
-                    return;
-                }
-                else
-                {
-                    player.Message("&c{0}&s's website is &a{1}&s.", ConfigKey.ServerName.GetString(), ConfigKey.WebsiteURL.GetString());
-                    return;
-                }
+                player.Message("&sThe server does not have a website.");
             }
             else
             {
-                if (bc.ToLower() == "broadcast" || bc.ToLower() == "bc")
-                {
-                    if (ConfigKey.WebsiteURL.GetString().Length < 1)
-                    {
-                        Server.Message("&sThe server does not have a website.");
-                        return;
-                    }
-                    else
-                    {
-                        Server.Message("&c{0}&s's website is &a{1}&s.", ConfigKey.ServerName.GetString(), ConfigKey.WebsiteURL.GetString());
-                        return;
-                    }
-                }
-                else
-                {
-                    if (ConfigKey.WebsiteURL.GetString().Length < 1)
-                    {
-                        player.Message("&sThe server does not have a website.");
-                        return;
-                    }
-                    else
-                    {
-                        player.Message("&c{0}&s's website is &a{1}&s.", ConfigKey.ServerName.GetString(), ConfigKey.WebsiteURL.GetString());
-                        return;
-                    }
-                }
+                player.Message("&c{0}&s's website is &a{1}&s.", ConfigKey.ServerName.GetString(), website);
             }
         }
 
