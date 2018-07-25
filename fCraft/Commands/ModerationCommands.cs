@@ -1761,23 +1761,27 @@ THE SOFTWARE.*/
             }
 
             // do the banning
-            if (target.Tempban(player.Name, duration)){
+            if (target.Tempban(player.Name, duration)) {
                 string reason = cmd.NextAll();
-                try{
+                try {
                     Player targetPlayer = target.PlayerObject;
                     target.Ban(player, "You were Banned for " + timeString, false, true);
                     Server.TempBans.Add(targetPlayer);
-                }
-                catch (PlayerOpException ex){
+                } catch (PlayerOpException ex) {
                     player.Message(ex.MessageColored);
+                    if (ex.ErrorCode == PlayerOpExceptionCode.ReasonRequired) {
+                        FreezeIfAllowed(player, target);
+                    }
+                    return;
                 }
+                
                 Scheduler.NewTask(t => Untempban(player, target)).RunOnce(duration);
                 Server.Message("&SPlayer {0}&S was Banned by {1}&S for {2}",
                                 target.ClassyName, player.ClassyName, duration.ToMiniString());
                 if (reason.Length > 0) Server.Message("&Wreason: {0}", reason);
                 Logger.Log(LogType.UserActivity, "Player {0} was Banned by {1} for {2}",
                             target.Name, player.Name, duration.ToMiniString());
-            }else{
+            } else {
                 player.Message("Player {0}&S is already Banned by {1}&S for {2:0} more.",
                                 target.ClassyName,
                                 target.BannedBy,
@@ -1785,11 +1789,10 @@ THE SOFTWARE.*/
             }
         }
 
-        public static void Untempban(Player player, PlayerInfo target)
+        static void Untempban(Player player, PlayerInfo target)
         {
             if (!target.IsBanned) return;
-            else
-                target.Unban(player, "Tempban Expired", true, true);
+            target.Unban(player, "Tempban Expired", true, true);
         }
 
         static readonly CommandDescriptor CdBasscannon = new CommandDescriptor

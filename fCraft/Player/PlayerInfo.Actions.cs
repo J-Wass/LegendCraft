@@ -581,6 +581,7 @@ namespace fCraft {
                     UnbannedBy = unbannedByName;
                     UnbanDate = DateTime.UtcNow;
                     UnbanReason = unbanReason;
+                    BannedUntil = DateTime.MinValue;
                     LastModified = DateTime.UtcNow;
                     return true;
                 } else {
