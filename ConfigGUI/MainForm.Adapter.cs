@@ -64,6 +64,7 @@ namespace fCraft.ConfigGUI
             ApplyTabLogging();
             ApplyTabIRC();
             ApplyTabAdvanced();
+            globalChat.Checked = ConfigKey.GlobalChat.Enabled();
 
             AddChangeHandler(tabs, SomethingChanged);
             AddChangeHandler(bResetTab, SomethingChanged);
@@ -566,6 +567,7 @@ namespace fCraft.ConfigGUI
             ConfigKey.SwearName.TrySetValue(SwearBox.Text);
             ConfigKey.CheckForUpdates.TrySetValue(checkUpdate.Checked.ToString());
             ConfigKey.WebsiteURL.TrySetValue(websiteURL.Text);
+            ConfigKey.GlobalChat.TrySetValue(globalChat.Checked);
             ConfigKey.CustomAliasName.TrySetValue(CustomAliases.Text);
             ConfigKey.MOTD.TrySetValue(tMOTD.Text);
             ConfigKey.MaxPlayers.TrySetValue(nMaxPlayers.Value);

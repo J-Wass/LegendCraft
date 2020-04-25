@@ -26,7 +26,7 @@ namespace fCraft
     {
         private struct BData
         {
-            public int X, Y, Z;
+            public short X, Y, Z;
             public Block PrevBlock;
         }
         public const int ExplosionDelay = 3000;
@@ -160,24 +160,19 @@ namespace fCraft
 
         private void TryAddPoint(int x, int y, int z)
         {
-            if (x < 0 || x >= _map.Width
-                || y < 0 || y >= _map.Length
-                || z < 0 || z >= _map.Height)
-                return;
-
-            Block prevBlock = _map.GetBlock(x, y, z);
-			if (Block.Lava == prevBlock)
-				return;
+            Block prev = _map.GetBlock(x, y, z);
+            if (prev == Block.Lava || prev == Block.Undefined) return;
 
             //chain explosion
-            if (Block.TNT == prevBlock)
+            if (prev == Block.TNT)
             {
                 _world.AddPhysicsTask(new TNTTask(_world, new Vector3I(x, y, z), _owner, false, _particles), _r.Next(150, 300));
-				UpdateMap(new BlockUpdate(null, (short)x, (short)y, (short)z, Block.Air));
+                UpdateMap(new BlockUpdate(null, (short)x, (short)y, (short)z, Block.Air));
+                prev = Block.Air;
             }
 
-			if (0.2 + 0.75 * (R - _currentR) / R > _r.NextDouble())
-				_explosion.Add(new BData() {X = x, Y = y, Z = z, PrevBlock = _map.GetBlock(x, y, z)});
+            if (0.2 + 0.75 * (R - _currentR) / R > _r.NextDouble())
+                _explosion.Add(new BData() {X = (short)x, Y = (short)y, Z = (short)z, PrevBlock = prev});
         }
 
         public void HitPlayer(World world, Player hitted, Player by)

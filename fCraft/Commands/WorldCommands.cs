@@ -67,7 +67,7 @@ namespace fCraft
             CommandManager.RegisterCommand(CdPhysics);
 
             CommandManager.RegisterCommand(CdRejoin);
-            //CommandManager.RegisterCommand(CdWorldChat);
+            CommandManager.RegisterCommand(CdWorldChat);
             CommandManager.RegisterCommand(CdBack);
             CommandManager.RegisterCommand(CdJump);
             CommandManager.RegisterCommand(CdHax);
@@ -238,12 +238,13 @@ THE SOFTWARE.*/
             }
             if (hax.ToLower() == "on" || hax.ToLower() == "true")
             {
-                if (world.Hax == true)
+                if (world.Hax)
                 {
                     player.Message("&sHax are already enabled on {0}", world.ClassyName);
                     return;
                 }
                 world.Hax = true;
+                WorldManager.SaveWorldList();
                 Server.Message("&sHax have been enabled on {0}", world.ClassyName);
                 foreach (Player p in world.Players)
                 {
@@ -253,12 +254,13 @@ THE SOFTWARE.*/
             }
             if (hax.ToLower() == "off" || hax.ToLower() == "false")
             {
-                if (world.Hax == false)
+                if (!world.Hax)
                 {
                     player.Message("&sHax are already disabled on {0}", world.ClassyName);
                     return;
                 }
                 world.Hax = false;
+                WorldManager.SaveWorldList();
                 Server.Message("&sHax have been disabled on {0}", world.ClassyName);
                 foreach (Player p in world.Players) //make all players rejoin to force changes
                 {
@@ -590,9 +592,10 @@ THE SOFTWARE.*/
         static readonly CommandDescriptor CdWorldChat = new CommandDescriptor
         {
             Name = "WorldChat",
+            Aliases = new string[] { "WorldChatOnly", "Wc", "Wco" },
             Category = CommandCategory.World | CommandCategory.Chat,
             Permissions = new Permission[] { Permission.ManageWorldChat },
-            IsConsoleSafe = false,
+            IsConsoleSafe = true,
             Usage = "/WorldChat [toggle:check]",
             Help = "Toggles World Chat.",
             Handler = WorldChat,
@@ -603,37 +606,20 @@ THE SOFTWARE.*/
             string option = cmd.Next();
             if (option == "toggle")
             {
-
-                if (player.World.WorldOnlyChat == false)
-                {
-                    Server.Message("{0}&c has activated world chat on {1}", player.ClassyName, player.World);
-                    player.World.WorldOnlyChat = true;
-                }
-                else
-                {
-                    Server.Message("{0}&c has deactivated world chat on {1}", player.ClassyName, player.World);
-                    player.World.WorldOnlyChat = false;
-                }
+                Server.Message("{0}&c has {2} world chat on {1}", player.ClassyName, player.World,
+                               player.World.WorldOnlyChat ? "deactivated" : "activated");
+                player.World.WorldOnlyChat = !player.World.WorldOnlyChat;
+                WorldManager.SaveWorldList();
             }
             else if (option == "check")
             {
-                if (player.World.WorldOnlyChat == true)
-                {
-                    player.Message("World Chat is enabled on {0}", player.World);
-                    return;
-                }
-                else
-                {
-                    player.Message("World Chat is disabled on {0}", player.World);
-                    return;
-                }
+                player.Message("World Chat is {1} on {0}", player.World,
+                               player.World.WorldOnlyChat ? "enabled" : "disabled");
             }
             else
             {
                 player.Message("Valid options are toggle and check.");
-                return;
             }
-
         }
 
         static readonly CommandDescriptor CdRejoin = new CommandDescriptor
@@ -2326,13 +2312,9 @@ THE SOFTWARE.*/
                 return;
             }
 
-            Logger.LogToConsole("1");
-
             int x, y, z;
             if (cmd.NextInt(out x) && cmd.NextInt(out y) && cmd.NextInt(out z))
             {
-                Logger.LogToConsole("1.5");
-
                 // If block coordinates are given, run the BlockDB query right away
                 if (cmd.HasNext)
                 {
@@ -2348,7 +2330,6 @@ THE SOFTWARE.*/
             }
             else
             {
-                Logger.LogToConsole("2");
 
                 // Otherwise, start a selection
                 player.Message("BInfo: Click a block to look it up.");
@@ -2358,8 +2339,6 @@ THE SOFTWARE.*/
 
         private static void BlockInfoSelectionCallback(Player player, Vector3I[] marks, object tag)
         {
-            Logger.LogToConsole("3");
-
             var args = new BlockInfoLookupArgs
             {
                 Player = player,
@@ -2381,9 +2360,6 @@ THE SOFTWARE.*/
 
         private static void BlockInfoSchedulerCallback(SchedulerTask task)
         {
-
-            Logger.LogToConsole("4");
-
             BlockInfoLookupArgs args = (BlockInfoLookupArgs)task.UserState;
             if (!args.World.BlockDB.IsEnabled)
             {
@@ -2394,8 +2370,6 @@ THE SOFTWARE.*/
             if (results.Length > 0)
             {
                 Array.Reverse(results);
-
-                Logger.LogToConsole("5");
 
                 foreach (BlockDBEntry entry in results)
                 {
@@ -2469,7 +2443,6 @@ THE SOFTWARE.*/
                 args.Player.Message("BlockInfo: No results for {0}",
                                      args.Coordinate);
             }
-            Logger.LogToConsole("6");
         }
 
         #endregion BlockInfo
@@ -3076,54 +3049,40 @@ THE SOFTWARE.*/
             Handler = WorldLockHandler
         };
 
-        static void WorldLockHandler(Player player, Command cmd)
-        {
+        static void WorldLockHandler(Player player, Command cmd) {
             string worldName = cmd.Next();
 
+            if (worldName != null && worldName == "*") {                
+                World[] worlds = WorldManager.Worlds;
+                int locked = 0;
+                for (int i = 0; i < worlds.Length; i++) {
+                    if (worlds[i].Lock(player)) locked++;
+                }
+                
+                player.Message("Locked {0} worlds.", locked);
+                if (locked > 0) WorldManager.SaveWorldList();
+                return;
+            }
+             
             World world;
-            if (worldName != null)
-            {
-                if (worldName == "*")
-                {
-                    int locked = 0;
-                    World[] worldListCache = WorldManager.Worlds;
-                    for (int i = 0; i < worldListCache.Length; i++)
-                    {
-                        if (!worldListCache[i].IsLocked)
-                        {
-                            worldListCache[i].Lock(player);
-                            locked++;
-                        }
-                    }
-                    player.Message("Unlocked {0} worlds.", locked);
-                    return;
-                }
-                else
-                {
-                    world = WorldManager.FindWorldOrPrintMatches(player, worldName);
-                    if (world == null) return;
-                }
-
-            }
-            else if (player.World != null)
-            {
+            if (worldName != null) {
+                world = WorldManager.FindWorldOrPrintMatches(player, worldName);
+                if (world == null) return;
+            } else if (player.World != null) {
                 world = player.World;
-
-            }
-            else
-            {
+            } else {
                 player.Message("When called from console, /WLock requires a world name.");
                 return;
             }
 
-            if (!world.Lock(player))
-            {
+            if (!world.Lock(player)) {
                 player.Message("The world is already locked.");
+                return;
             }
-            else if (player.World != world)
-            {
+            if (player.World != world) {
                 player.Message("Locked world {0}", world);
             }
+            WorldManager.SaveWorldList();
         }
 
 
@@ -3139,54 +3098,40 @@ THE SOFTWARE.*/
             Handler = WorldUnlockHandler
         };
 
-        static void WorldUnlockHandler(Player player, Command cmd)
-        {
+        static void WorldUnlockHandler(Player player, Command cmd) {
             string worldName = cmd.Next();
-
+            
+            if (worldName != null && worldName == "*") {
+                World[] worlds = WorldManager.Worlds;
+                int unlocked = 0;
+                for (int i = 0; i < worlds.Length; i++) {
+                    if (worlds[i].Unlock(player)) unlocked++;
+                }
+                
+                player.Message("Unlocked {0} worlds.", unlocked);
+                if (unlocked > 0) WorldManager.SaveWorldList();
+                return;
+            }
+            
             World world;
-            if (worldName != null)
-            {
-                if (worldName == "*")
-                {
-                    World[] worldListCache = WorldManager.Worlds;
-                    int unlocked = 0;
-                    for (int i = 0; i < worldListCache.Length; i++)
-                    {
-                        if (worldListCache[i].IsLocked)
-                        {
-                            worldListCache[i].Unlock(player);
-                            unlocked++;
-                        }
-                    }
-                    player.Message("Unlocked {0} worlds.", unlocked);
-                    return;
-                }
-                else
-                {
-                    world = WorldManager.FindWorldOrPrintMatches(player, worldName);
-                    if (world == null) return;
-                }
-
-            }
-            else if (player.World != null)
-            {
+            if (worldName != null) {
+                world = WorldManager.FindWorldOrPrintMatches(player, worldName);
+                if (world == null) return;
+            } else if (player.World != null) {
                 world = player.World;
-
-            }
-            else
-            {
-                player.Message("When called from console, /WLock requires a world name.");
+            } else {
+                player.Message("When called from console, /WUnlock requires a world name.");
                 return;
             }
 
-            if (!world.Unlock(player))
-            {
+            if (!world.Unlock(player)) {
                 player.Message("The world is already unlocked.");
+                return;
             }
-            else if (player.World != world)
-            {
+            if (player.World != world) {
                 player.Message("Unlocked world {0}", world);
             }
+            WorldManager.SaveWorldList();
         }
 
         #endregion
@@ -4548,7 +4493,7 @@ THE SOFTWARE.*/
             if (world.AccessSecurity.MinRank > rank)
             {
                 player.Message("World {0}&S requires {1}+&S to join, so it cannot be used as the main world for rank {2}&S.",
-                                world.ClassyName, world.AccessSecurity.MinRank, rank.ClassyName);
+                                world.ClassyName, world.AccessSecurity.MinRank.ClassyName, rank.ClassyName);
                 return;
             }
 
@@ -4750,7 +4695,7 @@ THE SOFTWARE.*/
 
             // normalize the path
             fileName = fileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-            if (fileName.EndsWith("/") && fileName.EndsWith(@"\"))
+            if (fileName.EndsWith("/") || fileName.EndsWith(@"\"))
             {
                 fileName += world.Name + ".fcm";
             }

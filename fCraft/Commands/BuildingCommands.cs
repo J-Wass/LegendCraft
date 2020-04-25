@@ -439,7 +439,7 @@ THE SOFTWARE.*/
                     if (worldTarget == "all")
                     {
                         player.Message("_Removing all highlights {0}_", ConfigKey.ServerName.GetString());
-                        foreach (Player p in Server.Players.Where(p => p.usesCPE))
+                        foreach (Player p in Server.Players.Where(p => p.SupportsSelectionCuboid))
                         {
                             //physically remove all highlights where players are connected to specific worlds
                             if (p.World.Highlights.Count > 0)
@@ -473,7 +473,7 @@ THE SOFTWARE.*/
                         }
 
                         player.Message("_Removing all highlights on {0}_", targetWorld.Name);
-                        foreach (Player p in targetWorld.Players.Where(p => p.usesCPE))
+                        foreach (Player p in targetWorld.Players.Where(p => p.SupportsSelectionCuboid))
                         {
                             foreach (var i in targetWorld.Highlights.Values)
                             {
@@ -503,17 +503,14 @@ THE SOFTWARE.*/
 
         static void zzHandler(Player player, Command cmd)
         {
-            bool zz = false;
-            if (zz == false)
+            if (!player.IsRepeatingSelection)
             {
                 StaticHandler(player, new Command("/static"));
                 CuboidHandler(player, new Command("/cuboid"));
-                zz = true;
             }
             else
             {
                 StaticHandler(player, new Command("/static"));
-                zz = false;
             }
         }
         
@@ -632,7 +629,7 @@ THE SOFTWARE.*/
             op.Prepare(coords, args.Entries);
 
             // log operation
-            string targetList = targetList = args.Targets.JoinToClassyString();
+            string targetList = args.Targets.JoinToClassyString();
             Logger.Log(LogType.UserActivity,
                         "{0}: Player {1} will undo {2} changes (limit of {3}) by {4} on world {5}",
                         cmdName, args.Player.Name, args.Entries.Length,

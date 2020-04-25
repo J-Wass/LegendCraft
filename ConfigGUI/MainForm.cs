@@ -1602,7 +1602,7 @@ Your rank is {RANK}&S. Type &H/Help&S for help." );
         {
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://raw.githubusercontent.com/LeChosenOne/LegendCraft/master/README.md");
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Updater.VersionCheckURI);
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 
                 if (response.StatusCode == HttpStatusCode.OK)

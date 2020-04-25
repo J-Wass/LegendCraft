@@ -366,7 +366,7 @@ THE SOFTWARE.*/
         static void FixRealms(Player player, Command cmd)
         {
             var Players = PlayerDB.PlayerInfoList;
-            int Count = 0;
+            int count = 0;
             foreach (World w in WorldManager.Worlds)
             {
                 foreach (PlayerInfo p in Players)
@@ -375,11 +375,15 @@ THE SOFTWARE.*/
                     {
                         w.IsHidden = false;
                         w.IsRealm = true;
-                        Count++;
+                        count++;
                     }
                 }
             }
-            player.Message("Converted {0} worlds to Realms", Count.ToString());
+            
+            if (count > 0) {
+                WorldManager.SaveWorldList();
+            }
+            player.Message("Converted {0} worlds to Realms", count);
         }
 
         static readonly CommandDescriptor CdNick = new CommandDescriptor
@@ -1425,7 +1429,7 @@ THE SOFTWARE.*/
                     }
                     return;
                 } else if( !delayString.TryParseMiniTimespan( out delayTime ) ) {
-                    CdShutdown.PrintUsage( player );
+                    CdRestart.PrintUsage( player );
                     return;
                 }
                 if( delayTime > DateTimeUtil.MaxTimeSpan ) {

@@ -337,27 +337,24 @@ namespace fCraft {
             if( caseSensitive == MonoCompat.IsCaseSensitive ) {
                 return File.Exists( fileName );
             } else {
-                return new FileInfo( fileName ).Exists( caseSensitive );
+                FileInfo fileInfo = new FileInfo( fileName );
+                FileInfo[] allFiles = fileInfo.Directory.GetFiles( "*", SearchOption.TopDirectoryOnly );
+                return FileExists( fileName, allFiles, caseSensitive );
             }
         }
-
-
-        /// <summary>Checks whether the file exists in a specified way (case-sensitive or case-insensitive)</summary>
-        /// <param name="fileInfo">FileInfo object in question</param>
-        /// <param name="caseSensitive">Whether check should be case-sensitive or case-insensitive.</param>
-        /// <returns>true if file exists, otherwise false</returns>
-        public static bool Exists( [NotNull] this FileInfo fileInfo, bool caseSensitive ) {
-            if( fileInfo == null ) throw new ArgumentNullException( "fileInfo" );
+        
+        
+        public static bool FileExists( [NotNull] string fileName, FileInfo[] allFiles, bool caseSensitive ) {
+            if( fileName == null ) throw new ArgumentNullException( "fileName" );
             if( caseSensitive == MonoCompat.IsCaseSensitive ) {
-                return fileInfo.Exists;
+                return File.Exists( fileName );
             } else {
-                DirectoryInfo parentDir = fileInfo.Directory;
+                FileInfo fileInfo = new FileInfo( fileName );
                 StringComparison sc = (caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
-                return parentDir.GetFiles( "*", SearchOption.TopDirectoryOnly )
-                                .Any( file => file.Name.Equals( fileInfo.Name, sc ) );
+                return allFiles.Any( file => file.Name.Equals( fileInfo.Name, sc ) );
             }
         }
-
+        
 
         /// <summary> Allows making changes to filename capitalization on case-insensitive filesystems. </summary>
         /// <param name="originalFullFileName"> Full path to the original filename </param>

@@ -30,11 +30,6 @@ namespace fCraft {
             if( player == null ) throw new ArgumentNullException( "player" );
             if( rawMessage == null ) throw new ArgumentNullException( "rawMessage" );
             string OriginalMessage = rawMessage;
-            if (Server.Moderation && !Server.VoicedPlayers.Contains(player) && player.World != null)
-            {
-                player.Message("&WError: Server Moderation is activated. Message failed to send");
-                return false;
-            }
 
             rawMessage = rawMessage.Replace("$name", player.ClassyName + "&f");
             rawMessage = rawMessage.Replace("$kicks", player.Info.TimesKickedOthers.ToString());
@@ -105,7 +100,7 @@ namespace fCraft {
 
             if (!player.Can(Permission.Swear))
             {
-                if (!File.Exists("SwearWords.txt"))
+                if (!File.Exists(Paths.SwearWordsFileName))
                 {
                     StringBuilder sb = new StringBuilder();
                     sb.AppendLine("#This txt file should be filled with bad words that you want to be filtered out");
@@ -124,7 +119,7 @@ namespace fCraft {
                     sb.AppendLine("wank");
                     sb.AppendLine("wanking");
                     sb.AppendLine("piss");
-                    File.WriteAllText("SwearWords.txt", sb.ToString());
+                    File.WriteAllText(Paths.SwearWordsFileName, sb.ToString());
                 }
                 string CensoredText = Color.ReplacePercentCodes(ConfigKey.SwearName.GetString()) + Color.White;
                 if (ConfigKey.SwearName.GetString() == null)
@@ -137,7 +132,7 @@ namespace fCraft {
 
                 if (Swears.Count == 0)
                 {
-                    Swears.AddRange(File.ReadAllLines("SwearWords.txt").
+                    Swears.AddRange(File.ReadAllLines(Paths.SwearWordsFileName).
                         Where(line => line.StartsWith("#") == false || line.Trim().Equals(String.Empty)));
                 }
 

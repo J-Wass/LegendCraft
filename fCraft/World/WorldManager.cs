@@ -63,12 +63,17 @@ namespace fCraft {
                 try {
                     XDocument doc = XDocument.Load( Paths.WorldListFileName );
                     XElement root = doc.Root;
+                    // Cache list of all files just once. This way we avoid the overhead
+                    // of getting list of files each time a world entry is added, which
+                    // ends up being very time consuming on large servers.
+                    FileInfo[] allMapFiles = new DirectoryInfo( Paths.MapPath ).GetFiles();
+                    
                     if( root != null ) {
                         foreach( XElement el in root.Elements( "World" ) ) {
 #if !DEBUG
                             try {
 #endif
-                                LoadWorldListEntry( el );
+                                LoadWorldListEntry( el, allMapFiles );
 #if !DEBUG
                             } catch( Exception ex ) {
                                 Logger.LogAndReportCrash( "An error occured while trying to parse one of the entries on the world list",
@@ -133,7 +138,7 @@ namespace fCraft {
             return true;
         }
 
-        static void LoadWorldListEntry([NotNull] XElement el)
+        static void LoadWorldListEntry([NotNull] XElement el, FileInfo[] allMapFiles)
         {
             if (el == null) throw new ArgumentNullException("el");
             XAttribute tempAttr;
@@ -158,6 +163,21 @@ namespace fCraft {
                             worldName, ex.Message);
                 return;
             }
+            if((tempAttr = el.Attribute("worldOnlyChat")) != null) {
+                bool worldOnlyChat;
+                
+                if (Boolean.TryParse(tempAttr.Value, out worldOnlyChat))
+                {
+                    world.WorldOnlyChat = worldOnlyChat;
+                }
+                else
+                {
+                    Logger.Log(LogType.Warning,
+                               "WorldManager: Could not parse \"worldOnlyChat\" attribute of world \"{0}\", assuming NO world only chat.",
+                               worldName);
+                }
+            }
+            
             if ((tempAttr = el.Attribute("realm")) != null)
             {
                 if (tempAttr.Value == "yes")
@@ -241,7 +261,53 @@ namespace fCraft {
             {
                 world.BackupInterval = World.DefaultBackupInterval;
             }
+            
+            if((tempEl = el.Element("Locked")) != null) {
+                bool locked;
 
+                if (Boolean.TryParse(tempEl.Value, out locked))
+                {
+                    world.IsLocked = locked;
+                }
+                else
+                {
+                    Logger.Log(LogType.Warning,
+                               "WorldManager: Could not parse \"Locked\" attribute of world \"{0}\", assuming NOT locked.",
+                               worldName);
+                }
+            }
+            
+            if((tempEl = el.Element("LockedBy")) != null) {
+                world.LockedBy = tempEl.Value;
+            }
+            if((tempEl = el.Element("LockedOn")) != null) {
+                DateTime lockedOn = DateTime.UtcNow;
+
+                if(DateTimeUtil.ToDateTime(tempEl.Value, ref lockedOn))
+                {
+                    world.LockedDate = lockedOn;
+                } else {
+                    Logger.Log(LogType.Warning,
+                               "WorldManager: Could not parse \"LockedOn\" attribute of world \"{0}\", assuming NO lock time.",
+                               worldName);
+                }
+            }
+            if((tempEl = el.Element("UnlockedBy")) != null) {
+                world.UnlockedBy = tempEl.Value;
+            }
+            if((tempEl = el.Element("UnlockedOn")) != null) {
+                DateTime unlockedOn = DateTime.UtcNow;
+
+                if(DateTimeUtil.ToDateTime(tempEl.Value, ref unlockedOn))
+                {
+                    world.UnlockedDate = unlockedOn;
+                } else {
+                    Logger.Log(LogType.Warning,
+                               "WorldManager: Could not parse \"UnlockedOn\" attribute of world \"{0}\", assuming NO unlock time.",
+                               worldName);
+                }
+            }
+            
             XElement blockEl = el.Element(BlockDB.XmlRootName);
             if (blockEl != null)
             {
@@ -331,7 +397,7 @@ namespace fCraft {
 
                 if ((tempAttr = envEl.Attribute("cloudCC")) != null)
                 {
-                	world.CloudColor = System.Drawing.ColorTranslator.FromHtml(tempAttr.Value).ToArgb();
+                    world.CloudColor = System.Drawing.ColorTranslator.FromHtml(tempAttr.Value).ToArgb();
                 }
                 if ((tempAttr = envEl.Attribute("fogCC")) != null)
                 {
@@ -347,11 +413,11 @@ namespace fCraft {
                 }
                 if ((tempAttr = envEl.Attribute("edgeCC")) != null)
                 {
-                	world.EdgeBlock = (Block)Byte.Parse(tempAttr.Value);
+                    world.EdgeBlock = (Block)Byte.Parse(tempAttr.Value);
                 }
                 if ((tempAttr = envEl.Attribute("sideCC")) != null)
                 {
-                	world.SideBlock = (Block)Byte.Parse(tempAttr.Value);
+                    world.SideBlock = (Block)Byte.Parse(tempAttr.Value);
                 }
                 if ((tempAttr = envEl.Attribute("textureCC")) != null)
                 {
@@ -379,19 +445,19 @@ namespace fCraft {
                 }
             }
 
-            CheckMapFile(world);
+            CheckMapFile(world, allMapFiles);
         }
 
 
         // Makes sure that the map file exists, is properly named, and is loadable.
-        static void CheckMapFile( [NotNull] World world ) {
+        static void CheckMapFile( [NotNull] World world, FileInfo[] allMapFiles ) {
             if( world == null ) throw new ArgumentNullException( "world" );
             // Check the world's map file
             string fullMapFileName = world.MapFileName;
             string fileName = Path.GetFileName( fullMapFileName );
 
-            if( Paths.FileExists( fullMapFileName, false ) ) {
-                if( !Paths.FileExists( fullMapFileName, true ) ) {
+            if( Paths.FileExists( fullMapFileName, allMapFiles, false ) ) {
+                if( !Paths.FileExists( fullMapFileName, allMapFiles, true ) ) {
                     // Map file has wrong capitalization
                     FileInfo[] matches = Paths.FindFiles( fullMapFileName );
                     if( matches.Length == 1 ) {
@@ -399,6 +465,8 @@ namespace fCraft {
                         // ReSharper disable AssignNullToNotNullAttribute
                         Paths.ForceRename( matches[0].FullName, fileName );
                         // ReSharper restore AssignNullToNotNullAttribute
+                        
+                        // Don't check with allMapFiles, because the array will have the old incorrectly cased filename.
                         if( Paths.FileExists( fullMapFileName, true ) ) {
                             Logger.Log( LogType.Warning,
                                         "WorldManager.CheckMapFile: Map file for world \"{0}\" was renamed from \"{1}\" to \"{2}\"",
@@ -452,6 +520,8 @@ namespace fCraft {
                         temp.Add( world.BuildSecurity.Serialize( BuildSecurityXmlTagName ) );
                     }
 
+                    temp.Add(new XAttribute("worldOnlyChat", world.WorldOnlyChat.ToString()));
+
                     if( world.BackupInterval != World.DefaultBackupInterval ) {
                         temp.Add( new XAttribute( "backup", world.BackupInterval.ToTickString() ) );
                     }
@@ -489,7 +559,20 @@ namespace fCraft {
                     if( world.MapChangedOn != DateTime.MinValue ) {
                         temp.Add( new XElement( "MapChangedOn", world.MapChangedOn.ToUnixTime() ) );
                     }
-
+                    temp.Add( new XElement( "Locked", world.IsLocked.ToString() ) );
+                    if( !String.IsNullOrEmpty( world.LockedBy ) ) {
+                        temp.Add( new XElement( "LockedBy", world.LockedBy ) );
+                    }
+                    if( world.LockedDate != DateTime.MinValue ) {
+                        temp.Add( new XElement( "LockedOn", world.LockedDate.ToUnixTime() ) );
+                    }
+                    if( !String.IsNullOrEmpty( world.UnlockedBy ) ) {
+                        temp.Add( new XElement( "UnlockedBy", world.UnlockedBy ) );
+                    }
+                    if( world.UnlockedDate != DateTime.MinValue ) {
+                        temp.Add( new XElement( "UnlockedOn", world.UnlockedDate.ToUnixTime() ) );
+                    }
+                    
                     XElement elEnv = new XElement( EnvironmentXmlTagName );
                     //Minecraft
                     if( world.CloudColor > -1 ) elEnv.Add( new XAttribute( "cloud", world.CloudColor ) );

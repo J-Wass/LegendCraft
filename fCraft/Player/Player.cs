@@ -1,4 +1,4 @@
-// Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
+﻿// Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -230,10 +230,6 @@ namespace fCraft
 
         public bool SpeedMode = false;
 
-        //For console, decides on if to send response to webpanel or not
-        public bool sendToWebPanel = false;
-        public string WebPanelData = "";
-
         //general purpose state storage for plugins
         private readonly ConcurrentDictionary<string, object> _publicAuxStateObjects = new ConcurrentDictionary<string, object>();
         public IDictionary<string, object> PublicAuxStateObjects { get { return _publicAuxStateObjects; } }
@@ -448,6 +444,7 @@ namespace fCraft
                 return;
             }
 
+            string originalMessage = rawMessage;
             if (partialMessage != null)
             {
                 rawMessage = partialMessage + rawMessage;
@@ -465,14 +462,7 @@ namespace fCraft
                 case RawMessageType.Chat:
                     {
                         if (!Can(Permission.Chat)) return;
-
-                        if (Info.IsMuted)
-                        {
-                            MessageMuted();
-                            return;
-                        }
-
-                        if (DetectChatSpam()) return;
+                        if (!MaySpeakFurther()) return;
 
                         // Escaped slash removed AFTER logging, to avoid confusion with real commands
                         if (rawMessage.StartsWith("//"))
@@ -488,8 +478,12 @@ namespace fCraft
                         {
                             rawMessage = rawMessage.Substring(0, rawMessage.Length - 1);
                         }
-
-                        Chat.SendGlobal(this, rawMessage);
+                        
+                        if (World == null || !World.WorldOnlyChat) {
+                            Chat.SendGlobal(this, rawMessage);
+                        } else {
+                            Chat.SendWorld(this, World, rawMessage);
+                        }
                     } break;
 
 
@@ -500,24 +494,24 @@ namespace fCraft
                             rawMessage = rawMessage.Substring(0, rawMessage.Length - 1);
                         }
                         Command cmd = new Command(rawMessage);
-                        CommandDescriptor commandDescriptor = CommandManager.GetDescriptor(cmd.Name, true);
 
-                        if (commandDescriptor == null)
+                        if (cmd.Descriptor == null)
                         {
                             MessageNow("Unknown command \"{0}\". See &H/Commands", cmd.Name);
+                            Logger.Log(LogType.UserCommand, "{0}: /{1}", Name, cmd.Name);
                         }
-                        else if (Info.IsFrozen && !commandDescriptor.UsableByFrozenPlayers)
+                        else if (Info.IsFrozen && !cmd.Descriptor.UsableByFrozenPlayers)
                         {
                             MessageNow("&WYou cannot use this command while frozen.");
                         }
                         else
                         {
-                            if (!commandDescriptor.DisableLogging)
+                            if (!cmd.Descriptor.DisableLogging)
                             {
                                 Logger.Log(LogType.UserCommand,
                                             "{0}: {1}", Name, rawMessage);
                             }
-                            if (commandDescriptor.RepeatableSelection)
+                            if (cmd.Descriptor.RepeatableSelection)
                             {
                                 selectionRepeatCommand = cmd;
                             }
@@ -531,7 +525,7 @@ namespace fCraft
                                 Logger.Log(LogType.Error, e.Message + Environment.NewLine + e);
                             }
 
-                            if (!commandDescriptor.NotRepeatable)
+                            if (!cmd.Descriptor.NotRepeatable)
                             {
                                 LastCommand = cmd;
                             }
@@ -566,14 +560,7 @@ namespace fCraft
                 case RawMessageType.PrivateChat:
                     {
                         if (!Can(Permission.Chat)) return;
-
-                        if (Info.IsMuted)
-                        {
-                            MessageMuted();
-                            return;
-                        }
-
-                        if (DetectChatSpam()) return;
+                        if (!MaySpeakFurther()) return;
 
                         if (rawMessage.EndsWith("//"))
                         {
@@ -672,14 +659,7 @@ namespace fCraft
                 case RawMessageType.RankChat:
                     {
                         if (!Can(Permission.Chat)) return;
-
-                        if (Info.IsMuted)
-                        {
-                            MessageMuted();
-                            return;
-                        }
-
-                        if (DetectChatSpam()) return;
+                        if (!MaySpeakFurther()) return;
 
                         if (rawMessage.EndsWith("//"))
                         {
@@ -718,14 +698,7 @@ namespace fCraft
                 case RawMessageType.WorldChat:
                     {
                         if (!Can(Permission.Chat)) return;
-
-                        if (Info.IsMuted)
-                        {
-                            MessageMuted();
-                            return;
-                        }
-
-                        if (DetectChatSpam()) return;
+                        if (!MaySpeakFurther()) return;
 
                         if (rawMessage.EndsWith("//"))
                         {
@@ -818,7 +791,8 @@ namespace fCraft
 				case RawMessageType.LongerMessage:
 					partialMessage = rawMessage.Substring(0, rawMessage.Length - 1);
 					// Spaces at the end are trimmed by default, so we need to insert one.
-                    if (partialMessage.Length != 64) partialMessage += " ";
+                    // +1 to length to account for Ω at end
+                    if (originalMessage.Length != (64 + 1)) partialMessage += " ";
 					break;                  
 
                 case RawMessageType.Invalid:
@@ -849,14 +823,14 @@ namespace fCraft
             if (markSet == 0)//first corner
             {
                 Message(cmd + ": Use /mark or place/break a block at the location of the first corner of your selection.");
-                selectionTime = DateTime.Now;
+                selectionTime = DateTime.UtcNow;
                 markSet++;
                 return;
             }
             if (markSet == 1)//second corner
             {
                 Message(cmd + ": Use /mark or place/break a block at the location of the second corner of your selection.");
-                selectionTime = DateTime.Now;
+                selectionTime = DateTime.UtcNow;
                 markSet++;
                 return;
             }
@@ -930,12 +904,6 @@ namespace fCraft
             if (IsSuper)
             {
                 Logger.LogToConsole(message);
-
-                if (sendToWebPanel)
-                {
-                    WebPanelData += message;
-                }
-
             }
             else
             {
@@ -1295,6 +1263,17 @@ namespace fCraft
         public static int AntispamMessageCount = 3;
         public static int AntispamInterval = 4;
         readonly Queue<DateTime> spamChatLog = new Queue<DateTime>(AntispamMessageCount);
+        
+        internal bool MaySpeakFurther() {
+            if (Info.IsMuted) { MessageMuted(); return false; }
+            if (DetectChatSpam()) return false;
+            
+            if (!IsSuper && Server.Moderation && !Server.VoicedPlayers.Contains(this)) {
+                Message("&WServer Moderation is on, you may not speak.");
+                return false;
+            }
+            return true;
+        }
 
         internal bool DetectChatSpam()
         {
@@ -1455,7 +1434,7 @@ namespace fCraft
             if (markSet > 0)
             {
                 //if it has been over 10 seconds, stop selection process
-                if ((DateTime.Now - selectionTime).TotalSeconds > 10)
+                if ((DateTime.UtcNow - selectionTime).TotalSeconds > 10)
                 {
                     markSet = 0;
                     selectedMarks.Clear();
@@ -1573,7 +1552,7 @@ namespace fCraft
                     break;
 
                 case CanPlaceResult.RankDenied:
-                    if (World.gunPhysics == true && GunMode == true)
+                    if (World.gunPhysics && GunMode)
                     {
                         RevertBlockNow(coord);
                         break;
@@ -1594,7 +1573,7 @@ namespace fCraft
                     {
                         case SecurityCheckResult.RankTooLow:
                         case SecurityCheckResult.RankTooHigh:
-                            if (World.gunPhysics == true && GunMode == true)
+                            if (World.gunPhysics && GunMode)
                             {
                                 RevertBlockNow(coord);
                                 break;
@@ -1813,7 +1792,7 @@ namespace fCraft
             }
             
             //check classicube blocks and convert if necessary
-            if (!usesCPE && newBlock > Block.Obsidian) 
+            if (!UsesCustomBlocks && newBlock > Block.Obsidian) 
             {
                 newBlock = Map.GetFallbackBlock(newBlock);
                 result = CanPlaceResult.Allowed;

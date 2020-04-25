@@ -252,7 +252,7 @@ namespace fCraft {
         #region TNT
         public void EnableTNTPhysics(Player player, bool announce)
         {
-            if (tntPhysics == true)
+            if (tntPhysics)
             {
                 player.Message("&WAlready enabled on this world");
                 return;
@@ -265,7 +265,7 @@ namespace fCraft {
         
         public void DisableTNTPhysics(Player player, bool announce)
         {
-            if (tntPhysics == false)
+            if (!tntPhysics)
             {
                 player.Message("&WAlready disabled on this world");
                 return;
@@ -279,7 +279,7 @@ namespace fCraft {
         #region Fireworks
         public void EnableFireworkPhysics(Player player, bool announce)
         {
-            if (fireworkPhysics == true)
+            if (fireworkPhysics)
             {
                 player.Message("&WAlready enabled on this world");
                 return;
@@ -292,7 +292,7 @@ namespace fCraft {
 
         public void DisableFireworkPhysics(Player player, bool announce)
         {
-            if (fireworkPhysics == false)
+            if (!fireworkPhysics)
             {
                 player.Message("&WAlready disabled on this world");
                 return;
@@ -306,7 +306,7 @@ namespace fCraft {
         #region Gun
         public void EnableGunPhysics(Player player, bool announce)
         {
-            if (gunPhysics == true)
+            if (gunPhysics)
             {
                 player.Message("&WAlready enabled on this world");
                 return;
@@ -319,7 +319,7 @@ namespace fCraft {
 
         public void DisableGunPhysics(Player player, bool announce)
         {
-            if (gunPhysics == false)
+            if (!gunPhysics)
             {
                 player.Message("&WAlready disabled on this world");
                 return;
@@ -333,7 +333,7 @@ namespace fCraft {
         #region Water
         public void EnableWaterPhysics(Player player, bool announce)
         {
-            if (waterPhysics == true)
+            if (waterPhysics)
             {
                 player.Message("&WAlready enabled on this world");
                 return;
@@ -346,7 +346,7 @@ namespace fCraft {
 
         public void DisableWaterPhysics(Player player, bool announce)
         {
-            if (waterPhysics == false)
+            if (!waterPhysics)
             {
                 player.Message("&WAlready disabled on this world");
                 return;
@@ -360,7 +360,7 @@ namespace fCraft {
         #region Sand
         public void EnableSandPhysics(Player player, bool announce)
         {
-            if (sandPhysics == true)
+            if (sandPhysics)
             {
                 player.Message("&WAlready enabled on this world");
                 return;
@@ -373,7 +373,7 @@ namespace fCraft {
 
         public void DisableSandPhysics(Player player, bool announce)
         {
-            if (sandPhysics == false)
+            if (!sandPhysics)
             {
                 player.Message("&WAlready disabled on this world");
                 return;
@@ -846,7 +846,7 @@ namespace fCraft {
         #region Lock / Unlock
 
         /// <summary> Whether the world is currently locked (in read-only mode). </summary>
-        public bool IsLocked { get; private set; }
+        public bool IsLocked { get; internal set; }
 
         public string LockedBy, UnlockedBy;
         public DateTime LockedDate, UnlockedDate;
@@ -1064,19 +1064,19 @@ namespace fCraft {
         
         internal void SendAllMapAppearance() {
             Packet packet = PacketWriter.MakeEnvSetMapAppearance(textureURL, SideBlock, EdgeBlock, EdgeLevel);
-            foreach (Player p in Players.Where(p => p.usesCPE))
+            foreach (Player p in Players.Where(p => p.SupportsEnvMapAppearance))
                 p.Send(packet);
         }
         
         internal void SendAllMapWeather() {
             Packet packet = PacketWriter.MakeEnvWeatherAppearance((byte)WeatherCC);
-            foreach (Player p in Players.Where(p => p.usesCPE))
+            foreach (Player p in Players.Where(p => p.SupportsEnvWeatherType))
                 p.Send(packet);
         }
         
         internal void SendAllEnvColor(byte variable, int  value) {
         	Packet packet = PacketWriter.MakeEnvSetColor(variable, value);
-            foreach (Player p in Players.Where(p => p.usesCPE))
+            foreach (Player p in Players.Where(p => p.SupportsEnvColors))
                 p.Send(packet);
         }
 

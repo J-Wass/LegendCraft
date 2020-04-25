@@ -177,11 +177,11 @@ namespace fCraft
                     }
 
                     //check for autorank conditions every 15 seconds
-                    if ((DateTime.Now - lastAutorankCheck).TotalSeconds > 15 && Server.AutoRankEnabled && !IsAutoRankExempt)
+                    if ((DateTime.UtcNow - lastAutorankCheck).TotalSeconds > 15 && Server.AutoRankEnabled && !IsAutoRankExempt)
                     {
                         AutoRankManager.Load();
                         AutoRankManager.Check(this);
-                        lastAutorankCheck = DateTime.Now;
+                        lastAutorankCheck = DateTime.UtcNow;
                     }
 
 
@@ -194,7 +194,7 @@ namespace fCraft
                             if (!outputQueue.TryDequeue(out packet)) break;
 
                         if (IsDeaf && packet.OpCode == OpCode.Message) continue;
-
+                        
                         writer.Write(packet.Data);
                         BytesSent += packet.Data.Length;
                         packetsSent++;
@@ -383,20 +383,8 @@ namespace fCraft
         void ProcessMovementPacket()
         {
             BytesReceived += 10;
-            byte me = reader.ReadByte();
-            if (usesCPE)
-            {
-                try
-                {
-                    //check if all the requested byte exists as a block, if it does create a block
-                    Info.HeldBlock = (Block)me;
-                }
-                catch(Exception ex)
-                {
-                    Logger.LogToConsole(ex.Data + ex.Message);
-                    Info.HeldBlock = Block.Stone;
-                }
-            }
+            byte held = reader.ReadByte();
+            if (SupportsHeldBlock) Info.HeldBlock = (Block)held;
 
             Position newPos = new Position
             {
@@ -983,20 +971,6 @@ namespace fCraft
           
             bool firstTime = (Info.TimesVisited == 1);
 
-            //update fallback blocks for non CPE users
-            /*if (!CPE)
-            {
-                Map newMap = startingWorld.Map;
-                for (int i = 0; i < newMap.Blocks.Length; i++)
-                {
-                    if (newMap.Blocks[i] > 49)
-                    {
-                        newMap.Blocks[i] = (byte)Map.GetFallbackBlock((Block)Enum.GetValues(typeof(Block)).GetValue(newMap.Blocks[i]));
-                    }
-                }
-                startingWorld.Map = newMap;
-            }*/
-
             if (!JoinWorldNow(startingWorld, true, WorldChangeReason.FirstWorld))
             {
                 Logger.Log(LogType.Warning,
@@ -1168,63 +1142,8 @@ namespace fCraft
                 using (StreamWriter textWriter = new StreamWriter(stream))
                 {
                     string firstLine = "G" + textReader.ReadLine();
-
-                    //get webpanel request (not working yet)
-                    if (firstLine.Contains("LC") /*&& ConfigKey.WebPanelEnabled.Enabled()*/)
-                    {
-                        string message = firstLine.Substring(15); //grab action
-                        string salt = "", user = "", action = "";
-
-                        try
-                        {
-                            string[] tokens = message.Split('&');
-                            salt = tokens[0].Substring(4);
-                            user = tokens[1].Substring(4);
-                            action = (tokens[2].Remove(tokens[2].LastIndexOf(' '))).Replace("%20", " ").Substring(6);
-                        }
-                        catch (Exception ex)
-                        {
-                            if (ex is IndexOutOfRangeException)
-                            {
-                                textWriter.WriteLine("HTTP/1.1 400 Bad Request: Incorrect syntax");
-                                return;
-                            }
-                            textWriter.WriteLine("HTTP/1.1 400 Bad Request: Something went wrong!");
-                            return;
-                        }
-
-                        if (String.IsNullOrEmpty(salt))
-                        {
-                            textWriter.WriteLine("HTTP/1.1 400 Bad Request: Missing Salt");
-                            return;
-                        }
-                        if (String.IsNullOrEmpty(user))
-                        {
-                            textWriter.WriteLine("HTTP/1.1 400 Bad Request: Missing User");
-                            return;
-                        }
-
-                        if (salt != Heartbeat.Salt)
-                        {
-                            textWriter.WriteLine("HTTP/1.1 404 Not Found: Salt Not Found- Invalid Salt");
-                            return;
-                        }
-
-                        if (user != Server.VerifiedUser)
-                        {
-                            textWriter.WriteLine("HTTP/1.1 404 Not Found: User Not Found- Invalid User");
-                            return;
-                        }
-
-                        Player.Console.sendToWebPanel = true;
-                        Player.Console.ParseMessage("/" + action, true, false);
-                        textWriter.Write(Player.Console.WebPanelData);
-
-                        Player.Console.sendToWebPanel = false;
-                        Player.Console.WebPanelData = "";
-                    }
-
                     var match = HttpFirstLine.Match(firstLine);
+                    
                     if (match.Success)
                     {
                         string worldName = match.Groups[1].Value;
@@ -1393,7 +1312,7 @@ namespace fCraft
                 {
                     int convertedBlockCount = IPAddress.HostToNetworkOrder(map.Volume);
                     compressor.Write(BitConverter.GetBytes(convertedBlockCount), 0, 4);
-                    byte[] rawData = (usesCPE ? map.Blocks : map.GetFallbackMap());
+                    byte[] rawData = (UsesCustomBlocks ? map.Blocks : map.GetFallbackMap());
                     compressor.Write(rawData, 0, rawData.Length);
                 }
                 blockData = mapStream.ToArray();
@@ -1503,19 +1422,26 @@ namespace fCraft
             Info.placingBlueFlag = false;
             Info.placingRedFlag = false;
 
-            if (usesCPE)
-            {
+            if (SupportsEnvMapAppearance) {
+                Send(PacketWriter.MakeEnvSetMapAppearance(World.textureURL, World.SideBlock, World.EdgeBlock, World.EdgeLevel));
+            }
+            if (SupportsEnvWeatherType) {
+                Send(PacketWriter.MakeEnvWeatherAppearance((byte)World.WeatherCC));
+            }
+            if (SupportsMessageTypes) {
                 //reset all special messages
                 Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));
                 Send(PacketWriter.MakeSpecialMessage((byte)1, "&f"));
                 Send(PacketWriter.MakeSpecialMessage((byte)2, "&f"));
-
-                Send(PacketWriter.MakeEnvSetMapAppearance(World.textureURL, World.SideBlock, World.EdgeBlock, World.EdgeLevel));
+            }
+            if (SupportsEnvColors) {
                 Send(PacketWriter.MakeEnvSetColor(0, World.SkyColor));
                 Send(PacketWriter.MakeEnvSetColor(1, World.CloudColor));
                 Send(PacketWriter.MakeEnvSetColor(2, World.FogColor));
-                Send(PacketWriter.MakeEnvWeatherAppearance((byte)World.WeatherCC));
-
+            }
+            
+            if (usesCPE)
+            {
                 if (!World.Hax)
                 {
                     //Send(PacketWriter.MakeHackControl(1, 1, 1, 1, 1, -1)); Commented out until classicube clients support hax packet
@@ -1530,7 +1456,7 @@ namespace fCraft
                     {
                         //add back bot entity if world matches
                         Send(PacketWriter.MakeAddEntity(bot.ID, bot.Name, bot.Position));
-                        if (bot.Model != "humanoid" && usesCPE)
+                        if (bot.Model != "humanoid" && SupportsChangeModel)
                         {
                             Send(PacketWriter.MakeChangeModel((byte)bot.ID, bot.Model));
                         }
@@ -1540,7 +1466,9 @@ namespace fCraft
                         }
                     }
                 }
-
+            }
+            
+            if (SupportsSelectionCuboid) {
                 //update highlights
                 if (oldWorld != null)
                 {
@@ -1553,7 +1481,6 @@ namespace fCraft
                 {
                     Send(PacketWriter.MakeSelectionCuboid((byte)entry.Value.Item1, entry.Key, entry.Value.Item2, entry.Value.Item3, entry.Value.Item4, entry.Value.Item5));
                 }
-
             }
 
             // Done.
@@ -1829,12 +1756,12 @@ namespace fCraft
                 {
                     entity.MarkedForRetention = true;
                    
-                    //update player models
-                    if (usesCPE)
+                    if (SupportsChangeModel && entity.LastKnownModel != otherPlayer.Model) 
                     {
-                        Send(PacketWriter.MakeChangeModel((byte)entity.Id, otherPlayer.Model));
+                        SendNow(PacketWriter.MakeChangeModel((byte)entity.Id, otherPlayer.Model));
+                        entity.LastKnownModel = otherPlayer.Model;
                     }
-
+                    
                     if (entity.LastKnownRank != otherPlayer.Info.Rank)
                     {
                         ReAddEntity(entity, otherPlayer, otherPos);
@@ -1843,11 +1770,11 @@ namespace fCraft
                     //if entity changed for another player, add this player to the list pf players who have seen the update
                     if( otherPlayer.entityChanged && !otherPlayer.playersWhoHaveSeenEntityChanges.Contains(this))
                     {
-						ReAddEntity(entity, otherPlayer, otherPos);
+                        ReAddEntity(entity, otherPlayer, otherPos);
                         otherPlayer.playersWhoHaveSeenEntityChanges.Add(this);
-					}
-					//if this player is already in the list (has updated the skin), continue
-					//if the player whose skin changed has updated for everyone, clear the list and set entityChanged to false
+                    }
+                    //if this player is already in the list (has updated the skin), continue
+                    //if the player whose skin changed has updated for everyone, clear the list and set entityChanged to false
                     else if (otherPlayer.playersWhoHaveSeenEntityChanges.Count() == (World.Players.Count() - 1))
                     {
                         otherPlayer.playersWhoHaveSeenEntityChanges.Clear();
@@ -1913,12 +1840,17 @@ namespace fCraft
             if (player == null) throw new ArgumentNullException("player");
             if (freePlayerIDs.Count > 0)
             {
-                var pos = new VisibleEntity(newPos, freePlayerIDs.Pop(), player.Info.Rank);
-                entities.Add(player, pos);
-                SendNow(PacketWriter.MakeAddEntity(entities[player].Id, player.Info.Rank.Color + player.Skinname, newPos));
+                var entity = new VisibleEntity(newPos, freePlayerIDs.Pop(), player.Info.Rank, player.Model);
+                entities.Add(player, entity);
+                SendNow(PacketWriter.MakeAddEntity(entity.Id, player.Info.Rank.Color + player.Skinname, newPos));
+                
                 if (usesCPE) {
-                    SendNow(PacketWriter.MakeExtAddEntity((byte)entities[player].Id, player.ListName, player.Skinname));
-                    SendNow(PacketWriter.MakeTeleport(entities[player].Id, newPos));
+                    SendNow(PacketWriter.MakeExtAddEntity((byte)entity.Id, player.ListName, player.Skinname));
+                    SendNow(PacketWriter.MakeTeleport(entity.Id, newPos));
+                    
+                }
+                if (SupportsChangeModel) {
+                    SendNow(PacketWriter.MakeChangeModel((byte)entity.Id, player.Model));
                 }
             }
         }
@@ -1959,8 +1891,8 @@ namespace fCraft
             }*/
             SendNow(PacketWriter.MakeAddEntity(entity.Id, player.Info.Rank.Color + player.Skinname, newPos));
             if (usesCPE) {
-            	SendNow(PacketWriter.MakeExtAddEntity((byte)entity.Id, player.ListName, player.Skinname));
-            	SendNow(PacketWriter.MakeTeleport(entities[player].Id, newPos));
+                SendNow(PacketWriter.MakeExtAddEntity((byte)entity.Id, player.ListName, player.Skinname));
+                SendNow(PacketWriter.MakeTeleport(entities[player].Id, newPos));
             }
             entity.LastKnownPosition = newPos;
         }
@@ -2057,18 +1989,20 @@ namespace fCraft
         {
             public static readonly Position HiddenPosition = new Position(0, 0, short.MinValue);
 
-            public VisibleEntity(Position newPos, sbyte newId, Rank newRank)
+            public VisibleEntity(Position newPos, sbyte newId, Rank newRank, string newModel)
             {
                 Id = newId;
                 LastKnownPosition = newPos;
                 MarkedForRetention = true;
                 Hidden = true;
                 LastKnownRank = newRank;
+                LastKnownModel = newModel;
             }
 
             public readonly sbyte Id;
             public Position LastKnownPosition;
             public Rank LastKnownRank;
+            public string LastKnownModel;
             public bool Hidden;
             public bool MarkedForRetention;
             public bool SkippedLastMove;

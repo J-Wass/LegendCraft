@@ -134,7 +134,7 @@ THE SOFTWARE.*/
                 return;
             }
 
-            if (!targetPlayer.usesCPE)
+            if (!targetPlayer.SupportsHeldBlock)
             {
                 player.Message("You can only use /GetBlock on ClassiCube players!");
             }
@@ -154,7 +154,7 @@ THE SOFTWARE.*/
         };
 
         private static void FHHandler(Player player, Command cmd)  {
-            if (!player.usesCPE) {
+            if (!player.SupportsHeldBlock) {
                 player.Message("This is a ClassiCube only command!");
                 return;
             }
@@ -167,7 +167,7 @@ THE SOFTWARE.*/
             Player p = Server.FindPlayerOrPrintMatches(player, target, false, true);
             if (p == null) return;
 
-            if (!p.usesCPE) {
+            if (!p.SupportsHeldBlock) {
                 player.Message("You can only use /ForceHold on ClassiCube players!"); return;
             }
 
@@ -198,11 +198,6 @@ THE SOFTWARE.*/
         };
 
         public static void AnnounceHandler(Player player, Command cmd) {
-            if (!player.usesCPE) {
-                player.Message("This is a ClassiCube only command!");
-                return;
-            }
-
             Player[] players;
             string worldName = cmd.Next();
             if (string.IsNullOrEmpty(worldName)) {
@@ -233,7 +228,7 @@ THE SOFTWARE.*/
 
             Packet packet = PacketWriter.MakeSpecialMessage(100, message);
             foreach (Player p in players) {
-                if (!p.usesCPE) continue;
+                if (!p.SupportsMessageTypes) continue;
                 p.Send(packet);
             }
 
@@ -249,7 +244,7 @@ THE SOFTWARE.*/
                 players = ((World)task.UserState).Players;
             
             foreach (Player p in players) {
-                if (!p.usesCPE) continue;
+                if (!p.SupportsMessageTypes) continue;
                 p.Send(PacketWriter.MakeSpecialMessage(100, "&f"));
             }
         }
@@ -387,7 +382,7 @@ THE SOFTWARE.*/
                 player.MessageNoPlayer(targetName);
                 return;
             }
-            if (!target.usesCPE)
+            if (!target.SupportsClickDistance)
             {
                 player.Message("You can only use /SetClickDistance on ClassiCube players!");
             }
@@ -559,6 +554,7 @@ THE SOFTWARE.*/
                 }
             }
         }
+        
         static readonly CommandDescriptor CdLastCommand = new CommandDescriptor
         {
             Name = "LastCommand",
@@ -571,37 +567,26 @@ THE SOFTWARE.*/
             Handler = LastCommandHandler
         };
 
-        static void LastCommandHandler(Player player, Command cmd) //allows the user to see the last command a target player has used
+        static void LastCommandHandler(Player player, Command cmd)
         {
-            string target = cmd.Next();
-            if (String.IsNullOrEmpty(target))
-            {
-                if (player.LastCommand == null)
-                {
+            string targetName = cmd.Next();
+            if (String.IsNullOrEmpty(targetName))  {
+                if (player.LastCommand == null) {
                     player.Message("You do not have a last command");
-                    CdLastCommand.PrintUsage(player);
+                } else {
+                    string last = player.LastCommand.RawMessage;
+                    player.Message("Your last command used was: " + last);
+                }
+            } else {
+                Player target = Server.FindPlayerOrPrintMatches(player, targetName, false, true);                
+                if (target != null) {
+                    string last = target.LastCommand.RawMessage;
+                    player.Message(target.Name + "'s last command was " + last);
                     return;
                 }
-
-                string sub = player.LastCommand.ToString().Split('"')[1].Split('"')[0];
-
-                player.Message("Your last command used was: " + sub);
-                return;
-            }
-            Player targetName = Server.FindPlayerOrPrintMatches(player, target, false, true);
-            if (targetName == null)
-            {
-                player.Message("No player found matching " + target);
-                return;
-            }
-            else
-            {
-                string sub = targetName.LastCommand.ToString().Split('"')[1].Split('"')[0];
-
-                player.Message(targetName.Name + "'s last command was " + sub);
-                return;
             }
         }
+        
         static readonly CommandDescriptor CdBeatDown = new CommandDescriptor
         {
             Name = "Beatdown",
@@ -618,6 +603,8 @@ THE SOFTWARE.*/
 
         static void BeatDownHandler(Player player, Command cmd) //a more brutal /slap cmd, sends the player underground to the bottom of the world
         {
+            if (!player.MaySpeakFurther()) return;
+        	
             string name = cmd.Next();
             string item = cmd.Next();
             if (name == null)
@@ -637,7 +624,7 @@ THE SOFTWARE.*/
                 player.Message("&sYou can't pummel yourself.... What's wrong with you???");
                 return;
             }
-            double time = (DateTime.Now - player.Info.LastUsedBeatDown).TotalSeconds;
+            double time = (DateTime.UtcNow - player.Info.LastUsedBeatDown).TotalSeconds;
             double timeLeft = Math.Round(20 - time);
             if (time < 20)
             {
@@ -657,7 +644,7 @@ THE SOFTWARE.*/
                     Server.Players.CanSee(target).Union(target).Message("{0} &Swas pummeled into the ground by {1}", target.ClassyName, player.ClassyName);
                     target.Message("Do &a/Spawn&s to get back above ground.");
                     IRC.PlayerSomethingMessage(player, "beat down", target, null);
-                    player.Info.LastUsedBeatDown = DateTime.Now;
+                    player.Info.LastUsedBeatDown = DateTime.UtcNow;
                     return;
                 }
                 else if (item.ToLower() == "hammer")
@@ -677,13 +664,13 @@ THE SOFTWARE.*/
                     Server.Players.CanSee(target).Union(target).Message("{0} &Swas pummeled into the ground by {1}", target.ClassyName, player.ClassyName);
                     target.Message("Do &a/Spawn&s to get back above ground.");
                     IRC.PlayerSomethingMessage(player, "beat down", target, null);
-                    player.Info.LastUsedBeatDown = DateTime.Now;
+                    player.Info.LastUsedBeatDown = DateTime.UtcNow;
                     return;
                 }
                 Server.Players.CanSee(target).Union(target).Message(aMessage);
                 target.Message("Do &a/Spawn&s to get back above ground.");
                 IRC.PlayerSomethingMessage(player, "beat down", target, null);
-                player.Info.LastUsedBeatDown = DateTime.Now;
+                player.Info.LastUsedBeatDown = DateTime.UtcNow;
                 return;
             }
             else
@@ -1159,6 +1146,8 @@ THE SOFTWARE.*/
 
         internal static void AssassinateHandler(Player player, Command cmd)
         {
+            if (!player.MaySpeakFurther()) return;
+        	
             string name = cmd.Next();
             if (name == null)
             {
@@ -1236,6 +1225,8 @@ THE SOFTWARE.*/
 
         static void PunchHandler(Player player, Command cmd)
         {
+            if (!player.MaySpeakFurther()) return;
+            
             string name = cmd.Next();
             string item = cmd.Next();
             if (name == null)
@@ -1255,7 +1246,7 @@ THE SOFTWARE.*/
                 player.Message("&sYou can't &aPunch &syourself, Weirdo!");
                 return;
             }
-            double time = (DateTime.Now - player.Info.LastUsedSlap).TotalSeconds;
+            double time = (DateTime.UtcNow - player.Info.LastUsedSlap).TotalSeconds;
             if (time < 10)
             {
                 player.Message("&WYou can use /Punch again in " + Math.Round(10 - time) + " seconds.");
@@ -1270,7 +1261,7 @@ THE SOFTWARE.*/
                 {
                     Server.Players.CanSee(target).Union(target).Message("{0} &Swas &aPunched &Sin the &cFace &Sby {1}", target.ClassyName, player.ClassyName);
                     IRC.PlayerSomethingMessage(player, "punched", target, null);
-                    player.Info.LastUsedSlap = DateTime.Now;
+                    player.Info.LastUsedSlap = DateTime.UtcNow;
                     return;
                 }
                 else if (item.ToLower() == "groin")
@@ -1285,12 +1276,12 @@ THE SOFTWARE.*/
                 {
                     Server.Players.CanSee(target).Union(target).Message("{0} &Swas &aPunched &Sin the &cFace &Sby {1}", target.ClassyName, player.ClassyName);
                     IRC.PlayerSomethingMessage(player, "punched", target, null);
-                    player.Info.LastUsedSlap = DateTime.Now;
+                    player.Info.LastUsedSlap = DateTime.UtcNow;
                     return;
                 }
                 Server.Players.CanSee(target).Union(target).Message(aMessage);
                 IRC.PlayerSomethingMessage(player, "punched", target, null);
-                player.Info.LastUsedSlap = DateTime.Now;
+                player.Info.LastUsedSlap = DateTime.UtcNow;
                 return;
             }
             else
@@ -1486,6 +1477,8 @@ THE SOFTWARE.*/
 
         internal static void KillHandler(Player player, Command cmd)
         {
+            if (!player.MaySpeakFurther()) return;
+        	
             string name = cmd.Next();
             string reason = cmd.NextAll();
             if (name == null)
@@ -1502,7 +1495,7 @@ THE SOFTWARE.*/
                 return;
             }
 
-            double time = (DateTime.Now - player.Info.LastUsedKill).TotalSeconds;
+            double time = (DateTime.UtcNow - player.Info.LastUsedKill).TotalSeconds;
             if (time < 10)
             {
                 player.Message("&WYou can use /Kill again in " + Math.Round(10 - time) + " seconds.");
@@ -1518,7 +1511,7 @@ THE SOFTWARE.*/
                 if (target == player)
                 {
                     player.TeleportTo(player.World.Map.Spawn);
-                    player.Info.LastUsedKill = DateTime.Now;
+                    player.Info.LastUsedKill = DateTime.UtcNow;
                     Server.Players.CanSee(target).Message("{0}&C killed itself in confusion!", player);
                     return;
                 }
@@ -1526,14 +1519,14 @@ THE SOFTWARE.*/
                 if (player.Can(Permission.Kill, target.Info.Rank) && reason.Length < 1)
                 {
                     target.TeleportTo(player.World.Map.Spawn);
-                    player.Info.LastUsedKill = DateTime.Now;
+                    player.Info.LastUsedKill = DateTime.UtcNow;
                     Server.Players.CanSee(target).Message("{0}&C was &4Killed&C by {1}", target.ClassyName, player.ClassyName);
                     return;
                 }
                 else if (player.Can(Permission.Kill, target.Info.Rank) && reason != null)
                 {
                     target.TeleportTo(player.World.Map.Spawn);
-                    player.Info.LastUsedKill = DateTime.Now;
+                    player.Info.LastUsedKill = DateTime.UtcNow;
                     Server.Players.CanSee(target).Message("{0}&C was &4Killed&C by {1}&c: {2}", target.ClassyName, player.ClassyName, reason);
                 }
                 else
@@ -1561,6 +1554,8 @@ THE SOFTWARE.*/
 
         static void Slap(Player player, Command cmd)
         {
+            if (!player.MaySpeakFurther()) return;
+        	
             string name = cmd.Next();
             string item = cmd.Next();
             if (name == null){
@@ -1569,62 +1564,60 @@ THE SOFTWARE.*/
             }
             Player target = Server.FindPlayerOrPrintMatches(player, name, false, true);
             if (target == null) return;
+            
             if (target.Immortal){
                 player.Message("&SYou failed to slap {0}&S, they are immortal", target.ClassyName);
                 return;
-            }
+            }            
             if (target == player){
                 player.Message("&sYou can't slap yourself.... What's wrong with you???");
                 return;
             }
-            double time = (DateTime.Now - player.Info.LastUsedSlap).TotalSeconds;
+            
+            double time = (DateTime.UtcNow - player.Info.LastUsedSlap).TotalSeconds;
             if (time < 10){
                 player.Message("&WYou can use /Slap again in " + Math.Round(10 - time) + " seconds.");
                 return;
             }
-            string aMessage;
-            if (player.Can(Permission.Slap, target.Info.Rank)){
-                Position slap = new Position(target.Position.X, target.Position.Y, (target.World.Map.Bounds.ZMax) * 32);
-                target.previousLocation = target.Position;
-                target.previousWorld = null;
-                target.TeleportTo(slap);
-                if (string.IsNullOrEmpty(item)){
-                    Server.Players.CanSee(target).Union(target).Message("{0} &Swas slapped sky high by {1}", target.ClassyName, player.ClassyName);
-                    IRC.PlayerSomethingMessage(player, "slapped", target, null);
-                    player.Info.LastUsedSlap = DateTime.Now;
-                    return;
-                }
-                else if (item.ToLower() == "bakingtray")
-                    aMessage = String.Format("{0} &Swas slapped by {1}&S with a Baking Tray", target.ClassyName, player.ClassyName);
-                else if (item.ToLower() == "fish")
-                    aMessage = String.Format("{0} &Swas slapped by {1}&S with a Giant Fish", target.ClassyName, player.ClassyName);
-                else if (item.ToLower() == "bitchslap")
-                    aMessage = String.Format("{0} &Swas bitch-slapped by {1}", target.ClassyName, player.ClassyName);
-                else if (item.ToLower() == "shoe")
-                    aMessage = String.Format("{0} &Swas slapped by {1}&S with a Shoe", target.ClassyName, player.ClassyName);
-                else if (item.ToLower() == "ass")
-                    aMessage = String.Format("{0} &Swas slapped on the &0Ass&s by {1}", target.ClassyName, player.ClassyName);
-                else if (item.ToLower() == "fryingpan")
-                    aMessage = String.Format("{0} &Swas slapped by {1}&S with a Frying Pan", target.ClassyName, player.ClassyName);
-                else if (item.ToLower() == "noodle")
-                    aMessage = String.Format("{0} &Swas slapped by {1}&S with a Wet Noodle", target.ClassyName, player.ClassyName);
-                else if (item.ToLower() == "ho")
-                    aMessage = String.Format("{1} &Sslapped {0}&S like a Pimp slaps a Ho", target.ClassyName, player.ClassyName);
-                else{
-                    Server.Players.CanSee(target).Union(target).Message("{0} &Swas slapped sky high by {1}", target.ClassyName, player.ClassyName);
-                    IRC.PlayerSomethingMessage(player, "slapped", target, null);
-                    player.Info.LastUsedSlap = DateTime.Now;
-                    return;
-                }
-                Server.Players.CanSee(target).Union(target).Message(aMessage);
-                IRC.PlayerSomethingMessage(player, "slapped", target, null);
-                player.Info.LastUsedSlap = DateTime.Now;
-                return;
-            }else{
+            
+            if (!player.Can(Permission.Slap, target.Info.Rank)) {
                 player.Message("&sYou can only Slap players ranked {0}&S or lower",
                                player.Info.Rank.GetLimit(Permission.Slap).ClassyName);
                 player.Message("{0}&S is ranked {1}", target.ClassyName, target.Info.Rank.ClassyName);
+                return;
             }
+            
+            string reason = "{0} &Swas slapped sky high by {1}";
+            Position slap = new Position(target.Position.X, target.Position.Y, (target.World.Map.Bounds.ZMax) * 32);
+            target.previousLocation = target.Position;
+            target.previousWorld = null;            
+            
+            if (string.IsNullOrEmpty(item)) {
+                reason = "{0} &Swas slapped sky high by {1}";
+            } else if (item.ToLower() == "bakingtray") {
+                reason = "{0} &Swas slapped by {1}&S with a Baking Tray";
+            } else if (item.ToLower() == "fish") {
+                reason = "{0} &Swas slapped by {1}&S with a Giant Fish";
+            } else if (item.ToLower() == "bitchslap") {
+                reason = "{0} &Swas bitch-slapped by {1}";
+            } else if (item.ToLower() == "shoe") {
+                reason = "{0} &Swas slapped by {1}&S with a Shoe";
+            } else if (item.ToLower() == "ass") {
+                reason = "{0} &Swas slapped on the &0Ass&s by {1}";
+            } else if (item.ToLower() == "fryingpan") {
+                reason = "{0} &Swas slapped by {1}&S with a Frying Pan";
+            } else if (item.ToLower() == "noodle") {
+                reason = "{0} &Swas slapped by {1}&S with a Wet Noodle";
+            } else if (item.ToLower() == "ho") {
+                reason = "{1} &Sslapped {0}&S like a Pimp slaps a Ho";
+            }         
+            reason = String.Format(reason, target.ClassyName, player.ClassyName);
+            slap.L = target.Position.L; slap.R = target.Position.R;
+            
+            target.TeleportTo(slap);
+            Server.Players.CanSee(target).Union(target).Message(reason);
+            IRC.PlayerSomethingMessage(player, "slapped", target, null);
+            player.Info.LastUsedSlap = DateTime.UtcNow;
         }
 
         static readonly CommandDescriptor CdTPZone = new CommandDescriptor
@@ -1768,23 +1761,27 @@ THE SOFTWARE.*/
             }
 
             // do the banning
-            if (target.Tempban(player.Name, duration)){
+            if (target.Tempban(player.Name, duration)) {
                 string reason = cmd.NextAll();
-                try{
+                try {
                     Player targetPlayer = target.PlayerObject;
                     target.Ban(player, "You were Banned for " + timeString, false, true);
                     Server.TempBans.Add(targetPlayer);
-                }
-                catch (PlayerOpException ex){
+                } catch (PlayerOpException ex) {
                     player.Message(ex.MessageColored);
+                    if (ex.ErrorCode == PlayerOpExceptionCode.ReasonRequired) {
+                        FreezeIfAllowed(player, target);
+                    }
+                    return;
                 }
+                
                 Scheduler.NewTask(t => Untempban(player, target)).RunOnce(duration);
                 Server.Message("&SPlayer {0}&S was Banned by {1}&S for {2}",
                                 target.ClassyName, player.ClassyName, duration.ToMiniString());
                 if (reason.Length > 0) Server.Message("&Wreason: {0}", reason);
                 Logger.Log(LogType.UserActivity, "Player {0} was Banned by {1} for {2}",
                             target.Name, player.Name, duration.ToMiniString());
-            }else{
+            } else {
                 player.Message("Player {0}&S is already Banned by {1}&S for {2:0} more.",
                                 target.ClassyName,
                                 target.BannedBy,
@@ -1792,11 +1789,10 @@ THE SOFTWARE.*/
             }
         }
 
-        public static void Untempban(Player player, PlayerInfo target)
+        static void Untempban(Player player, PlayerInfo target)
         {
             if (!target.IsBanned) return;
-            else
-                target.Unban(player, "Tempban Expired", true, true);
+            target.Unban(player, "Tempban Expired", true, true);
         }
 
         static readonly CommandDescriptor CdBasscannon = new CommandDescriptor
@@ -2497,24 +2493,21 @@ THE SOFTWARE.*/
             }
 
             bool silent = cmd.HasNext;
-
             // for aware players: notify
-            Server.Players.CanSee( player ).Message( "&SPlayer {0}&S is no longer hidden.",
-                                                     player.ClassyName );
+            Server.Players.CanSee( player ).Message( "&SPlayer {0}&S is no longer hidden.", player.ClassyName );
+            
             player.Message( "&8You are no longer hidden." );
-            player.Info.IsHidden = false;
-            if( !silent ) {
-                if( ConfigKey.ShowConnectionMessages.Enabled() ) {
-                    // ReSharper disable AssignNullToNotNullAttribute
-                    string msg = Server.MakePlayerConnectedMessage( player, false, player.World );
-                    // ReSharper restore AssignNullToNotNullAttribute
-                    Server.Players.CantSee( player ).Message( msg );
-                }
-                if( ConfigKey.IRCBotAnnounceServerJoins.Enabled() ) {
-                    IRC.PlayerReadyHandler( null, new PlayerConnectedEventArgs( player, player.World ) );
-                }
+            if( !silent && ConfigKey.ShowConnectionMessages.Enabled() ) {
+                 // ReSharper disable AssignNullToNotNullAttribute
+                 string msg = Server.MakePlayerConnectedMessage( player, false, player.World );
+                 // ReSharper restore AssignNullToNotNullAttribute
+                 Server.Players.CantSee( player ).Message( msg );
             }
-
+        
+            player.Info.IsHidden = false;
+            if( !silent && ConfigKey.IRCBotAnnounceServerJoins.Enabled() ) {
+                IRC.PlayerReadyHandler( null, new PlayerConnectedEventArgs( player, player.World ) );
+            }
             Player.RaisePlayerHideChangedEvent( player );
         }
 
@@ -2678,7 +2671,7 @@ THE SOFTWARE.*/
                         player.TeleportTo( new Position {
                             X = (short)(x * 32 + 16),
                             Y = (short)(y * 32 + 16),
-                            Z = (short)(z * 32 + 16),
+                            Z = (short)(z * 32 + 51),
                             R = player.Position.R,
                             L = player.Position.L
                         } );

@@ -40,9 +40,12 @@ namespace fCraft
         const int LongerMessagesExtVersion = 1;
         const string FullCP437ExtName = "FullCP437";
         const int FullCP437ExtVersion = 1;
+        const string BlockPermissionsExtName = "BlockPermissions";
+        const int BlockPermissionsExtVersion = 1;
         
         // Note: if more levels are added, change UsesCustomBlocks from bool to int
-        public bool UsesCustomBlocks { get; set; }
+        public bool UsesCustomBlocks = false;
+        
         public bool SupportsClickDistance = false;
         public bool SupportsEnvColors = false;
         public bool SupportsChangeModel = false;
@@ -55,12 +58,13 @@ namespace fCraft
         public bool SupportsHackControl = false;
         public bool SupportsLongerMessages = false;
         public bool SupportsFullCP437 = false;
+        public bool SupportsBlockPermissions = true;
         
-        string ClientName { get; set; }
+        public string ClientName;
 
         bool NegotiateProtocolExtension()
         {
-            writer.Write(Packet.MakeExtInfo(12).Data);
+            writer.Write(Packet.MakeExtInfo(13).Data);
             
             writer.Write(Packet.MakeExtEntry(CustomBlocksExtName, CustomBlocksExtVersion).Data);
             writer.Write(Packet.MakeExtEntry(ClickDistanceExtName, ClickDistanceExtVersion).Data);
@@ -77,6 +81,8 @@ namespace fCraft
             writer.Write(Packet.MakeExtEntry(HackControlExtName, HackControlExtVersion).Data);
             writer.Write(Packet.MakeExtEntry(LongerMessagesExtName, LongerMessagesExtVersion).Data);
             writer.Write(Packet.MakeExtEntry(FullCP437ExtName, FullCP437ExtVersion).Data);
+            
+            writer.Write(Packet.MakeExtEntry(BlockPermissionsExtName, BlockPermissionsExtVersion).Data);
             
             Logger.Log(LogType.Debug, "Sent ExtInfo and entry packets");
 
@@ -148,6 +154,9 @@ namespace fCraft
                     clientExts.Add(extName + " " + extVersion);
                 } else if (extName == FullCP437ExtName && extVersion == FullCP437ExtVersion) {
                     SupportsFullCP437 = true;
+                    clientExts.Add(extName + " " + extVersion);
+                } else if (extName == BlockPermissionsExtName && extVersion == BlockPermissionsExtVersion) {
+                    SupportsBlockPermissions = true;
                     clientExts.Add(extName + " " + extVersion);
                 }
             }

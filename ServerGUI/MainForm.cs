@@ -1,17 +1,14 @@
 ﻿// Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
 //Modified LegendCraft Team
 using System;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Windows.Forms;
-using System.Threading;
-using System.Net;
 using System.IO;
-using System.IO.Compression;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Windows.Forms;
 using fCraft.Events;
 using fCraft.GUI;
-using fCraft.ServerGUI;
 
 namespace fCraft.ServerGUI
 {
@@ -116,50 +113,28 @@ namespace fCraft.ServerGUI
             Logger.Log(LogType.SystemActivity, "Checking for LegendCraft updates...");
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://raw.githubusercontent.com/LeChosenOne/LegendCraft/master/README.md");
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Updater.VersionCheckURI);
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-
-                if (response.StatusCode == HttpStatusCode.OK)
+                if (response.StatusCode != HttpStatusCode.OK) return;
+                
+                using (Stream stream = response.GetResponseStream())
                 {
-                    using (Stream stream = response.GetResponseStream())
+                    if (stream == null) return;
+                    string version = new StreamReader(stream).ReadLine();
+
+                    if (version != null && version != fCraft.Updater.LatestStable)
                     {
-                        if (stream != null)
-                        {
-                            StreamReader streamReader = new StreamReader(stream);
-                            string version = streamReader.ReadLine();
-                            //update is available, prompt for a download
-                            if (version != null && version != fCraft.Updater.LatestStable)
-                            {
-
-                                Logger.Log(LogType.SystemActivity, "Server.Run: Your LegendCraft version is out of date. A LegendCraft Update is available!");
-
-                                DialogResult answer = MessageBox.Show("Would you like to download the latest LegendCraft Version? (" + version + ")", "LegendCraft Updater", MessageBoxButtons.YesNo);
-                                if (answer == DialogResult.Yes)
-                                {
-                                    Process.Start("https://github.com/LegendCraft/LegendCraft/releases");
-                                }
-                                else
-                                {
-                                    Logger.Log(LogType.SystemActivity, "Update ignored. To ignore future LegendCraft update requests, uncheck the box in configGUI.");
-                                }
-
-                            }
-                            else
-                            {
-                                Logger.Log(LogType.SystemActivity, "Your LegendCraft version is up to date!");
-                            }
-                        }
+                        Logger.Log(LogType.Warning, "UpdateCheck: Your LegendCraft version is out of date. A newer update is available!");
+                    }
+                    else
+                    {
+                        Logger.Log(LogType.SystemActivity, "UpdateCheck: Your LegendCraft version is up to date!");
                     }
                 }
             }
-
-            catch (WebException)
+            catch (Exception ex)
             {
-                Console.WriteLine("There was an internet connection error. Server was unable to check for updates.");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("There was an error in trying to check for updates:\n\r " + e);
+                Logger.Log(LogType.Error, "Error when trying to to check for updates: " + ex);
             }
         }
 
@@ -261,11 +236,11 @@ namespace fCraft.ServerGUI
                     // store user's selection
                     int userSelectionStart = logBox.SelectionStart;
                     int userSelectionLength = logBox.SelectionLength;
-                    bool userSelecting = (logBox.SelectionStart != logBox.Text.Length && logBox.Focused ||
+                    bool userSelecting = (logBox.SelectionStart != logBox.TextLength && logBox.Focused ||
                                           logBox.SelectionLength > 0);
 
                     // insert and color a new message
-                    int oldLength = logBox.Text.Length;
+                    int oldLength = logBox.TextLength;
                     string msgToAppend = e.Message + Environment.NewLine;
 
                     /*if (e.MessageType == LogType.GlobalChat) //If Global Message, send to global and stop
@@ -389,7 +364,7 @@ namespace fCraft.ServerGUI
                     }
                     else
                     {
-                        logBox.SelectionStart = logBox.Text.Length;
+                        logBox.SelectionStart = logBox.TextLength;
                         logBox.ScrollToCaret();
                     }
                 }
@@ -521,22 +496,22 @@ namespace fCraft.ServerGUI
         {
             if (SizeBox.SelectedItem.ToString() == "Normal")
             {
-                logBox.ZoomFactor = 1;
+                logBox.ZoomFactor = 1.0f;
             }
             if (SizeBox.SelectedItem.ToString() == "Big")
             {
-                logBox.ZoomFactor = (float)1.2;
+                logBox.ZoomFactor = 1.2f;
             }
             if (SizeBox.SelectedItem.ToString() == "Large")
             {
-                logBox.ZoomFactor = (float)1.5;
+                logBox.ZoomFactor = 1.5f;
             }
         }
 
         private void CopyMenuOnClickHandler(object sender, EventArgs e)
         {
-            if (logBox.SelectedText.Length > 0)
-                Clipboard.SetText(logBox.SelectedText.ToString(), TextDataFormat.Text);
+            if (logBox.SelectionLength > 0)
+                Clipboard.SetText(logBox.SelectedText, TextDataFormat.Text);
         }
 
         private void CopyMenuPopupHandler(object sender, EventArgs e)
@@ -544,7 +519,7 @@ namespace fCraft.ServerGUI
             ContextMenu menu = sender as ContextMenu;
             if (menu != null)
             {
-                menu.MenuItems[0].Enabled = (logBox.SelectedText.Length > 0);
+                menu.MenuItems[0].Enabled = (logBox.SelectionLength > 0);
             }
         }
 
@@ -566,9 +541,10 @@ namespace fCraft.ServerGUI
             BackColor = System.Drawing.Color.Firebrick;
             playerList.BackColor = System.Drawing.Color.White;
             logBox.BackColor = System.Drawing.Color.Black;
+            
             logBox.SelectAll();
             logBox.SelectionColor = System.Drawing.Color.LightGray;
-            logBox.SelectionStart = logBox.Text.Length;
+            logBox.SelectionStart = logBox.TextLength;
             logBox.ScrollToCaret();
         }
         public void SetAltTheme()
@@ -579,73 +555,45 @@ namespace fCraft.ServerGUI
 
             logBox.SelectAll();
             logBox.SelectionColor = System.Drawing.Color.Black;
-            logBox.SelectionStart = logBox.Text.Length;
+            logBox.SelectionStart = logBox.TextLength;
             logBox.ScrollToCaret();
 
         }
-        public void SetPinkTheme()
-        {
-            BackColor = System.Drawing.Color.Pink;
-            playerList.BackColor = System.Drawing.Color.LightPink;
-            logBox.BackColor = System.Drawing.Color.LightPink;
-
-            logBox.SelectAll();
-            logBox.SelectionColor = System.Drawing.Color.Black;
-            logBox.SelectionStart = logBox.Text.Length;
-            logBox.ScrollToCaret();
-
+        
+        public void SetPinkTheme() {
+            SetTheme(System.Drawing.Color.Pink, 
+                     System.Drawing.Color.LightPink);
         }
 
-        public void SetYellowTheme()
-        {
-            BackColor = System.Drawing.Color.LightGoldenrodYellow;
-            playerList.BackColor = System.Drawing.Color.LightYellow;
-            logBox.BackColor = System.Drawing.Color.LightYellow;
-
-            logBox.SelectAll();
-            logBox.SelectionColor = System.Drawing.Color.Black;
-            logBox.SelectionStart = logBox.Text.Length;
-            logBox.ScrollToCaret();
-
+        public void SetYellowTheme() {
+            SetTheme(System.Drawing.Color.LightGoldenrodYellow, 
+                     System.Drawing.Color.LightYellow);
         }
 
-        public void SetGreenTheme()
-        {
-            BackColor = System.Drawing.Color.SpringGreen;
-            playerList.BackColor = System.Drawing.Color.LightGreen;
-            logBox.BackColor = System.Drawing.Color.LightGreen;
-
-            logBox.SelectAll();
-            logBox.SelectionColor = System.Drawing.Color.Black;
-            logBox.SelectionStart = logBox.Text.Length;
-            logBox.ScrollToCaret();
-
+        public void SetGreenTheme() {
+            SetTheme(System.Drawing.Color.SpringGreen, 
+                     System.Drawing.Color.LightGreen);
         }
 
-        public void SetPurpleTheme()
-        {
-            BackColor = System.Drawing.Color.MediumPurple;
-            playerList.BackColor = System.Drawing.Color.Plum;
-            logBox.BackColor = System.Drawing.Color.Plum;
-
-            logBox.SelectAll();
-            logBox.SelectionColor = System.Drawing.Color.Black;
-            logBox.SelectionStart = logBox.Text.Length;
-            logBox.ScrollToCaret();
-
+        public void SetPurpleTheme() {
+            SetTheme(System.Drawing.Color.MediumPurple, 
+                     System.Drawing.Color.Plum);
         }
 
-        public void SetGreyTheme()
-        {
-            BackColor = System.Drawing.SystemColors.Control;
-            playerList.BackColor = System.Drawing.SystemColors.ControlLight;
-            logBox.BackColor = System.Drawing.SystemColors.ControlLight;
+        public void SetGreyTheme() {
+            SetTheme(System.Drawing.SystemColors.Control, 
+                     System.Drawing.SystemColors.ControlLight);
+        }
+        
+        void SetTheme(System.Drawing.Color back, System.Drawing.Color itemsBack) {
+            BackColor = back;
+            playerList.BackColor = itemsBack;
+            logBox.BackColor = itemsBack;
 
             logBox.SelectAll();
             logBox.SelectionColor = System.Drawing.Color.Black;
-            logBox.SelectionStart = logBox.Text.Length;
+            logBox.SelectionStart = logBox.TextLength;
             logBox.ScrollToCaret();
-
         }
 
       /*public void tabChat_tabSelected(object sender, EventArgs e)

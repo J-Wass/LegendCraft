@@ -30,7 +30,7 @@ namespace fCraft
 
 public class PhysScheduler
 	{
-		private MinBinaryHeap<PhysicsTask, Int64> _tasks = new MinBinaryHeap<PhysicsTask, Int64>();
+		private MinBinaryHeap _tasks = new MinBinaryHeap();
 		private Stopwatch _watch = new Stopwatch(); //a good counter of elapsed milliseconds
 		private World _owner;
 		private EventWaitHandle _continue = new EventWaitHandle(false, EventResetMode.AutoReset);
@@ -53,8 +53,9 @@ public class PhysScheduler
 			for (; ; )
 			{
 				int w = WaitHandle.WaitAny(handles, timeout);
-				if (1 == w) //stop
+				if (w == 1) //stop
 					break;
+				
 				PhysicsTask task;
 				//check if there is a due task
 				lock (_tasks)

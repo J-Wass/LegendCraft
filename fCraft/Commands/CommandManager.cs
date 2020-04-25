@@ -178,10 +178,11 @@ namespace fCraft {
         public static bool ParseCommand( [NotNull] Player player, [NotNull] Command cmd, bool fromConsole ) {
             if( player == null ) throw new ArgumentNullException( "player" );
             if( cmd == null ) throw new ArgumentNullException( "cmd" );
-            CommandDescriptor descriptor = GetDescriptor( cmd.Name, true );
+            CommandDescriptor descriptor = cmd.Descriptor;
 
             if( descriptor == null ) {
                 player.Message( "Unknown command \"{0}\". See &H/Commands", cmd.Name );
+                Logger.Log(LogType.UserCommand, "{0}: /{1}", player.Name, cmd.Name);
                 return false;
             }
 

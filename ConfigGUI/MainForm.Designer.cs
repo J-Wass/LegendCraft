@@ -293,6 +293,7 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.label5 = new System.Windows.Forms.Label();
             this.websiteURL = new System.Windows.Forms.TextBox();
+            this.globalChat = new System.Windows.Forms.CheckBox();
             this.ReqsEditor = new System.Windows.Forms.Button();
             this.SwearEditor = new System.Windows.Forms.Button();
             this.MaxCapsValue = new System.Windows.Forms.NumericUpDown();
@@ -3505,6 +3506,7 @@
             // 
             this.groupBox3.Controls.Add(this.label5);
             this.groupBox3.Controls.Add(this.websiteURL);
+            this.groupBox3.Controls.Add(this.globalChat);
             this.groupBox3.Controls.Add(this.ReqsEditor);
             this.groupBox3.Controls.Add(this.SwearEditor);
             this.groupBox3.Controls.Add(this.MaxCapsValue);
@@ -3534,6 +3536,16 @@
             this.websiteURL.Size = new System.Drawing.Size(212, 21);
             this.websiteURL.TabIndex = 28;
             this.websiteURL.TextChanged += new System.EventHandler(this.websiteURL_TextChanged);
+            // 
+            // globalChat
+            // 
+            this.globalChat.AutoSize = true;
+            this.globalChat.Location = new System.Drawing.Point(110, 107);
+            this.globalChat.Name = "globalChat";
+            this.globalChat.Size = new System.Drawing.Size(149, 19);
+            this.globalChat.TabIndex = 27;
+            this.globalChat.Text = "Enable GlobalChat";
+            this.globalChat.UseVisualStyleBackColor = true;
             // 
             // ReqsEditor
             // 
@@ -4184,6 +4196,7 @@
         private System.Windows.Forms.Button ReqsEditor;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.TextBox websiteURL;
+        private System.Windows.Forms.CheckBox globalChat;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.GroupBox groupBox4;

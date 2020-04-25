@@ -1,4 +1,4 @@
-// Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
+﻿// Copyright 2009-2012 Matvei Stefarov <me@matvei.org>
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -107,62 +107,55 @@ THE SOFTWARE.*/
 
         internal static void BarfHandler(Player player, Command cmd)
         {
-            string name = cmd.Next();                               // /barf playername
-            if (string.IsNullOrEmpty(name))
-            {
+            if (!player.MaySpeakFurther()) return;
+        	
+            string name = cmd.Next();
+            if (string.IsNullOrEmpty(name)) {
                 Server.Players.CanSee(player).Except(player).Message("{0} &6Barfed&s.", player.ClassyName);
                 player.Message("&sYou &6Barfed&s.");
-                player.Info.LastUsedBarf = DateTime.Now;
-                return;                                                 //stop the command here with return;
+                player.Info.LastUsedBarf = DateTime.UtcNow;
+                return;
             }
-            //if the name does exists
+            
             Player target = Server.FindPlayerOrPrintMatches(player, name, false, true); //try to find the player
-            if (target == null)
-            {
-                return; //if the player cannot be found, return;. A message is shown to the player in Server.FindPlayersOr....
-            }
-            if (target == player) //if the player name was found, check if it was the player or not
+            if (target == null) return;
+            if (target == player)
             {
                 Server.Players.CanSee(target).Except(target).Message("{1}&S just &6Barfed &sall over themsleves...", target.ClassyName, player.ClassyName);
                 IRC.PlayerSomethingMessage(player, "barfed on", target, null);
                 player.Message("&sYou &6Barfed &sall over yourself...");
                 return; //return to stop the code
             }
-            string item = cmd.Next();                               // /barf playername [item]
-            string aMessage;
-            double time = (DateTime.Now - player.Info.LastUsedBarf).TotalSeconds;
-            if (player.Can(Permission.HighFive) && time > 20)
+            
+            if (!player.Can(Permission.HighFive))
             {
-                if (string.IsNullOrEmpty(item))
-                {
-                    Server.Players.CanSee(target).Union(target).Message("{0} &Swas &6Barfed &son by {1}&s.", target.ClassyName, player.ClassyName);
-                    IRC.PlayerSomethingMessage(player, "barfed on", target, null);
-                    player.Info.LastUsedBarf = DateTime.Now;
-                    return;
-                }
-                else if (item.ToLower() == "throwup")
-                    aMessage = String.Format("{0}&s was &6Thrown Up &Son by {1}&s.", target.ClassyName, player.ClassyName);
-                else if (item.ToLower() == "puke")
-                    aMessage = String.Format("{0}&s was &6Puked &Son by {1}&s.", target.ClassyName, player.ClassyName);
-                else if (item.ToLower() == "blowchunks")
-                    aMessage = String.Format("{1} &6Blew Chunks &son {0}&s.", target.ClassyName, player.ClassyName);
-                else
-                {
-                    Server.Players.CanSee(target).Union(target).Message("{0} &Swas &6Barfed &son by {1}&s.", target.ClassyName, player.ClassyName);
-                    IRC.PlayerSomethingMessage(player, "barfed on", target, null);
-                    player.Info.LastUsedBarf = DateTime.Now;
-                    return;
-                }
-                Server.Players.CanSee(target).Union(target).Message(aMessage);
-                IRC.PlayerSomethingMessage(player, "barfed on", target, null);
-                player.Info.LastUsedBarf = DateTime.Now;
+                player.Message("You do not have permissions to barf on others");
                 return;
             }
-            else
-            {
+            
+            double time = (DateTime.UtcNow - player.Info.LastUsedBarf).TotalSeconds;
+            if (time <= 20) {
                 player.Message("You cannot use barf for another &W{0}&s seconds", Math.Round(20 - time));
                 return;
             }
+            
+            string item = cmd.Next();
+            string msg;
+            if (string.IsNullOrEmpty(item)) {
+                msg = String.Format("{0} &Swas &6Barfed &son by {1}&s.", target.ClassyName, player.ClassyName);
+            } else if (item.ToLower() == "throwup") {
+                msg = String.Format("{0}&s was &6Thrown Up &Son by {1}&s.", target.ClassyName, player.ClassyName);
+            } else if (item.ToLower() == "puke") {
+                msg = String.Format("{0}&s was &6Puked &Son by {1}&s.", target.ClassyName, player.ClassyName);
+            } else if (item.ToLower() == "blowchunks") {
+                msg = String.Format("{1} &6Blew Chunks &son {0}&s.", target.ClassyName, player.ClassyName);
+            } else {
+                msg = String.Format("{0} &Swas &6Barfed &son by {1}&s.", target.ClassyName, player.ClassyName);
+            }
+            
+            Server.Players.CanSee(target).Union(target).Message(msg);
+            IRC.PlayerSomethingMessage(player, "barfed on", target, null);
+            player.Info.LastUsedBarf = DateTime.UtcNow;
         }
         
         static readonly CommandDescriptor CdPlugin = new CommandDescriptor
@@ -301,6 +294,13 @@ THE SOFTWARE.*/
         static void GHandler(Player player, Command cmd)
         {
             string message = cmd.NextAll();
+
+            if (!GlobalChat.isEnabled)
+            {
+                player.Message("&cGlobal Chat has been disabled on this server.");
+                return;
+            }
+
             if (message == "connect")
             {
                 if (player.Can(Permission.ReadAdminChat))
@@ -767,10 +767,10 @@ THE SOFTWARE.*/
         };
 
 
-
-
         static void BrofistHandler(Player player, Command cmd)
         {
+            if (!player.MaySpeakFurther()) return;
+        	
             string targetName = cmd.Next();
             if (targetName == null)
             {
@@ -794,9 +794,6 @@ THE SOFTWARE.*/
             IRC.PlayerSomethingMessage(player, "brofisted", target, null);
             target.Message("{0}&S's fist met yours for a &8Brofist&S.", player.ClassyName);
         }
-
-
-
 
 
         static readonly CommandDescriptor CdMad = new CommandDescriptor
@@ -1227,13 +1224,7 @@ THE SOFTWARE.*/
 
         static void CustomChatHandler(Player player, Command cmd)
         {
-            if (player.Info.IsMuted)
-            {
-                player.MessageMuted();
-                return;
-            }
-
-            if (player.DetectChatSpam()) return;
+            if (!player.MaySpeakFurther()) return;
 
             string message = cmd.NextAll().Trim();
             if (message.Length > 0)
@@ -1296,6 +1287,8 @@ THE SOFTWARE.*/
 
         internal static void High5Handler(Player player, Command cmd)
         {
+            if (!player.MaySpeakFurther()) return;
+            
             string targetName = cmd.Next();
             if (targetName == null)
             {
@@ -1328,6 +1321,8 @@ THE SOFTWARE.*/
 
         internal static void PokeHandler(Player player, Command cmd)
         {
+            if (!player.MaySpeakFurther()) return;
+        	
             string targetName = cmd.Next();
             if (targetName == null)
             {
@@ -1453,13 +1448,7 @@ THE SOFTWARE.*/
 
         static void SayHandler(Player player, Command cmd)
         {
-            if (player.Info.IsMuted)
-            {
-                player.MessageMuted();
-                return;
-            }
-
-            if (player.DetectChatSpam()) return;
+            if (!player.MaySpeakFurther()) return;
 
             if (player.Can(Permission.Say))
             {
@@ -1500,13 +1489,7 @@ THE SOFTWARE.*/
 
         static void StaffHandler(Player player, Command cmd)
         {
-            if (player.Info.IsMuted)
-            {
-                player.MessageMuted();
-                return;
-            }
-
-            if (player.DetectChatSpam()) return;
+            if (!player.MaySpeakFurther()) return;
 
             string message = cmd.NextAll().Trim();
             if (message.Length > 0)
@@ -1637,13 +1620,7 @@ THE SOFTWARE.*/
 
         static void MeHandler(Player player, Command cmd)
         {
-            if (player.Info.IsMuted)
-            {
-                player.MessageMuted();
-                return;
-            }
-
-            if (player.DetectChatSpam()) return;
+            if (!player.MaySpeakFurther()) return;
 
             string msg = cmd.NextAll().Trim();
             if (msg.Length > 0)
@@ -1677,13 +1654,7 @@ THE SOFTWARE.*/
 
         static void RollHandler(Player player, Command cmd)
         {
-            if (player.Info.IsMuted)
-            {
-                player.MessageMuted();
-                return;
-            }
-
-            if (player.DetectChatSpam()) return;
+            if (!player.MaySpeakFurther()) return;
 
             Random rand = new Random();
             int n1;
@@ -1852,12 +1823,8 @@ THE SOFTWARE.*/
             }
 
             // Start a timer
-            if (player.Info.IsMuted)
-            {
-                player.MessageMuted();
-                return;
-            }
-            if (player.DetectChatSpam()) return;
+            if (!player.MaySpeakFurther()) return;
+            
             TimeSpan duration;
             if (!param.TryParseMiniTimespan(out duration))
             {
@@ -1895,9 +1862,6 @@ THE SOFTWARE.*/
         }
 
         #endregion
-
-        
     }
-
 }
-                     
+                    

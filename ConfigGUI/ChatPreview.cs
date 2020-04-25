@@ -110,8 +110,8 @@ namespace fCraft.ConfigGUI {
 
 
         protected override void OnPaint( PaintEventArgs e ) {
-            e.Graphics.DrawImageUnscaledAndClipped( Resources.ChatBackground, e.ClipRectangle );
-
+            e.Graphics.DrawImage( Resources.ChatBackground, e.ClipRectangle.X, e.ClipRectangle.Y, 
+        	                     e.ClipRectangle, GraphicsUnit.Pixel );
             e.Graphics.TextRenderingHint = TextRenderingHint.SingleBitPerPixel;
 
             if( segments != null && segments.Length > 0 ) {

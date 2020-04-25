@@ -1,4 +1,4 @@
-//Copyright (C) <2012>  <Jon Baker, Glenn Mariën and Lao Tszy>
+﻿//Copyright (C) <2012>  <Jon Baker, Glenn Mariën and Lao Tszy>
 
 //This program is free software: you can redistribute it and/or modify
 //it under the terms of the GNU General Public License as published by
@@ -31,7 +31,6 @@ namespace fCraft
         public static List<Player> Voted;
         public static string VoteStarter;
         public static bool VoteIsOn = false;
-        public static Thread VoteThread;
         public static string VoteKickReason;
         public static string TargetName;
         public static string Question;
@@ -48,25 +47,11 @@ namespace fCraft
         public static void VoteParams(Player player, Command cmd)
         {
             string option = cmd.Next();
-            if (option == null) { player.Message("Invalid param"); return; }
+            if (option == null) { MessageVoteStatus(player); return; }
             switch (option)
             {
                 default:
-                    if (VoteIsOn)
-                    {
-                        if (VoteKickReason == null)
-                        {
-                            player.Message("Last Question: {0}&C asked: {1}", VoteStarter, Question);
-                            player.Message(Usage);
-                            return;
-                        }
-                        else
-                            player.Message("Last VoteKick: &CA VoteKick has started for {0}&C, reason: {1}", TargetName, VoteKickReason);
-                        player.Message(Usage);
-                        return;
-                    }
-                    else
-                        player.Message(option);
+            	    MessageVoteStatus(player);
                     break;
 
                 case "abort":
@@ -148,36 +133,41 @@ namespace fCraft
                         return;
                     }
 
-                    VoteThread = new Thread(new ThreadStart(delegate
-                      {
-                          NewVote();
-                          VoteStarter = player.ClassyName;
-                          Server.Players.Message("{0}&S Asked: {1}", player.ClassyName, Question);
-                          Server.Players.Message("&9Vote now! &S/Vote &AYes &Sor /Vote &CNo");
-                          VoteIsOn = true;
-                          Thread.Sleep(60000);
-                          VoteCheck();
-                      })); VoteThread.Start();
+                    NewVote();
+                    VoteStarter = player.ClassyName;
+                    Server.Players.Message("{0}&S Asked: {1}", player.ClassyName, Question);
+                    Server.Players.Message("&9Vote now! &S/Vote &AYes &Sor /Vote &CNo");
+                    VoteIsOn = true;
+                    Scheduler.NewTask(VoteCheck).RunOnce(TimeSpan.FromMinutes(1));
                     break;
             }
         }
 
-        static void VoteCheck()
-        {
-            if (VoteIsOn)
+        static void MessageVoteStatus(Player player) {
+            if (!VoteIsOn)
             {
-                Server.Players.Message("{0}&S Asked: {1} \n&SResults are in! Yes: &A{2} &SNo: &C{3}", VoteStarter,
-                                       Question, VotedYes, VotedNo);
-                VoteIsOn = false;
-                foreach (Player V in Voted)
-                {
-                    V.Info.HasVoted = false;
-                }
+                player.Message("No vote is currently running.");
+            } 
+            else if (VoteKickReason == null)
+            {
+                player.Message("Current question: {0}&C asked: {1}", VoteStarter, Question);
+            }
+            else
+            {
+                player.Message("&CCurrent VoteKick for {0}&C, reason: {1}", TargetName, VoteKickReason);
+            }
+            player.Message(Usage);
+        }
+        
+        static void VoteCheck(SchedulerTask task)
+        {
+            if (!VoteIsOn) return;
+            Server.Players.Message("{0}&S Asked: {1} \n&SResults are in! Yes: &A{2} &SNo: &C{3}", VoteStarter,
+                                   Question, VotedYes, VotedNo);
+            VoteIsOn = false;
+            foreach (Player V in Voted) {
+                V.Info.HasVoted = false;
             }
         }
-
-
     }
 }
-
-

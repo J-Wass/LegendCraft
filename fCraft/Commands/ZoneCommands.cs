@@ -80,7 +80,7 @@ THE SOFTWARE.*/
         {
             player.Message("Left click to select a door.");
             player.Info.isDoorChecking = true;
-            player.Info.doorCheckTime = DateTime.Now;
+            player.Info.doorCheckTime = DateTime.UtcNow;
         }
 
         static readonly CommandDescriptor CdDoorList = new CommandDescriptor
@@ -223,7 +223,7 @@ THE SOFTWARE.*/
         public static void PlayerClickedDoor(object sender, PlayerClickedEventArgs e)
         {
             //after 10s, revert effects of /DoorCheck
-            if ((DateTime.Now - e.Player.Info.doorCheckTime).TotalSeconds > 10 && e.Player.Info.doorCheckTime != DateTime.MaxValue)
+            if ((DateTime.UtcNow - e.Player.Info.doorCheckTime).TotalSeconds > 10 && e.Player.Info.doorCheckTime != DateTime.MaxValue)
             {
                 e.Player.Info.doorCheckTime = DateTime.MaxValue;
                 e.Player.Info.isDoorChecking = false;

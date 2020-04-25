@@ -60,9 +60,15 @@ namespace fCraft
             ConcurrentQueue<string> localQueue = new ConcurrentQueue<string>();
             public static bool GCReady = false;
 
-
             public bool Start([NotNull] string botNick, bool parseInput)
             {
+                ConfigKey.GlobalChat.TryGetBool(out isEnabled);
+
+                if (!isEnabled)
+                {
+                    return false;
+                }
+
                 if (botNick == null) throw new ArgumentNullException("botNick");
                 
                 //shouldn't happen since Init is called before Start 
@@ -96,6 +102,13 @@ namespace fCraft
 
             void Connect()
             {
+                ConfigKey.GlobalChat.TryGetBool(out isEnabled);
+
+                if (!isEnabled)
+                {
+                    return;
+                }
+
                 // initialize the client
                 IPAddress ipToBindTo = IPAddress.Parse(ConfigKey.IP.GetString());
                 IPEndPoint localEndPoint = new IPEndPoint(ipToBindTo, 0);
@@ -491,6 +504,8 @@ namespace fCraft
 
         public static GlobalThread[] threads;
 
+        public static bool isEnabled;
+
         const int Timeout = 10000; // socket timeout (ms)
         internal static int SendDelay = 750; //default
         const int ReconnectDelay = 15000;
@@ -576,6 +591,13 @@ namespace fCraft
 
         public static bool Start()
         {
+            ConfigKey.GlobalChat.TryGetBool(out isEnabled);
+
+            if (!isEnabled)
+            {
+                return false;
+            }
+
             int threadCount = 1;
 
             if (threadCount == 1)

@@ -320,10 +320,15 @@ namespace fCraft {
                 {
                     //non classicube players get fallbacks instead of the real blocks
                     Packet packet = PacketWriter.MakeSetBlock( update.X, update.Y, update.Z, update.BlockType );
-                    Packet packet2 = PacketWriter.MakeSetBlock(update.X, update.Y, update.Z, Map.GetFallbackBlock(update.BlockType));
+                    Packet fallback = PacketWriter.MakeSetBlock(update.X, update.Y, update.Z, Map.GetFallbackBlock(update.BlockType));
 
-                    World.Players.Where(p => p.usesCPE).SendLowPriority(update.Origin, packet);
-                    World.Players.Where(p => !p.usesCPE).SendLowPriority(update.Origin, packet2);
+                    // Not using World.Players.Where(x => usesCpe) here to avoid memory allocations
+                    Player[] players = World.Players;
+                    for( int i = 0; i < players.Length; i++ ) {
+                        Player p = players[i];
+                        if (p.UsesCustomBlocks) p.SendLowPriority(packet);
+                        else p.SendLowPriority(fallback);
+                    }
                 }
                 packetsSent++;
             }

@@ -155,24 +155,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Drawing\DrawOps\WallsOp.cs" />
-    <Compile Include="Drawing\nbt\Class1.cs" />
-    <Compile Include="Drawing\nbt\Exceptions\NbtQueryException.cs" />
-    <Compile Include="Drawing\nbt\Queries\TagQuery.cs" />
-    <Compile Include="Drawing\nbt\Queries\TagQueryToken.cs" />
-    <Compile Include="Drawing\nbt\Tags\INbtTagList.cs" />
-    <Compile Include="Drawing\nbt\Tags\INbtTagValue.cs" />
-    <Compile Include="Drawing\nbt\Tags\NbtByte.cs" />
-    <Compile Include="Drawing\nbt\Tags\NbtByteArray.cs" />
-    <Compile Include="Drawing\nbt\Tags\NbtCompound.cs" />
-    <Compile Include="Drawing\nbt\Tags\NbtDouble.cs" />
-    <Compile Include="Drawing\nbt\Tags\NbtFloat.cs" />
-    <Compile Include="Drawing\nbt\Tags\NbtInt.cs" />
-    <Compile Include="Drawing\nbt\Tags\NbtList.cs" />
-    <Compile Include="Drawing\nbt\Tags\NbtLong.cs" />
-    <Compile Include="Drawing\nbt\Tags\NbtShort.cs" />
-    <Compile Include="Drawing\nbt\Tags\NbtString.cs" />
-    <Compile Include="Drawing\nbt\Tags\NbtTag.cs" />
-    <Compile Include="Drawing\nbt\Tags\NbtTagType.cs" />
     <Compile Include="Games\CTF.cs" />
     <Compile Include="Games\FFA.cs" />
     <Compile Include="Games\Football.cs" />
@@ -185,6 +167,7 @@
     <Compile Include="MapConversion\MapFCMv3.cs" />
     <Compile Include="Network\CPE.cs" />
     <Compile Include="Network\GlobalChat.cs" />
+    <Compile Include="Network\HttpUtil.cs" />
     <Compile Include="Network\PacketReader.cs" />
     <Compile Include="Physics\ExplodingPhysics.cs" />
     <Compile Include="Physics\Life\Life2d.cs" />
@@ -226,9 +209,9 @@
     <Compile Include="Player\Position.cs" />
     <Compile Include="Player\Rank.cs" />
     <Compile Include="Player\RankManager.cs" />
+    <Compile Include="Player\SecurityController.cs" />
     <Compile Include="Plugins\PluginConfig.cs" />
     <Compile Include="Plugins\PluginConfigSerializer.cs" />
-    <Compile Include="Plugins\SecurityController.cs" />
     <Compile Include="Plugins\Plugin.cs" />
     <Compile Include="Plugins\PluginManager.cs" />
     <Compile Include="Plugins\Plugins\TrollPlugin.cs" />

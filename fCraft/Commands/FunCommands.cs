@@ -1,4 +1,4 @@
-//Copyright (C) <2012>  <Jon Baker, Glenn Mariën and Lao Tszy>
+﻿//Copyright (C) <2012>  <Jon Baker, Glenn Mariën and Lao Tszy>
 
 //This program is free software: you can redistribute it and/or modify
 //it under the terms of the GNU General Public License as published by
@@ -48,20 +48,8 @@ namespace fCraft
             Player.Moving += PlayerMoved;
         }
 
-            public static string[] validEntities = 
-            {
-                "chicken",
-                "creeper",
-                "croc",
-                "humanoid",
-                "human",
-                "pig",
-                "printer",
-                "sheep",
-                "skeleton",
-                "spider",
-                "zombie"
-                                     };
+        public static string[] validEntities =  { "chibi", "chicken", "creeper", "croc", "head", 
+            "humanoid", "human", "pig", "printer", "sheep", "skeleton", "spider", "zombie" };
 
         public static void PlayerMoved(object sender, fCraft.Events.PlayerMovingEventArgs e)
         {
@@ -172,16 +160,8 @@ THE SOFTWARE.*/
             }
             else if (option.ToLower() == "removeall")
             {
-
-            rewipe:
-                Server.Bots.ForEach(botToRemove =>
-                {
-                    botToRemove.removeBot();
-                });
-
-                if (Server.Bots.Count != 0)
-                {
-                    goto rewipe;
+                while (Server.Bots.Count > 0) {
+                    Server.Bots[0].removeBot();
                 }
 
                 player.Message("All bots removed from the server.");
@@ -432,50 +412,67 @@ THE SOFTWARE.*/
         static readonly CommandDescriptor CdSetModel = new CommandDescriptor
         {
             Name = "SetModel",
+            Aliases = new[] { "Model" },
             Permissions = new Permission[] { Permission.Troll },
             Category = CommandCategory.Fun,
             IsConsoleSafe = false,
             Usage = "/SetModel [Player] [Model]",
-            Help = "Changes the model of a target player Valid models are chicken, creeper, croc, human, pig, printer, sheep, skeleton, spider, or zombie. If the model is empty, the player's model will reset.",
+            Help = "Changes the model of a target player. If the model is empty, resets player model.\n" +
+                "Valid models: " + validEntities.JoinToString(),
             Handler = ModelHandler,
         };
 
         static void ModelHandler(Player player, Command cmd)
         {
-            string target = cmd.Next();
-            if(string.IsNullOrEmpty(target))
+            string targetName = cmd.Next();
+            if (string.IsNullOrEmpty(targetName)) 
             {
-                CdSetModel.PrintUsage(player);
-                return;
+                CdSetModel.PrintUsage(player); return; 
             }
 
-            Player targetPlayer = Server.FindPlayerOrPrintMatches(player, target, false, true);
-            if (targetPlayer == null)
+            Player target = Server.FindPlayerOrPrintMatches(player, targetName, false, true);
+            if (target == null) return;
+            
+            string model = ParseModel(cmd.Next());
+            if (model == null) 
             {
-                return;
+                player.Message("Please choose a valid model! Valid models are:");
+                player.Message(validEntities.JoinToString());
+            } 
+            else 
+            {
+                player.Message("{0} has been changed into a {1}!", target.Name, model);
+                target.Model = model;
+                if (target.SupportsChangeModel) target.Send(PacketWriter.MakeChangeModel(255, model));
+            }
+        }
+        
+        static string ParseModel(string model) {
+            model = model ?? "humanoid";
+            float scale = 0.0f;
+            string scalestr = "";
+            int sepIndex = model.IndexOf('|');
+            if (sepIndex >= 0) {
+                scalestr = model.Substring(sepIndex + 1);
+                model = model.Substring(0, sepIndex);
+            }
+            if (float.TryParse(scalestr, out scale)) {
+                if (scale < 0.25f) scale = 0.25f;
+                if (scale > 3f) scale = 3f;
+            }
+            
+            if (!validEntities.Contains(model.ToLower())) {
+                byte blockId;
+                Block block;
+                if (byte.TryParse(model, out blockId)) {
+                } else if ((block = Map.GetBlockByName(model)) != Block.Undefined) {
+                    model = ((byte)block).ToString();
+                } else {
+                    return null;
+                }
             }
 
-            string model = cmd.Next();
-            if (string.IsNullOrEmpty(model))
-            {
-                player.Message("Reset the model for {0}.", targetPlayer.Name);
-                targetPlayer.Model = player.Name; //reset the model to the player's name
-                return;
-            }
-
-            if (model == "human")//execute super lazy parse
-            {
-                model = "humanoid";
-            }
-            if (!validEntities.Contains(model))
-            {
-                player.Message("Please choose a valid model! Valid models are chicken, creeper, croc, human, pig, printer, sheep, skeleton, spider, or zombie.");
-                return;
-            }
-
-            player.Message("{0} has been changed into a {1}!", targetPlayer.Name, model);
-            targetPlayer.Model = model;
-            return;
+            return scale == 0 ? model : model + "|" + scale;
         }
 
         static readonly CommandDescriptor CdTroll = new CommandDescriptor //Troll is an old command from 800craft that i have rehashed because of its popularity
@@ -2047,7 +2044,7 @@ THE SOFTWARE.*/
             };
 
             int index = randomizer.Next(0, insults.Count);
-            double time = (DateTime.Now - player.Info.LastUsedInsult).TotalSeconds;
+            double time = (DateTime.UtcNow - player.Info.LastUsedInsult).TotalSeconds;
 
             if (name == null || name.Length < 1)
             {
@@ -2071,13 +2068,11 @@ THE SOFTWARE.*/
             else
             {
                 Server.Message(insults[index], player.ClassyName, target.ClassyName);
-                player.Info.LastUsedInsult = DateTime.Now;
+                player.Info.LastUsedInsult = DateTime.UtcNow;
                 return;
             }
 
         }
-
-
 
 
         static readonly CommandDescriptor CdThrow = new CommandDescriptor
@@ -2096,7 +2091,6 @@ THE SOFTWARE.*/
         static void ThrowHandler(Player player, Command cmd)
         {
             string name = cmd.Next();
-            string item = cmd.Next();
             if (name == null)
             {
                 player.Message("Please enter a name");
@@ -2104,6 +2098,7 @@ THE SOFTWARE.*/
             }
             Player target = Server.FindPlayerOrPrintMatches(player, name, false, true);
             if (target == null) return;
+            
             if (target.Immortal)
             {
                 player.Message("&SYou failed to throw {0}&S, they are immortal", target.ClassyName);
@@ -2114,85 +2109,41 @@ THE SOFTWARE.*/
                 player.Message("&sYou can't throw yourself... It's just physically impossible...");
                 return;
             }
-            double time = (DateTime.Now - player.Info.LastUsedThrow).TotalSeconds;
+            
+            double time = (DateTime.UtcNow - player.Info.LastUsedThrow).TotalSeconds;
             if (time < 10)
             {
                 player.Message("&WYou can use /Throw again in " + Math.Round(10 - time) + " seconds.");
                 return;
             }
-            Random random = new Random();
-            int randomNumber = random.Next(1, 4);
-            player.Info.LastUsedThrow = DateTime.Now;
+            
+            if (!player.Can(Permission.Slap, target.Info.Rank))
+            {
+                player.Message("&sYou can only Throw players ranked {0}&S or lower",
+                               player.Info.Rank.GetLimit(Permission.Slap).ClassyName);
+                player.Message("{0}&S is ranked {1}", target.ClassyName, target.Info.Rank.ClassyName);
+                return;
+            }
+            
+            int dir = new Random().Next(0, 4);
+            player.Info.LastUsedThrow = DateTime.UtcNow;
+            Position slap = default(Position);
 
-            if (randomNumber == 1)
-                if (player.Can(Permission.Slap, target.Info.Rank))
-                {
-                    Position slap = new Position(target.Position.Z, target.Position.X, (target.World.Map.Bounds.YMax) * 32);
-                    target.TeleportTo(slap);
-                    Server.Players.CanSee(target).Except(target).Message("&SPlayer {0}&S was &eThrown&s by {1}&S.", target.ClassyName, player.ClassyName);
-                    IRC.PlayerSomethingMessage(player, "thrown", target, null);
-                    target.Message("&sYou were &eThrown&s by {0}&s.", player.ClassyName);
-                    return;
-                }
-                else
-                {
-                    player.Message("&sYou can only Throw players ranked {0}&S or lower",
-                                   player.Info.Rank.GetLimit(Permission.Slap).ClassyName);
-                    player.Message("{0}&S is ranked {1}", target.ClassyName, target.Info.Rank.ClassyName);
-                }
-
-
-
-            if (randomNumber == 2)
-                if (player.Can(Permission.Slap, target.Info.Rank))
-                {
-                    Position slap = new Position(target.Position.X, target.Position.Z, (target.World.Map.Bounds.YMax) * 32);
-                    target.TeleportTo(slap);
-                    Server.Players.CanSee(target).Except(target).Message("&sPlayer {0}&s was &eThrown&s by {1}&s.", target.ClassyName, player.ClassyName);
-                    IRC.PlayerSomethingMessage(player, "thrown", target, null);
-                    target.Message("&sYou were &eThrown&s by {0}&s.", player.ClassyName);
-                    return;
-                }
-                else
-                {
-                    player.Message("&sYou can only Throw players ranked {0}&S or lower",
-                                   player.Info.Rank.GetLimit(Permission.Slap).ClassyName);
-                    player.Message("{0}&S is ranked {1}", target.ClassyName, target.Info.Rank.ClassyName);
-                }
-
-            if (randomNumber == 3)
-                if (player.Can(Permission.Slap, target.Info.Rank))
-                {
-                    Position slap = new Position(target.Position.Z, target.Position.Y, (target.World.Map.Bounds.XMax) * 32);
-                    target.TeleportTo(slap);
-                    Server.Players.CanSee(target).Except(target).Message("&sPlayer {0}&s was &eThrown&s by {1}&s.", target.ClassyName, player.ClassyName);
-                    IRC.PlayerSomethingMessage(player, "thrown", target, null);
-                    target.Message("&sYou were &eThrown&s by {0}&s.", player.ClassyName);
-                    return;
-                }
-                else
-                {
-                    player.Message("&sYou can only Throw players ranked {0}&S or lower",
-                                   player.Info.Rank.GetLimit(Permission.Slap).ClassyName);
-                    player.Message("{0}&S is ranked {1}", target.ClassyName, target.Info.Rank.ClassyName);
-                }
-
-            if (randomNumber == 4)
-                if (player.Can(Permission.Slap, target.Info.Rank))
-                {
-                    Position slap = new Position(target.Position.Y, target.Position.Z, (target.World.Map.Bounds.XMax) * 32);
-                    target.TeleportTo(slap);
-                    Server.Players.CanSee(target).Except(target).Message("&sPlayer {0}&s was &eThrown&s by {1}&s.", target.ClassyName, player.ClassyName);
-                    IRC.PlayerSomethingMessage(player, "thrown", target, null);
-                    target.Message("&sYou were &eThrown&s by {0}&s.", player.ClassyName);
-                    return;
-                }
-                else
-                {
-                    player.Message("&sYou can only Throw players ranked {0}&S or lower",
-                                   player.Info.Rank.GetLimit(Permission.Slap).ClassyName);
-                    player.Message("{0}&S is ranked {1}", target.ClassyName, target.Info.Rank.ClassyName);
-                }
+            if (dir == 0) {
+                slap = new Position(target.Position.Z, target.Position.X, (target.World.Map.Bounds.YMax) * 32);
+            } else if (dir == 1) {
+                slap = new Position(target.Position.X, target.Position.Z, (target.World.Map.Bounds.YMax) * 32);
+            } else if (dir == 2) {
+                slap = new Position(target.Position.Z, target.Position.Y, (target.World.Map.Bounds.XMax) * 32);
+            } else if (dir == 3) {
+                slap = new Position(target.Position.Y, target.Position.Z, (target.World.Map.Bounds.XMax) * 32);
+            }
+            slap.L = target.Position.L; slap.R = target.Position.R;
+            
+            target.TeleportTo(slap);
+            Server.Players.CanSee(target).Except(target).Message("&sPlayer {0}&s was &eThrown&s by {1}&s.", target.ClassyName, player.ClassyName);
+            IRC.PlayerSomethingMessage(player, "thrown", target, null);
+            target.Message("&sYou were &eThrown&s by {0}&s.", player.ClassyName);
         }
         #endregion
 

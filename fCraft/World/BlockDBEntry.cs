@@ -18,13 +18,13 @@ namespace fCraft
         public readonly int PlayerID;
 
         /// <summary> X coordinate (horizontal), in terms of blocks. </summary>
-        public readonly short X;
+        public readonly ushort X;
 
         /// <summary> Y coordinate (horizontal), in terms of blocks. </summary>
-        public readonly short Y;
+        public readonly ushort Y;
 
         /// <summary> Z coordinate (vertical), in terms of blocks. </summary>
-        public readonly short Z;
+        public readonly ushort Z;
 
         /// <summary> Block that previously occupied this coordinate </summary>
         public readonly Block OldBlock;
@@ -33,17 +33,15 @@ namespace fCraft
         public readonly Block NewBlock;
 
         /// <summary> Change's (X,Y,Z) coordinates as a vector. </summary>
-        public Vector3I Coord
-        {
+        public Vector3I Coord {
             get { return new Vector3I(X, Y, Z); }
         }
 
         /// <summary> Context for this block change. </summary>
         public readonly BlockChangeContext Context;
 
-        public BlockDBEntry(int timestamp, int playerID, short x, short y, short z,
-                             Block oldBlock, Block newBlock, BlockChangeContext flags)
-        {
+        public BlockDBEntry(int timestamp, int playerID, ushort x, ushort y, ushort z,
+                             Block oldBlock, Block newBlock, BlockChangeContext flags) {
             Timestamp = timestamp;
             PlayerID = playerID;
             X = x;
@@ -55,20 +53,18 @@ namespace fCraft
         }
 
         public BlockDBEntry(int timestamp, int playerID, Vector3I coords,
-                             Block oldBlock, Block newBlock, BlockChangeContext flags)
-        {
+                             Block oldBlock, Block newBlock, BlockChangeContext flags) {
             Timestamp = timestamp;
             PlayerID = playerID;
-            X = (short)coords.X;
-            Y = (short)coords.Y;
-            Z = (short)coords.Z;
+            X = (ushort)coords.X;
+            Y = (ushort)coords.Y;
+            Z = (ushort)coords.Z;
             OldBlock = oldBlock;
             NewBlock = newBlock;
             Context = flags;
         }
 
-        public void Serialize(BinaryWriter writer)
-        {
+        public void Serialize(BinaryWriter writer) {
             writer.Write(Timestamp);
             writer.Write(PlayerID);
             writer.Write(X);

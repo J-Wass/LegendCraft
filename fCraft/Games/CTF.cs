@@ -72,7 +72,7 @@ namespace fCraft
             {
                 world_ = world;
                 instance = new CTF();
-                startTime = DateTime.Now;
+                startTime = DateTime.UtcNow;
                 task_ = new SchedulerTask(Interval, true).RunForever(TimeSpan.FromMilliseconds(250)); //run loop every quarter second
             }
             return instance;
@@ -136,11 +136,11 @@ namespace fCraft
             }
 
             //remove announcements after 5 seconds
-            if (announced != DateTime.MaxValue && (DateTime.Now - announced).TotalSeconds >= 5)
+            if (announced != DateTime.MaxValue && (DateTime.UtcNow - announced).TotalSeconds >= 5)
             {
                 foreach (Player p in world_.Players)
                 {
-                    if (p.usesCPE)
+                    if (p.SupportsMessageTypes)
                     {
                         p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));//super hacky way to remove announcements, simply send a color code and call it a day
                     }
@@ -153,7 +153,7 @@ namespace fCraft
             {
                 if (p.Info.canDodge)
                 {
-                    if (p.Info.dodgeTime != DateTime.MaxValue && (DateTime.Now - p.Info.dodgeTime).TotalSeconds >= 60)
+                    if (p.Info.dodgeTime != DateTime.MaxValue && (DateTime.UtcNow - p.Info.dodgeTime).TotalSeconds >= 60)
                     {
                         p.Info.canDodge = false;
                         p.Info.dodgeTime = DateTime.MaxValue;
@@ -168,7 +168,7 @@ namespace fCraft
             {
                 if (p.Info.strengthened)
                 {
-                    if (p.Info.strengthTime != DateTime.MaxValue && (DateTime.Now - p.Info.strengthTime).TotalSeconds >= 60)
+                    if (p.Info.strengthTime != DateTime.MaxValue && (DateTime.UtcNow - p.Info.strengthTime).TotalSeconds >= 60)
                     {
                         p.Info.strengthened = false;
                         p.Info.strengthTime = DateTime.MaxValue;
@@ -179,7 +179,7 @@ namespace fCraft
             }
 
             //remove Blades of Fury after 1m
-            if ((BlueBOFdebuff != DateTime.MaxValue && (DateTime.Now - BlueBOFdebuff).TotalSeconds >= 60))
+            if ((BlueBOFdebuff != DateTime.MaxValue && (DateTime.UtcNow - BlueBOFdebuff).TotalSeconds >= 60))
             {
                 foreach (Player p in world_.Players)
                 {
@@ -197,7 +197,7 @@ namespace fCraft
                 world_.Players.Message("Blades of Fury has ended.");
             }
 
-            if ((RedBOFdebuff != DateTime.MaxValue && (DateTime.Now - RedBOFdebuff).TotalSeconds >= 60))
+            if ((RedBOFdebuff != DateTime.MaxValue && (DateTime.UtcNow - RedBOFdebuff).TotalSeconds >= 60))
             {
                 foreach (Player p in world_.Players)
                 {
@@ -216,7 +216,7 @@ namespace fCraft
             }
 
             //remove disarm after 30s
-            if ((RedDisarmed != DateTime.MaxValue && (DateTime.Now - RedDisarmed).TotalSeconds >= 30))
+            if ((RedDisarmed != DateTime.MaxValue && (DateTime.UtcNow - RedDisarmed).TotalSeconds >= 30))
             {
                 foreach (Player p in world_.Players)
                 {
@@ -231,7 +231,7 @@ namespace fCraft
                 world_.Players.Message("The Disarm Spell has ended.");
             }
 
-            if ((BlueDisarmed != DateTime.MaxValue && (DateTime.Now - BlueDisarmed).TotalSeconds >= 30))
+            if ((BlueDisarmed != DateTime.MaxValue && (DateTime.UtcNow - BlueDisarmed).TotalSeconds >= 30))
             {
                 foreach (Player p in world_.Players)
                 {
@@ -258,7 +258,7 @@ namespace fCraft
                 }
 
                 //once timedelay is up, we start
-                if (startTime != null && (DateTime.Now - startTime).TotalSeconds > timeDelay)
+                if (startTime != null && (DateTime.UtcNow - startTime).TotalSeconds > timeDelay)
                 {
                     if (!world_.gunPhysics)
                     {
@@ -266,7 +266,7 @@ namespace fCraft
                     }
                     foreach (Player p in world_.Players)
                     {
-                        if (p.usesCPE)
+                        if (p.SupportsBlockPermissions)
                         {
                             //loop through each block ID
                             for (int i = 1; i < 65; i++)
@@ -316,7 +316,7 @@ namespace fCraft
                         //send an announcement (Will be sent as a normal message to non classicube players)
                         p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&cLet the Games Begin!"));
 
-                        if (p.usesCPE)
+                        if (p.SupportsMessageTypes)
                         {
                             //set player health
                             p.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f[&a--------&f]"));
@@ -339,8 +339,8 @@ namespace fCraft
 
                     started = true;   //the game has officially started
                     isOn = true;
-                    lastChecked = DateTime.Now;     //used for intervals
-                    announced = DateTime.Now;
+                    lastChecked = DateTime.UtcNow;     //used for intervals
+                    announced = DateTime.UtcNow;
                     return;
                 }
             }
@@ -429,7 +429,7 @@ namespace fCraft
             }
 
             //if time is up
-            if (started && startTime != null && (DateTime.Now - startTime).TotalSeconds >= (totalTime))
+            if (started && startTime != null && (DateTime.UtcNow - startTime).TotalSeconds >= (totalTime))
             {
                 if (redScore > blueScore)
                 {
@@ -457,7 +457,7 @@ namespace fCraft
             }
 
             //Check for forfeits
-            if (started && (DateTime.Now - lastChecked).TotalSeconds > 10)
+            if (started && (DateTime.UtcNow - lastChecked).TotalSeconds > 10)
             {
                 if (blueTeamCount < 1 || redTeamCount < 1)
                 {
@@ -488,9 +488,9 @@ namespace fCraft
                 }
             }
 
-            timeLeft = Convert.ToInt16(((timeDelay + timeLimit) - (DateTime.Now - startTime).TotalSeconds));
+            timeLeft = Convert.ToInt16(((timeDelay + timeLimit) - (DateTime.UtcNow - startTime).TotalSeconds));
             //Keep the players updated about the score
-            if (lastChecked != null && (DateTime.Now - lastChecked).TotalSeconds > 29.8 && timeLeft <= timeLimit)
+            if (lastChecked != null && (DateTime.UtcNow - lastChecked).TotalSeconds > 29.8 && timeLeft <= timeLimit)
             {
                 if (redScore > blueScore)
                 {
@@ -507,7 +507,7 @@ namespace fCraft
                     world_.Players.Message("&fThe teams are tied at {0}!", blueScore);
                     world_.Players.Message("&fThere are &W{0}&f seconds left in the game.", timeLeft);
                 }
-                lastChecked = DateTime.Now;
+                lastChecked = DateTime.UtcNow;
             }
             if (timeLeft == 10)
             {
@@ -571,9 +571,10 @@ namespace fCraft
                     p.entityChanged = true;
 
                     //reset all special messages
-                    if (p.usesCPE)
-                    {
+                    if (p.SupportsBlockPermissions) {
                         p.Send(PacketWriter.MakeSetBlockPermissions((byte)0, true, true));
+                    }
+                    if (p.SupportsMessageTypes) {
                         p.Send(PacketWriter.MakeSpecialMessage((byte)100, "&f"));
                         p.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f"));
                         p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&f"));
@@ -703,7 +704,7 @@ namespace fCraft
                         healthBar = "&f[&8--------&f]";
                     }
 
-                    if (p.usesCPE)
+                    if (p.SupportsMessageTypes)
                     {
                         p.Send(PacketWriter.MakeSpecialMessage((byte)1, healthBar));
                     }
@@ -720,7 +721,7 @@ namespace fCraft
                     world_.Players.Message("&f{0} has been healed for 100 hp.", p.Name);
                     p.Info.Health = 100;
 
-                    if (p.usesCPE)
+                    if (p.SupportsMessageTypes)
                     {
                         p.Send(PacketWriter.MakeSpecialMessage((byte)1, "&f[&8--------&f]"));
                     }
@@ -746,7 +747,7 @@ namespace fCraft
                                 pl.GunMode = false;                             
                             }
                         }
-                        RedDisarmed = DateTime.Now;
+                        RedDisarmed = DateTime.UtcNow;
                     }
                     else
                     {
@@ -760,7 +761,7 @@ namespace fCraft
                                 pl.GunMode = false;
                             }
                         }
-                        BlueDisarmed = DateTime.Now;
+                        BlueDisarmed = DateTime.UtcNow;
                     }
 
                     break;
@@ -783,7 +784,7 @@ namespace fCraft
                                 pl.Info.stabDisarmed = true;
                             }
                         }
-                        RedBOFdebuff = DateTime.Now;
+                        RedBOFdebuff = DateTime.UtcNow;
                     }
                     else
                     {
@@ -800,7 +801,7 @@ namespace fCraft
                                 pl.Info.stabDisarmed = true;
                             }
                         }
-                        RedBOFdebuff = DateTime.Now;
+                        RedBOFdebuff = DateTime.UtcNow;
                     }
                     break;
                 case 10:
@@ -837,7 +838,7 @@ namespace fCraft
                     world_.Players.Message("&f{0} has discovered a &aStrength Pack&f!", p.Name);
                     world_.Players.Message("&f{0}'s gun now deals twice the damage for the next minute!", p.Name);
                     p.Info.strengthened = true;
-                    p.Info.strengthTime = DateTime.Now;
+                    p.Info.strengthTime = DateTime.UtcNow;
                     break;
                 case 15:
                 case 16:
@@ -846,7 +847,7 @@ namespace fCraft
                     world_.Players.Message("&f{0} has discovered a new &aDodging Technique&f!", p.Name);
                     world_.Players.Message("&f{0}'s has a 50% chance to dodge incomming gun attacks for the next minute!", p.Name);
                     p.Info.canDodge = true;
-                    p.Info.dodgeTime = DateTime.Now;
+                    p.Info.dodgeTime = DateTime.UtcNow;
                     break;
                 case 18:
                     //holy blessing (rarest and most treasured power up, yet easiest to code :P )
@@ -863,7 +864,7 @@ namespace fCraft
                     }
                     foreach (Player pl in world_.Players)
                     {
-                        if (pl.usesCPE)
+                        if (pl.SupportsMessageTypes)
                         {
                             pl.Send(PacketWriter.MakeSpecialMessage((byte)2, "&cRed&f: " + redScore + ",&1 Blue&f: " + blueScore));
                         }
@@ -912,14 +913,14 @@ namespace fCraft
                             p.World.Map.QueueUpdate(blockUpdate);
 
                             //set game score
-                            if (p.usesCPE)
+                            if (p.SupportsMessageTypes)
                             {
                                 p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&cRed&f: " + redScore + ",&1 Blue&f: " + blueScore));
                                 p.Send(PacketWriter.MakeSpecialMessage((byte)100, e.Player.Name + " has successfully capped the &cred &fflag"));
                             }
                         }
                         world_.redFlagTaken = false;
-                        announced = DateTime.Now;
+                        announced = DateTime.UtcNow;
                         return;
                     }
                 }
@@ -948,14 +949,14 @@ namespace fCraft
                             p.World.Map.QueueUpdate(blockUpdate);
 
                             //set game scorecboard
-                            if (p.usesCPE)
+                            if (p.SupportsMessageTypes)
                             {
                                 p.Send(PacketWriter.MakeSpecialMessage((byte)2, "&cRed&f: " + redScore + ",&1 Blue&f: " + blueScore));
                                 p.Send(PacketWriter.MakeSpecialMessage((byte)100, e.Player.Name + " has successfully capped the &cred &fflag"));
                             }
                         }
                         world_.blueFlagTaken = false;
-                        announced = DateTime.Now;
+                        announced = DateTime.UtcNow;
                         return;
                     }
                 }
