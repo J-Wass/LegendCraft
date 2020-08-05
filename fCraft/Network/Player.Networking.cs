@@ -983,6 +983,11 @@ namespace fCraft
 
 
             // ==== Beyond this point, player is considered ready (has a world) ====
+            
+            // Sets client block permissions.
+            if(SupportsBlockPermissions) {
+                SendBlockPermissions();
+            }
 
             var canSee = Server.Players.CanSee(this);
 

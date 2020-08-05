@@ -741,6 +741,11 @@ namespace fCraft {
                                     reason );
                 }
             }
+            
+            // Sets client block permissions.
+            if(target.SupportsBlockPermissions) {
+                target.SendBlockPermissions();
+            }
 
             // Announce the rank change
             if( announce ) {
@@ -771,6 +776,7 @@ namespace fCraft {
                     }
                 }
             }
+            
         }
 
         #endregion
